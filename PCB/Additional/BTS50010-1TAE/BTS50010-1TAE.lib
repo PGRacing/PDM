@@ -1,0 +1,29 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# BTS50010-1TAE
+#
+DEF BTS50010-1TAE U 0 40 Y Y 1 L N
+F0 "U" -400 425 50 H V L BNN
+F1 "BTS50010-1TAE" -400 -475 50 H V L BNN
+F2 "TO127P1500X440-8N" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "IPC-7351B" 0 0 50 H I L BNN "STANDARD"
+F5 "4.4mm" 0 0 50 H I L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F6 "Infineon" 0 0 50 H I L BNN "MANUFACTURER"
+F7 "1.0" 0 0 50 H I L BNN "PARTREV"
+DRAW
+S -400 -400 400 400 0 0 6 f
+X VS 8 600 300 200 L 40 40 0 0 W 
+X IN 2 -600 100 200 R 40 40 0 0 I 
+X IS 3 600 -100 200 L 40 40 0 0 O 
+X GND 1 600 -300 200 L 40 40 0 0 W 
+X OUT 5 600 100 200 L 40 40 0 0 O 
+X OUT 6 600 100 200 L 40 40 0 0 O 
+X OUT 7 600 100 200 L 40 40 0 0 O 
+ENDDRAW
+ENDDEF
+#
+# End Library

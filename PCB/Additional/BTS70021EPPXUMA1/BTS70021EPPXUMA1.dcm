@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP BTS70021EPPXUMA1
+D INFINEON - BTS70021EPPXUMA1 - Power Load Distribution Switch AEC-Q100, High Side, Active High, 13.5V, 133A, 2.6mohm, TSDSO-14
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/17c904b4a086355fda7a094a57b340b7.pdf
+$ENDCMP
+#
+#End Doc Library

@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP TMP126NDCKR
+D Board Mount Temperature Sensors +/-0.25 C SPI temperature sensor with 175 C operation, CRC and slew-rate alert
+K
+F https://www.ti.com/lit/ds/symlink/tmp126.pdf
+$ENDCMP
+#
+#End Doc Library

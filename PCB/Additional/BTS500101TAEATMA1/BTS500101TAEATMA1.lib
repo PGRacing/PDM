@@ -1,0 +1,32 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model BTS500101TAEATMA1
+#/1612317/665215/2.49/7/4/Integrated Circuit
+DEF BTS500101TAEATMA1 IC 0 30 Y Y 1 F N
+F0 "IC" 950 300 50 H V L CNN
+F1 "BTS500101TAEATMA1" 950 200 50 H V L CNN
+F2 "PG-TO263-7-3_3" 950 100 50 H I L CNN
+F3 "https://www.infineon.com/dgdl/Infineon-BTS50010-1TAE-DS-v01_00-EN.pdf?fileId=5546d46264a8de7e0164b1f26319144f" 950 0 50 H I L CNN
+F4 "Power Switch ICs - Power Distribution" 950 -100 50 H I L CNN "Description"
+F5 "" 950 -200 50 H I L CNN "Height"
+F6 "Infineon" 950 -300 50 H I L CNN "Manufacturer_Name"
+F7 "BTS500101TAEATMA1" 950 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "726-BTS500101TAEATMA" 950 -500 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/Infineon-Technologies/BTS500101TAEATMA1?qs=qSfuJ%252Bfl%2Fd4tWJt8ovqZFg%3D%3D" 950 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "BTS500101TAEATMA1" 950 -700 50 H I L CNN "Arrow Part Number"
+F11 "https://www.arrow.com/en/products/bts500101taeatma1/infineon-technologies-ag" 950 -800 50 H I L CNN "Arrow Price/Stock"
+F12 "" 950 -900 50 H I L CNN "Mouser Testing Part Number"
+F13 "" 950 -1000 50 H I L CNN "Mouser Testing Price/Stock"
+DRAW
+X GND 1 0 0 200 R 50 50 0 0 P
+X IN 2 0 -100 200 R 50 50 0 0 P
+X IS 3 0 -200 200 R 50 50 0 0 P
+X OUT_1 5 0 -300 200 R 50 50 0 0 P
+X OUT_2 6 0 -400 200 R 50 50 0 0 P
+X OUT_3 7 0 -500 200 R 50 50 0 0 P
+X VS 8 1100 0 200 L 50 50 0 0 P
+P 5 0 1 6 200 100 900 100 900 -600 200 -600 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library

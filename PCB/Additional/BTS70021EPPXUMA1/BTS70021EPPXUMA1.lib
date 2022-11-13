@@ -1,0 +1,40 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model BTS70021EPPXUMA1
+#/1818597/665215/2.49/15/3/Integrated Circuit
+DEF BTS70021EPPXUMA1 IC 0 30 Y Y 1 F N
+F0 "IC" 1250 300 50 H V L CNN
+F1 "BTS70021EPPXUMA1" 1250 200 50 H V L CNN
+F2 "SOP65P600X115-15N" 1250 100 50 H I L CNN
+F3 "https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/17c904b4a086355fda7a094a57b340b7.pdf" 1250 0 50 H I L CNN
+F4 "INFINEON - BTS70021EPPXUMA1 - Power Load Distribution Switch AEC-Q100, High Side, Active High, 13.5V, 133A, 2.6mohm, TSDSO-14" 1250 -100 50 H I L CNN "Description"
+F5 "1.15" 1250 -200 50 H I L CNN "Height"
+F6 "Infineon" 1250 -300 50 H I L CNN "Manufacturer_Name"
+F7 "BTS70021EPPXUMA1" 1250 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "726-BTS70021EPPXUMA1" 1250 -500 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/Infineon-Technologies/BTS70021EPPXUMA1?qs=qSfuJ%252Bfl%2Fd4cKoHb1mP5aw%3D%3D" 1250 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "BTS70021EPPXUMA1" 1250 -700 50 H I L CNN "Arrow Part Number"
+F11 "https://www.arrow.com/en/products/bts70021eppxuma1/infineon-technologies-ag?region=nac" 1250 -800 50 H I L CNN "Arrow Price/Stock"
+F12 "" 1250 -900 50 H I L CNN "Mouser Testing Part Number"
+F13 "" 1250 -1000 50 H I L CNN "Mouser Testing Price/Stock"
+DRAW
+X GND 1 0 0 200 R 50 50 0 0 P
+X IN 2 0 -100 200 R 50 50 0 0 P
+X DEN 3 0 -200 200 R 50 50 0 0 P
+X IS 4 0 -300 200 R 50 50 0 0 P
+X N.C._1 5 0 -400 200 R 50 50 0 0 P
+X N.C._2 6 0 -500 200 R 50 50 0 0 P
+X N.C._3 7 0 -600 200 R 50 50 0 0 P
+X VS 15 700 -1100 200 U 50 50 0 0 P
+X OUT_6 14 1400 0 200 L 50 50 0 0 P
+X OUT_5 13 1400 -100 200 L 50 50 0 0 P
+X OUT_4 12 1400 -200 200 L 50 50 0 0 P
+X N.C._4 11 1400 -300 200 L 50 50 0 0 P
+X OUT_3 10 1400 -400 200 L 50 50 0 0 P
+X OUT_2 9 1400 -500 200 L 50 50 0 0 P
+X OUT_1 8 1400 -600 200 L 50 50 0 0 P
+P 5 0 1 6 200 100 1200 100 1200 -900 200 -900 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library
