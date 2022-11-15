@@ -426,6 +426,30 @@
     [
       "73846399-77d3-45e4-a64b-6697a3fadede",
       "BTS50010-1TAE"
+    ],
+    [
+      "f9c327f1-1acc-4362-b996-4cc92af6a1f0",
+      "MCU"
+    ],
+    [
+      "24c6498d-c65e-4a65-9db3-767e08b7c9dc",
+      "BTS722204ESAXUMA1"
+    ],
+    [
+      "a7b66bda-a824-4aa7-8d60-2a7c14aeffab",
+      "BTS722204ESAXUMA2"
+    ],
+    [
+      "5034c2e5-2ed9-473a-ad51-bad76ed4c14f",
+      "BTS50010-1TAE1"
+    ],
+    [
+      "da83f0bb-e78e-4220-9d0b-c3252e3a384f",
+      "BTS70021EPP2"
+    ],
+    [
+      "03f78acc-4d98-43a7-a01a-d02777a6998a",
+      "BTS70021EPP3"
     ]
   ],
   "text_variables": {}

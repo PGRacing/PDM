@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP BTS722204ESAXUMA1
+D Power Switch ICs - Power Distribution SPOC
+K
+F https://www.infineon.com/dgdl/Infineon-BTS72220-4ESA-DS-v01_00-EN.pdf?fileId=5546d462636cc8fb0163feab173708d9
+$ENDCMP
+#
+#End Doc Library

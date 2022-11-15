@@ -1,4 +1,4 @@
-20525434138739871
+20527102613513147
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61550,6 +61550,13 @@ SOP65P600X115-15N
 0
 15
 15
+PDM_Additional
+SOP65P600X115-25N
+BTS722204ESAXUMA1
+Integrated Circuit
+0
+25
+25
 PDM_Additional
 SOT65P210X110-6N
 DCK---
