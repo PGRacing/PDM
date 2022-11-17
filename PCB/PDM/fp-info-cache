@@ -1,4 +1,4 @@
-20527102613513147
+20530439928727474
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61530,6 +61530,13 @@ DIL DIP PDIP 2.54mm 7.62mm 300mil
 4
 4
 PDM_Additional
+IAUA250N04S6N007AUMA1
+IAUA250N04S6N007AUMA1-7
+MOSFET (N-Channel)
+0
+7
+7
+PDM_Additional
 PG-TO263-7-3_3
 PG-TO263-7-3_2
 Integrated Circuit
@@ -61560,6 +61567,13 @@ Integrated Circuit
 PDM_Additional
 SOT65P210X110-6N
 DCK---
+Integrated Circuit
+0
+6
+6
+PDM_Additional
+SOT95P280X110-6N
+DDC
 Integrated Circuit
 0
 6

@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LM5050MK-1_NOPB
+D Texas Instruments LM5050MK-1/NOPB, DC-DC Controller, 6-pin, SOT
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/Datasheets-SFU2/DSASFU100037043.pdf
+$ENDCMP
+#
+#End Doc Library

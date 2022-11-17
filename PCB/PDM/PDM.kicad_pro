@@ -450,6 +450,14 @@
     [
       "03f78acc-4d98-43a7-a01a-d02777a6998a",
       "BTS70021EPP3"
+    ],
+    [
+      "81963d06-f2ae-4b82-8734-b49e9becddd2",
+      "lm5050_node"
+    ],
+    [
+      "ebd39b40-e54b-43b3-9f5c-37ea8e944bb0",
+      "lm5050_node1"
     ]
   ],
   "text_variables": {}

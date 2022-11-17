@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP IAUA250N04S6N007AUMA1
+D MOSFET MOSFET_(20V 40V)
+K
+F https://www.infineon.com/dgdl/Infineon-IAUA250N04S6N007-DataSheet-v01_00-EN.pdf?fileId=5546d462712ef9b701717821bea511a7
+$ENDCMP
+#
+#End Doc Library
