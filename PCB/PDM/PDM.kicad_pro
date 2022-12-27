@@ -393,7 +393,7 @@
     "meta": {
       "version": 1
     },
-    "net_format_name": "",
+    "net_format_name": "KiCad",
     "ngspice": {
       "fix_include_paths": true,
       "fix_passive_vals": false,
@@ -458,6 +458,10 @@
     [
       "ebd39b40-e54b-43b3-9f5c-37ea8e944bb0",
       "lm5050_node1"
+    ],
+    [
+      "f04a94fd-34b2-4129-8f84-5eea5a36b70e",
+      "TLE9104SH"
     ]
   ],
   "text_variables": {}

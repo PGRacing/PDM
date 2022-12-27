@@ -1,4 +1,4 @@
-20530439928727474
+20533781340161399
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61544,12 +61544,26 @@ Integrated Circuit
 7
 7
 PDM_Additional
+SOIC127P1030X255-21N
+PG-DSO-20-314
+Integrated Circuit
+0
+21
+21
+PDM_Additional
 SOP50P310X90-8N
 DCU (R-PDSO-G8)
 Integrated Circuit
 0
 8
 8
+PDM_Additional
+SOP50P1030X260-21N
+TLE9104SHXUMA1+
+Integrated Circuit
+0
+21
+21
 PDM_Additional
 SOP65P600X115-15N
 

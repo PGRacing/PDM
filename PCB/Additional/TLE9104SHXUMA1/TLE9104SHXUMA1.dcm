@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP TLE9104SHXUMA1
+D INFINEON - TLE9104SHXUMA1 - POWER LOAD SW, AEC-Q100, 5.5V, SOIC-20
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/DKDS-40/45601.pdf
+$ENDCMP
+#
+#End Doc Library
