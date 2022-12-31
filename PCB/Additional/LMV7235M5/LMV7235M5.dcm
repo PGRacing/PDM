@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LMV7235M5
+D Ultra Low Power, Low Voltage, Rail-to-Rail Input Comparator
+K
+F http://www.ti.com/lit/ds/symlink/lmv7235.pdf
+$ENDCMP
+#
+#End Doc Library

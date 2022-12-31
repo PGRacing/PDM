@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP STM32L496ZGT6
+D STMICROELECTRONICS - STM32L496ZGT6 - ARM MCU, STM32 Family STM32L4 Series Microcontrollers, ARM Cortex-M4, 32bit, 80 MHz, 1 MB, 320 KB
+K
+F https://componentsearchengine.com/Datasheets/2/STM32L496ZGT6.pdf
+$ENDCMP
+#
+#End Doc Library

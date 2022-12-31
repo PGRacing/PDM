@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP TMUX1072RUTR
+D 2-Channel 2:1 Analog Multiplexer With 20-V Overvoltage Protection
+K
+F http://www.ti.com/lit/gpn/tmux1072
+$ENDCMP
+#
+#End Doc Library
