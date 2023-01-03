@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP STL135N8F7AG
+D MOSFET LGS LV MOSFET
+K
+F http://www.st.com/content/ccc/resource/technical/document/datasheet/7e/25/d4/aa/c0/6f/4d/26/DM00224699.pdf/files/DM00224699.pdf/jcr:content/translations/en.DM00224699.pdf
+$ENDCMP
+#
+#End Doc Library
