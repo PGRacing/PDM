@@ -1,0 +1,33 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model STL225N6F7AG
+#/1336475/665215/2.49/8/4/MOSFET (N-Channel)
+DEF STL225N6F7AG Q 0 30 Y Y 1 F N
+F0 "Q" 850 300 50 H V L CNN
+F1 "STL225N6F7AG" 850 200 50 H V L CNN
+F2 "POWERFLAT_5X6" 850 100 50 H I L CNN
+F3 "http://www.st.com/content/ccc/resource/technical/document/datasheet/group0/b7/e6/fc/74/a0/d3/4d/d1/DM00241187/files/DM00241187.pdf/jcr:content/translations/en.DM00241187.pdf" 850 0 50 H I L CNN
+F4 "MOSFET Automotive 60V N-Ch 12mOhm 120A F7 Power" 850 -100 50 H I L CNN "Description"
+F5 "" 850 -200 50 H I L CNN "Height"
+F6 "STMicroelectronics" 850 -300 50 H I L CNN "Manufacturer_Name"
+F7 "STL225N6F7AG" 850 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "511-STL225N6F7AG" 850 -500 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/STMicroelectronics/STL225N6F7AG/?qs=NoqMqJKvPFIhcmh4br1lIQ%3D%3D" 850 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "" 850 -700 50 H I L CNN "Arrow Part Number"
+F11 "" 850 -800 50 H I L CNN "Arrow Price/Stock"
+F12 "" 850 -900 50 H I L CNN "Mouser Testing Part Number"
+F13 "" 850 -1000 50 H I L CNN "Mouser Testing Price/Stock"
+DRAW
+X S_1 1 0 0 200 R 50 50 0 0 P
+X S_2 2 0 -100 200 R 50 50 0 0 P
+X S_3 3 0 -200 200 R 50 50 0 0 P
+X G 4 0 -300 200 R 50 50 0 0 P
+X D_1 5 1000 0 200 L 50 50 0 0 P
+X D_2 6 1000 -100 200 L 50 50 0 0 P
+X D_3 7 1000 -200 200 L 50 50 0 0 P
+X D_4 8 1000 -300 200 L 50 50 0 0 P
+P 5 0 1 6 200 100 800 100 800 -400 200 -400 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library

@@ -1,4 +1,4 @@
-20542143906160096
+20543817225722942
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61543,6 +61543,13 @@ Integrated Circuit
 0
 7
 7
+PDM_Additional
+POWERFLAT_5X6
+PowerFLAT™ 5x6
+MOSFET (N-Channel)
+0
+13
+13
 PDM_Additional
 QFN32L_5x5_STM
 

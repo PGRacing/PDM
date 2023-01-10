@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP STL225N6F7AG
+D MOSFET Automotive 60V N-Ch 12mOhm 120A F7 Power
+K
+F http://www.st.com/content/ccc/resource/technical/document/datasheet/group0/b7/e6/fc/74/a0/d3/4d/d1/DM00241187/files/DM00241187.pdf/jcr:content/translations/en.DM00241187.pdf
+$ENDCMP
+#
+#End Doc Library

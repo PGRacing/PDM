@@ -124,7 +124,10 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [],
+    "erc_exclusions": [
+      "pin_not_connected|361950|2425700|c32fa0be-9e0a-40e3-b922-c001a08d5331|00000000-0000-0000-0000-000000000000",
+      "unannotated|1714500|431800|d18e6865-fb0b-42d7-8891-adab97e9fd0a|00000000-0000-0000-0000-000000000000"
+    ],
     "meta": {
       "version": 0
     },
@@ -319,7 +322,7 @@
       "no_connect_dangling": "warning",
       "pin_not_connected": "error",
       "pin_not_driven": "error",
-      "pin_to_pin": "warning",
+      "pin_to_pin": "ignore",
       "power_pin_not_driven": "error",
       "similar_labels": "warning",
       "unannotated": "error",
@@ -416,16 +419,16 @@
       ""
     ],
     [
-      "04e45ebb-4ff9-4d41-96e5-4a886dfae62e",
+      "b2f362ca-79e9-4719-b603-d3d2d0d8335e",
       "VNF1048FTR1"
     ],
     [
-      "fe976718-e31f-4301-b222-b5834c21c4c1",
-      "VNF1048FTR2"
+      "e8b0a6e4-c2f9-4e16-af84-64c9badf4bf1",
+      "VNF1048FTR"
     ],
     [
-      "73846399-77d3-45e4-a64b-6697a3fadede",
-      "BTS50010-1TAE"
+      "321b0039-eb18-4da2-a831-1121bf986851",
+      "VNF1048FTR2"
     ],
     [
       "f9c327f1-1acc-4362-b996-4cc92af6a1f0",
@@ -440,6 +443,18 @@
       "BTS722204ESAXUMA2"
     ],
     [
+      "5bf8b725-240e-412e-a5c3-5044c753d539",
+      "VNF1048FTR5"
+    ],
+    [
+      "1d5c9ea4-55cc-4fca-bd0f-950f7b88fb67",
+      "VNF1048FTR3"
+    ],
+    [
+      "70742282-285b-4afc-a4d9-22fef2009c04",
+      "VNF1048FTR4"
+    ],
+    [
       "81963d06-f2ae-4b82-8734-b49e9becddd2",
       "lm5050_node"
     ],
@@ -448,16 +463,24 @@
       "lm5050_node1"
     ],
     [
+      "46244c59-2e4b-42a4-823a-85726f18505b",
+      "HIGH SIDE1"
+    ],
+    [
       "f04a94fd-34b2-4129-8f84-5eea5a36b70e",
       "TLE9104SH"
     ],
     [
       "9d867621-49e1-485c-bc7e-8b59618bd048",
-      "user_peripheral"
+      "USER PERIPHERAL"
     ],
     [
-      "26b59597-6838-4f00-93aa-68a4654598e2",
-      "VNF1048FTR"
+      "1bc2fd01-7291-466b-8e7c-215aac36011b",
+      "VNF1048FTR7"
+    ],
+    [
+      "47b8ab21-edd5-494e-8b41-1707eff52f6f",
+      "VNF1048FTR6"
     ]
   ],
   "text_variables": {}
