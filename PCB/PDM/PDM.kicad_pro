@@ -124,10 +124,7 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [
-      "pin_not_connected|361950|2425700|c32fa0be-9e0a-40e3-b922-c001a08d5331|00000000-0000-0000-0000-000000000000",
-      "unannotated|1714500|431800|d18e6865-fb0b-42d7-8891-adab97e9fd0a|00000000-0000-0000-0000-000000000000"
-    ],
+    "erc_exclusions": [],
     "meta": {
       "version": 0
     },
@@ -332,7 +329,9 @@
     }
   },
   "libraries": {
-    "pinned_footprint_libs": [],
+    "pinned_footprint_libs": [
+      "PDM_Additional"
+    ],
     "pinned_symbol_libs": []
   },
   "meta": {
