@@ -974,7 +974,7 @@
     (property "Value" "1m" (id 1) (at 130.81 67.945 90)
       (effects (font (size 0.8 0.8)))
     )
-    (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 132.715 69.85 0)
+    (property "Footprint" "Resistor_SMD:R_2512_6332Metric" (id 2) (at 132.715 69.85 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 132.715 69.85 0)

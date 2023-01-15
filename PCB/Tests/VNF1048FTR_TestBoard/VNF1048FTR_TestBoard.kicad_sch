@@ -1050,7 +1050,7 @@
       (reference "RH1") (unit 1) (value "0") (footprint "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder")
     )
     (path "/04d1f035-6a2d-4f80-a6d7-02b8ff74ef74/13458338-390c-4b1b-83ca-a027ebb11d7c"
-      (reference "RS1") (unit 1) (value "1m") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "RS1") (unit 1) (value "1m") (footprint "Resistor_SMD:R_2512_6332Metric")
     )
     (path "/04d1f035-6a2d-4f80-a6d7-02b8ff74ef74/e47c8a19-54b2-4a68-a5c2-220817ca9e1a"
       (reference "RT1") (unit 1) (value "B57232V5103F360") (footprint "PDM_Additional:THRMC1005X60N")
