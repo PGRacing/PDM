@@ -2239,13 +2239,13 @@
   (symbol (lib_id "PDM_additional:6473427-1") (at 264.16 234.95 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid ec3ef24a-d14e-4473-a6de-a99822874369)
-    (property "Reference" "J?" (id 0) (at 260.35 220.9799 90)
+    (property "Reference" "J2" (id 0) (at 260.35 220.9799 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "6473427-1" (id 1) (at 260.35 223.5199 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "64734271" (id 2) (at 261.62 213.36 0)
+    (property "Footprint" "PDM_Additional:64734271" (id 2) (at 261.62 213.36 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Customer+Drawing%7F9-1437287-8%7FA1%7Fpdf%7FEnglish%7FENG_CD_9-1437287-8_A1.pdf%7F6473427-1" (id 3) (at 264.16 213.36 0)
@@ -3490,6 +3490,30 @@
     (path "/9d867621-49e1-485c-bc7e-8b59618bd048/07dbe068-973c-4b61-b2bc-6434aa5d91f9"
       (reference "D19") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
     )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/b2f362ca-79e9-4719-b603-d3d2d0d8335e/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F1") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/e8b0a6e4-c2f9-4e16-af84-64c9badf4bf1/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F2") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/321b0039-eb18-4da2-a831-1121bf986851/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F3") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/5bf8b725-240e-412e-a5c3-5044c753d539/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F4") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/1d5c9ea4-55cc-4fca-bd0f-950f7b88fb67/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F5") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/70742282-285b-4afc-a4d9-22fef2009c04/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F6") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/1bc2fd01-7291-466b-8e7c-215aac36011b/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F7") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
+    (path "/46244c59-2e4b-42a4-823a-85726f18505b/47b8ab21-edd5-494e-8b41-1707eff52f6f/c25a33e2-a80b-47b2-9a70-9b1c3a189cb0"
+      (reference "F8") (unit 1) (value "40A") (footprint "Fuse:Fuse_2512_6332Metric")
+    )
     (path "/f9c327f1-1acc-4362-b996-4cc92af6a1f0/35dc7052-e012-4a38-a52d-01a9bd451b7a"
       (reference "IC1") (unit 1) (value "STM32L496ZGT6") (footprint "PDM_Additional:QFP50P2200X2200X160-144N")
     )
@@ -3530,7 +3554,7 @@
       (reference "J1") (unit 1) (value "Conn_01x01_Male") (footprint "")
     )
     (path "/ec3ef24a-d14e-4473-a6de-a99822874369"
-      (reference "J?") (unit 1) (value "6473427-1") (footprint "64734271")
+      (reference "J2") (unit 1) (value "6473427-1") (footprint "PDM_Additional:64734271")
     )
     (path "/f9c327f1-1acc-4362-b996-4cc92af6a1f0/f8c11e5d-bead-478c-a036-ba63a8f5504e"
       (reference "JP1") (unit 1) (value "SolderJumper_3_Open") (footprint "")
