@@ -9,3 +9,4 @@ TODO:
 2. Add ADC over/undervoltage protection and voltage divider on each ADC input 5V->3.3V
 3. Check for ADC performance in high current enviroment
 4. Current limiting on VNF1048 using PWM contolled PMOS between charge-pump output and Power-MOS gate.
+5. Add buck-converter for 3.3V automotive grade only!
