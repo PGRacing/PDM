@@ -4057,7 +4057,7 @@
   (symbol (lib_id "Jumper:SolderJumper_3_Open") (at 330.2 35.56 180) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid f8c11e5d-bead-478c-a036-ba63a8f5504e)
-    (property "Reference" "JP?" (id 0) (at 330.2 39.37 0))
+    (property "Reference" "JP1" (id 0) (at 330.2 39.37 0))
     (property "Value" "SolderJumper_3_Open" (id 1) (at 330.2 41.91 0))
     (property "Footprint" "" (id 2) (at 330.2 35.56 0)
       (effects (font (size 1.27 1.27)) hide)

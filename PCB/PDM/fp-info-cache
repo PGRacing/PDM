@@ -1,4 +1,4 @@
-20543817225725207
+20545491034357334
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61564,6 +61564,13 @@ Integrated Circuit
 0
 144
 144
+PDM_Additional
+SOIC127P600X175-8N
+D0008A
+Integrated Circuit
+0
+8
+8
 PDM_Additional
 SOIC127P798X216-8N
 AT25SF128A-SHB-T
