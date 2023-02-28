@@ -1,4 +1,4 @@
-20547164853748418
+20548842400672652
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61543,6 +61543,13 @@ MOSFET (N-Channel)
 0
 7
 7
+PDM_Additional
+N010366501001
+N01 036 6501 001-2
+Connector
+0
+16
+16
 PDM_Additional
 PG-TO263-7-3_3
 PG-TO263-7-3_2

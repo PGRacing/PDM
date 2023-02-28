@@ -48,7 +48,13 @@
           "min_clearance": 0.508
         }
       },
-      "diff_pair_dimensions": [],
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.0,
+          "via_gap": 0.0,
+          "width": 0.0
+        }
+      ],
       "drc_exclusions": [],
       "meta": {
         "version": 2
@@ -112,8 +118,17 @@
         "solder_mask_min_width": 0.0,
         "use_height_for_length_calcs": true
       },
-      "track_widths": [],
-      "via_dimensions": [],
+      "track_widths": [
+        0.0,
+        2.54,
+        7.62
+      ],
+      "via_dimensions": [
+        {
+          "diameter": 0.0,
+          "drill": 0.0
+        }
+      ],
       "zones_allow_external_fillets": false,
       "zones_use_no_outline": true
     },
@@ -480,6 +495,14 @@
     [
       "47b8ab21-edd5-494e-8b41-1707eff52f6f",
       "VNF1048FTR6"
+    ],
+    [
+      "800df79d-cd18-4d81-b044-e2eaa6fb653c",
+      "CANBUS"
+    ],
+    [
+      "2eb22843-7511-4b95-9937-dc32686d815d",
+      "ADC_PROTECTION"
     ]
   ],
   "text_variables": {}
