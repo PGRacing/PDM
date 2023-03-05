@@ -1162,8 +1162,8 @@
   )
 
   (bus_alias "QUADSPI" (members "CLK" "NCS" "BK1_IO0" "BK1_IO1" "BK1_IO2" "BK1_IO3"))
-  (bus_alias "SPI1" (members "SCK" "MISO" "MOSI"))
   (bus_alias "SPI3" (members "SCK" "MISO" "MOSI"))
+  (bus_alias "SPI1" (members "SCK" "MISO" "MOSI"))
   (bus_alias "SPI2" (members "SCK" "MISO" "MOSI"))
   (junction (at 279.4 109.22) (diameter 0) (color 0 0 0 0)
     (uuid 03f17d40-bb70-4569-90d6-52d113d2cec0)
