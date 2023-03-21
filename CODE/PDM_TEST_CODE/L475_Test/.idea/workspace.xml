@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="L475_Test" targetName="L475_Test.elf" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_224929.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_225639.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_230221.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_230934.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_234451.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-16_022327.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-16_023327.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-16_024146.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_pcb" beforeDir="false" afterPath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_pcb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_prl" beforeDir="false" afterPath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_prl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_142329.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_143523.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_145502.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_152827.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_214618.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-13_002556.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-16_193743.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-16_213614.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-17_200825.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_214015.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_214516.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_215105.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_215654.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_220220.zip" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="EmbeddedSvdWindowState">
+    <option name="columnWidths">
+      <list>
+        <option value="187" />
+        <option value="82" />
+        <option value="1541" />
+      </list>
+    </option>
+    <option name="columnOrder">
+      <list>
+        <option value="Name" />
+        <option value="Value" />
+        <option value="Description" />
+      </list>
+    </option>
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Core/Inc/stm32l475e_iot01_qspi.h" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2022" />
+    <option name="minorVersion" value="3.1" />
+  </component>
+  <component name="ProjectId" id="2N0tVlN6Y2QESMoptL64xYxGQmx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "C:/Users/Karol/Documents/GitHub/PDM/CODE/PDM_TEST_CODE/L475_Test",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "inlay.hints",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Karol\Documents\GitHub\PDM\CODE\PDM_TEST_CODE" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Karol\Documents\GitHub\PDM\CODE\PDM_TEST_CODE" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Embedded GDB Server.L475">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="L475_Test.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="L475_Test" TARGET_NAME="L475_Test.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="L475_Test" RUN_TARGET_NAME="L475_Test.elf">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="L475" type="com.jetbrains.cidr.embedded.customgdbserver.type" factoryName="com.jetbrains.cidr.embedded.customgdbserver.factory" PROGRAM_PARAMS="-p 7139 -cp &quot;C:\ST\STM32CubeIDE_1.8.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.cubeprogrammer.win32_2.0.301.202207041506\tools\bin&quot; --frequency 4000 --swd" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="L475_Test" TARGET_NAME="L475_Test.elf" version="1" RUN_TARGET_PROJECT_NAME="L475_Test" RUN_TARGET_NAME="L475_Test.elf">
+      <custom-gdb-server version="1" gdb-connect="tcp::7139" executable="C:\ST\STM32CubeIDE_1.8.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.0.300.202203231527\tools\bin\ST-LINK_gdbserver.exe" warmup-ms="0" download-type="UPDATED_ONLY" reset-cmd="monitor reset" reset-type="AFTER_DOWNLOAD">
+        <debugger kind="GDB" isBundled="true" />
+      </custom-gdb-server>
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.L475_Test.elf" />
+      <item itemvalue="Embedded GDB Server.L475" />
+      <item itemvalue="OpenOCD Download &amp; Run.OCD L475_Test" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="" />
+      <created>1678812852902</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1678812852902</updated>
+      <workItem from="1678812914514" duration="27455000" />
+      <workItem from="1679002509817" duration="538000" />
+      <workItem from="1679248111145" duration="11512000" />
+      <workItem from="1679356006709" duration="3931000" />
+      <workItem from="1679360135052" duration="11000" />
+      <workItem from="1679360325789" duration="2000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
