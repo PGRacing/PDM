@@ -81,3 +81,7 @@ VNF_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8
 VNF_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint8_t res[4]);
 VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t data[3], uint8_t res[4]);
 void vnf_unlock(VNF1048_HandleTypeDef* handle);
+
+uint8_t bit_manip_set(uint8_t* byte, uint8_t index);
+uint8_t bit_manip_reset(uint8_t* byte, uint8_t index);
+uint8_t bit_manip_get(uint8_t byte, uint8_t index);

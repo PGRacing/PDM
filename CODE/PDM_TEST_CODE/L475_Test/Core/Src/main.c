@@ -169,14 +169,7 @@ int main(void)
   uint8_t rx[4] = {0x11, 0x22, 0x33, 0x44};
   uint8_t res[4] = {0xFF, 0xFF, 0xFF, 0xFF};
 
-  for(int i=0; i < 10; i++)
-  {
-      {
-          vnf_read_rom(&vnf1, 0x00, res);
-          //vnf_read_reg(&vnf1, 0x03, res);
-          HAL_Delay(500);
-      }
-  }
+  vnf_unlock(&vnf1);
 
 
   /*for(int i=0x11; i < 0x18; i++)
@@ -399,7 +392,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

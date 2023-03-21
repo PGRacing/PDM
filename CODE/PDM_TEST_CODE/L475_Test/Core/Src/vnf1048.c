@@ -3,16 +3,26 @@
 
 #define READ_MASK 0b01000000
 #define READ_ROM_MASK 0b11000000
-#define DEBUG 1
+//#define VNF_DEBUG 1
 
-uint8_t get_bit(uint8_t byte, uint8_t index)
+uint8_t bit_manip_get(uint8_t byte, uint8_t index)
 {
     return (byte >> index) & 1;
 }
 
+uint8_t bit_manip_set(uint8_t* byte, uint8_t index)
+{
+    return *byte |= 1 << index;
+}
+
+uint8_t bit_manip_reset(uint8_t* byte, uint8_t index)
+{
+    return *byte &= ~(1 << index);
+}
+
 VNF_ErrorTypeDef vnf_check_global_status(volatile uint8_t glb)
 {
-    if(get_bit(glb, 5))
+    if(bit_manip_get(glb, 5))
     {
         return VNF_SPIE;
     }
@@ -56,8 +66,8 @@ VNF_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg,
     if(handle->error_register != 0x00)
         status = VNF_ERROR;
 
-#ifdef DEBUG
-    printf("R: 0x%x SPI: %x %x %x %x\n", reg, res[0], res[1], res[2], res[3]);
+#ifdef VNF_DEBUG
+    printf("READ-REG-OP REG: 0x%x SPI: %x %x %x %x\n", reg, res[0], res[1], res[2], res[3]);
 #endif
 
     return status;
@@ -81,8 +91,8 @@ VNF_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint
         status = VNF_ERROR;
 
     /* Due to datasheet rx[2] and rx[3] should be 0x00 */
-#ifdef DEBUG
-    printf("ROM: 0x%x SPI: %x %x %x %x\n", addr, res[0], res[1], res[2], res[3]);
+#ifdef VNF_DEBUG
+    printf("READ-ROM-OP ADDR: 0x%x SPI: %x %x %x %x\n", addr, res[0], res[1], res[2], res[3]);
 #endif
 
     return status;
@@ -94,9 +104,9 @@ VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg
     HAL_StatusTypeDef hal_status = HAL_ERROR;
     /* Check if valid write register */
     if(reg < VNF_CONTROL_REGISTER_1
-        || reg > VNF_CONTROL_REGISTER_3)
+       || reg > VNF_CONTROL_REGISTER_3)
     {
-#ifdef DEBUG
+#ifdef VNF_DEBUG
         printf("Invalid write register 0x%x\n", reg);
 #endif
         return status;
@@ -117,10 +127,31 @@ VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg
     if(handle->error_register != 0x00)
         status = VNF_ERROR;
 
+#ifdef VNF_DEBUG
+    printf("TOBEWRITTEN REG: 0x%x SPI: %x %x %x %x\n", reg, tx[0], tx[1], tx[2], tx[3]);
+    printf("WRITE-OP REG: 0x%x SPI: %x %x %x %x\n", reg, res[0], res[1], res[2], res[3]);
+#endif
+
     return status;
 }
 
 void vnf_unlock(VNF1048_HandleTypeDef* handle)
 {
     /* TODO here add unlock method */
+    uint8_t cr3[4] = { 0x00, 0x00, 0x00, 0x00};
+    //vnf_read_reg(handle, VNF_CONTROL_REGISTER_3, cr3);
+    uint8_t cr1[4] = { 0x00, 0x00, 0x00, 0x00};
+    //vnf_read_reg(handle, VNF_CONTROL_REGISTER_1, cr1);
+
+    /* Set unlock bit */
+    bit_manip_set(&(cr3[2]), 1);
+    bit_manip_reset(&(cr1[2]),3);
+    bit_manip_set(&(cr1[2]),2);
+
+    uint8_t rx[4] = { 0x00, 0x00, 0x00, 0x00};
+    vnf_write_reg(handle, VNF_CONTROL_REGISTER_3, &(cr3[1]), rx);
+    vnf_write_reg(handle, VNF_CONTROL_REGISTER_1, &(cr1[1]), rx);
+
+    //HAL_Delay(100);
+    vnf_read_reg(handle, VNF_CONTROL_REGISTER_1, rx);
 }
