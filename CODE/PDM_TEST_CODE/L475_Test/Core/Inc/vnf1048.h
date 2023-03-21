@@ -17,7 +17,8 @@ typedef enum
 {
     VNF_NOERROR       = 0x00,
     VNF_SPIE    = 0x01,
-    VNF_HAL_ERROR = 0x02
+    VNF_HAL_ERROR = 0x02,
+    VNF_NEXT_ERROR = 0x04
 } VNF_ErrorTypeDef;
 
 /**

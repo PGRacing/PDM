@@ -169,12 +169,15 @@ int main(void)
   uint8_t rx[4] = {0x11, 0x22, 0x33, 0x44};
   uint8_t res[4] = {0xFF, 0xFF, 0xFF, 0xFF};
 
-  vnf_read_reg(&vnf1, 0x02, rx);
-  HAL_Delay(50);
-  vnf_write_reg(&vnf1, 0x02, rx, res);
-  HAL_Delay(50);
-  vnf_read_reg(&vnf1, 0x02, rx);
-  HAL_Delay(50);
+  for(int i=0; i < 10; i++)
+  {
+      {
+          vnf_read_rom(&vnf1, 0x00, res);
+          //vnf_read_reg(&vnf1, 0x03, res);
+          HAL_Delay(500);
+      }
+  }
+
 
   /*for(int i=0x11; i < 0x18; i++)
   {
