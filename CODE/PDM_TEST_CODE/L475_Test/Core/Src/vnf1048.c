@@ -83,5 +83,5 @@ HAL_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg
 
 void vnf_unlock(VNF1048_HandleTypeDef* handle)
 {
-
+    /* TODO here add unlock method */
 }

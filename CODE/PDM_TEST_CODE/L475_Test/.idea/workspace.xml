@@ -20,43 +20,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="">
+    <list default="true" id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="Modified VNF1048 read, but SPIERROR bit is HIGH">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/vnf1048.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/vnf1048.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/vnf1048.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/vnf1048.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_224929.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_225639.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_230221.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_230934.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_234451.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-16_022327.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-16_023327.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-16_024146.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_pcb" beforeDir="false" afterPath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_pcb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_prl" beforeDir="false" afterPath="$PROJECT_DIR$/../../../PCB/PDM/PDM.kicad_prl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_142329.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_143523.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_145502.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_152827.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-12_214618.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-13_002556.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-16_193743.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-16_213614.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-01-17_200825.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_214015.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_214516.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_215105.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_215654.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-09_220220.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,8 +134,16 @@
       <workItem from="1679248111145" duration="11512000" />
       <workItem from="1679356006709" duration="3931000" />
       <workItem from="1679360135052" duration="11000" />
-      <workItem from="1679360325789" duration="4481000" />
+      <workItem from="1679360325789" duration="4605000" />
     </task>
+    <task id="LOCAL-00001" summary="Modified VNF1048 read, but SPIERROR bit is HIGH">
+      <created>1679364905986</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1679364905986</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,6 +159,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Modified VNF1048 read, but SPIERROR bit is HIGH" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified VNF1048 read, but SPIERROR bit is HIGH" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

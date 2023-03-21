@@ -175,6 +175,7 @@ int main(void)
   HAL_Delay(50);
   vnf_read_reg(&vnf1, 0x02, rx);
   HAL_Delay(50);
+
   /*for(int i=0x11; i < 0x18; i++)
   {
       vnf_read_reg(&vnf1, i, rx);
