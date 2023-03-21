@@ -22,11 +22,16 @@
   <component name="ChangeListManager">
     <list default="true" id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/vnf1048.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/vnf1048.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/vnf1048.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/vnf1048.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_224929.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-01-15_225639.zip" beforeDir="false" />
@@ -111,6 +116,7 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "inlay.hints",
     "vue.rearranger.settings.migration": "true"
   }
@@ -161,7 +167,7 @@
       <workItem from="1679248111145" duration="11512000" />
       <workItem from="1679356006709" duration="3931000" />
       <workItem from="1679360135052" duration="11000" />
-      <workItem from="1679360325789" duration="142000" />
+      <workItem from="1679360325789" duration="4481000" />
     </task>
     <servers />
   </component>
@@ -178,5 +184,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Core/Src/stm32l4xx_it.c</url>
+          <line>89</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

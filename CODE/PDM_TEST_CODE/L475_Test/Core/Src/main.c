@@ -159,10 +159,27 @@ int main(void)
   //HAL_TIM_Base_Start_IT(&htim2);
   printf("\n ========== VNF1048 - TEST ========== \n");
 
-  vnf_init(&hspi1, ARD_D7_GPIO_Port, ARD_D7_Pin);
+  VNF1048_HandleTypeDef vnf1;
+  vnf1.hspi_vnf = &hspi1;
+  vnf1.CS_Port = ARD_D7_GPIO_Port;
+  vnf1.CS_Pin = ARD_D7_Pin;
+
+  vnf_init(&vnf1);
+  HAL_Delay(100);
   uint8_t rx[4] = {0x11, 0x22, 0x33, 0x44};
-  //vnf_read_reg(0x14, rx);
-  vnf_write_reg(0x14, rx, rx);
+  uint8_t res[4] = {0xFF, 0xFF, 0xFF, 0xFF};
+
+  vnf_read_reg(&vnf1, 0x02, rx);
+  HAL_Delay(50);
+  vnf_write_reg(&vnf1, 0x02, rx, res);
+  HAL_Delay(50);
+  vnf_read_reg(&vnf1, 0x02, rx);
+  HAL_Delay(50);
+  /*for(int i=0x11; i < 0x18; i++)
+  {
+      vnf_read_reg(&vnf1, i, rx);
+  }*/
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
