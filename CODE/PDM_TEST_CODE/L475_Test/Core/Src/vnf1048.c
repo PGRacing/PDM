@@ -10,11 +10,11 @@ uint8_t get_bit(uint8_t byte, uint8_t index)
     return (byte >> index) & 1;
 }
 
-uint8_t check_global_status(volatile uint8_t glb)
+VNF_ErrorTypeDef vnf_check_global_status(volatile uint8_t glb)
 {
     if(get_bit(glb, 5))
     {
-        printf("SPI ERROR!\n");
+        return VNF_SPIE;
     }
 }
 
@@ -39,17 +39,23 @@ void vnf_init(VNF1048_HandleTypeDef* handle)
   * @param res ptr for result memory
   * @retval SPI-HAL status
   */
-HAL_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg, uint8_t res[4])
+VNF_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg, uint8_t res[4])
 {
-    HAL_StatusTypeDef status;
+    VNF_StatusTypeDef status = VNF_OK;
+    HAL_StatusTypeDef hal_status = HAL_OK;
     uint8_t tx[4] = { reg | READ_MASK, 0x00, 0x00, 0x00};
 
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
-    status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
+    hal_status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_SET);
 
-    printf("\n");
-    check_global_status(res[0]);
+    /* Set error register for current error */
+    handle->error_register = vnf_check_global_status(res[0]);
+    if(hal_status != HAL_OK)
+        handle->error_register |= VNF_HAL_ERROR;
+    if(handle->error_register != 0x00)
+        status = VNF_ERROR;
+
 #ifdef DEBUG
     printf("R: 0x%x SPI: %x %x %x %x\n", reg, res[0], res[1], res[2], res[3]);
 #endif
@@ -57,20 +63,24 @@ HAL_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg,
     return status;
 }
 
-HAL_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint8_t res[4])
+VNF_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint8_t res[4])
 {
-    HAL_StatusTypeDef status;
+    VNF_StatusTypeDef status = VNF_OK;
+    HAL_StatusTypeDef  hal_status = HAL_OK;
     uint8_t tx[4] = { addr | READ_ROM_MASK, 0x00, 0x00, 0x00};
 
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
-    status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
+    hal_status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_SET);
 
-    printf("\n");
-    check_global_status(res[0]);
+    /* Set error register for current error */
+    handle->error_register = vnf_check_global_status(res[0]);
+    if(hal_status != HAL_OK)
+        handle->error_register |= VNF_HAL_ERROR;
+    if(handle->error_register != 0x00)
+        status = VNF_ERROR;
 
     /* Due to datasheet rx[2] and rx[3] should be 0x00 */
-
 #ifdef DEBUG
     printf("ROM: 0x%x SPI: %x %x %x %x\n", addr, res[0], res[1], res[2], res[3]);
 #endif
@@ -78,9 +88,10 @@ HAL_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint
     return status;
 }
 
-HAL_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg, uint8_t data[3], uint8_t res[4])
+VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg, uint8_t data[3], uint8_t res[4])
 {
-    HAL_StatusTypeDef status = HAL_ERROR;
+    VNF_StatusTypeDef status = VNF_OK;
+    HAL_StatusTypeDef hal_status = HAL_ERROR;
     /* Check if valid write register */
     if(reg < VNF_CONTROL_REGISTER_1
         || reg > VNF_CONTROL_REGISTER_3)
@@ -96,9 +107,15 @@ HAL_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg
     memcpy(&tx[1], data, 3);
 
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
-    status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
+    hal_status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_SET);
-    check_global_status(res[0]);
+
+    /* Set error register for current error */
+    handle->error_register = vnf_check_global_status(res[0]);
+    if(hal_status != HAL_OK)
+        handle->error_register |= VNF_HAL_ERROR;
+    if(handle->error_register != 0x00)
+        status = VNF_ERROR;
 
     return status;
 }

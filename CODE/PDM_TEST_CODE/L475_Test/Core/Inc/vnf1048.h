@@ -2,14 +2,34 @@
 #include "stm32l4xx_hal_spi.h"
 
 /**
+  * @brief VNF Status structures definition
+  */
+typedef enum
+{
+    VNF_OK       = 0x00,
+    VNF_ERROR    = 0xAB,
+} VNF_StatusTypeDef;
+
+/**
+  * @brief VNF error structures definition
+  */
+typedef enum
+{
+    VNF_NOERROR       = 0x00,
+    VNF_SPIE    = 0x01,
+    VNF_HAL_ERROR = 0x02
+} VNF_ErrorTypeDef;
+
+/**
   * @brief VNF1048 Handle
   */
 typedef struct VNF1048_HandleTypeDef_A
 {
     SPI_HandleTypeDef*  hspi_vnf;     /*!< SPI Handle */
-    GPIO_TypeDef* CS_Port;  /*!< SPI chip select port */
-    uint16_t CS_Pin; /*!< SPI chip select pin */
-    uint8_t locked; /*!< IC state */
+    GPIO_TypeDef* CS_Port;            /*!< SPI chip select port */
+    uint16_t CS_Pin;                  /*!< SPI chip select pin */
+    uint8_t locked;                   /*!< IC state */
+    uint8_t error_register;   /*!< ERROR state */
 } VNF1048_HandleTypeDef;
 
 /* TODO fix documentation of defines */
@@ -55,9 +75,8 @@ typedef struct VNF1048_HandleTypeDef_A
 /** ///@}*/
 
 
-
 void vnf_init(VNF1048_HandleTypeDef* handle);
-HAL_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t res[4]);
-HAL_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint8_t res[4]);
-HAL_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t data[3], uint8_t res[4]);
+VNF_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t res[4]);
+VNF_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint8_t res[4]);
+VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t data[3], uint8_t res[4]);
 void vnf_unlock(VNF1048_HandleTypeDef* handle);

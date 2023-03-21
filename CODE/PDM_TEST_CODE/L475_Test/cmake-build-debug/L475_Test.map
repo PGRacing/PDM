@@ -329,6 +329,10 @@ Discarded input sections
  .text          0x00000000        0x0 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
  .data          0x00000000        0x0 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
  .bss           0x00000000        0x0 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .rodata.vnf_read_rom.str1.4
+                0x00000000       0x1c CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .text.vnf_read_rom
+                0x00000000       0x7c CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
  .text.vnf_unlock
                 0x00000000        0x2 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
  .text          0x00000000        0x0 CMakeFiles/L475_Test.elf.dir/Core/Src/ws2812.c.obj
@@ -2058,6 +2062,10 @@ Discarded input sections
  .bss           0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
  .text._putchar_r
                 0x00000000        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
+ .text.putchar  0x00000000       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
+ .debug_frame   0x00000000       0x30 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
+ .ARM.attributes
+                0x00000000       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
  .text          0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
  .data          0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
  .bss           0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
@@ -2194,7 +2202,11 @@ Discarded input sections
  .text          0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
  .data          0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
  .bss           0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
+ .text._putc_r  0x00000000       0x74 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
  .text.putc     0x00000000       0x7c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
+ .debug_frame   0x00000000       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
+ .ARM.attributes
+                0x00000000       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
  .text          0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
  .data          0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
  .bss           0x00000000        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
@@ -2478,7 +2490,7 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x08000000                g_pfnVectors
                 0x08000188                . = ALIGN (0x4)
 
-.text           0x080001c0     0xacb4
+.text           0x080001c0     0xac40
                 0x080001c0                . = ALIGN (0x4)
  *(.text)
  .text          0x080001c0       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
@@ -2665,334 +2677,331 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x08001e4c                SystemInit
  .text.get_bit  0x08001e4e        0x8 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
                 0x08001e4e                get_bit
- *fill*         0x08001e56        0x2 
- .text.check_global_status
-                0x08001e58       0x28 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
-                0x08001e58                check_global_status
+ .text.vnf_check_global_status
+                0x08001e56       0x1e CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08001e56                vnf_check_global_status
  .text.vnf_init
-                0x08001e80       0x24 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
-                0x08001e80                vnf_init
+                0x08001e74       0x24 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08001e74                vnf_init
  .text.vnf_read_reg
-                0x08001ea4       0x70 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
-                0x08001ea4                vnf_read_reg
+                0x08001e98       0x7c CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08001e98                vnf_read_reg
  .text.vnf_write_reg
-                0x08001f14       0x70 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08001f14       0x80 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
                 0x08001f14                vnf_write_reg
  .text.Reset_Handler
-                0x08001f84       0x50 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
-                0x08001f84                Reset_Handler
+                0x08001f94       0x50 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+                0x08001f94                Reset_Handler
  .text.Default_Handler
-                0x08001fd4        0x2 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
-                0x08001fd4                RTC_Alarm_IRQHandler
-                0x08001fd4                EXTI2_IRQHandler
-                0x08001fd4                TIM8_TRG_COM_IRQHandler
-                0x08001fd4                TIM8_CC_IRQHandler
-                0x08001fd4                TIM1_CC_IRQHandler
-                0x08001fd4                TSC_IRQHandler
-                0x08001fd4                TAMP_STAMP_IRQHandler
-                0x08001fd4                EXTI3_IRQHandler
-                0x08001fd4                LPTIM2_IRQHandler
-                0x08001fd4                DFSDM1_FLT1_IRQHandler
-                0x08001fd4                I2C3_ER_IRQHandler
-                0x08001fd4                DFSDM1_FLT2_IRQHandler
-                0x08001fd4                EXTI0_IRQHandler
-                0x08001fd4                I2C2_EV_IRQHandler
-                0x08001fd4                CAN1_RX0_IRQHandler
-                0x08001fd4                FPU_IRQHandler
-                0x08001fd4                TIM1_UP_TIM16_IRQHandler
-                0x08001fd4                ADC1_2_IRQHandler
-                0x08001fd4                SPI1_IRQHandler
-                0x08001fd4                TIM8_UP_IRQHandler
-                0x08001fd4                DMA2_Channel2_IRQHandler
-                0x08001fd4                DMA1_Channel4_IRQHandler
-                0x08001fd4                SAI2_IRQHandler
-                0x08001fd4                DFSDM1_FLT3_IRQHandler
-                0x08001fd4                USART3_IRQHandler
-                0x08001fd4                DMA1_Channel7_IRQHandler
-                0x08001fd4                CAN1_RX1_IRQHandler
-                0x08001fd4                UART5_IRQHandler
-                0x08001fd4                ADC3_IRQHandler
-                0x08001fd4                TIM4_IRQHandler
-                0x08001fd4                DMA2_Channel1_IRQHandler
-                0x08001fd4                QUADSPI_IRQHandler
-                0x08001fd4                I2C1_EV_IRQHandler
-                0x08001fd4                DMA1_Channel6_IRQHandler
-                0x08001fd4                UART4_IRQHandler
-                0x08001fd4                DMA2_Channel4_IRQHandler
-                0x08001fd4                RCC_IRQHandler
-                0x08001fd4                DMA1_Channel1_IRQHandler
-                0x08001fd4                Default_Handler
-                0x08001fd4                DMA2_Channel7_IRQHandler
-                0x08001fd4                TIM7_IRQHandler
-                0x08001fd4                SDMMC1_IRQHandler
-                0x08001fd4                TIM5_IRQHandler
-                0x08001fd4                I2C3_EV_IRQHandler
-                0x08001fd4                RTC_WKUP_IRQHandler
-                0x08001fd4                PVD_PVM_IRQHandler
-                0x08001fd4                SPI2_IRQHandler
-                0x08001fd4                CAN1_TX_IRQHandler
-                0x08001fd4                DMA2_Channel5_IRQHandler
-                0x08001fd4                DMA1_Channel5_IRQHandler
-                0x08001fd4                EXTI4_IRQHandler
-                0x08001fd4                RNG_IRQHandler
-                0x08001fd4                TIM1_TRG_COM_TIM17_IRQHandler
-                0x08001fd4                DMA1_Channel3_IRQHandler
-                0x08001fd4                COMP_IRQHandler
-                0x08001fd4                WWDG_IRQHandler
-                0x08001fd4                LPUART1_IRQHandler
-                0x08001fd4                DMA2_Channel6_IRQHandler
-                0x08001fd4                TIM2_IRQHandler
-                0x08001fd4                EXTI1_IRQHandler
-                0x08001fd4                USART2_IRQHandler
-                0x08001fd4                DFSDM1_FLT0_IRQHandler
-                0x08001fd4                I2C2_ER_IRQHandler
-                0x08001fd4                DMA1_Channel2_IRQHandler
-                0x08001fd4                TIM8_BRK_IRQHandler
-                0x08001fd4                CAN1_SCE_IRQHandler
-                0x08001fd4                FLASH_IRQHandler
-                0x08001fd4                USART1_IRQHandler
-                0x08001fd4                OTG_FS_IRQHandler
-                0x08001fd4                SPI3_IRQHandler
-                0x08001fd4                I2C1_ER_IRQHandler
-                0x08001fd4                FMC_IRQHandler
-                0x08001fd4                SWPMI1_IRQHandler
-                0x08001fd4                LPTIM1_IRQHandler
-                0x08001fd4                SAI1_IRQHandler
-                0x08001fd4                DMA2_Channel3_IRQHandler
-                0x08001fd4                TIM1_BRK_TIM15_IRQHandler
- *fill*         0x08001fd6        0x2 
+                0x08001fe4        0x2 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+                0x08001fe4                RTC_Alarm_IRQHandler
+                0x08001fe4                EXTI2_IRQHandler
+                0x08001fe4                TIM8_TRG_COM_IRQHandler
+                0x08001fe4                TIM8_CC_IRQHandler
+                0x08001fe4                TIM1_CC_IRQHandler
+                0x08001fe4                TSC_IRQHandler
+                0x08001fe4                TAMP_STAMP_IRQHandler
+                0x08001fe4                EXTI3_IRQHandler
+                0x08001fe4                LPTIM2_IRQHandler
+                0x08001fe4                DFSDM1_FLT1_IRQHandler
+                0x08001fe4                I2C3_ER_IRQHandler
+                0x08001fe4                DFSDM1_FLT2_IRQHandler
+                0x08001fe4                EXTI0_IRQHandler
+                0x08001fe4                I2C2_EV_IRQHandler
+                0x08001fe4                CAN1_RX0_IRQHandler
+                0x08001fe4                FPU_IRQHandler
+                0x08001fe4                TIM1_UP_TIM16_IRQHandler
+                0x08001fe4                ADC1_2_IRQHandler
+                0x08001fe4                SPI1_IRQHandler
+                0x08001fe4                TIM8_UP_IRQHandler
+                0x08001fe4                DMA2_Channel2_IRQHandler
+                0x08001fe4                DMA1_Channel4_IRQHandler
+                0x08001fe4                SAI2_IRQHandler
+                0x08001fe4                DFSDM1_FLT3_IRQHandler
+                0x08001fe4                USART3_IRQHandler
+                0x08001fe4                DMA1_Channel7_IRQHandler
+                0x08001fe4                CAN1_RX1_IRQHandler
+                0x08001fe4                UART5_IRQHandler
+                0x08001fe4                ADC3_IRQHandler
+                0x08001fe4                TIM4_IRQHandler
+                0x08001fe4                DMA2_Channel1_IRQHandler
+                0x08001fe4                QUADSPI_IRQHandler
+                0x08001fe4                I2C1_EV_IRQHandler
+                0x08001fe4                DMA1_Channel6_IRQHandler
+                0x08001fe4                UART4_IRQHandler
+                0x08001fe4                DMA2_Channel4_IRQHandler
+                0x08001fe4                RCC_IRQHandler
+                0x08001fe4                DMA1_Channel1_IRQHandler
+                0x08001fe4                Default_Handler
+                0x08001fe4                DMA2_Channel7_IRQHandler
+                0x08001fe4                TIM7_IRQHandler
+                0x08001fe4                SDMMC1_IRQHandler
+                0x08001fe4                TIM5_IRQHandler
+                0x08001fe4                I2C3_EV_IRQHandler
+                0x08001fe4                RTC_WKUP_IRQHandler
+                0x08001fe4                PVD_PVM_IRQHandler
+                0x08001fe4                SPI2_IRQHandler
+                0x08001fe4                CAN1_TX_IRQHandler
+                0x08001fe4                DMA2_Channel5_IRQHandler
+                0x08001fe4                DMA1_Channel5_IRQHandler
+                0x08001fe4                EXTI4_IRQHandler
+                0x08001fe4                RNG_IRQHandler
+                0x08001fe4                TIM1_TRG_COM_TIM17_IRQHandler
+                0x08001fe4                DMA1_Channel3_IRQHandler
+                0x08001fe4                COMP_IRQHandler
+                0x08001fe4                WWDG_IRQHandler
+                0x08001fe4                LPUART1_IRQHandler
+                0x08001fe4                DMA2_Channel6_IRQHandler
+                0x08001fe4                TIM2_IRQHandler
+                0x08001fe4                EXTI1_IRQHandler
+                0x08001fe4                USART2_IRQHandler
+                0x08001fe4                DFSDM1_FLT0_IRQHandler
+                0x08001fe4                I2C2_ER_IRQHandler
+                0x08001fe4                DMA1_Channel2_IRQHandler
+                0x08001fe4                TIM8_BRK_IRQHandler
+                0x08001fe4                CAN1_SCE_IRQHandler
+                0x08001fe4                FLASH_IRQHandler
+                0x08001fe4                USART1_IRQHandler
+                0x08001fe4                OTG_FS_IRQHandler
+                0x08001fe4                SPI3_IRQHandler
+                0x08001fe4                I2C1_ER_IRQHandler
+                0x08001fe4                FMC_IRQHandler
+                0x08001fe4                SWPMI1_IRQHandler
+                0x08001fe4                LPTIM1_IRQHandler
+                0x08001fe4                SAI1_IRQHandler
+                0x08001fe4                DMA2_Channel3_IRQHandler
+                0x08001fe4                TIM1_BRK_TIM15_IRQHandler
+ *fill*         0x08001fe6        0x2 
  .text.HAL_InitTick
-                0x08001fd8       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
-                0x08001fd8                HAL_InitTick
+                0x08001fe8       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+                0x08001fe8                HAL_InitTick
  .text.HAL_Init
-                0x08002028       0x1e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
-                0x08002028                HAL_Init
- *fill*         0x08002046        0x2 
+                0x08002038       0x1e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+                0x08002038                HAL_Init
+ *fill*         0x08002056        0x2 
  .text.HAL_IncTick
-                0x08002048       0x18 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
-                0x08002048                HAL_IncTick
+                0x08002058       0x18 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+                0x08002058                HAL_IncTick
  .text.HAL_GetTick
-                0x08002060        0xc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
-                0x08002060                HAL_GetTick
+                0x08002070        0xc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+                0x08002070                HAL_GetTick
  .text.HAL_Delay
-                0x0800206c       0x28 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
-                0x0800206c                HAL_Delay
+                0x0800207c       0x28 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+                0x0800207c                HAL_Delay
  .text.HAL_NVIC_SetPriorityGrouping
-                0x08002094       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
-                0x08002094                HAL_NVIC_SetPriorityGrouping
+                0x080020a4       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+                0x080020a4                HAL_NVIC_SetPriorityGrouping
  .text.HAL_NVIC_SetPriority
-                0x080020b8       0x70 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
-                0x080020b8                HAL_NVIC_SetPriority
+                0x080020c8       0x70 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+                0x080020c8                HAL_NVIC_SetPriority
  .text.HAL_NVIC_EnableIRQ
-                0x08002128       0x1c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
-                0x08002128                HAL_NVIC_EnableIRQ
+                0x08002138       0x1c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+                0x08002138                HAL_NVIC_EnableIRQ
  .text.HAL_SYSTICK_Config
-                0x08002144       0x28 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
-                0x08002144                HAL_SYSTICK_Config
+                0x08002154       0x28 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+                0x08002154                HAL_SYSTICK_Config
  .text.DFSDM_GetChannelFromInstance
-                0x0800216c       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+                0x0800217c       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
  .text.HAL_DFSDM_ChannelInit
-                0x080021bc      0x108 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
-                0x080021bc                HAL_DFSDM_ChannelInit
+                0x080021cc      0x108 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+                0x080021cc                HAL_DFSDM_ChannelInit
  .text.HAL_GPIO_Init
-                0x080022c4      0x20c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
-                0x080022c4                HAL_GPIO_Init
+                0x080022d4      0x20c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+                0x080022d4                HAL_GPIO_Init
  .text.HAL_GPIO_WritePin
-                0x080024d0        0xa CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
-                0x080024d0                HAL_GPIO_WritePin
+                0x080024e0        0xa CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+                0x080024e0                HAL_GPIO_WritePin
  .text.HAL_GPIO_EXTI_Callback
-                0x080024da        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
-                0x080024da                HAL_GPIO_EXTI_Callback
+                0x080024ea        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+                0x080024ea                HAL_GPIO_EXTI_Callback
  .text.HAL_GPIO_EXTI_IRQHandler
-                0x080024dc       0x1c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
-                0x080024dc                HAL_GPIO_EXTI_IRQHandler
+                0x080024ec       0x1c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+                0x080024ec                HAL_GPIO_EXTI_IRQHandler
  .text.HAL_I2C_Init
-                0x080024f8       0xbc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
-                0x080024f8                HAL_I2C_Init
+                0x08002508       0xbc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+                0x08002508                HAL_I2C_Init
  .text.HAL_I2CEx_ConfigAnalogFilter
-                0x080025b4       0x5c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
-                0x080025b4                HAL_I2CEx_ConfigAnalogFilter
+                0x080025c4       0x5c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+                0x080025c4                HAL_I2CEx_ConfigAnalogFilter
  .text.HAL_I2CEx_ConfigDigitalFilter
-                0x08002610       0x58 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
-                0x08002610                HAL_I2CEx_ConfigDigitalFilter
+                0x08002620       0x58 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+                0x08002620                HAL_I2CEx_ConfigDigitalFilter
  .text.HAL_PCD_Init
-                0x08002668      0x13c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
-                0x08002668                HAL_PCD_Init
+                0x08002678      0x13c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+                0x08002678                HAL_PCD_Init
  .text.HAL_PCDEx_ActivateLPM
-                0x080027a4       0x26 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
-                0x080027a4                HAL_PCDEx_ActivateLPM
- *fill*         0x080027ca        0x2 
+                0x080027b4       0x26 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+                0x080027b4                HAL_PCDEx_ActivateLPM
+ *fill*         0x080027da        0x2 
  .text.HAL_PWR_EnableBkUpAccess
-                0x080027cc       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
-                0x080027cc                HAL_PWR_EnableBkUpAccess
+                0x080027dc       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+                0x080027dc                HAL_PWR_EnableBkUpAccess
  .text.HAL_PWREx_GetVoltageRange
-                0x080027dc       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
-                0x080027dc                HAL_PWREx_GetVoltageRange
+                0x080027ec       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+                0x080027ec                HAL_PWREx_GetVoltageRange
  .text.HAL_PWREx_ControlVoltageScaling
-                0x080027ec       0x90 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
-                0x080027ec                HAL_PWREx_ControlVoltageScaling
+                0x080027fc       0x90 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+                0x080027fc                HAL_PWREx_ControlVoltageScaling
  .text.HAL_PWREx_EnableVddUSB
-                0x0800287c       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
-                0x0800287c                HAL_PWREx_EnableVddUSB
+                0x0800288c       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+                0x0800288c                HAL_PWREx_EnableVddUSB
  .text.QSPI_WaitFlagStateUntilTimeout
-                0x0800288c       0x54 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+                0x0800289c       0x54 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
  .text.HAL_QSPI_SetTimeout
-                0x080028e0        0x4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
-                0x080028e0                HAL_QSPI_SetTimeout
+                0x080028f0        0x4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+                0x080028f0                HAL_QSPI_SetTimeout
  .text.HAL_QSPI_Init
-                0x080028e4       0xa8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
-                0x080028e4                HAL_QSPI_Init
+                0x080028f4       0xa8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+                0x080028f4                HAL_QSPI_Init
  .text.RCC_SetFlashLatencyFromMSIRange
-                0x0800298c       0x90 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x0800299c       0x90 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
  .text.HAL_RCC_GetSysClockFreq
-                0x08002a1c       0xb4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
-                0x08002a1c                HAL_RCC_GetSysClockFreq
+                0x08002a2c       0xb4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x08002a2c                HAL_RCC_GetSysClockFreq
  .text.HAL_RCC_OscConfig
-                0x08002ad0      0x61c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
-                0x08002ad0                HAL_RCC_OscConfig
+                0x08002ae0      0x61c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x08002ae0                HAL_RCC_OscConfig
  .text.HAL_RCC_ClockConfig
-                0x080030ec      0x188 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
-                0x080030ec                HAL_RCC_ClockConfig
+                0x080030fc      0x188 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x080030fc                HAL_RCC_ClockConfig
  .text.HAL_RCC_GetHCLKFreq
-                0x08003274        0xc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
-                0x08003274                HAL_RCC_GetHCLKFreq
+                0x08003284        0xc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x08003284                HAL_RCC_GetHCLKFreq
  .text.HAL_RCC_GetPCLK1Freq
-                0x08003280       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
-                0x08003280                HAL_RCC_GetPCLK1Freq
+                0x08003290       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x08003290                HAL_RCC_GetPCLK1Freq
  .text.HAL_RCC_GetPCLK2Freq
-                0x080032a4       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
-                0x080032a4                HAL_RCC_GetPCLK2Freq
+                0x080032b4       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x080032b4                HAL_RCC_GetPCLK2Freq
  .text.RCCEx_PLLSAI1_Config
-                0x080032c8      0x170 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+                0x080032d8      0x170 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
  .text.RCCEx_PLLSAI2_Config
-                0x08003438      0x14c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+                0x08003448      0x14c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
  .text.HAL_RCCEx_PeriphCLKConfig
-                0x08003584      0x454 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
-                0x08003584                HAL_RCCEx_PeriphCLKConfig
+                0x08003594      0x454 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+                0x08003594                HAL_RCCEx_PeriphCLKConfig
  .text.HAL_RCCEx_EnableMSIPLLMode
-                0x080039d8       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
-                0x080039d8                HAL_RCCEx_EnableMSIPLLMode
+                0x080039e8       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+                0x080039e8                HAL_RCCEx_EnableMSIPLLMode
  .text.SPI_WaitFlagStateUntilTimeout
-                0x080039e8       0xd4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+                0x080039f8       0xd4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
  .text.SPI_WaitFifoStateUntilTimeout
-                0x08003abc       0xf4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+                0x08003acc       0xf4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
  .text.SPI_EndRxTxTransaction
-                0x08003bb0       0x62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+                0x08003bc0       0x62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
  .text.HAL_SPI_Init
-                0x08003c12       0xde CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
-                0x08003c12                HAL_SPI_Init
+                0x08003c22       0xde CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+                0x08003c22                HAL_SPI_Init
  .text.HAL_SPI_TransmitReceive
-                0x08003cf0      0x2de CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
-                0x08003cf0                HAL_SPI_TransmitReceive
+                0x08003d00      0x2de CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+                0x08003d00                HAL_SPI_TransmitReceive
  .text.TIM_TI1_ConfigInputStage
-                0x08003fce       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x08003fde       0x24 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
  .text.TIM_TI2_ConfigInputStage
-                0x08003ff2       0x26 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x08004002       0x26 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
  .text.TIM_ITRx_SetConfig
-                0x08004018       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x08004028       0x10 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
  .text.HAL_TIM_PeriodElapsedCallback
-                0x08004028        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x08004028                HAL_TIM_PeriodElapsedCallback
+                0x08004038        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x08004038                HAL_TIM_PeriodElapsedCallback
  .text.HAL_TIM_OC_DelayElapsedCallback
-                0x0800402a        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x0800402a                HAL_TIM_OC_DelayElapsedCallback
+                0x0800403a        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x0800403a                HAL_TIM_OC_DelayElapsedCallback
  .text.HAL_TIM_IC_CaptureCallback
-                0x0800402c        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x0800402c                HAL_TIM_IC_CaptureCallback
+                0x0800403c        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x0800403c                HAL_TIM_IC_CaptureCallback
  .text.HAL_TIM_PWM_PulseFinishedCallback
-                0x0800402e        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x0800402e                HAL_TIM_PWM_PulseFinishedCallback
+                0x0800403e        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x0800403e                HAL_TIM_PWM_PulseFinishedCallback
  .text.HAL_TIM_TriggerCallback
-                0x08004030        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x08004030                HAL_TIM_TriggerCallback
+                0x08004040        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x08004040                HAL_TIM_TriggerCallback
  .text.HAL_TIM_IRQHandler
-                0x08004032      0x19a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x08004032                HAL_TIM_IRQHandler
+                0x08004042      0x19a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x08004042                HAL_TIM_IRQHandler
  .text.TIM_Base_SetConfig
-                0x080041cc       0xc8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x080041cc                TIM_Base_SetConfig
+                0x080041dc       0xc8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x080041dc                TIM_Base_SetConfig
  .text.HAL_TIM_Base_Init
-                0x08004294       0x60 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x08004294                HAL_TIM_Base_Init
+                0x080042a4       0x60 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x080042a4                HAL_TIM_Base_Init
  .text.TIM_ETR_SetConfig
-                0x080042f4       0x18 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x080042f4                TIM_ETR_SetConfig
+                0x08004304       0x18 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x08004304                TIM_ETR_SetConfig
  .text.HAL_TIM_ConfigClockSource
-                0x0800430c      0x100 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
-                0x0800430c                HAL_TIM_ConfigClockSource
+                0x0800431c      0x100 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x0800431c                HAL_TIM_ConfigClockSource
  .text.HAL_TIMEx_MasterConfigSynchronization
-                0x0800440c       0x98 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
-                0x0800440c                HAL_TIMEx_MasterConfigSynchronization
+                0x0800441c       0x98 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+                0x0800441c                HAL_TIMEx_MasterConfigSynchronization
  .text.HAL_TIMEx_CommutCallback
-                0x080044a4        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
-                0x080044a4                HAL_TIMEx_CommutCallback
+                0x080044b4        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+                0x080044b4                HAL_TIMEx_CommutCallback
  .text.HAL_TIMEx_BreakCallback
-                0x080044a6        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
-                0x080044a6                HAL_TIMEx_BreakCallback
+                0x080044b6        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+                0x080044b6                HAL_TIMEx_BreakCallback
  .text.HAL_TIMEx_Break2Callback
-                0x080044a8        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
-                0x080044a8                HAL_TIMEx_Break2Callback
- *fill*         0x080044aa        0x2 
+                0x080044b8        0x2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+                0x080044b8                HAL_TIMEx_Break2Callback
+ *fill*         0x080044ba        0x2 
  .text.UART_SetConfig
-                0x080044ac      0x328 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
-                0x080044ac                UART_SetConfig
+                0x080044bc      0x328 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+                0x080044bc                UART_SetConfig
  .text.UART_AdvFeatureConfig
-                0x080047d4       0xca CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
-                0x080047d4                UART_AdvFeatureConfig
+                0x080047e4       0xca CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+                0x080047e4                UART_AdvFeatureConfig
  .text.UART_WaitOnFlagUntilTimeout
-                0x0800489e       0xd4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
-                0x0800489e                UART_WaitOnFlagUntilTimeout
+                0x080048ae       0xd4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+                0x080048ae                UART_WaitOnFlagUntilTimeout
  .text.HAL_UART_Transmit
-                0x08004972       0xd8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
-                0x08004972                HAL_UART_Transmit
+                0x08004982       0xd8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+                0x08004982                HAL_UART_Transmit
  .text.UART_CheckIdleState
-                0x08004a4a       0x70 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
-                0x08004a4a                UART_CheckIdleState
+                0x08004a5a       0x70 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+                0x08004a5a                UART_CheckIdleState
  .text.HAL_UART_Init
-                0x08004aba       0x62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
-                0x08004aba                HAL_UART_Init
+                0x08004aca       0x62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+                0x08004aca                HAL_UART_Init
  .text.USB_CoreReset
-                0x08004b1c       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004b2c       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
  .text.USB_CoreInit
-                0x08004b6c       0x38 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004b6c                USB_CoreInit
+                0x08004b7c       0x38 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004b7c                USB_CoreInit
  .text.USB_DisableGlobalInt
-                0x08004ba4        0xc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004ba4                USB_DisableGlobalInt
+                0x08004bb4        0xc CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004bb4                USB_DisableGlobalInt
  .text.USB_FlushTxFifo
-                0x08004bb0       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004bb0                USB_FlushTxFifo
+                0x08004bc0       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004bc0                USB_FlushTxFifo
  .text.USB_FlushRxFifo
-                0x08004c00       0x4c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004c00                USB_FlushRxFifo
+                0x08004c10       0x4c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004c10                USB_FlushRxFifo
  .text.USB_SetDevSpeed
-                0x08004c4c        0xe CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004c4c                USB_SetDevSpeed
- *fill*         0x08004c5a        0x2 
+                0x08004c5c        0xe CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004c5c                USB_SetDevSpeed
+ *fill*         0x08004c6a        0x2 
  .text.USB_DevInit
-                0x08004c5c      0x164 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004c5c                USB_DevInit
+                0x08004c6c      0x164 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004c6c                USB_DevInit
  .text.USB_DevDisconnect
-                0x08004dc0       0x1c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004dc0                USB_DevDisconnect
+                0x08004dd0       0x1c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004dd0                USB_DevDisconnect
  .text.USB_GetMode
-                0x08004ddc        0x8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004ddc                USB_GetMode
+                0x08004dec        0x8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004dec                USB_GetMode
  .text.USB_SetCurrentMode
-                0x08004de4       0x62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
-                0x08004de4                USB_SetCurrentMode
- *fill*         0x08004e46        0x2 
- .text.__errno  0x08004e48        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-errno.o)
-                0x08004e48                __errno
+                0x08004df4       0x62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x08004df4                USB_SetCurrentMode
+ *fill*         0x08004e56        0x2 
+ .text.__errno  0x08004e58        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-errno.o)
+                0x08004e58                __errno
  .text.__libc_init_array
-                0x08004e54       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
-                0x08004e54                __libc_init_array
- .text.memset   0x08004e9c       0xa4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
-                0x08004e9c                memset
- .text.printf   0x08004f40       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-printf.o)
-                0x08004f40                printf
- .text.putchar  0x08004f68       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
-                0x08004f68                putchar
+                0x08004e64       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
+                0x08004e64                __libc_init_array
+ .text.memset   0x08004eac       0xa4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
+                0x08004eac                memset
+ .text.printf   0x08004f50       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-printf.o)
+                0x08004f50                printf
  .text._puts_r  0x08004f78       0x9c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
                 0x08004f78                _puts_r
  .text.puts     0x08005014       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
@@ -3102,245 +3111,240 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x080091b4                __mdiff
  .text.__d2b    0x08009300       0xc4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
                 0x08009300                __d2b
- .text._putc_r  0x080093c4       0x74 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
-                0x080093c4                _putc_r
  .text._realloc_r
-                0x08009438      0x3d8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
-                0x08009438                _realloc_r
- .text.frexp    0x08009810       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-s_frexp.o)
-                0x08009810                frexp
- .text._sbrk_r  0x08009880       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-sbrkr.o)
-                0x08009880                _sbrk_r
- .text.__sread  0x080098a4       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
-                0x080098a4                __sread
+                0x080093c4      0x3d8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
+                0x080093c4                _realloc_r
+ .text.frexp    0x0800979c       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-s_frexp.o)
+                0x0800979c                frexp
+ .text._sbrk_r  0x0800980c       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-sbrkr.o)
+                0x0800980c                _sbrk_r
+ .text.__sread  0x08009830       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
+                0x08009830                __sread
  .text.__swrite
-                0x080098c8       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
-                0x080098c8                __swrite
- .text.__sseek  0x08009908       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
-                0x08009908                __sseek
+                0x08009854       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
+                0x08009854                __swrite
+ .text.__sseek  0x08009894       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
+                0x08009894                __sseek
  .text.__sclose
-                0x08009928        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
-                0x08009928                __sclose
- .text.strncpy  0x08009930       0x64 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strncpy.o)
-                0x08009930                strncpy
+                0x080098b4        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
+                0x080098b4                __sclose
+ .text.strncpy  0x080098bc       0x64 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strncpy.o)
+                0x080098bc                strncpy
  .text.__sprint_r.part.0
-                0x08009994       0x78 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x08009920       0x78 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
  .text.__sprint_r
-                0x08009a0c       0x14 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
-                0x08009a0c                __sprint_r
+                0x08009998       0x14 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x08009998                __sprint_r
  .text._vfiprintf_r
-                0x08009a20      0xda0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
-                0x08009a20                _vfiprintf_r
+                0x080099ac      0xda0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x080099ac                _vfiprintf_r
  .text.__sbprintf
-                0x0800a7c0       0x80 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x0800a74c       0x80 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
  .text.__swbuf_r
-                0x0800a840       0xb0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wbuf.o)
-                0x0800a840                __swbuf_r
+                0x0800a7cc       0xb0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wbuf.o)
+                0x0800a7cc                __swbuf_r
  .text._write_r
-                0x0800a8f0       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-writer.o)
-                0x0800a8f0                _write_r
+                0x0800a87c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-writer.o)
+                0x0800a87c                _write_r
  .text.__register_exitproc
-                0x0800a91c       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
-                0x0800a91c                __register_exitproc
+                0x0800a8a8       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
+                0x0800a8a8                __register_exitproc
  .text.__assert_func
-                0x0800a9a8       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
-                0x0800a9a8                __assert_func
+                0x0800a934       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
+                0x0800a934                __assert_func
  .text._calloc_r
-                0x0800a9e8       0x78 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-callocr.o)
-                0x0800a9e8                _calloc_r
+                0x0800a974       0x78 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-callocr.o)
+                0x0800a974                _calloc_r
  .text._close_r
-                0x0800aa60       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-closer.o)
-                0x0800aa60                _close_r
+                0x0800a9ec       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-closer.o)
+                0x0800a9ec                _close_r
  .text._fclose_r
-                0x0800aa84       0xcc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fclose.o)
-                0x0800aa84                _fclose_r
+                0x0800aa10       0xcc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fclose.o)
+                0x0800aa10                _fclose_r
  .text.fiprintf
-                0x0800ab50       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fiprintf.o)
-                0x0800ab50                fiprintf
+                0x0800aadc       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fiprintf.o)
+                0x0800aadc                fiprintf
  .text.__fputwc
-                0x0800ab78       0xa8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
-                0x0800ab78                __fputwc
+                0x0800ab04       0xa8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
+                0x0800ab04                __fputwc
  .text._fputwc_r
-                0x0800ac20       0x68 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
-                0x0800ac20                _fputwc_r
+                0x0800abac       0x68 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
+                0x0800abac                _fputwc_r
  .text._fstat_r
-                0x0800ac88       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fstatr.o)
-                0x0800ac88                _fstat_r
+                0x0800ac14       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fstatr.o)
+                0x0800ac14                _fstat_r
  .text._isatty_r
-                0x0800acb4       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-isattyr.o)
-                0x0800acb4                _isatty_r
+                0x0800ac40       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-isattyr.o)
+                0x0800ac40                _isatty_r
  .text.__locale_mb_cur_max
-                0x0800acd8        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
-                0x0800acd8                __locale_mb_cur_max
+                0x0800ac64        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
+                0x0800ac64                __locale_mb_cur_max
  .text._lseek_r
-                0x0800ace4       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lseekr.o)
-                0x0800ace4                _lseek_r
+                0x0800ac70       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lseekr.o)
+                0x0800ac70                _lseek_r
  .text.__ascii_mbtowc
-                0x0800ad10       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mbtowc_r.o)
-                0x0800ad10                __ascii_mbtowc
- .text._read_r  0x0800ad3c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-readr.o)
-                0x0800ad3c                _read_r
+                0x0800ac9c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mbtowc_r.o)
+                0x0800ac9c                __ascii_mbtowc
+ .text._read_r  0x0800acc8       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-readr.o)
+                0x0800acc8                _read_r
  .text._wcrtomb_r
-                0x0800ad68       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wcrtomb.o)
-                0x0800ad68                _wcrtomb_r
+                0x0800acf4       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wcrtomb.o)
+                0x0800acf4                _wcrtomb_r
  .text.__ascii_wctomb
-                0x0800ada4       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wctomb_r.o)
-                0x0800ada4                __ascii_wctomb
- .text.abort    0x0800adc0       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-abort.o)
-                0x0800adc0                abort
- .text.raise    0x0800add0       0x5c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signal.o)
-                0x0800add0                raise
- .text._kill_r  0x0800ae2c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
-                0x0800ae2c                _kill_r
+                0x0800ad30       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wctomb_r.o)
+                0x0800ad30                __ascii_wctomb
+ .text.abort    0x0800ad4c       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-abort.o)
+                0x0800ad4c                abort
+ .text.raise    0x0800ad5c       0x5c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signal.o)
+                0x0800ad5c                raise
+ .text._kill_r  0x0800adb8       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
+                0x0800adb8                _kill_r
  .text._getpid_r
-                0x0800ae58        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
-                0x0800ae58                _getpid_r
+                0x0800ade4        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
+                0x0800ade4                _getpid_r
  *(.glue_7)
- .glue_7        0x0800ae5c        0x0 linker stubs
+ .glue_7        0x0800ade8        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x0800ae5c        0x0 linker stubs
+ .glue_7t       0x0800ade8        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x0800ae5c        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+ .eh_frame      0x0800ade8        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
  *(.init)
- .init          0x0800ae5c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
-                0x0800ae5c                _init
- .init          0x0800ae60        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
+ .init          0x0800ade8        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
+                0x0800ade8                _init
+ .init          0x0800adec        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
  *(.fini)
- .fini          0x0800ae68        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
-                0x0800ae68                _fini
- .fini          0x0800ae6c        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
-                0x0800ae74                . = ALIGN (0x4)
-                0x0800ae74                _etext = .
+ .fini          0x0800adf4        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
+                0x0800adf4                _fini
+ .fini          0x0800adf8        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
+                0x0800ae00                . = ALIGN (0x4)
+                0x0800ae00                _etext = .
 
-.vfp11_veneer   0x0800ae74        0x0
- .vfp11_veneer  0x0800ae74        0x0 linker stubs
+.vfp11_veneer   0x0800ae00        0x0
+ .vfp11_veneer  0x0800ae00        0x0 linker stubs
 
-.v4_bx          0x0800ae74        0x0
- .v4_bx         0x0800ae74        0x0 linker stubs
+.v4_bx          0x0800ae00        0x0
+ .v4_bx         0x0800ae00        0x0 linker stubs
 
-.iplt           0x0800ae74        0x0
- .iplt          0x0800ae74        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+.iplt           0x0800ae00        0x0
+ .iplt          0x0800ae00        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
 
-.rodata         0x0800ae78      0x4b8
-                0x0800ae78                . = ALIGN (0x4)
+.rodata         0x0800ae00      0x4a8
+                0x0800ae00                . = ALIGN (0x4)
  *(.rodata)
  *(.rodata*)
  .rodata.main.str1.4
-                0x0800ae78       0x28 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
+                0x0800ae00       0x28 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
  .rodata.AHBPrescTable
-                0x0800aea0       0x10 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
-                0x0800aea0                AHBPrescTable
+                0x0800ae28       0x10 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
+                0x0800ae28                AHBPrescTable
  .rodata.APBPrescTable
-                0x0800aeb0        0x8 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
-                0x0800aeb0                APBPrescTable
+                0x0800ae38        0x8 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
+                0x0800ae38                APBPrescTable
  .rodata.MSIRangeTable
-                0x0800aeb8       0x30 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
-                0x0800aeb8                MSIRangeTable
- .rodata.check_global_status.str1.4
-                0x0800aee8        0xb CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- *fill*         0x0800aef3        0x1 
+                0x0800ae40       0x30 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
+                0x0800ae40                MSIRangeTable
  .rodata.vnf_read_reg.str1.4
-                0x0800aef4       0x1a CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- *fill*         0x0800af0e        0x2 
+                0x0800ae70       0x1a CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ *fill*         0x0800ae8a        0x2 
  .rodata.vnf_write_reg.str1.4
-                0x0800af10       0x1d CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- *fill*         0x0800af2d        0x3 
+                0x0800ae8c       0x1d CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ *fill*         0x0800aea9        0x3 
  .rodata._global_impure_ptr
-                0x0800af30        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-impure.o)
-                0x0800af30                _global_impure_ptr
+                0x0800aeac        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-impure.o)
+                0x0800aeac                _global_impure_ptr
  .rodata._puts_r.str1.4
-                0x0800af34       0x1d c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
+                0x0800aeb0       0x1d c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
                                   0x2 (size before relaxing)
  .rodata._vfprintf_r.str1.4
-                0x0800af34       0x42 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
- *fill*         0x0800af76        0x2 
+                0x0800aeb0       0x42 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
+ *fill*         0x0800aef2        0x2 
  .rodata.blanks.1
-                0x0800af78       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
+                0x0800aef4       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
  .rodata.zeroes.0
-                0x0800af88       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
+                0x0800af04       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
  .rodata._dtoa_r.str1.4
-                0x0800af98       0xa2 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-dtoa.o)
+                0x0800af14       0xa2 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-dtoa.o)
                                  0xa6 (size before relaxing)
- *fill*         0x0800b03a        0x2 
+ *fill*         0x0800afb6        0x2 
  .rodata.__multadd.str1.4
-                0x0800b03c       0x7f c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
+                0x0800afb8       0x7f c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
                                  0x93 (size before relaxing)
- *fill*         0x0800b0bb        0x5 
+ *fill*         0x0800b037        0x1 
  .rodata.__mprec_bigtens
-                0x0800b0c0       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
-                0x0800b0c0                __mprec_bigtens
+                0x0800b038       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
+                0x0800b038                __mprec_bigtens
  .rodata.__mprec_tens
-                0x0800b0e8       0xc8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
-                0x0800b0e8                __mprec_tens
- .rodata.p05.0  0x0800b1b0        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
+                0x0800b060       0xc8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
+                0x0800b060                __mprec_tens
+ .rodata.p05.0  0x0800b128        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
  .rodata._vfiprintf_r.str1.4
-                0x0800b1bc       0x2f c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x0800b134       0x2f c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
  .rodata.blanks.1
-                0x0800b1bc       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x0800b134       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
  .rodata.zeroes.0
-                0x0800b1cc       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x0800b144       0x10 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
  .rodata.__assert_func.str1.4
-                0x0800b1dc       0x3f c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
+                0x0800b154       0x3f c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
                                  0x43 (size before relaxing)
- *fill*         0x0800b21b        0x1 
+ *fill*         0x0800b193        0x1 
  .rodata._setlocale_r.str1.4
-                0x0800b21c        0xa c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
+                0x0800b194        0xa c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
                                   0xd (size before relaxing)
- *fill*         0x0800b226        0x2 
+ *fill*         0x0800b19e        0x2 
  .rodata.str1.4
-                0x0800b228        0x2 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
- *fill*         0x0800b22a        0x2 
+                0x0800b1a0        0x2 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
+ *fill*         0x0800b1a2        0x2 
  .rodata._ctype_
-                0x0800b22c      0x101 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-ctype_.o)
-                0x0800b22c                _ctype_
-                0x0800b330                . = ALIGN (0x4)
- *fill*         0x0800b32d        0x3 
+                0x0800b1a4      0x101 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-ctype_.o)
+                0x0800b1a4                _ctype_
+                0x0800b2a8                . = ALIGN (0x4)
+ *fill*         0x0800b2a5        0x3 
 
-.ARM.extab      0x0800b330        0x0
-                0x0800b330                . = ALIGN (0x4)
+.ARM.extab      0x0800b2a8        0x0
+                0x0800b2a8                . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x0800b330                . = ALIGN (0x4)
+                0x0800b2a8                . = ALIGN (0x4)
 
-.ARM            0x0800b330        0x8
-                0x0800b330                . = ALIGN (0x4)
-                0x0800b330                __exidx_start = .
+.ARM            0x0800b2a8        0x8
+                0x0800b2a8                . = ALIGN (0x4)
+                0x0800b2a8                __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x0800b330        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
-                0x0800b338                __exidx_end = .
-                0x0800b338                . = ALIGN (0x4)
+ .ARM.exidx     0x0800b2a8        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
+                0x0800b2b0                __exidx_end = .
+                0x0800b2b0                . = ALIGN (0x4)
 
-.rel.dyn        0x0800b338        0x0
- .rel.iplt      0x0800b338        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+.rel.dyn        0x0800b2b0        0x0
+ .rel.iplt      0x0800b2b0        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
 
-.preinit_array  0x0800b338        0x0
-                0x0800b338                . = ALIGN (0x4)
-                0x0800b338                PROVIDE (__preinit_array_start = .)
+.preinit_array  0x0800b2b0        0x0
+                0x0800b2b0                . = ALIGN (0x4)
+                0x0800b2b0                PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x0800b338                PROVIDE (__preinit_array_end = .)
-                0x0800b338                . = ALIGN (0x4)
+                0x0800b2b0                PROVIDE (__preinit_array_end = .)
+                0x0800b2b0                . = ALIGN (0x4)
 
-.init_array     0x0800b338        0x8
-                0x0800b338                . = ALIGN (0x4)
-                0x0800b338                PROVIDE (__init_array_start = .)
+.init_array     0x0800b2b0        0x8
+                0x0800b2b0                . = ALIGN (0x4)
+                0x0800b2b0                PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  .init_array.00000
-                0x0800b338        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
+                0x0800b2b0        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
  *(.init_array*)
- .init_array    0x0800b33c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
-                0x0800b340                PROVIDE (__init_array_end = .)
-                0x0800b340                . = ALIGN (0x4)
+ .init_array    0x0800b2b4        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+                0x0800b2b8                PROVIDE (__init_array_end = .)
+                0x0800b2b8                . = ALIGN (0x4)
 
-.fini_array     0x0800b340        0x4
-                0x0800b340                . = ALIGN (0x4)
-                0x0800b340                PROVIDE (__fini_array_start = .)
+.fini_array     0x0800b2b8        0x4
+                0x0800b2b8                . = ALIGN (0x4)
+                0x0800b2b8                PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x0800b340        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
-                0x0800b344                PROVIDE (__fini_array_end = .)
-                0x0800b344                . = ALIGN (0x4)
-                0x0800b344                _sidata = LOADADDR (.data)
+ .fini_array    0x0800b2b8        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+                0x0800b2bc                PROVIDE (__fini_array_end = .)
+                0x0800b2bc                . = ALIGN (0x4)
+                0x0800b2bc                _sidata = LOADADDR (.data)
 
-.data           0x20000000      0x9b8 load address 0x0800b344
+.data           0x20000000      0x9b8 load address 0x0800b2bc
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _sdata = .
  *(.data)
@@ -3380,11 +3384,11 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x200009b8                . = ALIGN (0x4)
                 0x200009b8                _edata = .
 
-.igot.plt       0x200009b8        0x0 load address 0x0800bcfc
+.igot.plt       0x200009b8        0x0 load address 0x0800bc74
  .igot.plt      0x200009b8        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
                 0x200009b8                . = ALIGN (0x4)
 
-.bss            0x200009b8      0x924 load address 0x0800bcfc
+.bss            0x200009b8      0x924 load address 0x0800bc74
                 0x200009b8                _sbss = .
                 0x200009b8                __bss_start__ = _sbss
  *(.bss)
@@ -3460,7 +3464,7 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x200012dc                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x200012dc      0x604 load address 0x0800bcfc
+                0x200012dc      0x604 load address 0x0800bc74
                 0x200012e0                . = ALIGN (0x8)
  *fill*         0x200012dc        0x4 
                 [!provide]                PROVIDE (end = .)
@@ -3554,208 +3558,204 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
  .ARM.attributes
                 0x0000062b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-printf.o)
  .ARM.attributes
-                0x00000659       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
+                0x00000659       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
  .ARM.attributes
-                0x00000687       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
+                0x00000687       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strlen.o)
  .ARM.attributes
-                0x000006b5       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strlen.o)
+                0x000006a3       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
  .ARM.attributes
-                0x000006d1       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
+                0x000006d1       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wsetup.o)
  .ARM.attributes
-                0x000006ff       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wsetup.o)
+                0x000006ff       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
  .ARM.attributes
-                0x0000072d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
+                0x0000072d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
  .ARM.attributes
-                0x0000075b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
+                0x0000075b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-dtoa.o)
  .ARM.attributes
-                0x00000789       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-dtoa.o)
+                0x00000789       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fflush.o)
  .ARM.attributes
-                0x000007b7       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fflush.o)
+                0x000007b7       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-findfp.o)
  .ARM.attributes
-                0x000007e5       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-findfp.o)
+                0x000007e5       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
  .ARM.attributes
-                0x00000813       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
+                0x00000813       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-freer.o)
  .ARM.attributes
-                0x00000841       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-freer.o)
+                0x00000841       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fvwrite.o)
  .ARM.attributes
-                0x0000086f       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fvwrite.o)
+                0x0000086f       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fwalk.o)
  .ARM.attributes
-                0x0000089d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fwalk.o)
+                0x0000089d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-localeconv.o)
  .ARM.attributes
-                0x000008cb       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-localeconv.o)
+                0x000008cb       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
  .ARM.attributes
-                0x000008f9       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
+                0x000008f9       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-makebuf.o)
  .ARM.attributes
-                0x00000927       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-makebuf.o)
+                0x00000927       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mallocr.o)
  .ARM.attributes
-                0x00000955       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mallocr.o)
+                0x00000955       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memchr.o)
  .ARM.attributes
-                0x00000983       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memchr.o)
+                0x00000971       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memcpy.o)
  .ARM.attributes
-                0x0000099f       0x1c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memcpy.o)
+                0x0000098d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memmove.o)
  .ARM.attributes
-                0x000009bb       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memmove.o)
+                0x000009bb       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mlock.o)
  .ARM.attributes
-                0x000009e9       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mlock.o)
+                0x000009e9       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
  .ARM.attributes
-                0x00000a17       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
+                0x00000a17       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
  .ARM.attributes
-                0x00000a45       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
+                0x00000a45       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-s_frexp.o)
  .ARM.attributes
-                0x00000a73       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
+                0x00000a73       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-sbrkr.o)
  .ARM.attributes
-                0x00000aa1       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-s_frexp.o)
+                0x00000aa1       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
  .ARM.attributes
-                0x00000acf       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-sbrkr.o)
+                0x00000acf       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strncpy.o)
  .ARM.attributes
-                0x00000afd       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
+                0x00000afd       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
  .ARM.attributes
-                0x00000b2b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strncpy.o)
+                0x00000b2b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wbuf.o)
  .ARM.attributes
-                0x00000b59       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+                0x00000b59       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-writer.o)
  .ARM.attributes
-                0x00000b87       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wbuf.o)
+                0x00000b87       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
  .ARM.attributes
-                0x00000bb5       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-writer.o)
+                0x00000bb5       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
  .ARM.attributes
-                0x00000be3       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
+                0x00000be3       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-callocr.o)
  .ARM.attributes
-                0x00000c11       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
+                0x00000c11       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-closer.o)
  .ARM.attributes
-                0x00000c3f       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-callocr.o)
+                0x00000c3f       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fclose.o)
  .ARM.attributes
-                0x00000c6d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-closer.o)
+                0x00000c6d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fiprintf.o)
  .ARM.attributes
-                0x00000c9b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fclose.o)
+                0x00000c9b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
  .ARM.attributes
-                0x00000cc9       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fiprintf.o)
+                0x00000cc9       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fstatr.o)
  .ARM.attributes
-                0x00000cf7       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
+                0x00000cf7       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-isattyr.o)
  .ARM.attributes
-                0x00000d25       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fstatr.o)
+                0x00000d25       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
  .ARM.attributes
-                0x00000d53       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-isattyr.o)
+                0x00000d53       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lseekr.o)
  .ARM.attributes
-                0x00000d81       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
+                0x00000d81       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mbtowc_r.o)
  .ARM.attributes
-                0x00000daf       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lseekr.o)
+                0x00000daf       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-readr.o)
  .ARM.attributes
-                0x00000ddd       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mbtowc_r.o)
+                0x00000ddd       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reent.o)
  .ARM.attributes
-                0x00000e0b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-readr.o)
+                0x00000e0b       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wcrtomb.o)
  .ARM.attributes
-                0x00000e39       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reent.o)
+                0x00000e39       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wctomb_r.o)
  .ARM.attributes
-                0x00000e67       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wcrtomb.o)
+                0x00000e67       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-abort.o)
  .ARM.attributes
-                0x00000e95       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wctomb_r.o)
+                0x00000e95       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-ctype_.o)
  .ARM.attributes
-                0x00000ec3       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-abort.o)
+                0x00000ec3       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signal.o)
  .ARM.attributes
-                0x00000ef1       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-ctype_.o)
+                0x00000ef1       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
  .ARM.attributes
-                0x00000f1f       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signal.o)
+                0x00000f1f       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_muldivdf3.o)
  .ARM.attributes
-                0x00000f4d       0x2e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
+                0x00000f3d       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_cmpdf2.o)
  .ARM.attributes
-                0x00000f7b       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_muldivdf3.o)
+                0x00000f5b       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_unorddf2.o)
  .ARM.attributes
-                0x00000f99       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_cmpdf2.o)
+                0x00000f79       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_fixdfsi.o)
  .ARM.attributes
-                0x00000fb7       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_unorddf2.o)
- .ARM.attributes
-                0x00000fd5       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_fixdfsi.o)
- .ARM.attributes
-                0x00000ff3       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
+                0x00000f97       0x1e c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
 OUTPUT(L475_Test.elf elf32-littlearm)
 LOAD linker stubs
 LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libc.a
 LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libm.a
 LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a
 
-.debug_info     0x00000000    0x26e42
- .debug_info    0x00000000     0x2dff CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
- .debug_info    0x00002dff     0x2b7b CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
- .debug_info    0x0000597a      0x8ac CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
- .debug_info    0x00006226      0x7af CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
- .debug_info    0x000069d5      0x174 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
- .debug_info    0x00006b49      0x425 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
- .debug_info    0x00006f6e      0xa80 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_info    0x000079ee       0x22 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
- .debug_info    0x00007a10      0xbc0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
- .debug_info    0x000085d0     0x1098 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
- .debug_info    0x00009668     0x2192 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
- .debug_info    0x0000b7fa      0x857 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
- .debug_info    0x0000c051     0x41b2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
- .debug_info    0x00010203      0xa62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
- .debug_info    0x00010c65     0x1a9a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
- .debug_info    0x000126ff      0xa4c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
- .debug_info    0x0001314b      0x98b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
- .debug_info    0x00013ad6      0xa7c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
- .debug_info    0x00014552     0x1887 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
- .debug_info    0x00015dd9      0xf3f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
- .debug_info    0x00016d18     0x125c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
- .debug_info    0x00017f74     0x2195 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
- .debug_info    0x0001a109     0x3ef5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
- .debug_info    0x0001dffe     0x1d2b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
- .debug_info    0x0001fd29     0x51b5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
- .debug_info    0x00024ede     0x1f64 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+.debug_info     0x00000000    0x26f93
+ .debug_info    0x00000000     0x2e0c CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
+ .debug_info    0x00002e0c     0x2b7b CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
+ .debug_info    0x00005987      0x8ac CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
+ .debug_info    0x00006233      0x7af CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
+ .debug_info    0x000069e2      0x174 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
+ .debug_info    0x00006b56      0x425 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
+ .debug_info    0x00006f7b      0xbc4 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_info    0x00007b3f       0x22 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+ .debug_info    0x00007b61      0xbc0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_info    0x00008721     0x1098 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_info    0x000097b9     0x2192 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_info    0x0000b94b      0x857 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_info    0x0000c1a2     0x41b2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_info    0x00010354      0xa62 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_info    0x00010db6     0x1a9a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_info    0x00012850      0xa4c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_info    0x0001329c      0x98b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_info    0x00013c27      0xa7c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_info    0x000146a3     0x1887 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_info    0x00015f2a      0xf3f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_info    0x00016e69     0x125c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_info    0x000180c5     0x2195 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_info    0x0001a25a     0x3ef5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_info    0x0001e14f     0x1d2b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_info    0x0001fe7a     0x51b5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_info    0x0002502f     0x1f64 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_abbrev   0x00000000     0x364f
+.debug_abbrev   0x00000000     0x363e
  .debug_abbrev  0x00000000      0x2e0 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
  .debug_abbrev  0x000002e0      0x27a CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
  .debug_abbrev  0x0000055a      0x19d CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
  .debug_abbrev  0x000006f7      0x1a3 CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
  .debug_abbrev  0x0000089a       0xe7 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
  .debug_abbrev  0x00000981      0x119 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
- .debug_abbrev  0x00000a9a      0x215 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_abbrev  0x00000caf       0x12 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
- .debug_abbrev  0x00000cc1      0x22a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
- .debug_abbrev  0x00000eeb      0x36a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
- .debug_abbrev  0x00001255      0x23b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
- .debug_abbrev  0x00001490      0x1e6 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
- .debug_abbrev  0x00001676      0x252 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
- .debug_abbrev  0x000018c8      0x1b3 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
- .debug_abbrev  0x00001a7b      0x2a6 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
- .debug_abbrev  0x00001d21      0x26d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
- .debug_abbrev  0x00001f8e      0x187 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
- .debug_abbrev  0x00002115      0x215 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
- .debug_abbrev  0x0000232a      0x206 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
- .debug_abbrev  0x00002530      0x251 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
- .debug_abbrev  0x00002781      0x275 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
- .debug_abbrev  0x000029f6      0x23b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
- .debug_abbrev  0x00002c31      0x232 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
- .debug_abbrev  0x00002e63      0x248 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
- .debug_abbrev  0x000030ab      0x2d9 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
- .debug_abbrev  0x00003384      0x2cb CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+ .debug_abbrev  0x00000a9a      0x204 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_abbrev  0x00000c9e       0x12 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+ .debug_abbrev  0x00000cb0      0x22a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_abbrev  0x00000eda      0x36a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_abbrev  0x00001244      0x23b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_abbrev  0x0000147f      0x1e6 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_abbrev  0x00001665      0x252 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_abbrev  0x000018b7      0x1b3 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_abbrev  0x00001a6a      0x2a6 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_abbrev  0x00001d10      0x26d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_abbrev  0x00001f7d      0x187 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_abbrev  0x00002104      0x215 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_abbrev  0x00002319      0x206 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_abbrev  0x0000251f      0x251 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_abbrev  0x00002770      0x275 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_abbrev  0x000029e5      0x23b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_abbrev  0x00002c20      0x232 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_abbrev  0x00002e52      0x248 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_abbrev  0x0000309a      0x2d9 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_abbrev  0x00003373      0x2cb CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_loc      0x00000000    0x1ea22
+.debug_loc      0x00000000    0x1eb5c
  .debug_loc     0x00000000       0x23 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
  .debug_loc     0x00000023      0x3fa CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
  .debug_loc     0x0000041d      0x3c5 CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
  .debug_loc     0x000007e2       0x64 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
  .debug_loc     0x00000846      0x127 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
- .debug_loc     0x0000096d      0x23b CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_loc     0x00000ba8      0x1ef CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
- .debug_loc     0x00000d97      0x744 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
- .debug_loc     0x000014db     0x2049 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
- .debug_loc     0x00003524      0x3da CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
- .debug_loc     0x000038fe     0x4b72 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
- .debug_loc     0x00008470      0x202 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
- .debug_loc     0x00008672     0x12c8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
- .debug_loc     0x0000993a      0x236 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
- .debug_loc     0x00009b70      0x1b1 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
- .debug_loc     0x00009d21      0xb06 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
- .debug_loc     0x0000a827     0x14fe CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
- .debug_loc     0x0000bd25      0x81c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
- .debug_loc     0x0000c541     0x1af9 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
- .debug_loc     0x0000e03a     0x206d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
- .debug_loc     0x000100a7     0x55ad CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
- .debug_loc     0x00015654     0x241c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
- .debug_loc     0x00017a70     0x4d4b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
- .debug_loc     0x0001c7bb     0x2267 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+ .debug_loc     0x0000096d      0x375 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_loc     0x00000ce2      0x1ef CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_loc     0x00000ed1      0x744 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_loc     0x00001615     0x2049 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_loc     0x0000365e      0x3da CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_loc     0x00003a38     0x4b72 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_loc     0x000085aa      0x202 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_loc     0x000087ac     0x12c8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_loc     0x00009a74      0x236 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_loc     0x00009caa      0x1b1 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_loc     0x00009e5b      0xb06 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_loc     0x0000a961     0x14fe CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_loc     0x0000be5f      0x81c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_loc     0x0000c67b     0x1af9 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_loc     0x0000e174     0x206d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_loc     0x000101e1     0x55ad CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_loc     0x0001578e     0x241c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_loc     0x00017baa     0x4d4b CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_loc     0x0001c8f5     0x2267 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_aranges  0x00000000     0x1b98
+.debug_aranges  0x00000000     0x1ba0
  .debug_aranges
                 0x00000000       0x98 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
  .debug_aranges
@@ -3769,154 +3769,154 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
  .debug_aranges
                 0x00000270       0x28 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
  .debug_aranges
-                0x00000298       0x48 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x00000298       0x50 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
  .debug_aranges
-                0x000002e0       0x28 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+                0x000002e8       0x28 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
  .debug_aranges
-                0x00000308      0x130 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+                0x00000310      0x130 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
  .debug_aranges
-                0x00000438       0xa8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+                0x00000440       0xa8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
  .debug_aranges
-                0x000004e0      0x248 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+                0x000004e8      0x248 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
  .debug_aranges
-                0x00000728       0x58 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+                0x00000730       0x58 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
  .debug_aranges
-                0x00000780      0x2a0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+                0x00000788      0x2a0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
  .debug_aranges
-                0x00000a20       0x48 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+                0x00000a28       0x48 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
  .debug_aranges
-                0x00000a68      0x138 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+                0x00000a70      0x138 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
  .debug_aranges
-                0x00000ba0       0x60 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+                0x00000ba8       0x60 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
  .debug_aranges
-                0x00000c00       0x98 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+                0x00000c08       0x98 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
  .debug_aranges
-                0x00000c98      0x150 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+                0x00000ca0      0x150 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
  .debug_aranges
-                0x00000de8      0x160 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+                0x00000df0      0x160 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
  .debug_aranges
-                0x00000f48       0x90 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+                0x00000f50       0x90 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
  .debug_aranges
-                0x00000fd8       0xc0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+                0x00000fe0       0xc0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
  .debug_aranges
-                0x00001098      0x1d8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+                0x000010a0      0x1d8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
  .debug_aranges
-                0x00001270      0x3e0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+                0x00001278      0x3e0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
  .debug_aranges
-                0x00001650      0x180 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+                0x00001658      0x180 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
  .debug_aranges
-                0x000017d0      0x228 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+                0x000017d8      0x228 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
  .debug_aranges
-                0x000019f8      0x1a0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+                0x00001a00      0x1a0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_ranges   0x00000000     0x1ac8
+.debug_ranges   0x00000000     0x1ad0
  .debug_ranges  0x00000000       0x88 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
  .debug_ranges  0x00000088       0x80 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
  .debug_ranges  0x00000108       0x70 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
  .debug_ranges  0x00000178       0x98 CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
  .debug_ranges  0x00000210       0x10 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
  .debug_ranges  0x00000220       0x18 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
- .debug_ranges  0x00000238       0x38 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_ranges  0x00000270       0x20 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
- .debug_ranges  0x00000290      0x120 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
- .debug_ranges  0x000003b0       0xf8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
- .debug_ranges  0x000004a8      0x258 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
- .debug_ranges  0x00000700       0x48 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
- .debug_ranges  0x00000748      0x290 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
- .debug_ranges  0x000009d8       0x38 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
- .debug_ranges  0x00000a10      0x128 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
- .debug_ranges  0x00000b38       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
- .debug_ranges  0x00000b88       0x88 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
- .debug_ranges  0x00000c10      0x140 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
- .debug_ranges  0x00000d50      0x150 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
- .debug_ranges  0x00000ea0       0x98 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
- .debug_ranges  0x00000f38       0xc8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
- .debug_ranges  0x00001000      0x1c8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
- .debug_ranges  0x000011c8      0x3d0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
- .debug_ranges  0x00001598      0x170 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
- .debug_ranges  0x00001708      0x230 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
- .debug_ranges  0x00001938      0x190 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+ .debug_ranges  0x00000238       0x40 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_ranges  0x00000278       0x20 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+ .debug_ranges  0x00000298      0x120 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_ranges  0x000003b8       0xf8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_ranges  0x000004b0      0x258 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_ranges  0x00000708       0x48 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_ranges  0x00000750      0x290 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_ranges  0x000009e0       0x38 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_ranges  0x00000a18      0x128 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_ranges  0x00000b40       0x50 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_ranges  0x00000b90       0x88 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_ranges  0x00000c18      0x140 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_ranges  0x00000d58      0x150 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_ranges  0x00000ea8       0x98 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_ranges  0x00000f40       0xc8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_ranges  0x00001008      0x1c8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_ranges  0x000011d0      0x3d0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_ranges  0x000015a0      0x170 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_ranges  0x00001710      0x230 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_ranges  0x00001940      0x190 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_line     0x00000000    0x2259e
+.debug_line     0x00000000    0x2264e
  .debug_line    0x00000000      0xe33 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
  .debug_line    0x00000e33      0xa21 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
  .debug_line    0x00001854      0x3d8 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
  .debug_line    0x00001c2c      0x40a CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
  .debug_line    0x00002036      0x1cd CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
  .debug_line    0x00002203      0x2c5 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
- .debug_line    0x000024c8      0x40e CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_line    0x000028d6       0xc6 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
- .debug_line    0x0000299c      0x772 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
- .debug_line    0x0000310e      0x84d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
- .debug_line    0x0000395b     0x1f73 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
- .debug_line    0x000058ce      0x765 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
- .debug_line    0x00006033     0x4df2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
- .debug_line    0x0000ae25      0x554 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
- .debug_line    0x0000b379     0x1465 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
- .debug_line    0x0000c7de      0x52e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
- .debug_line    0x0000cd0c      0x4f4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
- .debug_line    0x0000d200      0xb84 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
- .debug_line    0x0000dd84     0x165a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
- .debug_line    0x0000f3de      0xf8f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
- .debug_line    0x0001036d     0x15c2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
- .debug_line    0x0001192f     0x29a5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
- .debug_line    0x000142d4     0x52db CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
- .debug_line    0x000195af     0x2007 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
- .debug_line    0x0001b5b6     0x5345 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
- .debug_line    0x000208fb     0x1ca3 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+ .debug_line    0x000024c8      0x4be CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_line    0x00002986       0xc6 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+ .debug_line    0x00002a4c      0x772 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_line    0x000031be      0x84d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_line    0x00003a0b     0x1f73 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_line    0x0000597e      0x765 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_line    0x000060e3     0x4df2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_line    0x0000aed5      0x554 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_line    0x0000b429     0x1465 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_line    0x0000c88e      0x52e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_line    0x0000cdbc      0x4f4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_line    0x0000d2b0      0xb84 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_line    0x0000de34     0x165a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_line    0x0000f48e      0xf8f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_line    0x0001041d     0x15c2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_line    0x000119df     0x29a5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_line    0x00014384     0x52db CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_line    0x0001965f     0x2007 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_line    0x0001b666     0x5345 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_line    0x000209ab     0x1ca3 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_str      0x00000000     0x8d20
- .debug_str     0x00000000     0x1f79 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
-                               0x2180 (size before relaxing)
- .debug_str     0x00001f79      0x497 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
+.debug_str      0x00000000     0x8d86
+ .debug_str     0x00000000     0x1f7e CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
+                               0x218f (size before relaxing)
+ .debug_str     0x00001f7e      0x497 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
                                0x206e (size before relaxing)
- .debug_str     0x00002410      0x16d CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
+ .debug_str     0x00002415      0x16d CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
                                 0x84c (size before relaxing)
- .debug_str     0x0000257d      0x249 CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
+ .debug_str     0x00002582      0x249 CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
                                 0x467 (size before relaxing)
- .debug_str     0x000027c6       0xb3 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
+ .debug_str     0x000027cb       0xb3 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
                                 0x293 (size before relaxing)
- .debug_str     0x00002879       0xdc CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
+ .debug_str     0x0000287e       0xdc CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
                                 0x3f3 (size before relaxing)
- .debug_str     0x00002955       0xb8 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
-                                0x7ad (size before relaxing)
- .debug_str     0x00002a0d       0x74 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+ .debug_str     0x0000295a      0x119 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+                                0x806 (size before relaxing)
+ .debug_str     0x00002a73       0x74 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
                                  0xc7 (size before relaxing)
- .debug_str     0x00002a81      0x4ad CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_str     0x00002ae7      0x4ad CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
                                 0xd53 (size before relaxing)
- .debug_str     0x00002f2e      0x4af CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_str     0x00002f94      0x4af CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
                                 0xc85 (size before relaxing)
- .debug_str     0x000033dd      0xbe0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_str     0x00003443      0xbe0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
                                0x12cd (size before relaxing)
- .debug_str     0x00003fbd      0x144 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_str     0x00004023      0x144 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
                                 0x5ae (size before relaxing)
- .debug_str     0x00004101      0x8ee CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_str     0x00004167      0x8ee CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
                                0x104a (size before relaxing)
- .debug_str     0x000049ef       0xf6 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_str     0x00004a55       0xf6 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
                                 0x97e (size before relaxing)
- .debug_str     0x00004ae5      0x803 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_str     0x00004b4b      0x803 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
                                 0xe4b (size before relaxing)
- .debug_str     0x000052e8      0x1ed CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_str     0x0000534e      0x1ed CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
                                 0x879 (size before relaxing)
- .debug_str     0x000054d5      0x30e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_str     0x0000553b      0x30e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
                                 0x71c (size before relaxing)
- .debug_str     0x000057e3      0x443 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_str     0x00005849      0x443 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
                                 0x882 (size before relaxing)
- .debug_str     0x00005c26      0x508 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_str     0x00005c8c      0x508 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
                                 0xba7 (size before relaxing)
- .debug_str     0x0000612e      0x25c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_str     0x00006194      0x25c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
                                 0x90a (size before relaxing)
- .debug_str     0x0000638a      0x2e7 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_str     0x000063f0      0x2e7 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
                                 0xb29 (size before relaxing)
- .debug_str     0x00006671      0x53f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_str     0x000066d7      0x53f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
                                 0xc4f (size before relaxing)
- .debug_str     0x00006bb0      0xec7 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_str     0x00006c16      0xec7 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
                                0x1741 (size before relaxing)
- .debug_str     0x00007a77      0x64e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_str     0x00007add      0x64e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
                                0x104a (size before relaxing)
- .debug_str     0x000080c5      0x7c9 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_str     0x0000812b      0x7c9 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
                                0x105a (size before relaxing)
- .debug_str     0x0000888e      0x492 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+ .debug_str     0x000088f4      0x492 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
                                 0xd60 (size before relaxing)
 
 .comment        0x00000000       0x49
@@ -3947,88 +3947,86 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
  .comment       0x00000049       0x4a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
  .comment       0x00000049       0x4a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_frame    0x00000000     0x6184
+.debug_frame    0x00000000     0x6138
  .debug_frame   0x00000000      0x1c4 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
  .debug_frame   0x000001c4      0x1c4 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
  .debug_frame   0x00000388      0x108 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
  .debug_frame   0x00000490      0x190 CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
  .debug_frame   0x00000620       0x28 CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
  .debug_frame   0x00000648       0x30 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
- .debug_frame   0x00000678       0xb0 CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_frame   0x00000728      0x274 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
- .debug_frame   0x0000099c      0x148 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
- .debug_frame   0x00000ae4      0x620 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
- .debug_frame   0x00001104       0xd0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
- .debug_frame   0x000011d4      0x978 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
- .debug_frame   0x00001b4c       0x80 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
- .debug_frame   0x00001bcc      0x35c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
- .debug_frame   0x00001f28       0xb8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
- .debug_frame   0x00001fe0      0x120 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
- .debug_frame   0x00002100      0x298 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
- .debug_frame   0x00002398      0x40c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
- .debug_frame   0x000027a4      0x19c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
- .debug_frame   0x00002940      0x204 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
- .debug_frame   0x00002b44      0x5d8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
- .debug_frame   0x0000311c      0xb48 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
- .debug_frame   0x00003c64      0x470 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
- .debug_frame   0x000040d4      0x600 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
- .debug_frame   0x000046d4      0x48c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
- .debug_frame   0x00004b60       0xac c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_addsubdf3.o)
- .debug_frame   0x00004c0c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x00004c38       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
- .debug_frame   0x00004c6c       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-errno.o)
- .debug_frame   0x00004c8c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
- .debug_frame   0x00004cb8       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
- .debug_frame   0x00004ce4       0x74 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-printf.o)
- .debug_frame   0x00004d58       0x30 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putchar.o)
- .debug_frame   0x00004d88       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
- .debug_frame   0x00004dd4       0x94 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
- .debug_frame   0x00004e68       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wsetup.o)
- .debug_frame   0x00004e94       0x5c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
- .debug_frame   0x00004ef0       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
- .debug_frame   0x00004f10       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-dtoa.o)
- .debug_frame   0x00004f9c       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fflush.o)
- .debug_frame   0x0000500c      0x154 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-findfp.o)
- .debug_frame   0x00005160       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
- .debug_frame   0x00005194       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-freer.o)
- .debug_frame   0x00005220       0x64 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fvwrite.o)
- .debug_frame   0x00005284       0x54 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fwalk.o)
- .debug_frame   0x000052d8       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-localeconv.o)
- .debug_frame   0x00005318       0xb0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
- .debug_frame   0x000053c8       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-makebuf.o)
- .debug_frame   0x00005438       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mallocr.o)
- .debug_frame   0x00005484       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memmove.o)
- .debug_frame   0x000054c4       0x30 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mlock.o)
- .debug_frame   0x000054f4      0x264 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
- .debug_frame   0x00005758       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-putc.o)
- .debug_frame   0x000057a0       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
- .debug_frame   0x000057e8       0x30 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-s_frexp.o)
- .debug_frame   0x00005818       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-sbrkr.o)
- .debug_frame   0x00005844       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
- .debug_frame   0x000058d0       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strncpy.o)
- .debug_frame   0x000058fc       0xdc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
- .debug_frame   0x000059d8       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wbuf.o)
- .debug_frame   0x00005a24       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-writer.o)
- .debug_frame   0x00005a50       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
- .debug_frame   0x00005a84       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
- .debug_frame   0x00005ac4       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-callocr.o)
- .debug_frame   0x00005af0       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-closer.o)
- .debug_frame   0x00005b1c       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fclose.o)
- .debug_frame   0x00005b58       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fiprintf.o)
- .debug_frame   0x00005bc8       0x88 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
- .debug_frame   0x00005c50       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fstatr.o)
- .debug_frame   0x00005c7c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-isattyr.o)
- .debug_frame   0x00005ca8       0x68 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
- .debug_frame   0x00005d10       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lseekr.o)
- .debug_frame   0x00005d3c       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mbtowc_r.o)
- .debug_frame   0x00005d88       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-readr.o)
- .debug_frame   0x00005db4       0x64 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reent.o)
- .debug_frame   0x00005e18       0x60 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wcrtomb.o)
- .debug_frame   0x00005e78       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wctomb_r.o)
- .debug_frame   0x00005eb4       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-abort.o)
- .debug_frame   0x00005edc      0x114 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signal.o)
- .debug_frame   0x00005ff0       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
- .debug_frame   0x0000602c       0x50 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_muldivdf3.o)
- .debug_frame   0x0000607c       0xc4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_cmpdf2.o)
- .debug_frame   0x00006140       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_unorddf2.o)
- .debug_frame   0x00006160       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_fixdfsi.o)
+ .debug_frame   0x00000678       0xdc CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_frame   0x00000754      0x274 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_frame   0x000009c8      0x148 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_frame   0x00000b10      0x620 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_frame   0x00001130       0xd0 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_frame   0x00001200      0x978 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_frame   0x00001b78       0x80 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_frame   0x00001bf8      0x35c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_frame   0x00001f54       0xb8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_frame   0x0000200c      0x120 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_frame   0x0000212c      0x298 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_frame   0x000023c4      0x40c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_frame   0x000027d0      0x19c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_frame   0x0000296c      0x204 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_frame   0x00002b70      0x5d8 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_frame   0x00003148      0xb48 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_frame   0x00003c90      0x470 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_frame   0x00004100      0x600 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_frame   0x00004700      0x48c CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+ .debug_frame   0x00004b8c       0xac c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_addsubdf3.o)
+ .debug_frame   0x00004c38       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x00004c64       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x00004c98       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-errno.o)
+ .debug_frame   0x00004cb8       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
+ .debug_frame   0x00004ce4       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
+ .debug_frame   0x00004d10       0x74 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-printf.o)
+ .debug_frame   0x00004d84       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-puts.o)
+ .debug_frame   0x00004dd0       0x94 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfprintf.o)
+ .debug_frame   0x00004e64       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wsetup.o)
+ .debug_frame   0x00004e90       0x5c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
+ .debug_frame   0x00004eec       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
+ .debug_frame   0x00004f0c       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-dtoa.o)
+ .debug_frame   0x00004f98       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fflush.o)
+ .debug_frame   0x00005008      0x154 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-findfp.o)
+ .debug_frame   0x0000515c       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
+ .debug_frame   0x00005190       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-freer.o)
+ .debug_frame   0x0000521c       0x64 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fvwrite.o)
+ .debug_frame   0x00005280       0x54 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fwalk.o)
+ .debug_frame   0x000052d4       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-localeconv.o)
+ .debug_frame   0x00005314       0xb0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
+ .debug_frame   0x000053c4       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-makebuf.o)
+ .debug_frame   0x00005434       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mallocr.o)
+ .debug_frame   0x00005480       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memmove.o)
+ .debug_frame   0x000054c0       0x30 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mlock.o)
+ .debug_frame   0x000054f0      0x264 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mprec.o)
+ .debug_frame   0x00005754       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reallocr.o)
+ .debug_frame   0x0000579c       0x30 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-s_frexp.o)
+ .debug_frame   0x000057cc       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-sbrkr.o)
+ .debug_frame   0x000057f8       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-stdio.o)
+ .debug_frame   0x00005884       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-strncpy.o)
+ .debug_frame   0x000058b0       0xdc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-vfiprintf.o)
+ .debug_frame   0x0000598c       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wbuf.o)
+ .debug_frame   0x000059d8       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-writer.o)
+ .debug_frame   0x00005a04       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
+ .debug_frame   0x00005a38       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-assert.o)
+ .debug_frame   0x00005a78       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-callocr.o)
+ .debug_frame   0x00005aa4       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-closer.o)
+ .debug_frame   0x00005ad0       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fclose.o)
+ .debug_frame   0x00005b0c       0x70 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fiprintf.o)
+ .debug_frame   0x00005b7c       0x88 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fputwc.o)
+ .debug_frame   0x00005c04       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fstatr.o)
+ .debug_frame   0x00005c30       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-isattyr.o)
+ .debug_frame   0x00005c5c       0x68 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-locale.o)
+ .debug_frame   0x00005cc4       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lseekr.o)
+ .debug_frame   0x00005cf0       0x4c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-mbtowc_r.o)
+ .debug_frame   0x00005d3c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-readr.o)
+ .debug_frame   0x00005d68       0x64 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-reent.o)
+ .debug_frame   0x00005dcc       0x60 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wcrtomb.o)
+ .debug_frame   0x00005e2c       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-wctomb_r.o)
+ .debug_frame   0x00005e68       0x28 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-abort.o)
+ .debug_frame   0x00005e90      0x114 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signal.o)
+ .debug_frame   0x00005fa4       0x3c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-signalr.o)
+ .debug_frame   0x00005fe0       0x50 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_muldivdf3.o)
+ .debug_frame   0x00006030       0xc4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_cmpdf2.o)
+ .debug_frame   0x000060f4       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_unorddf2.o)
+ .debug_frame   0x00006114       0x24 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_arm_fixdfsi.o)
