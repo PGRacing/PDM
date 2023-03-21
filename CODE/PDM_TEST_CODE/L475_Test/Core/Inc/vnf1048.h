@@ -36,9 +36,28 @@ typedef struct VNF1048_HandleTypeDef_A
 #define VNF_STATUS_REGISTER_8 0x18
 /** ///@}*/
 
+
+/** \defgroup VNF_ROM
+ * ///@{
+ */
+#define VNF_ROM_COMPANY_CODE 0x00
+#define VNF_ROM_DEVICE_FAMILY 0x01
+#define VNF_ROM_PRODUCT_CODE_1 0x02
+#define VNF_ROM_PRODUCT_CODE_2 0x03
+#define VNF_ROM_PRODUCT_CODE_3 0x04
+#define VNF_ROM_PRODUCT_CODE_4 0x05
+#define VNF_ROM_SILICON_VERSION 0x0A
+#define VNF_ROM_SPI_MODE 0x10
+#define VNF_ROM_WD_TYPE_1 0x11
+#define VNF_ROM_WD_BIT_POS_1 0x13
+#define VNF_ROM_WD_BIT_POS_2 0x14
 #define VNF_ADVANCED_OPERATION 0x3F
+/** ///@}*/
+
+
 
 void vnf_init(VNF1048_HandleTypeDef* handle);
 HAL_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t res[4]);
+HAL_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint8_t res[4]);
 HAL_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t data[3], uint8_t res[4]);
 void vnf_unlock(VNF1048_HandleTypeDef* handle);
