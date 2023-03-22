@@ -87,8 +87,8 @@ void QSPI_mydemo(void);
 #define ARD_D0_GPIO_Port GPIOA
 #define ARD_D10_Pin GPIO_PIN_2
 #define ARD_D10_GPIO_Port GPIOA
-#define ARD_D4_Pin GPIO_PIN_3
-#define ARD_D4_GPIO_Port GPIOA
+#define HWLO_PIN_Pin GPIO_PIN_3
+#define HWLO_PIN_GPIO_Port GPIOA
 #define ARD_D7_Pin GPIO_PIN_4
 #define ARD_D7_GPIO_Port GPIOA
 #define ARD_D13_Pin GPIO_PIN_5

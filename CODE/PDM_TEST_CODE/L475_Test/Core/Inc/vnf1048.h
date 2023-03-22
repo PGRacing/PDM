@@ -29,6 +29,8 @@ typedef struct VNF1048_HandleTypeDef_A
     SPI_HandleTypeDef*  hspi_vnf;     /*!< SPI Handle */
     GPIO_TypeDef* CS_Port;            /*!< SPI chip select port */
     uint16_t CS_Pin;                  /*!< SPI chip select pin */
+    GPIO_TypeDef* HWLO_Port;          /*!< HWLO port */
+    uint16_t HWLO_Pin;                /*!< HWLO pin */
     uint8_t locked;                   /*!< IC state */
     uint8_t error_register;   /*!< ERROR state */
 } VNF1048_HandleTypeDef;

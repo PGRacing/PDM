@@ -3,7 +3,7 @@
 
 #define READ_MASK 0b01000000
 #define READ_ROM_MASK 0b11000000
-//#define VNF_DEBUG 1
+#define VNF_DEBUG 1
 
 uint8_t bit_manip_get(uint8_t byte, uint8_t index)
 {
@@ -35,10 +35,13 @@ VNF_ErrorTypeDef vnf_check_global_status(volatile uint8_t glb)
   */
 void vnf_init(VNF1048_HandleTypeDef* handle)
 {
+    /* Setting HWLO bit */
+    HAL_GPIO_WritePin(handle->HWLO_Port, handle->HWLO_Pin, GPIO_PIN_RESET);
+
     /* To go from STAND-BY to UNLOCKED or LOCKED */
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
     /* Can be as low as 100us */
-    HAL_Delay(10);
+    HAL_Delay(0.5);
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_SET);
     handle->locked = 0x1;
 }
