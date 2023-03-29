@@ -105,6 +105,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* tim_handle)
     }
 }
 
+uint8_t imporant_data = 0xFF;
 /* USER CODE END 0 */
 
 /**
@@ -159,18 +160,27 @@ int main(void)
   vnf1.HWLO_Pin = HWLO_PIN_Pin;
   vnf1.HWLO_Port = HWLO_PIN_GPIO_Port;
   vnf1.wd_tim = &htim7;
-  HAL_Delay(100);
   vnf_init(&vnf1);
   uint8_t rx[4] = {0x11, 0x22, 0x33, 0x44};
 
   uint8_t res[4] = {0xFF, 0xFF, 0xFF, 0xFF};
   vnf_read_reg(&vnf1, VNF_CONTROL_REGISTER_1, res);
 
-  vnf_toggle_wdg(&vnf1);
+/*  vnf_toggle_wdg(&vnf1);
   vnf_unlock(&vnf1);
-  vnf_toggle_wdg(&vnf1);
+  vnf_toggle_wdg(&vnf1);*/
+/*    HAL_Delay(100);
   vnf_read_reg(&vnf1, VNF_STATUS_REGISTER_1, res);
-
+  vnf_helper_print_data(VNF_STATUS_REGISTER_1, res);
+    HAL_Delay(100);
+  vnf_read_reg(&vnf1 ,VNF_CONTROL_REGISTER_1, res);
+    vnf_helper_print_data(VNF_CONTROL_REGISTER_1, res);
+    HAL_Delay(100);
+  vnf_read_reg(&vnf1 ,VNF_CONTROL_REGISTER_2, res);
+    vnf_helper_print_data(VNF_CONTROL_REGISTER_2, res);
+    HAL_Delay(100);
+  vnf_read_reg(&vnf1 ,VNF_CONTROL_REGISTER_3, res);
+    vnf_helper_print_data(VNF_CONTROL_REGISTER_3, res);*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -178,7 +188,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+      vnf_read_reg(&vnf1, VNF_STATUS_REGISTER_1, res);
+      imporant_data = res[3];
+      //HAL_Delay(100);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

@@ -3,7 +3,7 @@
 
 #define READ_MASK 0b01000000
 #define READ_ROM_MASK 0b11000000
-#define VNF_DEBUG 1
+//#define VNF_DEBUG 1
 
 uint8_t bit_manip_get(uint8_t byte, uint8_t index)
 {
@@ -163,6 +163,10 @@ void vnf_unlock(VNF1048_HandleTypeDef* handle)
 
 void vnf_toggle_wdg(VNF1048_HandleTypeDef* handle)
 {
+#ifdef VNF_DEBUG
+    printf("TGL\n");
+#endif
+
     uint8_t cr3[4] = { 0x00, 0x00, 0x00, 0x00};
     vnf_read_reg(handle,VNF_CONTROL_REGISTER_3, cr3);
 
@@ -176,10 +180,14 @@ void vnf_toggle_wdg(VNF1048_HandleTypeDef* handle)
 
     uint8_t rx[4] = { 0x00, 0x00, 0x00, 0x00};
     vnf_write_reg(handle, VNF_CONTROL_REGISTER_3, &(cr3[1]), rx);
-    vnf_read_reg(handle, VNF_STATUS_REGISTER_1, rx);
 }
 
 void vnf_status1_read_error(VNF1048_HandleTypeDef* handle, uint8_t data[4])
 {
     printf("WD FAIL: %d", bit_manip_get(data[1], VNF_ST1_WD_FAIL));
+}
+
+void vnf_helper_print_data(uint8_t addr, uint8_t res[4])
+{
+    printf("PRINT: 0x%x SPI: 0x%x 0x%x 0x%x 0x%x\n", addr, res[0], res[1], res[2], res[3]);
 }
