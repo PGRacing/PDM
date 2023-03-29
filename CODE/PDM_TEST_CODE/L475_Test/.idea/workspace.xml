@@ -22,18 +22,22 @@
   <component name="ChangeListManager">
     <list default="true" id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="Added status and error typedef">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/stm32l4xx_it.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/stm32l4xx_it.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/vnf1048.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/vnf1048.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/stm32l4xx_hal_msp.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32l4xx_hal_msp.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/stm32l4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32l4xx_it.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/vnf1048.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/vnf1048.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/L475_Test.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/L475_Test.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2023-03-21T23-50-23-0086.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2023-03-22T17-31-06-0274.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" afterDir="false" />
@@ -155,7 +159,9 @@
       <workItem from="1679403120067" duration="596000" />
       <workItem from="1679418509705" duration="4770000" />
       <workItem from="1679442399532" duration="292000" />
-      <workItem from="1679500520172" duration="9412000" />
+      <workItem from="1679500520172" duration="13266000" />
+      <workItem from="1679864412725" duration="626000" />
+      <workItem from="1680044595401" duration="6065000" />
     </task>
     <task id="LOCAL-00001" summary="Modified VNF1048 read, but SPIERROR bit is HIGH">
       <created>1679364905986</created>
@@ -229,20 +235,10 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Core/Src/stm32l4xx_it.c</url>
-          <line>89</line>
+          <line>90</line>
           <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Core/Src/main.c</url>
-          <line>168</line>
-          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <inline-watch fileUrl="file://$PROJECT_DIR$/Core/Src/main.c" line="178">
-        <watch expression="res" />
-      </inline-watch>
-    </watches-manager>
   </component>
 </project>

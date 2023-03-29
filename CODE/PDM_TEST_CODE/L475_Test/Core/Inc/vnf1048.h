@@ -32,7 +32,8 @@ typedef struct VNF1048_HandleTypeDef_A
     GPIO_TypeDef* HWLO_Port;          /*!< HWLO port */
     uint16_t HWLO_Pin;                /*!< HWLO pin */
     uint8_t locked;                   /*!< IC state */
-    uint8_t error_register;   /*!< ERROR state */
+    uint8_t error_register;           /*!< ERROR state */
+    TIM_HandleTypeDef* wd_tim;
 } VNF1048_HandleTypeDef;
 
 /* TODO fix documentation of defines */
@@ -77,12 +78,28 @@ typedef struct VNF1048_HandleTypeDef_A
 #define VNF_ADVANCED_OPERATION 0x3F
 /** ///@}*/
 
+/** \defgroup STATUS 1
+ * ///@{
+ */
+/*
+ */
+#define VNF_GBO 0x01
+#define VNF_ST1_WD_FAIL 0x01
+#define VNF_ST1_NTC_OVT 0x04
+#define VNF_ST1_DEV_OUT 0x05
+#define VNF_ST1_FUSE_LATCH 0x07
+#define VNF_ST1_BYPASS_SAT 0x01
+
+/** ///@}*/
+
 
 void vnf_init(VNF1048_HandleTypeDef* handle);
 VNF_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t res[4]);
 VNF_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint8_t res[4]);
 VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, uint8_t reg, uint8_t data[3], uint8_t res[4]);
+void vnf_status1_read_error(VNF1048_HandleTypeDef* handle, uint8_t data[4]);
 void vnf_unlock(VNF1048_HandleTypeDef* handle);
+void vnf_toggle_wdg(VNF1048_HandleTypeDef* handle);
 
 uint8_t bit_manip_set(uint8_t* byte, uint8_t index);
 uint8_t bit_manip_reset(uint8_t* byte, uint8_t index);

@@ -38,6 +38,9 @@ void vnf_init(VNF1048_HandleTypeDef* handle)
     /* Setting HWLO bit */
     HAL_GPIO_WritePin(handle->HWLO_Port, handle->HWLO_Pin, GPIO_PIN_RESET);
 
+    /* Starting watchdog */
+    HAL_TIM_Base_Start_IT(handle->wd_tim);
+
     /* To go from STAND-BY to UNLOCKED or LOCKED */
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
     /* Can be as low as 100us */
@@ -131,8 +134,8 @@ VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg
         status = VNF_ERROR;
 
 #ifdef VNF_DEBUG
-    printf("TOBEWRITTEN REG: 0x%x SPI: %x %x %x %x\n", reg, tx[0], tx[1], tx[2], tx[3]);
-    printf("WRITE-OP REG: 0x%x SPI: %x %x %x %x\n", reg, res[0], res[1], res[2], res[3]);
+    //printf("TOBEWRITTEN REG: 0x%x SPI: %x %x %x %x\n", reg, tx[0], tx[1], tx[2], tx[3]);
+    //printf("WRITE-OP REG: 0x%x SPI: %x %x %x %x\n", reg, res[0], res[1], res[2], res[3]);
 #endif
 
     return status;
@@ -140,7 +143,6 @@ VNF_StatusTypeDef vnf_write_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg
 
 void vnf_unlock(VNF1048_HandleTypeDef* handle)
 {
-    /* TODO here add unlock method */
     uint8_t cr3[4] = { 0x00, 0x00, 0x00, 0x00};
     //vnf_read_reg(handle, VNF_CONTROL_REGISTER_3, cr3);
     uint8_t cr1[4] = { 0x00, 0x00, 0x00, 0x00};
@@ -157,4 +159,27 @@ void vnf_unlock(VNF1048_HandleTypeDef* handle)
 
     //HAL_Delay(100);
     vnf_read_reg(handle, VNF_CONTROL_REGISTER_1, rx);
+}
+
+void vnf_toggle_wdg(VNF1048_HandleTypeDef* handle)
+{
+    uint8_t cr3[4] = { 0x00, 0x00, 0x00, 0x00};
+    vnf_read_reg(handle,VNF_CONTROL_REGISTER_3, cr3);
+
+    if(bit_manip_get(cr3[3], 1))
+    {
+        bit_manip_reset(&(cr3[3]), 1);
+    }else
+    {
+        bit_manip_set(&(cr3[3]), 1);
+    }
+
+    uint8_t rx[4] = { 0x00, 0x00, 0x00, 0x00};
+    vnf_write_reg(handle, VNF_CONTROL_REGISTER_3, &(cr3[1]), rx);
+    vnf_read_reg(handle, VNF_STATUS_REGISTER_1, rx);
+}
+
+void vnf_status1_read_error(VNF1048_HandleTypeDef* handle, uint8_t data[4])
+{
+    printf("WD FAIL: %d", bit_manip_get(data[1], VNF_ST1_WD_FAIL));
 }

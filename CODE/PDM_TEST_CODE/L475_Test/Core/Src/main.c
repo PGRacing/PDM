@@ -53,6 +53,7 @@ SPI_HandleTypeDef hspi3;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3;
@@ -87,31 +88,23 @@ static void MX_TIM6_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
-
+/* VNF declaration */
+VNF1048_HandleTypeDef vnf1;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-
-/*
-void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim) {
-    if (htim == &htim2) {
-        switch (HAL_TIM_GetActiveChannel(&htim2)) {
-            case HAL_TIM_ACTIVE_CHANNEL_1:
-                HAL_GPIO_TogglePin(LED3_WIFI__LED4_BLE_GPIO_Port, LED3_WIFI__LED4_BLE_Pin);
-                break;
-            case HAL_TIM_ACTIVE_CHANNEL_2:
-                HAL_GPIO_TogglePin(LED3_WIFI__LED4_BLE_GPIO_Port, LED3_WIFI__LED4_BLE_Pin);
-                break;
-            case HAL_TIM_ACTIVE_CHANNEL_3:
-                HAL_GPIO_TogglePin(LED3_WIFI__LED4_BLE_GPIO_Port, LED3_WIFI__LED4_BLE_Pin);
-                break;
-        }
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* tim_handle)
+{
+    if(tim_handle == &htim7)
+    {
+        vnf_toggle_wdg(&vnf1);
     }
 }
-*/
+
 /* USER CODE END 0 */
 
 /**
@@ -153,40 +146,30 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_SPI1_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   //HAL_TIM_Base_Start_IT(&htim6);
   //HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
   //HAL_TIM_Base_Start_IT(&htim2);
   printf("\n ========== VNF1048 - TEST ========== \n");
 
-  VNF1048_HandleTypeDef vnf1;
   vnf1.hspi_vnf = &hspi1;
   vnf1.CS_Port = ARD_D7_GPIO_Port;
   vnf1.CS_Pin = ARD_D7_Pin;
   vnf1.HWLO_Pin = HWLO_PIN_Pin;
   vnf1.HWLO_Port = HWLO_PIN_GPIO_Port;
+  vnf1.wd_tim = &htim7;
   HAL_Delay(100);
   vnf_init(&vnf1);
   uint8_t rx[4] = {0x11, 0x22, 0x33, 0x44};
 
+  uint8_t res[4] = {0xFF, 0xFF, 0xFF, 0xFF};
+  vnf_read_reg(&vnf1, VNF_CONTROL_REGISTER_1, res);
 
-/*  vnf_read_reg(&vnf1, VNF_CONTROL_REGISTER_1, res);
-
+  vnf_toggle_wdg(&vnf1);
   vnf_unlock(&vnf1);
-  vnf_read_reg(&vnf1, VNF_STATUS_REGISTER_1, res);*/
-  for(int i=0; i < 100; i++)
-  {
-      uint8_t res[4] = {0xFF, 0xFF, 0xFF, 0xFF};
-      HAL_GPIO_TogglePin(HWLO_PIN_GPIO_Port, HWLO_PIN_Pin);
-      HAL_Delay(50);
-      vnf_read_reg(&vnf1, VNF_STATUS_REGISTER_1, res);
-      printf("%d\n",bit_manip_get(res[2],4));
-  }
-
-  /*for(int i=0x11; i < 0x18; i++)
-  {
-      vnf_read_reg(&vnf1, i, rx);
-  }*/
+  vnf_toggle_wdg(&vnf1);
+  vnf_read_reg(&vnf1, VNF_STATUS_REGISTER_1, res);
 
   /* USER CODE END 2 */
 
@@ -585,6 +568,44 @@ static void MX_TIM6_Init(void)
   /* USER CODE BEGIN TIM6_Init 2 */
 
   /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 7999;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 999;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 
