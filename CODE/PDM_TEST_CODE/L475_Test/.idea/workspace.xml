@@ -25,8 +25,13 @@
       <change beforePath="$PROJECT_DIR$/Core/Inc/vnf1048.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/vnf1048.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/vnf1048.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/vnf1048.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/L475_Test.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/L475_Test.ioc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2023-03-28T23-45-38-0215.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" afterDir="false" />
@@ -34,7 +39,10 @@
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_025949.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_031006.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-23_011325.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/fp-info-cache" beforeDir="false" afterPath="$PROJECT_DIR$/../../../PCB/PDM/fp-info-cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-11_161307.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +70,13 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../../.." value="6d817587f6a957c26700bf1d7b5de7e0017ae649" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+    <option name="RESET_MODE" value="MIXED" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Core/Inc/stm32l475e_iot01_qspi.h" root0="FORCE_HIGHLIGHTING" />
@@ -151,7 +165,11 @@
       <workItem from="1679442399532" duration="292000" />
       <workItem from="1679500520172" duration="13266000" />
       <workItem from="1679864412725" duration="626000" />
-      <workItem from="1680044595401" duration="8366000" />
+      <workItem from="1680044595401" duration="13708000" />
+      <workItem from="1681071943749" duration="26000" />
+      <workItem from="1681153775807" duration="4585000" />
+      <workItem from="1681226546322" duration="2498000" />
+      <workItem from="1681304311167" duration="9043000" />
     </task>
     <task id="LOCAL-00001" summary="Modified VNF1048 read, but SPIERROR bit is HIGH">
       <created>1679364905986</created>
@@ -227,6 +245,16 @@
           <url>file://$PROJECT_DIR$/Core/Src/stm32l4xx_it.c</url>
           <line>90</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Core/Src/vnf1048.c</url>
+          <line>10</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Core/Src/main.c</url>
+          <line>103</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

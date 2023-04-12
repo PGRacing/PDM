@@ -39,7 +39,7 @@ void vnf_init(VNF1048_HandleTypeDef* handle)
     HAL_GPIO_WritePin(handle->HWLO_Port, handle->HWLO_Pin, GPIO_PIN_RESET);
 
     /* Starting watchdog */
-    HAL_TIM_Base_Start_IT(handle->wd_tim);
+    //HAL_TIM_Base_Start_IT(handle->wd_tim);
 
     /* To go from STAND-BY to UNLOCKED or LOCKED */
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
@@ -59,7 +59,7 @@ VNF_StatusTypeDef vnf_read_reg(VNF1048_HandleTypeDef* handle, const uint8_t reg,
 {
     VNF_StatusTypeDef status = VNF_OK;
     HAL_StatusTypeDef hal_status = HAL_OK;
-    uint8_t tx[4] = { reg | READ_MASK, 0x00, 0x00, 0x00};
+    uint8_t tx[4] = { reg | READ_MASK, 0x69, 0x69, 0x69};
 
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
     hal_status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
@@ -83,7 +83,7 @@ VNF_StatusTypeDef vnf_read_rom(VNF1048_HandleTypeDef* handle, uint8_t addr, uint
 {
     VNF_StatusTypeDef status = VNF_OK;
     HAL_StatusTypeDef  hal_status = HAL_OK;
-    uint8_t tx[4] = { addr | READ_ROM_MASK, 0x00, 0x00, 0x00};
+    uint8_t tx[4] = { addr | READ_ROM_MASK, 0x55, 0x55, 0x55};
 
     HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
     hal_status = HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
@@ -190,4 +190,22 @@ void vnf_status1_read_error(VNF1048_HandleTypeDef* handle, uint8_t data[4])
 void vnf_helper_print_data(uint8_t addr, uint8_t res[4])
 {
     printf("PRINT: 0x%x SPI: 0x%x 0x%x 0x%x 0x%x\n", addr, res[0], res[1], res[2], res[3]);
+}
+
+void vnf_special_SWReset(VNF1048_HandleTypeDef* handle)
+{
+    uint8_t tx[4] = {0xFF, 0x00, 0x00, 0x00};
+    uint8_t res[4] = {0x00, 0x00, 0x00, 0x00};
+    HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
+    HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
+    HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_SET);
+}
+
+void vnf_special_clear_status(VNF1048_HandleTypeDef* handle)
+{
+    uint8_t tx[4] = {0xBF, 0x00, 0x00, 0x00};
+    uint8_t res[4] = {0x00, 0x00, 0x00, 0x00};
+    HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_RESET);
+    HAL_SPI_TransmitReceive(handle->hspi_vnf, tx, res, 4, HAL_MAX_DELAY);
+    HAL_GPIO_WritePin(handle->CS_Port, handle->CS_Pin, GPIO_PIN_SET);
 }

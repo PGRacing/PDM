@@ -105,7 +105,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* tim_handle)
     }
 }
 
-uint8_t imporant_data = 0xFF;
+uint8_t important_data_t1[4];
+uint8_t important_data_t2[4];
 /* USER CODE END 0 */
 
 /**
@@ -161,38 +162,46 @@ int main(void)
   vnf1.HWLO_Port = HWLO_PIN_GPIO_Port;
   vnf1.wd_tim = &htim7;
   vnf_init(&vnf1);
-  uint8_t rx[4] = {0x11, 0x22, 0x33, 0x44};
 
-  uint8_t res[4] = {0xFF, 0xFF, 0xFF, 0xFF};
-  vnf_read_reg(&vnf1, VNF_CONTROL_REGISTER_1, res);
+  uint8_t res[4];
 
-/*  vnf_toggle_wdg(&vnf1);
-  vnf_unlock(&vnf1);
-  vnf_toggle_wdg(&vnf1);*/
-/*    HAL_Delay(100);
-  vnf_read_reg(&vnf1, VNF_STATUS_REGISTER_1, res);
-  vnf_helper_print_data(VNF_STATUS_REGISTER_1, res);
-    HAL_Delay(100);
-  vnf_read_reg(&vnf1 ,VNF_CONTROL_REGISTER_1, res);
-    vnf_helper_print_data(VNF_CONTROL_REGISTER_1, res);
-    HAL_Delay(100);
-  vnf_read_reg(&vnf1 ,VNF_CONTROL_REGISTER_2, res);
-    vnf_helper_print_data(VNF_CONTROL_REGISTER_2, res);
-    HAL_Delay(100);
-  vnf_read_reg(&vnf1 ,VNF_CONTROL_REGISTER_3, res);
-    vnf_helper_print_data(VNF_CONTROL_REGISTER_3, res);*/
+ /* for(int i=VNF_STATUS_REGISTER_1; i  < VNF_STATUS_REGISTER_8; i++)
+  {
+      HAL_Delay(1000);
+      vnf_read_reg(&vnf1, i, res);
+      vnf_helper_print_data(i, res);
+  }*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+    while (1)
+    {
+        printf("=== \n");
+
+        for(int i=0x00; i < 0x06; i++)
+        {
+            vnf_read_rom(&vnf1, i, res);
+            vnf_helper_print_data(i, res);
+            HAL_Delay(957);
+        }
+
+        for(int i=0x0A; i <= 0x14; i++)
+        {
+            if(i == 0x12)
+            {
+                continue;
+            }
+            vnf_read_rom(&vnf1, i, res);
+            vnf_helper_print_data(i, res);
+            HAL_Delay(956);
+        }
+
+
     /* USER CODE END WHILE */
-      vnf_read_reg(&vnf1, VNF_STATUS_REGISTER_1, res);
-      imporant_data = res[3];
-      //HAL_Delay(100);
+
     /* USER CODE BEGIN 3 */
-  }
+    }
   /* USER CODE END 3 */
 }
 
@@ -398,13 +407,13 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
@@ -803,14 +812,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF8_UART4;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ARD_D10_Pin HWLO_PIN_Pin ARD_D7_Pin SPBTLE_RF_RST_Pin
-                           ARD_D9_Pin */
-  GPIO_InitStruct.Pin = ARD_D10_Pin|HWLO_PIN_Pin|ARD_D7_Pin|SPBTLE_RF_RST_Pin
-                          |ARD_D9_Pin;
+  /*Configure GPIO pins : ARD_D10_Pin HWLO_PIN_Pin SPBTLE_RF_RST_Pin ARD_D9_Pin */
+  GPIO_InitStruct.Pin = ARD_D10_Pin|HWLO_PIN_Pin|SPBTLE_RF_RST_Pin|ARD_D9_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : ARD_D7_Pin */
+  GPIO_InitStruct.Pin = ARD_D7_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(ARD_D7_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : ARD_D3_Pin */
   GPIO_InitStruct.Pin = ARD_D3_Pin;
