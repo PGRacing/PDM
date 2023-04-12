@@ -21,23 +21,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="Added status and error typedef">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/vnf1048.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/vnf1048.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/vnf1048.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/vnf1048.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/L475_Test.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/L475_Test.ioc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2023-03-28T23-45-38-0215.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.24.2/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_025949.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_031006.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-23_011325.zip" beforeDir="false" />
@@ -72,7 +56,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/../../.." value="6d817587f6a957c26700bf1d7b5de7e0017ae649" />
+        <entry key="$PROJECT_DIR$/../../.." value="7440f6a8e9b4881e095d992e50dfe7624242abe5" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
@@ -169,7 +153,7 @@
       <workItem from="1681071943749" duration="26000" />
       <workItem from="1681153775807" duration="4585000" />
       <workItem from="1681226546322" duration="2498000" />
-      <workItem from="1681304311167" duration="9043000" />
+      <workItem from="1681304311167" duration="9369000" />
     </task>
     <task id="LOCAL-00001" summary="Modified VNF1048 read, but SPIERROR bit is HIGH">
       <created>1679364905986</created>
