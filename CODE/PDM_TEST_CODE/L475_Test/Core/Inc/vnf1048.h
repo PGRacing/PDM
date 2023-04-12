@@ -101,6 +101,8 @@ void vnf_status1_read_error(VNF1048_HandleTypeDef* handle, uint8_t data[4]);
 void vnf_helper_print_data(uint8_t addr, uint8_t res[4]);
 void vnf_unlock(VNF1048_HandleTypeDef* handle);
 void vnf_toggle_wdg(VNF1048_HandleTypeDef* handle);
+void vnf_special_SWReset(VNF1048_HandleTypeDef* handle);
+void vnf_special_clear_status(VNF1048_HandleTypeDef* handle);
 
 uint8_t bit_manip_set(uint8_t* byte, uint8_t index);
 uint8_t bit_manip_reset(uint8_t* byte, uint8_t index);
