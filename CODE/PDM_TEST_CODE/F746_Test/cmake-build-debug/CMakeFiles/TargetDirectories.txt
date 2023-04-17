@@ -1,0 +1,3 @@
+C:/Users/Karol/Documents/GitHub/PDM/CODE/PDM_TEST_CODE/F746_Test/cmake-build-debug/CMakeFiles/F746_Test.elf.dir
+C:/Users/Karol/Documents/GitHub/PDM/CODE/PDM_TEST_CODE/F746_Test/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Karol/Documents/GitHub/PDM/CODE/PDM_TEST_CODE/F746_Test/cmake-build-debug/CMakeFiles/rebuild_cache.dir
