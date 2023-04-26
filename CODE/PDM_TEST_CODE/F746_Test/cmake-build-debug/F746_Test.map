@@ -120,17 +120,11 @@ Discarded input sections
  .text          0x00000000        0x0 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
  .data          0x00000000        0x0 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
  .bss           0x00000000        0x0 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .text.bit_manip_get
-                0x00000000        0x8 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
  .text.bit_manip_set
                 0x00000000       0x10 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
  .text.bit_manip_reset
                 0x00000000       0x10 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .text.vnf_check_global_status
-                0x00000000       0x1e CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
  .text.vnf_read_reg
-                0x00000000       0x62 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .text.vnf_read_rom
                 0x00000000       0x62 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
  .text.vnf_write_reg
                 0x00000000       0x76 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
@@ -545,8 +539,6 @@ Discarded input sections
                 0x00000000      0x14c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
  .text.HAL_GPIO_ReadPin
                 0x00000000        0xe CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
- .text.HAL_GPIO_TogglePin
-                0x00000000       0x12 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
  .text.HAL_GPIO_LockPin
                 0x00000000       0x2e CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
  .text.HAL_GPIO_EXTI_Callback
@@ -956,12 +948,6 @@ Discarded input sections
  .text          0x00000000        0x0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .data          0x00000000        0x0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .bss           0x00000000        0x0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .text.SPI_WaitFlagStateUntilTimeout
-                0x00000000       0xd4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .text.SPI_WaitFifoStateUntilTimeout
-                0x00000000       0xf4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .text.SPI_EndRxTxTransaction
-                0x00000000       0xa0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .text.SPI_EndRxTransaction
                 0x00000000       0xc4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .text.SPI_AbortRx_ISR
@@ -976,8 +962,6 @@ Discarded input sections
                 0x00000000       0x2c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .text.HAL_SPI_Transmit
                 0x00000000      0x200 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .text.HAL_SPI_TransmitReceive
-                0x00000000      0x2d8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .text.HAL_SPI_Receive
                 0x00000000      0x1a8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .text.HAL_SPI_Transmit_IT
@@ -1496,7 +1480,7 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x08000000                g_pfnVectors
                 0x080001c8                . = ALIGN (0x4)
 
-.text           0x080001c8     0x2b6c
+.text           0x080001c8     0x3190
                 0x080001c8                . = ALIGN (0x4)
  *(.text)
  .text          0x080001c8       0x40 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
@@ -1524,409 +1508,433 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
  .text.SystemClock_Config
                 0x08000754       0xa8 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
                 0x08000754                SystemClock_Config
- .text.main     0x080007fc       0x48 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+ .text.main     0x080007fc       0x90 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
                 0x080007fc                main
  .text.HAL_MspInit
-                0x08000844       0x30 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
-                0x08000844                HAL_MspInit
+                0x0800088c       0x30 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+                0x0800088c                HAL_MspInit
  .text.HAL_ETH_MspInit
-                0x08000874      0x110 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
-                0x08000874                HAL_ETH_MspInit
+                0x080008bc      0x110 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+                0x080008bc                HAL_ETH_MspInit
  .text.HAL_SPI_MspInit
-                0x08000984       0x6c CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
-                0x08000984                HAL_SPI_MspInit
+                0x080009cc       0x6c CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+                0x080009cc                HAL_SPI_MspInit
  .text.HAL_UART_MspInit
-                0x080009f0       0x8c CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
-                0x080009f0                HAL_UART_MspInit
+                0x08000a38       0x8c CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+                0x08000a38                HAL_UART_MspInit
  .text.HAL_PCD_MspInit
-                0x08000a7c       0xb0 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
-                0x08000a7c                HAL_PCD_MspInit
+                0x08000ac4       0xb0 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+                0x08000ac4                HAL_PCD_MspInit
  .text.NMI_Handler
-                0x08000b2c        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b2c                NMI_Handler
+                0x08000b74        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b74                NMI_Handler
  .text.HardFault_Handler
-                0x08000b2e        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b2e                HardFault_Handler
+                0x08000b76        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b76                HardFault_Handler
  .text.MemManage_Handler
-                0x08000b30        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b30                MemManage_Handler
+                0x08000b78        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b78                MemManage_Handler
  .text.BusFault_Handler
-                0x08000b32        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b32                BusFault_Handler
+                0x08000b7a        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b7a                BusFault_Handler
  .text.UsageFault_Handler
-                0x08000b34        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b34                UsageFault_Handler
+                0x08000b7c        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b7c                UsageFault_Handler
  .text.SVC_Handler
-                0x08000b36        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b36                SVC_Handler
+                0x08000b7e        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b7e                SVC_Handler
  .text.DebugMon_Handler
-                0x08000b38        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b38                DebugMon_Handler
+                0x08000b80        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b80                DebugMon_Handler
  .text.PendSV_Handler
-                0x08000b3a        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b3a                PendSV_Handler
+                0x08000b82        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b82                PendSV_Handler
  .text.SysTick_Handler
-                0x08000b3c        0x8 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
-                0x08000b3c                SysTick_Handler
+                0x08000b84        0x8 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+                0x08000b84                SysTick_Handler
  .text.SystemInit
-                0x08000b44        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
-                0x08000b44                SystemInit
+                0x08000b8c        0x2 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+                0x08000b8c                SystemInit
+ .text.bit_manip_get
+                0x08000b8e        0x8 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08000b8e                bit_manip_get
+ .text.vnf_check_global_status
+                0x08000b96       0x1e CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08000b96                vnf_check_global_status
  .text.vnf_init
-                0x08000b46       0x2e CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
-                0x08000b46                vnf_init
+                0x08000bb4       0x2e CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08000bb4                vnf_init
+ .text.vnf_read_rom
+                0x08000be2       0x62 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+                0x08000be2                vnf_read_rom
  .text.Reset_Handler
-                0x08000b74       0x50 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
-                0x08000b74                Reset_Handler
+                0x08000c44       0x50 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
+                0x08000c44                Reset_Handler
  .text.Default_Handler
-                0x08000bc4        0x2 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
-                0x08000bc4                RTC_Alarm_IRQHandler
-                0x08000bc4                EXTI2_IRQHandler
-                0x08000bc4                TIM8_CC_IRQHandler
-                0x08000bc4                UART8_IRQHandler
-                0x08000bc4                SPI4_IRQHandler
-                0x08000bc4                TIM1_CC_IRQHandler
-                0x08000bc4                DMA2_Stream5_IRQHandler
-                0x08000bc4                DMA1_Stream5_IRQHandler
-                0x08000bc4                PVD_IRQHandler
-                0x08000bc4                TAMP_STAMP_IRQHandler
-                0x08000bc4                CAN2_RX1_IRQHandler
-                0x08000bc4                EXTI3_IRQHandler
-                0x08000bc4                TIM8_TRG_COM_TIM14_IRQHandler
-                0x08000bc4                TIM1_UP_TIM10_IRQHandler
-                0x08000bc4                TIM8_UP_TIM13_IRQHandler
-                0x08000bc4                I2C3_ER_IRQHandler
-                0x08000bc4                EXTI0_IRQHandler
-                0x08000bc4                I2C2_EV_IRQHandler
-                0x08000bc4                DMA1_Stream2_IRQHandler
-                0x08000bc4                CAN1_RX0_IRQHandler
-                0x08000bc4                FPU_IRQHandler
-                0x08000bc4                OTG_HS_WKUP_IRQHandler
-                0x08000bc4                LTDC_ER_IRQHandler
-                0x08000bc4                CAN2_SCE_IRQHandler
-                0x08000bc4                DMA2_Stream2_IRQHandler
-                0x08000bc4                SPI1_IRQHandler
-                0x08000bc4                TIM6_DAC_IRQHandler
-                0x08000bc4                TIM1_BRK_TIM9_IRQHandler
-                0x08000bc4                DCMI_IRQHandler
-                0x08000bc4                CAN2_RX0_IRQHandler
-                0x08000bc4                DMA2_Stream3_IRQHandler
-                0x08000bc4                SAI2_IRQHandler
-                0x08000bc4                USART6_IRQHandler
-                0x08000bc4                USART3_IRQHandler
-                0x08000bc4                CAN1_RX1_IRQHandler
-                0x08000bc4                UART5_IRQHandler
-                0x08000bc4                DMA2_Stream0_IRQHandler
-                0x08000bc4                TIM4_IRQHandler
-                0x08000bc4                QUADSPI_IRQHandler
-                0x08000bc4                I2C1_EV_IRQHandler
-                0x08000bc4                DMA1_Stream6_IRQHandler
-                0x08000bc4                DMA1_Stream1_IRQHandler
-                0x08000bc4                UART4_IRQHandler
-                0x08000bc4                TIM3_IRQHandler
-                0x08000bc4                RCC_IRQHandler
-                0x08000bc4                TIM8_BRK_TIM12_IRQHandler
-                0x08000bc4                Default_Handler
-                0x08000bc4                CEC_IRQHandler
-                0x08000bc4                EXTI15_10_IRQHandler
-                0x08000bc4                ADC_IRQHandler
-                0x08000bc4                DMA1_Stream7_IRQHandler
-                0x08000bc4                SPI5_IRQHandler
-                0x08000bc4                TIM7_IRQHandler
-                0x08000bc4                SDMMC1_IRQHandler
-                0x08000bc4                CAN2_TX_IRQHandler
-                0x08000bc4                TIM5_IRQHandler
-                0x08000bc4                DMA2_Stream7_IRQHandler
-                0x08000bc4                I2C3_EV_IRQHandler
-                0x08000bc4                EXTI9_5_IRQHandler
-                0x08000bc4                RTC_WKUP_IRQHandler
-                0x08000bc4                LTDC_IRQHandler
-                0x08000bc4                ETH_WKUP_IRQHandler
-                0x08000bc4                SPDIF_RX_IRQHandler
-                0x08000bc4                SPI2_IRQHandler
-                0x08000bc4                OTG_HS_EP1_IN_IRQHandler
-                0x08000bc4                DMA1_Stream0_IRQHandler
-                0x08000bc4                CAN1_TX_IRQHandler
-                0x08000bc4                EXTI4_IRQHandler
-                0x08000bc4                RNG_IRQHandler
-                0x08000bc4                ETH_IRQHandler
-                0x08000bc4                OTG_HS_EP1_OUT_IRQHandler
-                0x08000bc4                WWDG_IRQHandler
-                0x08000bc4                SPI6_IRQHandler
-                0x08000bc4                I2C4_EV_IRQHandler
-                0x08000bc4                TIM2_IRQHandler
-                0x08000bc4                OTG_FS_WKUP_IRQHandler
-                0x08000bc4                TIM1_TRG_COM_TIM11_IRQHandler
-                0x08000bc4                OTG_HS_IRQHandler
-                0x08000bc4                DMA2D_IRQHandler
-                0x08000bc4                EXTI1_IRQHandler
-                0x08000bc4                UART7_IRQHandler
-                0x08000bc4                USART2_IRQHandler
-                0x08000bc4                I2C2_ER_IRQHandler
-                0x08000bc4                DMA2_Stream1_IRQHandler
-                0x08000bc4                CAN1_SCE_IRQHandler
-                0x08000bc4                FLASH_IRQHandler
-                0x08000bc4                DMA2_Stream4_IRQHandler
-                0x08000bc4                USART1_IRQHandler
-                0x08000bc4                OTG_FS_IRQHandler
-                0x08000bc4                SPI3_IRQHandler
-                0x08000bc4                DMA1_Stream4_IRQHandler
-                0x08000bc4                I2C1_ER_IRQHandler
-                0x08000bc4                FMC_IRQHandler
-                0x08000bc4                LPTIM1_IRQHandler
-                0x08000bc4                I2C4_ER_IRQHandler
-                0x08000bc4                DMA2_Stream6_IRQHandler
-                0x08000bc4                SAI1_IRQHandler
-                0x08000bc4                DMA1_Stream3_IRQHandler
- *fill*         0x08000bc6        0x2 
+                0x08000c94        0x2 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
+                0x08000c94                RTC_Alarm_IRQHandler
+                0x08000c94                EXTI2_IRQHandler
+                0x08000c94                TIM8_CC_IRQHandler
+                0x08000c94                UART8_IRQHandler
+                0x08000c94                SPI4_IRQHandler
+                0x08000c94                TIM1_CC_IRQHandler
+                0x08000c94                DMA2_Stream5_IRQHandler
+                0x08000c94                DMA1_Stream5_IRQHandler
+                0x08000c94                PVD_IRQHandler
+                0x08000c94                TAMP_STAMP_IRQHandler
+                0x08000c94                CAN2_RX1_IRQHandler
+                0x08000c94                EXTI3_IRQHandler
+                0x08000c94                TIM8_TRG_COM_TIM14_IRQHandler
+                0x08000c94                TIM1_UP_TIM10_IRQHandler
+                0x08000c94                TIM8_UP_TIM13_IRQHandler
+                0x08000c94                I2C3_ER_IRQHandler
+                0x08000c94                EXTI0_IRQHandler
+                0x08000c94                I2C2_EV_IRQHandler
+                0x08000c94                DMA1_Stream2_IRQHandler
+                0x08000c94                CAN1_RX0_IRQHandler
+                0x08000c94                FPU_IRQHandler
+                0x08000c94                OTG_HS_WKUP_IRQHandler
+                0x08000c94                LTDC_ER_IRQHandler
+                0x08000c94                CAN2_SCE_IRQHandler
+                0x08000c94                DMA2_Stream2_IRQHandler
+                0x08000c94                SPI1_IRQHandler
+                0x08000c94                TIM6_DAC_IRQHandler
+                0x08000c94                TIM1_BRK_TIM9_IRQHandler
+                0x08000c94                DCMI_IRQHandler
+                0x08000c94                CAN2_RX0_IRQHandler
+                0x08000c94                DMA2_Stream3_IRQHandler
+                0x08000c94                SAI2_IRQHandler
+                0x08000c94                USART6_IRQHandler
+                0x08000c94                USART3_IRQHandler
+                0x08000c94                CAN1_RX1_IRQHandler
+                0x08000c94                UART5_IRQHandler
+                0x08000c94                DMA2_Stream0_IRQHandler
+                0x08000c94                TIM4_IRQHandler
+                0x08000c94                QUADSPI_IRQHandler
+                0x08000c94                I2C1_EV_IRQHandler
+                0x08000c94                DMA1_Stream6_IRQHandler
+                0x08000c94                DMA1_Stream1_IRQHandler
+                0x08000c94                UART4_IRQHandler
+                0x08000c94                TIM3_IRQHandler
+                0x08000c94                RCC_IRQHandler
+                0x08000c94                TIM8_BRK_TIM12_IRQHandler
+                0x08000c94                Default_Handler
+                0x08000c94                CEC_IRQHandler
+                0x08000c94                EXTI15_10_IRQHandler
+                0x08000c94                ADC_IRQHandler
+                0x08000c94                DMA1_Stream7_IRQHandler
+                0x08000c94                SPI5_IRQHandler
+                0x08000c94                TIM7_IRQHandler
+                0x08000c94                SDMMC1_IRQHandler
+                0x08000c94                CAN2_TX_IRQHandler
+                0x08000c94                TIM5_IRQHandler
+                0x08000c94                DMA2_Stream7_IRQHandler
+                0x08000c94                I2C3_EV_IRQHandler
+                0x08000c94                EXTI9_5_IRQHandler
+                0x08000c94                RTC_WKUP_IRQHandler
+                0x08000c94                LTDC_IRQHandler
+                0x08000c94                ETH_WKUP_IRQHandler
+                0x08000c94                SPDIF_RX_IRQHandler
+                0x08000c94                SPI2_IRQHandler
+                0x08000c94                OTG_HS_EP1_IN_IRQHandler
+                0x08000c94                DMA1_Stream0_IRQHandler
+                0x08000c94                CAN1_TX_IRQHandler
+                0x08000c94                EXTI4_IRQHandler
+                0x08000c94                RNG_IRQHandler
+                0x08000c94                ETH_IRQHandler
+                0x08000c94                OTG_HS_EP1_OUT_IRQHandler
+                0x08000c94                WWDG_IRQHandler
+                0x08000c94                SPI6_IRQHandler
+                0x08000c94                I2C4_EV_IRQHandler
+                0x08000c94                TIM2_IRQHandler
+                0x08000c94                OTG_FS_WKUP_IRQHandler
+                0x08000c94                TIM1_TRG_COM_TIM11_IRQHandler
+                0x08000c94                OTG_HS_IRQHandler
+                0x08000c94                DMA2D_IRQHandler
+                0x08000c94                EXTI1_IRQHandler
+                0x08000c94                UART7_IRQHandler
+                0x08000c94                USART2_IRQHandler
+                0x08000c94                I2C2_ER_IRQHandler
+                0x08000c94                DMA2_Stream1_IRQHandler
+                0x08000c94                CAN1_SCE_IRQHandler
+                0x08000c94                FLASH_IRQHandler
+                0x08000c94                DMA2_Stream4_IRQHandler
+                0x08000c94                USART1_IRQHandler
+                0x08000c94                OTG_FS_IRQHandler
+                0x08000c94                SPI3_IRQHandler
+                0x08000c94                DMA1_Stream4_IRQHandler
+                0x08000c94                I2C1_ER_IRQHandler
+                0x08000c94                FMC_IRQHandler
+                0x08000c94                LPTIM1_IRQHandler
+                0x08000c94                I2C4_ER_IRQHandler
+                0x08000c94                DMA2_Stream6_IRQHandler
+                0x08000c94                SAI1_IRQHandler
+                0x08000c94                DMA1_Stream3_IRQHandler
+ *fill*         0x08000c96        0x2 
  .text.HAL_InitTick
-                0x08000bc8       0x4c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x08000bc8                HAL_InitTick
+                0x08000c98       0x4c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x08000c98                HAL_InitTick
  .text.HAL_Init
-                0x08000c14       0x16 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x08000c14                HAL_Init
- *fill*         0x08000c2a        0x2 
+                0x08000ce4       0x16 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x08000ce4                HAL_Init
+ *fill*         0x08000cfa        0x2 
  .text.HAL_IncTick
-                0x08000c2c       0x18 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x08000c2c                HAL_IncTick
+                0x08000cfc       0x18 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x08000cfc                HAL_IncTick
  .text.HAL_GetTick
-                0x08000c44        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x08000c44                HAL_GetTick
+                0x08000d14        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x08000d14                HAL_GetTick
  .text.HAL_Delay
-                0x08000c50       0x28 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x08000c50                HAL_Delay
+                0x08000d20       0x28 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x08000d20                HAL_Delay
  .text.HAL_NVIC_SetPriorityGrouping
-                0x08000c78       0x24 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
-                0x08000c78                HAL_NVIC_SetPriorityGrouping
+                0x08000d48       0x24 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+                0x08000d48                HAL_NVIC_SetPriorityGrouping
  .text.HAL_NVIC_SetPriority
-                0x08000c9c       0x6c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
-                0x08000c9c                HAL_NVIC_SetPriority
+                0x08000d6c       0x6c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+                0x08000d6c                HAL_NVIC_SetPriority
  .text.HAL_SYSTICK_Config
-                0x08000d08       0x28 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
-                0x08000d08                HAL_SYSTICK_Config
+                0x08000dd8       0x28 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+                0x08000dd8                HAL_SYSTICK_Config
  .text.ETH_MACAddressConfig
-                0x08000d30       0x30 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+                0x08000e00       0x30 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
  .text.ETH_DMATxDescListInit
-                0x08000d60       0x6e CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+                0x08000e30       0x6e CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
  .text.ETH_DMARxDescListInit
-                0x08000dce       0x84 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- *fill*         0x08000e52        0x2 
+                0x08000e9e       0x84 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ *fill*         0x08000f22        0x2 
  .text.ETH_SetMACConfig
-                0x08000e54       0xfc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+                0x08000f24       0xfc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
  .text.ETH_SetDMAConfig
-                0x08000f50       0xc0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+                0x08001020       0xc0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
  .text.ETH_MACDMAConfig
-                0x08001010       0xa2 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- *fill*         0x080010b2        0x2 
+                0x080010e0       0xa2 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ *fill*         0x08001182        0x2 
  .text.HAL_ETH_Init
-                0x080010b4       0xbc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
-                0x080010b4                HAL_ETH_Init
+                0x08001184       0xbc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+                0x08001184                HAL_ETH_Init
  .text.HAL_GPIO_Init
-                0x08001170      0x1f8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
-                0x08001170                HAL_GPIO_Init
+                0x08001240      0x1f8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+                0x08001240                HAL_GPIO_Init
  .text.HAL_GPIO_WritePin
-                0x08001368        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
-                0x08001368                HAL_GPIO_WritePin
+                0x08001438        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+                0x08001438                HAL_GPIO_WritePin
+ .text.HAL_GPIO_TogglePin
+                0x08001444       0x12 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+                0x08001444                HAL_GPIO_TogglePin
  .text.HAL_PCD_Init
-                0x08001374      0x13c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
-                0x08001374                HAL_PCD_Init
+                0x08001456      0x13c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+                0x08001456                HAL_PCD_Init
+ *fill*         0x08001592        0x2 
  .text.HAL_PCDEx_ActivateLPM
-                0x080014b0       0x28 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
-                0x080014b0                HAL_PCDEx_ActivateLPM
+                0x08001594       0x28 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+                0x08001594                HAL_PCDEx_ActivateLPM
  .text.HAL_PWR_EnableBkUpAccess
-                0x080014d8       0x10 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
-                0x080014d8                HAL_PWR_EnableBkUpAccess
+                0x080015bc       0x10 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+                0x080015bc                HAL_PWR_EnableBkUpAccess
  .text.HAL_RCC_OscConfig
-                0x080014e8      0x434 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
-                0x080014e8                HAL_RCC_OscConfig
+                0x080015cc      0x434 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+                0x080015cc                HAL_RCC_OscConfig
  .text.HAL_RCC_GetSysClockFreq
-                0x0800191c       0xd4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
-                0x0800191c                HAL_RCC_GetSysClockFreq
+                0x08001a00       0xd4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+                0x08001a00                HAL_RCC_GetSysClockFreq
  .text.HAL_RCC_ClockConfig
-                0x080019f0      0x16c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
-                0x080019f0                HAL_RCC_ClockConfig
+                0x08001ad4      0x16c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+                0x08001ad4                HAL_RCC_ClockConfig
  .text.HAL_RCC_GetHCLKFreq
-                0x08001b5c        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
-                0x08001b5c                HAL_RCC_GetHCLKFreq
+                0x08001c40        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+                0x08001c40                HAL_RCC_GetHCLKFreq
  .text.HAL_RCC_GetPCLK1Freq
-                0x08001b68       0x20 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
-                0x08001b68                HAL_RCC_GetPCLK1Freq
+                0x08001c4c       0x20 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+                0x08001c4c                HAL_RCC_GetPCLK1Freq
  .text.HAL_RCC_GetPCLK2Freq
-                0x08001b88       0x20 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
-                0x08001b88                HAL_RCC_GetPCLK2Freq
+                0x08001c6c       0x20 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+                0x08001c6c                HAL_RCC_GetPCLK2Freq
  .text.HAL_RCCEx_PeriphCLKConfig
-                0x08001ba8      0x5ac CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
-                0x08001ba8                HAL_RCCEx_PeriphCLKConfig
+                0x08001c8c      0x5ac CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+                0x08001c8c                HAL_RCCEx_PeriphCLKConfig
+ .text.SPI_WaitFlagStateUntilTimeout
+                0x08002238       0xd4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .text.SPI_WaitFifoStateUntilTimeout
+                0x0800230c       0xf4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .text.SPI_EndRxTxTransaction
+                0x08002400       0xa0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
  .text.HAL_SPI_Init
-                0x08002154       0xe8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
-                0x08002154                HAL_SPI_Init
+                0x080024a0       0xe8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+                0x080024a0                HAL_SPI_Init
+ .text.HAL_SPI_TransmitReceive
+                0x08002588      0x2d8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+                0x08002588                HAL_SPI_TransmitReceive
  .text.UART_SetConfig
-                0x0800223c      0x330 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
-                0x0800223c                UART_SetConfig
+                0x08002860      0x330 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+                0x08002860                UART_SetConfig
  .text.UART_AdvFeatureConfig
-                0x0800256c       0xca CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
-                0x0800256c                UART_AdvFeatureConfig
+                0x08002b90       0xca CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+                0x08002b90                UART_AdvFeatureConfig
  .text.UART_WaitOnFlagUntilTimeout
-                0x08002636       0xd8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
-                0x08002636                UART_WaitOnFlagUntilTimeout
+                0x08002c5a       0xd8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+                0x08002c5a                UART_WaitOnFlagUntilTimeout
  .text.UART_CheckIdleState
-                0x0800270e       0x4c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
-                0x0800270e                UART_CheckIdleState
+                0x08002d32       0x4c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+                0x08002d32                UART_CheckIdleState
  .text.HAL_UART_Init
-                0x0800275a       0x62 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
-                0x0800275a                HAL_UART_Init
+                0x08002d7e       0x62 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+                0x08002d7e                HAL_UART_Init
  .text.USB_CoreReset
-                0x080027bc       0x50 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08002de0       0x50 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
  .text.USB_CoreInit
-                0x0800280c       0x7c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x0800280c                USB_CoreInit
+                0x08002e30       0x7c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08002e30                USB_CoreInit
  .text.USB_DisableGlobalInt
-                0x08002888        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x08002888                USB_DisableGlobalInt
+                0x08002eac        0xc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08002eac                USB_DisableGlobalInt
  .text.USB_FlushTxFifo
-                0x08002894       0x50 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x08002894                USB_FlushTxFifo
+                0x08002eb8       0x50 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08002eb8                USB_FlushTxFifo
  .text.USB_FlushRxFifo
-                0x080028e4       0x4c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x080028e4                USB_FlushRxFifo
+                0x08002f08       0x4c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08002f08                USB_FlushRxFifo
  .text.USB_SetDevSpeed
-                0x08002930        0xe CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x08002930                USB_SetDevSpeed
- *fill*         0x0800293e        0x2 
+                0x08002f54        0xe CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08002f54                USB_SetDevSpeed
+ *fill*         0x08002f62        0x2 
  .text.USB_DevInit
-                0x08002940      0x188 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x08002940                USB_DevInit
+                0x08002f64      0x188 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08002f64                USB_DevInit
  .text.USB_DevDisconnect
-                0x08002ac8       0x1c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x08002ac8                USB_DevDisconnect
+                0x080030ec       0x1c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x080030ec                USB_DevDisconnect
  .text.USB_GetMode
-                0x08002ae4        0x8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x08002ae4                USB_GetMode
+                0x08003108        0x8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08003108                USB_GetMode
  .text.USB_SetCurrentMode
-                0x08002aec       0x62 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
-                0x08002aec                USB_SetCurrentMode
- *fill*         0x08002b4e        0x2 
+                0x08003110       0x62 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+                0x08003110                USB_SetCurrentMode
+ *fill*         0x08003172        0x2 
  .text.__libc_init_array
-                0x08002b50       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
-                0x08002b50                __libc_init_array
- .text.memset   0x08002b98       0xa4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
-                0x08002b98                memset
+                0x08003174       0x48 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
+                0x08003174                __libc_init_array
+ .text.memset   0x080031bc       0xa4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
+                0x080031bc                memset
  .text.startup.register_fini
-                0x08002c3c       0x14 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
- .text.atexit   0x08002c50        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
-                0x08002c50                atexit
+                0x08003260       0x14 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
+ .text.atexit   0x08003274        0xc c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
+                0x08003274                atexit
  .text.__libc_fini_array
-                0x08002c5c       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
-                0x08002c5c                __libc_fini_array
+                0x08003280       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
+                0x08003280                __libc_fini_array
  .text.__retarget_lock_acquire_recursive
-                0x08002c88        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
-                0x08002c88                __retarget_lock_acquire_recursive
+                0x080032ac        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
+                0x080032ac                __retarget_lock_acquire_recursive
  .text.__retarget_lock_release_recursive
-                0x08002c8c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
-                0x08002c8c                __retarget_lock_release_recursive
+                0x080032b0        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
+                0x080032b0                __retarget_lock_release_recursive
  .text.__register_exitproc
-                0x08002c90       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
-                0x08002c90                __register_exitproc
+                0x080032b4       0x8c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
+                0x080032b4                __register_exitproc
  *(.glue_7)
- .glue_7        0x08002d1c        0x0 linker stubs
+ .glue_7        0x08003340        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x08002d1c        0x0 linker stubs
+ .glue_7t       0x08003340        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x08002d1c        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+ .eh_frame      0x08003340        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
  *(.init)
- .init          0x08002d1c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
-                0x08002d1c                _init
- .init          0x08002d20        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
+ .init          0x08003340        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
+                0x08003340                _init
+ .init          0x08003344        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
  *(.fini)
- .fini          0x08002d28        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
-                0x08002d28                _fini
- .fini          0x08002d2c        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
-                0x08002d34                . = ALIGN (0x4)
-                0x08002d34                _etext = .
+ .fini          0x0800334c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crti.o
+                0x0800334c                _fini
+ .fini          0x08003350        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtn.o
+                0x08003358                . = ALIGN (0x4)
+                0x08003358                _etext = .
 
-.vfp11_veneer   0x08002d34        0x0
- .vfp11_veneer  0x08002d34        0x0 linker stubs
+.vfp11_veneer   0x08003358        0x0
+ .vfp11_veneer  0x08003358        0x0 linker stubs
 
-.v4_bx          0x08002d34        0x0
- .v4_bx         0x08002d34        0x0 linker stubs
+.v4_bx          0x08003358        0x0
+ .v4_bx         0x08003358        0x0 linker stubs
 
-.iplt           0x08002d34        0x0
- .iplt          0x08002d34        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+.iplt           0x08003358        0x0
+ .iplt          0x08003358        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
 
-.rodata         0x08002d34       0x1c
-                0x08002d34                . = ALIGN (0x4)
+.rodata         0x08003358       0x1c
+                0x08003358                . = ALIGN (0x4)
  *(.rodata)
  *(.rodata*)
  .rodata.AHBPrescTable
-                0x08002d34       0x10 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
-                0x08002d34                AHBPrescTable
+                0x08003358       0x10 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+                0x08003358                AHBPrescTable
  .rodata.APBPrescTable
-                0x08002d44        0x8 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
-                0x08002d44                APBPrescTable
+                0x08003368        0x8 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+                0x08003368                APBPrescTable
  .rodata._global_impure_ptr
-                0x08002d4c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-impure.o)
-                0x08002d4c                _global_impure_ptr
-                0x08002d50                . = ALIGN (0x4)
+                0x08003370        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-impure.o)
+                0x08003370                _global_impure_ptr
+                0x08003374                . = ALIGN (0x4)
 
-.ARM.extab      0x08002d50        0x0
-                0x08002d50                . = ALIGN (0x4)
+.ARM.extab      0x08003374        0x0
+                0x08003374                . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x08002d50                . = ALIGN (0x4)
+                0x08003374                . = ALIGN (0x4)
 
-.ARM            0x08002d50        0x8
-                0x08002d50                . = ALIGN (0x4)
-                0x08002d50                __exidx_start = .
+.ARM            0x08003374        0x8
+                0x08003374                . = ALIGN (0x4)
+                0x08003374                __exidx_start = .
  *(.ARM.exidx*)
- .ARM.exidx     0x08002d50        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
-                0x08002d58                __exidx_end = .
-                0x08002d58                . = ALIGN (0x4)
+ .ARM.exidx     0x08003374        0x8 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
+                0x0800337c                __exidx_end = .
+                0x0800337c                . = ALIGN (0x4)
 
-.rel.dyn        0x08002d58        0x0
- .rel.iplt      0x08002d58        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+.rel.dyn        0x0800337c        0x0
+ .rel.iplt      0x0800337c        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
 
-.preinit_array  0x08002d58        0x0
-                0x08002d58                . = ALIGN (0x4)
-                0x08002d58                PROVIDE (__preinit_array_start = .)
+.preinit_array  0x0800337c        0x0
+                0x0800337c                . = ALIGN (0x4)
+                0x0800337c                PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x08002d58                PROVIDE (__preinit_array_end = .)
-                0x08002d58                . = ALIGN (0x4)
+                0x0800337c                PROVIDE (__preinit_array_end = .)
+                0x0800337c                . = ALIGN (0x4)
 
-.init_array     0x08002d58        0x8
-                0x08002d58                . = ALIGN (0x4)
-                0x08002d58                PROVIDE (__init_array_start = .)
+.init_array     0x0800337c        0x8
+                0x0800337c                . = ALIGN (0x4)
+                0x0800337c                PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  .init_array.00000
-                0x08002d58        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
+                0x0800337c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
  *(.init_array*)
- .init_array    0x08002d5c        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
-                0x08002d60                PROVIDE (__init_array_end = .)
-                0x08002d60                . = ALIGN (0x4)
+ .init_array    0x08003380        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+                0x08003384                PROVIDE (__init_array_end = .)
+                0x08003384                . = ALIGN (0x4)
 
-.fini_array     0x08002d60        0x4
-                0x08002d60                . = ALIGN (0x4)
-                0x08002d60                PROVIDE (__fini_array_start = .)
+.fini_array     0x08003384        0x4
+                0x08003384                . = ALIGN (0x4)
+                0x08003384                PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x08002d60        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
-                0x08002d64                PROVIDE (__fini_array_end = .)
-                0x08002d64                . = ALIGN (0x4)
-                0x08002d64                _sidata = LOADADDR (.data)
+ .fini_array    0x08003384        0x4 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
+                0x08003388                PROVIDE (__fini_array_end = .)
+                0x08003388                . = ALIGN (0x4)
+                0x08003388                _sidata = LOADADDR (.data)
 
-.data           0x20000000      0x43c load address 0x08002d64
+.data           0x20000000      0x43c load address 0x08003388
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _sdata = .
  *(.data)
  *(.data*)
+ .data.read_time
+                0x20000000        0x4 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+                0x20000000                read_time
  .data.SystemCoreClock
-                0x20000000        0x4 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
-                0x20000000                SystemCoreClock
+                0x20000004        0x4 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+                0x20000004                SystemCoreClock
  .data.uwTickFreq
-                0x20000004        0x1 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x20000004                uwTickFreq
- *fill*         0x20000005        0x3 
+                0x20000008        0x1 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x20000008                uwTickFreq
+ *fill*         0x20000009        0x3 
  .data.uwTickPrio
-                0x20000008        0x4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x20000008                uwTickPrio
- *fill*         0x2000000c        0x4 
+                0x2000000c        0x4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x2000000c                uwTickPrio
  .data.impure_data
                 0x20000010      0x428 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-impure.o)
  .data.__atexit_recursive_mutex
@@ -1937,23 +1945,23 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x2000043c                . = ALIGN (0x4)
                 0x2000043c                _edata = .
 
-.igot.plt       0x2000043c        0x0 load address 0x080031a0
+.igot.plt       0x2000043c        0x0 load address 0x080037c4
  .igot.plt      0x2000043c        0x0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp/crtbegin.o
 
 .RxDecripSection
-                0x2000043c       0xa0 load address 0x080031a0
+                0x2000043c       0xa0 load address 0x080037c4
  .RxDecripSection
                 0x2000043c       0xa0 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
                 0x2000043c                DMARxDscrTab
 
 .TxDecripSection
-                0x200004dc       0xa0 load address 0x08003240
+                0x200004dc       0xa0 load address 0x08003864
  .TxDecripSection
                 0x200004dc       0xa0 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
                 0x200004dc                DMATxDscrTab
                 0x2000057c                . = ALIGN (0x4)
 
-.bss            0x2000057c      0x720 load address 0x080032e0
+.bss            0x2000057c      0x724 load address 0x08003904
                 0x2000057c                _sbss = .
                 0x2000057c                __bss_start__ = _sbss
  *(.bss)
@@ -1973,23 +1981,25 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
                 0x20000b90                hspi3
  .bss.huart3    0x20000bf4       0x88 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
                 0x20000bf4                huart3
- .bss.vnf1      0x20000c7c       0x18 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
-                0x20000c7c                vnf1
- .bss.uwTick    0x20000c94        0x4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
-                0x20000c94                uwTick
+ .bss.important_data
+                0x20000c7c        0x4 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+                0x20000c7c                important_data
+ .bss.vnf1      0x20000c80       0x18 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+                0x20000c80                vnf1
+ .bss.uwTick    0x20000c98        0x4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+                0x20000c98                uwTick
  .bss.__lock___atexit_recursive_mutex
-                0x20000c98        0x1 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
-                0x20000c98                __lock___atexit_recursive_mutex
+                0x20000c9c        0x1 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
+                0x20000c9c                __lock___atexit_recursive_mutex
  *(COMMON)
-                0x20000c9c                . = ALIGN (0x4)
- *fill*         0x20000c99        0x3 
-                0x20000c9c                _ebss = .
-                0x20000c9c                __bss_end__ = _ebss
+                0x20000ca0                . = ALIGN (0x4)
+ *fill*         0x20000c9d        0x3 
+                0x20000ca0                _ebss = .
+                0x20000ca0                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x20000c9c      0x604 load address 0x080032e0
+                0x20000ca0      0x600 load address 0x08003904
                 0x20000ca0                . = ALIGN (0x8)
- *fill*         0x20000c9c        0x4 
                 [!provide]                PROVIDE (end = .)
                 0x20000ca0                PROVIDE (_end = .)
                 0x20000ea0                . = (. + _Min_Heap_Size)
@@ -2076,45 +2086,63 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../
 LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libm.a
 LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a
 
-.debug_info     0x00000000    0x182bb
- .debug_info    0x00000000     0x2620 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
- .debug_info    0x00002620     0x21b8 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
- .debug_info    0x000047d8      0x12f CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
- .debug_info    0x00004907      0x3a7 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
- .debug_info    0x00004cae     0x1336 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_info    0x00005fe4       0x22 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
- .debug_info    0x00006006      0xa80 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
- .debug_info    0x00006a86     0x12d7 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
- .debug_info    0x00007d5d     0x285c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- .debug_info    0x0000a5b9      0x7da CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
- .debug_info    0x0000ad93     0x1ba3 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
- .debug_info    0x0000c936      0x802 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
- .debug_info    0x0000d138      0x99a CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
- .debug_info    0x0000dad2      0xbb7 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
- .debug_info    0x0000e689      0x899 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
- .debug_info    0x0000ef22     0x2219 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .debug_info    0x0001113b     0x5105 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
- .debug_info    0x00016240     0x207b CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+.debug_info     0x00000000    0x183e0
+ .debug_info    0x00000000     0x2745 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+ .debug_info    0x00002745     0x21b8 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+ .debug_info    0x000048fd      0x12f CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+ .debug_info    0x00004a2c      0x3a7 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+ .debug_info    0x00004dd3     0x1336 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_info    0x00006109       0x22 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
+ .debug_info    0x0000612b      0xa80 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+ .debug_info    0x00006bab     0x12d7 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+ .debug_info    0x00007e82     0x285c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ .debug_info    0x0000a6de      0x7da CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+ .debug_info    0x0000aeb8     0x1ba3 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+ .debug_info    0x0000ca5b      0x802 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+ .debug_info    0x0000d25d      0x99a CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+ .debug_info    0x0000dbf7      0xbb7 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+ .debug_info    0x0000e7ae      0x899 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+ .debug_info    0x0000f047     0x2219 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .debug_info    0x00011260     0x5105 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+ .debug_info    0x00016365     0x207b CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
 
-.debug_abbrev   0x00000000     0x25a5
- .debug_abbrev  0x00000000      0x2d3 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
- .debug_abbrev  0x000002d3      0x278 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
- .debug_abbrev  0x0000054b       0x7e CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
- .debug_abbrev  0x000005c9      0x119 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
- .debug_abbrev  0x000006e2      0x228 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_abbrev  0x0000090a       0x12 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
- .debug_abbrev  0x0000091c      0x206 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
- .debug_abbrev  0x00000b22      0x36a CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
- .debug_abbrev  0x00000e8c      0x2c4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- .debug_abbrev  0x00001150      0x1ef CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
- .debug_abbrev  0x0000133f      0x2b5 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
- .debug_abbrev  0x000015f4      0x1d4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
- .debug_abbrev  0x000017c8      0x1c2 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
- .debug_abbrev  0x0000198a      0x251 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
- .debug_abbrev  0x00001bdb      0x1d3 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
- .debug_abbrev  0x00001dae      0x24e CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .debug_abbrev  0x00001ffc      0x2de CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
- .debug_abbrev  0x000022da      0x2cb CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+.debug_abbrev   0x00000000     0x25d6
+ .debug_abbrev  0x00000000      0x304 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+ .debug_abbrev  0x00000304      0x278 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+ .debug_abbrev  0x0000057c       0x7e CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+ .debug_abbrev  0x000005fa      0x119 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+ .debug_abbrev  0x00000713      0x228 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_abbrev  0x0000093b       0x12 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
+ .debug_abbrev  0x0000094d      0x206 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+ .debug_abbrev  0x00000b53      0x36a CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+ .debug_abbrev  0x00000ebd      0x2c4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ .debug_abbrev  0x00001181      0x1ef CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+ .debug_abbrev  0x00001370      0x2b5 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+ .debug_abbrev  0x00001625      0x1d4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+ .debug_abbrev  0x000017f9      0x1c2 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+ .debug_abbrev  0x000019bb      0x251 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+ .debug_abbrev  0x00001c0c      0x1d3 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+ .debug_abbrev  0x00001ddf      0x24e CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .debug_abbrev  0x0000202d      0x2de CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+ .debug_abbrev  0x0000230b      0x2cb CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+
+.debug_loc      0x00000000     0xe1d5
+ .debug_loc     0x00000000       0x45 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+ .debug_loc     0x00000045      0x20a CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+ .debug_loc     0x0000024f      0x158 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+ .debug_loc     0x000003a7      0x40f CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_loc     0x000007b6      0x141 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+ .debug_loc     0x000008f7      0x734 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+ .debug_loc     0x0000102b     0x197c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ .debug_loc     0x000029a7      0x520 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+ .debug_loc     0x00002ec7     0x137b CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+ .debug_loc     0x00004242      0x16c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+ .debug_loc     0x000043ae       0x59 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+ .debug_loc     0x00004407      0x668 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+ .debug_loc     0x00004a6f      0x80e CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+ .debug_loc     0x0000527d     0x2039 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .debug_loc     0x000072b6     0x4978 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+ .debug_loc     0x0000bc2e     0x25a7 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
 
 .debug_aranges  0x00000000      0xe80
  .debug_aranges
@@ -2154,82 +2182,82 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
  .debug_aranges
                 0x00000cd8      0x1a8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
 
-.debug_ranges   0x00000000      0xde0
- .debug_ranges  0x00000000       0x48 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
- .debug_ranges  0x00000048       0x50 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
- .debug_ranges  0x00000098       0x50 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
- .debug_ranges  0x000000e8       0x18 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
- .debug_ranges  0x00000100       0x78 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_ranges  0x00000178       0x20 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
- .debug_ranges  0x00000198       0xf0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
- .debug_ranges  0x00000288       0xf8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
- .debug_ranges  0x00000380      0x1d0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- .debug_ranges  0x00000550       0x48 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
- .debug_ranges  0x00000598      0x138 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
- .debug_ranges  0x000006d0       0x38 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
- .debug_ranges  0x00000708       0x90 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
- .debug_ranges  0x00000798       0x78 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
- .debug_ranges  0x00000810       0x40 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
- .debug_ranges  0x00000850      0x1c8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .debug_ranges  0x00000a18      0x230 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
- .debug_ranges  0x00000c48      0x198 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+.debug_ranges   0x00000000      0xe10
+ .debug_ranges  0x00000000       0x78 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+ .debug_ranges  0x00000078       0x50 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+ .debug_ranges  0x000000c8       0x50 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+ .debug_ranges  0x00000118       0x18 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+ .debug_ranges  0x00000130       0x78 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_ranges  0x000001a8       0x20 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
+ .debug_ranges  0x000001c8       0xf0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+ .debug_ranges  0x000002b8       0xf8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+ .debug_ranges  0x000003b0      0x1d0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ .debug_ranges  0x00000580       0x48 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+ .debug_ranges  0x000005c8      0x138 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+ .debug_ranges  0x00000700       0x38 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+ .debug_ranges  0x00000738       0x90 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+ .debug_ranges  0x000007c8       0x78 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+ .debug_ranges  0x00000840       0x40 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+ .debug_ranges  0x00000880      0x1c8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .debug_ranges  0x00000a48      0x230 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+ .debug_ranges  0x00000c78      0x198 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
 
-.debug_line     0x00000000    0x11f8d
- .debug_line    0x00000000      0x831 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
- .debug_line    0x00000831      0x6bf CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
- .debug_line    0x00000ef0      0x1f9 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
- .debug_line    0x000010e9      0x281 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
- .debug_line    0x0000136a      0x5a8 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_line    0x00001912       0xc6 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
- .debug_line    0x000019d8      0x66d CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
- .debug_line    0x00002045      0x857 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
- .debug_line    0x0000289c     0x1e24 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- .debug_line    0x000046c0      0x795 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
- .debug_line    0x00004e55     0x15e4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
- .debug_line    0x00006439      0x3d8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
- .debug_line    0x00006811      0x539 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
- .debug_line    0x00006d4a      0xd2f CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
- .debug_line    0x00007a79      0xc30 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
- .debug_line    0x000086a9     0x29cf CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .debug_line    0x0000b078     0x502f CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
- .debug_line    0x000100a7     0x1ee6 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+.debug_line     0x00000000    0x11feb
+ .debug_line    0x00000000      0x88f CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+ .debug_line    0x0000088f      0x6bf CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+ .debug_line    0x00000f4e      0x1f9 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+ .debug_line    0x00001147      0x281 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+ .debug_line    0x000013c8      0x5a8 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_line    0x00001970       0xc6 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
+ .debug_line    0x00001a36      0x66d CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+ .debug_line    0x000020a3      0x857 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+ .debug_line    0x000028fa     0x1e24 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ .debug_line    0x0000471e      0x795 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+ .debug_line    0x00004eb3     0x15e4 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+ .debug_line    0x00006497      0x3d8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+ .debug_line    0x0000686f      0x539 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+ .debug_line    0x00006da8      0xd2f CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+ .debug_line    0x00007ad7      0xc30 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+ .debug_line    0x00008707     0x29cf CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .debug_line    0x0000b0d6     0x502f CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+ .debug_line    0x00010105     0x1ee6 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
 
-.debug_str      0x00000000     0x5e07
- .debug_str     0x00000000     0x186a CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
-                               0x19d9 (size before relaxing)
- .debug_str     0x0000186a      0x398 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+.debug_str      0x00000000     0x5e20
+ .debug_str     0x00000000     0x18c3 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+                               0x1a40 (size before relaxing)
+ .debug_str     0x000018c3      0x398 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
                                0x1622 (size before relaxing)
- .debug_str     0x00001c02       0xf5 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+ .debug_str     0x00001c5b       0xf5 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
                                 0x29d (size before relaxing)
- .debug_str     0x00001cf7       0xc5 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+ .debug_str     0x00001d50       0xc5 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
                                 0x3ac (size before relaxing)
- .debug_str     0x00001dbc      0x1e5 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_str     0x00001e15      0x1ce CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
                                 0xc42 (size before relaxing)
- .debug_str     0x00001fa1       0x74 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
+ .debug_str     0x00001fe3       0x74 CMakeFiles/F746_Test.elf.dir/Core/Startup/startup_stm32f746zgtx.s.obj
                                  0xc7 (size before relaxing)
- .debug_str     0x00002015      0x964 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+ .debug_str     0x00002057      0x958 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
                                 0xcc8 (size before relaxing)
- .debug_str     0x00002979      0x594 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+ .debug_str     0x000029af      0x58a CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
                                 0xe1d (size before relaxing)
- .debug_str     0x00002f0d      0xc61 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ .debug_str     0x00002f39      0xc61 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
                                0x16f2 (size before relaxing)
- .debug_str     0x00003b6e      0x118 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+ .debug_str     0x00003b9a      0x105 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
                                 0x56b (size before relaxing)
- .debug_str     0x00003c86      0x823 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+ .debug_str     0x00003c9f      0x823 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
                                 0xe71 (size before relaxing)
- .debug_str     0x000044a9      0x1a6 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+ .debug_str     0x000044c2      0x1a6 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
                                 0x7e7 (size before relaxing)
- .debug_str     0x0000464f      0x23d CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+ .debug_str     0x00004668      0x23d CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
                                 0x6ab (size before relaxing)
- .debug_str     0x0000488c      0x1f1 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+ .debug_str     0x000048a5      0x1f1 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
                                 0x78c (size before relaxing)
- .debug_str     0x00004a7d      0x185 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+ .debug_str     0x00004a96      0x185 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
                                 0x763 (size before relaxing)
- .debug_str     0x00004c02      0x5b9 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .debug_str     0x00004c1b      0x5b9 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
                                 0xcca (size before relaxing)
- .debug_str     0x000051bb      0x79f CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+ .debug_str     0x000051d4      0x79f CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
                                0x1080 (size before relaxing)
- .debug_str     0x0000595a      0x4ad CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+ .debug_str     0x00005973      0x4ad CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
                                 0xd6c (size before relaxing)
 
 .comment        0x00000000       0x49
@@ -2252,47 +2280,30 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
  .comment       0x00000049       0x4a CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
  .comment       0x00000049       0x4a CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
 
-.debug_frame    0x00000000     0x2810
- .debug_frame   0x00000000       0xe0 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
- .debug_frame   0x000000e0      0x11c CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
- .debug_frame   0x000001fc       0xa8 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
- .debug_frame   0x000002a4       0x30 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
- .debug_frame   0x000002d4      0x184 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_frame   0x00000458      0x20c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
- .debug_frame   0x00000664      0x148 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
- .debug_frame   0x000007ac      0x548 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- .debug_frame   0x00000cf4       0xd8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
- .debug_frame   0x00000dcc      0x388 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
- .debug_frame   0x00001154       0x7c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
- .debug_frame   0x000011d0      0x128 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
- .debug_frame   0x000012f8      0x178 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
- .debug_frame   0x00001470       0xc0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
- .debug_frame   0x00001530      0x5d8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .debug_frame   0x00001b08      0x5fc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
- .debug_frame   0x00002104      0x4c0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
- .debug_frame   0x000025c4       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x000025f0       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
- .debug_frame   0x00002624       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
- .debug_frame   0x00002650       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
- .debug_frame   0x0000267c       0x5c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
- .debug_frame   0x000026d8       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
- .debug_frame   0x000026f8       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
- .debug_frame   0x0000272c       0xb0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
- .debug_frame   0x000027dc       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)
-
-.debug_loc      0x00000000     0xe190
- .debug_loc     0x00000000      0x20a CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
- .debug_loc     0x0000020a      0x158 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
- .debug_loc     0x00000362      0x40f CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_loc     0x00000771      0x141 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
- .debug_loc     0x000008b2      0x734 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
- .debug_loc     0x00000fe6     0x197c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
- .debug_loc     0x00002962      0x520 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
- .debug_loc     0x00002e82     0x137b CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
- .debug_loc     0x000041fd      0x16c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
- .debug_loc     0x00004369       0x59 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
- .debug_loc     0x000043c2      0x668 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
- .debug_loc     0x00004a2a      0x80e CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
- .debug_loc     0x00005238     0x2039 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
- .debug_loc     0x00007271     0x4978 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
- .debug_loc     0x0000bbe9     0x25a7 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+.debug_frame    0x00000000     0x2814
+ .debug_frame   0x00000000       0xe4 CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj
+ .debug_frame   0x000000e4      0x11c CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_hal_msp.c.obj
+ .debug_frame   0x00000200       0xa8 CMakeFiles/F746_Test.elf.dir/Core/Src/stm32f7xx_it.c.obj
+ .debug_frame   0x000002a8       0x30 CMakeFiles/F746_Test.elf.dir/Core/Src/system_stm32f7xx.c.obj
+ .debug_frame   0x000002d8      0x184 CMakeFiles/F746_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_frame   0x0000045c      0x20c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c.obj
+ .debug_frame   0x00000668      0x148 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c.obj
+ .debug_frame   0x000007b0      0x548 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_eth.c.obj
+ .debug_frame   0x00000cf8       0xd8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c.obj
+ .debug_frame   0x00000dd0      0x388 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c.obj
+ .debug_frame   0x00001158       0x7c CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c.obj
+ .debug_frame   0x000011d4      0x128 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c.obj
+ .debug_frame   0x000012fc      0x178 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c.obj
+ .debug_frame   0x00001474       0xc0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c.obj
+ .debug_frame   0x00001534      0x5d8 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c.obj
+ .debug_frame   0x00001b0c      0x5fc CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c.obj
+ .debug_frame   0x00002108      0x4c0 CMakeFiles/F746_Test.elf.dir/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c.obj
+ .debug_frame   0x000025c8       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x000025f4       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m/nofp\libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x00002628       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-init.o)
+ .debug_frame   0x00002654       0x2c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-memset.o)
+ .debug_frame   0x00002680       0x5c c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__call_atexit.o)
+ .debug_frame   0x000026dc       0x20 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-atexit.o)
+ .debug_frame   0x000026fc       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-fini.o)
+ .debug_frame   0x00002730       0xb0 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-lock.o)
+ .debug_frame   0x000027e0       0x34 c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp\libg.a(lib_a-__atexit.o)

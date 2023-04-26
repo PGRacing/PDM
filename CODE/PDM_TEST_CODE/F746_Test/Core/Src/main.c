@@ -91,11 +91,14 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
 /* VNF declaration */
 VNF1048_HandleTypeDef vnf1;
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+volatile uint8_t important_data[4] = {0x00, 0x00, 0x00, 0x00};
+volatile int32_t read_time = 0x30;
+volatile uint8_t addr = 0x00;
 /* USER CODE END 0 */
 
 /**
@@ -148,6 +151,16 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+    memset(important_data, 0x11, 4);
+    int32_t start = HAL_GetTick();
+    for(int i=VNF_ROM_COMPANY_CODE; i < VNF_ROM_PRODUCT_CODE_4; i++)
+    {
+        addr = i;
+        vnf_read_rom(&vnf1, i, important_data);
+        read_time = HAL_GetTick() - start;
+        HAL_Delay(100);
+        HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    }
 
     /* USER CODE BEGIN 3 */
   }
