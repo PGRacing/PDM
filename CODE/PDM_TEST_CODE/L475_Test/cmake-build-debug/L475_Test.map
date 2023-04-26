@@ -3870,33 +3870,33 @@ LOAD c:/progra~2/gnuarm~1/102021~1.10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/
  .debug_ranges  0x00001760      0x230 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
  .debug_ranges  0x00001990      0x190 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
-.debug_line     0x00000000    0x228d5
- .debug_line    0x00000000      0xf29 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
- .debug_line    0x00000f29      0xa49 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
- .debug_line    0x00001972      0x3f1 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
- .debug_line    0x00001d63      0x40a CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
- .debug_line    0x0000216d      0x1cd CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
- .debug_line    0x0000233a      0x2c5 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
- .debug_line    0x000025ff      0x60e CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
- .debug_line    0x00002c0d       0xc6 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
- .debug_line    0x00002cd3      0x772 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
- .debug_line    0x00003445      0x84d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
- .debug_line    0x00003c92     0x1f73 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
- .debug_line    0x00005c05      0x765 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
- .debug_line    0x0000636a     0x4df2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
- .debug_line    0x0000b15c      0x554 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
- .debug_line    0x0000b6b0     0x1465 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
- .debug_line    0x0000cb15      0x52e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
- .debug_line    0x0000d043      0x4f4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
- .debug_line    0x0000d537      0xb84 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
- .debug_line    0x0000e0bb     0x165a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
- .debug_line    0x0000f715      0xf8f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
- .debug_line    0x000106a4     0x15c2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
- .debug_line    0x00011c66     0x29a5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
- .debug_line    0x0001460b     0x52db CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
- .debug_line    0x000198e6     0x2007 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
- .debug_line    0x0001b8ed     0x5345 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
- .debug_line    0x00020c32     0x1ca3 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
+.debug_line     0x00000000    0x228dc
+ .debug_line    0x00000000      0xf30 CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj
+ .debug_line    0x00000f30      0xa49 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_hal_msp.c.obj
+ .debug_line    0x00001979      0x3f1 CMakeFiles/L475_Test.elf.dir/Core/Src/stm32l4xx_it.c.obj
+ .debug_line    0x00001d6a      0x40a CMakeFiles/L475_Test.elf.dir/Core/Src/syscalls.c.obj
+ .debug_line    0x00002174      0x1cd CMakeFiles/L475_Test.elf.dir/Core/Src/sysmem.c.obj
+ .debug_line    0x00002341      0x2c5 CMakeFiles/L475_Test.elf.dir/Core/Src/system_stm32l4xx.c.obj
+ .debug_line    0x00002606      0x60e CMakeFiles/L475_Test.elf.dir/Core/Src/vnf1048.c.obj
+ .debug_line    0x00002c14       0xc6 CMakeFiles/L475_Test.elf.dir/Core/Startup/startup_stm32l475vgtx.s.obj
+ .debug_line    0x00002cda      0x772 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c.obj
+ .debug_line    0x0000344c      0x84d CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c.obj
+ .debug_line    0x00003c99     0x1f73 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dfsdm.c.obj
+ .debug_line    0x00005c0c      0x765 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c.obj
+ .debug_line    0x00006371     0x4df2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c.obj
+ .debug_line    0x0000b163      0x554 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c.obj
+ .debug_line    0x0000b6b7     0x1465 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c.obj
+ .debug_line    0x0000cb1c      0x52e CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c.obj
+ .debug_line    0x0000d04a      0x4f4 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c.obj
+ .debug_line    0x0000d53e      0xb84 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c.obj
+ .debug_line    0x0000e0c2     0x165a CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_qspi.c.obj
+ .debug_line    0x0000f71c      0xf8f CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c.obj
+ .debug_line    0x000106ab     0x15c2 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c.obj
+ .debug_line    0x00011c6d     0x29a5 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c.obj
+ .debug_line    0x00014612     0x52db CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c.obj
+ .debug_line    0x000198ed     0x2007 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c.obj
+ .debug_line    0x0001b8f4     0x5345 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c.obj
+ .debug_line    0x00020c39     0x1ca3 CMakeFiles/L475_Test.elf.dir/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c.obj
 
 .debug_str      0x00000000     0x8e81
  .debug_str     0x00000000     0x200f CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj

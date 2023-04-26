@@ -21,7 +21,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5b89d396-930c-4811-8b2e-88e3386f91c9" name="Changes" comment="Added status and error typedef">
-      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../F746_Test/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../F746_Test/CMakeLists_template.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.elf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.hex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/L475_Test.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_025949.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_031006.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-23_011325.zip" beforeDir="false" />
@@ -56,7 +65,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/../../.." value="7440f6a8e9b4881e095d992e50dfe7624242abe5" />
+        <entry key="$PROJECT_DIR$/../../.." value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
@@ -106,12 +115,12 @@
     </key>
   </component>
   <component name="RunManager" selected="Embedded GDB Server.L475">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="L475_Test.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="L475_Test" TARGET_NAME="L475_Test.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="L475_Test" RUN_TARGET_NAME="L475_Test.elf">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="L475_Test.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="L475_Test" TARGET_NAME="L475_Test.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="L475_Test" RUN_TARGET_NAME="L475_Test.elf">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -154,6 +163,7 @@
       <workItem from="1681153775807" duration="4585000" />
       <workItem from="1681226546322" duration="2498000" />
       <workItem from="1681304311167" duration="9369000" />
+      <workItem from="1681671515354" duration="37000" />
     </task>
     <task id="LOCAL-00001" summary="Modified VNF1048 read, but SPIERROR bit is HIGH">
       <created>1679364905986</created>
