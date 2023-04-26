@@ -1,6 +1,6 @@
 (kicad_sch (version 20211123) (generator eeschema)
 
-  (uuid 4579271f-fb73-4c06-a323-b59263b20113)
+  (uuid 1a1591b5-8cee-4238-8cb8-2b2afc3f0109)
 
   (paper "A5")
 
@@ -595,7 +595,7 @@
     (uuid 073736c3-2fe0-4293-b696-2a14843fb3d1)
     (property "Reference" "IC1" (id 0) (at 107.95 43.18 0))
     (property "Value" "BTS500101TAEATMA1" (id 1) (at 107.95 45.72 0))
-    (property "Footprint" "PG-TO263-7-3_3" (id 2) (at 119.38 43.18 0)
+    (property "Footprint" "PDMS_Additional:PG-TO263-7-3_3" (id 2) (at 119.38 43.18 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Datasheet" "https://www.infineon.com/dgdl/Infineon-BTS50010-1TAE-DS-v01_00-EN.pdf?fileId=5546d46264a8de7e0164b1f26319144f" (id 3) (at 119.38 45.72 0)

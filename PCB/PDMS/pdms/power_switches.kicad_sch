@@ -8,7 +8,6 @@
   )
 
 
-
   (sheet (at 60.96 67.31) (size 24.13 10.16) (fields_autoplaced)
     (stroke (width 0.1524) (type solid) (color 0 0 0 0))
     (fill (color 0 0 0 0.0000))
