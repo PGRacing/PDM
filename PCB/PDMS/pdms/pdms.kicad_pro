@@ -466,6 +466,10 @@
     [
       "ee696816-eeb6-45c3-9206-b70220f19875",
       "POWER"
+    ],
+    [
+      "0bc730b5-3de0-4ee2-82e7-e6324d6cb059",
+      "USER_PERIPHERAL"
     ]
   ],
   "text_variables": {}
