@@ -460,6 +460,10 @@
       "PERIPHERAL"
     ],
     [
+      "38112cda-c962-4efc-8abd-7fa61cf21a14",
+      "REVERSE_POLARITY_PROT"
+    ],
+    [
       "ede01c72-e1bf-446e-aa54-1b058e72b3c5",
       "CAN_BUS1"
     ],
