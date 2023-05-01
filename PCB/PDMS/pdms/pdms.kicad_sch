@@ -3925,6 +3925,12 @@
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300/06551b45-4aae-4693-9efa-6edb9550ad40"
       (reference "#PWR0276") (unit 1) (value "GND") (footprint "")
     )
+    (path "/ede01c72-e1bf-446e-aa54-1b058e72b3c5/2054a217-b53a-432c-8859-4057a6b90438"
+      (reference "#PWR0277") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/ede01c72-e1bf-446e-aa54-1b058e72b3c5/08f949ea-7277-4150-b02a-536b9b89fcd6"
+      (reference "#PWR0278") (unit 1) (value "GND") (footprint "")
+    )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/afc75a69-04d1-4636-8ea3-b3fe3061a65f"
       (reference "BZ1") (unit 1) (value "Buzzer") (footprint "Buzzer_Beeper:Buzzer_Murata_PKLCS1212E")
     )
@@ -4215,6 +4221,12 @@
     )
     (path "/2d272d29-2d37-453d-ba8c-6739a3d9a27c/4d4ecde7-b681-4720-954a-e3ff99359dbc"
       (reference "D26") (unit 2) (value "BAT54BRW-7-F") (footprint "PDM_Additional:SOT65P210X110-6N")
+    )
+    (path "/ede01c72-e1bf-446e-aa54-1b058e72b3c5/9dd4eff8-7489-4260-8c07-d0885e352c98"
+      (reference "D27") (unit 1) (value "PESD2CANFD24L-UX") (footprint "SOT65P210X110-3N")
+    )
+    (path "/ede01c72-e1bf-446e-aa54-1b058e72b3c5/37d6b0fa-7ee8-4b8a-b3b8-df7da67e7f37"
+      (reference "D28") (unit 1) (value "PESD2CANFD24L-UX") (footprint "SOT65P210X110-3N")
     )
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300/7d842521-5d6e-434f-86e0-4f60bd576392"
       (reference "F1") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_0805_2012Metric")
