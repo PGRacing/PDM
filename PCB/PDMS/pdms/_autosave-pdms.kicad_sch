@@ -3894,14 +3894,14 @@
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/07dbe068-973c-4b61-b2bc-6434aa5d91f9"
       (reference "D19") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
     )
-    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/523abb9a-450f-45b9-bfd9-159e0ed2f965"
-      (reference "D?") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
-    )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/78bd61e5-2cb8-4c1b-ac5b-b1d9f4f5019b"
-      (reference "D?") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
+      (reference "D20") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
+    )
+    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/523abb9a-450f-45b9-bfd9-159e0ed2f965"
+      (reference "D21") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
     )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/ad661737-fdea-4331-b519-786ea249cde6"
-      (reference "D?") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
+      (reference "D22") (unit 1) (value "WS2812B") (footprint "LED_SMD:LED_WS2812B-2020_PLCC4_2.0x2.0mm")
     )
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300/7d842521-5d6e-434f-86e0-4f60bd576392"
       (reference "F1") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_0805_2012Metric")
@@ -3939,14 +3939,14 @@
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300/286532f5-f10a-4301-a195-2ad20410cc13"
       (reference "IC11") (unit 1) (value "MP2332HGTL-P") (footprint "WHEEL_07_LIBRARY_LOADER:SOTFL50P160X60-8N")
     )
-    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/839b5c3e-94e7-4458-9070-cb387ff247e0"
-      (reference "IC?") (unit 1) (value "TMP126NDCKR") (footprint "PDM_Additional:SOT65P210X110-6N")
+    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/b4e7c44a-23f1-495e-afb2-998ed62cb4ba"
+      (reference "IC12") (unit 1) (value "TMP126NDCKR") (footprint "PDM_Additional:SOT65P210X110-6N")
     )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/aac73fd8-2888-4e68-9183-d603023d5d00"
-      (reference "IC?") (unit 1) (value "TMP126NDCKR") (footprint "PDM_Additional:SOT65P210X110-6N")
+      (reference "IC13") (unit 1) (value "TMP126NDCKR") (footprint "PDM_Additional:SOT65P210X110-6N")
     )
-    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/b4e7c44a-23f1-495e-afb2-998ed62cb4ba"
-      (reference "IC?") (unit 1) (value "TMP126NDCKR") (footprint "PDM_Additional:SOT65P210X110-6N")
+    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/839b5c3e-94e7-4458-9070-cb387ff247e0"
+      (reference "IC14") (unit 1) (value "TMP126NDCKR") (footprint "PDM_Additional:SOT65P210X110-6N")
     )
     (path "/383b33d1-dccf-4bcb-9f80-c6a7ecc232bc"
       (reference "J1") (unit 1) (value "DBG") (footprint "Connector_PinHeader_1.27mm:PinHeader_2x03_P1.27mm_Vertical")
@@ -4158,17 +4158,17 @@
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300/6cca82d4-3799-482f-a792-9a320e76c6f8"
       (reference "R64") (unit 1) (value "40.2k") (footprint "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder")
     )
-    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/b42ba4f3-6262-4a6f-b309-93a712e90c04"
-      (reference "R72") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/1fdaf927-4ace-4624-91c8-1ab7a655e667"
+      (reference "R65") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/1213ff29-5e68-419d-856e-002b7f1a986f"
-      (reference "R?") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
-    )
-    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/1fdaf927-4ace-4624-91c8-1ab7a655e667"
-      (reference "R?") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R66") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/fc0bdff7-d22b-4002-b499-c1e55011b425"
-      (reference "R?") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R67") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
+    )
+    (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/b42ba4f3-6262-4a6f-b309-93a712e90c04"
+      (reference "R72") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b84c6964-5564-4d57-8b96-ee4462f76a3a"
       (reference "TP1") (unit 1) (value "3.3V PG") (footprint "")

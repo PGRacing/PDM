@@ -456,20 +456,16 @@
       "BTS722204"
     ],
     [
-      "0146cb46-a844-4944-a63c-4437fa4e3162",
-      "MCU"
-    ],
-    [
-      "a632db23-867d-4304-910f-abbbc70d8cd0",
-      "CAN_BUS"
-    ],
-    [
-      "ee696816-eeb6-45c3-9206-b70220f19875",
-      "POWER"
-    ],
-    [
       "0bc730b5-3de0-4ee2-82e7-e6324d6cb059",
-      "USER_PERIPHERAL"
+      "PERIPHERAL"
+    ],
+    [
+      "ede01c72-e1bf-446e-aa54-1b058e72b3c5",
+      "CAN_BUS1"
+    ],
+    [
+      "f45d3215-b43f-44a4-abd3-b7200f9eb300",
+      "POWER1"
     ]
   ],
   "text_variables": {}

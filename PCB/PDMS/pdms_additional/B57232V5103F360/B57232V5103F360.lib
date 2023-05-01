@@ -1,0 +1,28 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model B57232V5103F360
+#/385134/665215/2.49/2/2/Thermistor
+DEF B57232V5103F360 RT 0 30 Y Y 1 F N
+F0 "RT" 550 250 50 H V L CNN
+F1 "B57232V5103F360" 550 150 50 H V L CNN
+F2 "THRMC1005X60N" 550 50 50 H I L CNN
+F3 "https://product.tdk.com/system/files/dam/doc/product/sensor/ntc/chip-ntc-thermistor/data_sheet/50/db/ntc/ntc_smd_automotive_series_0402.pdf" 550 -50 50 H I L CNN
+F4 "Chip NTC Thermistors (Sensor), Resistance (at 25?C)=10k?, Resistance Tolerance (at 25?C)=?3%" 550 -150 50 H I L CNN "Description"
+F5 "0.6" 550 -250 50 H I L CNN "Height"
+F6 "TDK" 550 -350 50 H I L CNN "Manufacturer_Name"
+F7 "B57232V5103F360" 550 -450 50 H I L CNN "Manufacturer_Part_Number"
+F8 "871-B57232V5103F360" 550 -550 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.com/Search/Refine.aspx?Keyword=871-B57232V5103F360" 550 -650 50 H I L CNN "Mouser Price/Stock"
+F10 "" 550 -750 50 H I L CNN "Arrow Part Number"
+F11 "" 550 -850 50 H I L CNN "Arrow Price/Stock"
+F12 "" 550 -950 50 H I L CNN "Mouser Testing Part Number"
+F13 "" 550 -1050 50 H I L CNN "Mouser Testing Price/Stock"
+DRAW
+X ~ 1 0 0 200 R 50 50 0 0 P
+X ~ 2 700 0 200 L 50 50 0 0 P
+P 5 0 1 6 200 50 500 50 500 -50 200 -50 200 50 N
+P 3 0 1 6 220 -80 280 -80 420 80 N
+ENDDRAW
+ENDDEF
+#
+#End Library
