@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ASM330LHHTR
+D STMICROELECTRONICS - ASM330LHHTR - MEMS MOD, 3-AXIS GYROSCOPE/ACCELEROMETER
+K
+F https://www.st.com/resource/en/datasheet/asm330lhh.pdf
+$ENDCMP
+#
+#End Doc Library

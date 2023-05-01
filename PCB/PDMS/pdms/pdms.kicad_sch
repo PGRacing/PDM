@@ -1297,7 +1297,7 @@
     (uuid ff2d766c-1c80-444b-8abf-1e355e0a397d)
   )
 
-  (wire (pts (xy 299.974 26.162) (xy 302.514 26.162))
+  (wire (pts (xy 303.53 135.89) (xy 306.07 135.89))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 0215b178-a510-4397-b2c1-00691c182ed4)
   )
@@ -2937,15 +2937,15 @@
     (pin "1" (uuid 047091a2-798d-42e4-93de-f2fa935585fd))
   )
 
-  (symbol (lib_id "Connector:TestPoint") (at 299.974 26.162 90) (unit 1)
+  (symbol (lib_id "Connector:TestPoint") (at 303.53 135.89 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid b84c6964-5564-4d57-8b96-ee4462f76a3a)
-    (property "Reference" "TP1" (id 0) (at 297.434 21.082 90))
-    (property "Value" "3.3V PG" (id 1) (at 297.434 23.622 90))
-    (property "Footprint" "" (id 2) (at 299.974 21.082 0)
+    (property "Reference" "TP1" (id 0) (at 300.99 130.81 90))
+    (property "Value" "3.3V PG" (id 1) (at 300.99 133.35 90))
+    (property "Footprint" "" (id 2) (at 303.53 130.81 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "~" (id 3) (at 299.974 21.082 0)
+    (property "Datasheet" "~" (id 3) (at 303.53 130.81 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 979676d2-7794-4d5d-b32c-e90a1b43e67f))
@@ -3346,19 +3346,31 @@
     )
   )
 
-  (sheet (at 302.514 22.352) (size 12.7 7.62) (fields_autoplaced)
+  (sheet (at 306.07 132.08) (size 12.7 7.62) (fields_autoplaced)
     (stroke (width 0.1524) (type solid) (color 0 0 0 0))
     (fill (color 0 0 0 0.0000))
     (uuid f45d3215-b43f-44a4-abd3-b7200f9eb300)
-    (property "Sheet name" "POWER1" (id 0) (at 302.514 21.6404 0)
+    (property "Sheet name" "POWER1" (id 0) (at 306.07 131.3684 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
-    (property "Sheet file" "power.kicad_sch" (id 1) (at 302.514 29.9216 0)
+    (property "Sheet file" "power.kicad_sch" (id 1) (at 306.07 139.6496 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
-    (pin "PG3V3" output (at 302.514 26.162 180)
+    (pin "PG3V3" output (at 306.07 135.89 180)
       (effects (font (size 1.016 1.016)) (justify left))
       (uuid 6ff1f34e-fbce-4ecd-8aeb-b651f596e3fe)
+    )
+  )
+
+  (sheet (at 272.796 160.274) (size 24.892 31.496) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid) (color 0 0 0 0))
+    (fill (color 0 0 0 0.0000))
+    (uuid f973e110-c9eb-4494-a7eb-37628bac99f8)
+    (property "Sheet name" "IMU" (id 0) (at 272.796 159.5624 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheet file" "imu.kicad_sch" (id 1) (at 272.796 192.3546 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
     )
   )
 
@@ -3378,6 +3390,7 @@
     (path "/38112cda-c962-4efc-8abd-7fa61cf21a14" (page "15"))
     (path "/ede01c72-e1bf-446e-aa54-1b058e72b3c5" (page "16"))
     (path "/2d272d29-2d37-453d-ba8c-6739a3d9a27c" (page "16"))
+    (path "/f973e110-c9eb-4494-a7eb-37628bac99f8" (page "17"))
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300" (page "17"))
   )
 
@@ -3931,6 +3944,9 @@
     (path "/ede01c72-e1bf-446e-aa54-1b058e72b3c5/08f949ea-7277-4150-b02a-536b9b89fcd6"
       (reference "#PWR0278") (unit 1) (value "GND") (footprint "")
     )
+    (path "/f973e110-c9eb-4494-a7eb-37628bac99f8/c414763d-5091-4ead-9d56-4d79c067a524"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/afc75a69-04d1-4636-8ea3-b3fe3061a65f"
       (reference "BZ1") (unit 1) (value "Buzzer") (footprint "Buzzer_Beeper:Buzzer_Murata_PKLCS1212E")
     )
@@ -4275,6 +4291,9 @@
     )
     (path "/38112cda-c962-4efc-8abd-7fa61cf21a14/00d313be-bcfa-462a-b5da-a9caa923fd18"
       (reference "IC15") (unit 1) (value "LM74700QDBVRQ1") (footprint "PDMS_Additional:SOT95P280X145-6N")
+    )
+    (path "/f973e110-c9eb-4494-a7eb-37628bac99f8/5a63e430-8662-4495-a1a8-64838f3132cd"
+      (reference "IC?") (unit 1) (value "ASM330LHHTR") (footprint "LGA-14(2.5X3X0.86)")
     )
     (path "/383b33d1-dccf-4bcb-9f80-c6a7ecc232bc"
       (reference "J1") (unit 1) (value "DBG") (footprint "Connector_PinHeader_1.27mm:PinHeader_2x03_P1.27mm_Vertical")
