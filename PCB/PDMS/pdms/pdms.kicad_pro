@@ -468,6 +468,10 @@
       "CAN_BUS1"
     ],
     [
+      "2d272d29-2d37-453d-ba8c-6739a3d9a27c",
+      "ADC_PROT"
+    ],
+    [
       "f45d3215-b43f-44a4-abd3-b7200f9eb300",
       "POWER1"
     ]
