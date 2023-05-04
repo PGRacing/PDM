@@ -1,0 +1,3 @@
+1. Finish schematics and components selection for power section
+2. Check if IMU has enough inputs (10 ADC's input's for current sensing + 8 analog inputs as part digital part normal input)
+3. Add NTC's
