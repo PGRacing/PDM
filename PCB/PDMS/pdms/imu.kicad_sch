@@ -496,7 +496,7 @@
     (property "Value" "ASM330LHHTR" (id 1) (at 105.5244 40.894 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "LGA-14(2.5X3X0.86)" (id 2) (at 114.935 43.18 0)
+    (property "Footprint" "" (id 2) (at 114.935 43.18 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Datasheet" "https://www.st.com/resource/en/datasheet/asm330lhh.pdf" (id 3) (at 114.935 45.72 0)

@@ -482,6 +482,10 @@
     [
       "f45d3215-b43f-44a4-abd3-b7200f9eb300",
       "POWER1"
+    ],
+    [
+      "3a9bdda9-fc33-41d9-ad17-3c690e3d0220",
+      "NTC_SECTION"
     ]
   ],
   "text_variables": {}
