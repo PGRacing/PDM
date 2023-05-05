@@ -1538,7 +1538,7 @@
   (symbol (lib_id "power:+12V") (at 78.74 93.98 180) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid f46e6821-ebf7-4d9a-bbe8-2b39197ad1c7)
-    (property "Reference" "#PWR?" (id 0) (at 78.74 90.17 0)
+    (property "Reference" "#PWR0299" (id 0) (at 78.74 90.17 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "+12V" (id 1) (at 78.74 99.06 0))

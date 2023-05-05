@@ -4006,10 +4006,10 @@
       (reference "#PWR0298") (unit 1) (value "GND") (footprint "")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/382312d4-d5fa-4b39-ace5-70b089c5702e/f46e6821-ebf7-4d9a-bbe8-2b39197ad1c7"
-      (reference "#PWR?") (unit 1) (value "+12V") (footprint "")
+      (reference "#PWR0299") (unit 1) (value "+12V") (footprint "")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b/f46e6821-ebf7-4d9a-bbe8-2b39197ad1c7"
-      (reference "#PWR?") (unit 1) (value "+12V") (footprint "")
+      (reference "#PWR0300") (unit 1) (value "+12V") (footprint "")
     )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/afc75a69-04d1-4636-8ea3-b3fe3061a65f"
       (reference "BZ1") (unit 1) (value "Buzzer") (footprint "Buzzer_Beeper:Buzzer_Murata_PKLCS1212E")

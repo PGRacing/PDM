@@ -276,7 +276,7 @@
   )
 
   (no_connect (at 118.745 55.88) (uuid 7ac68aa5-bcac-4852-9136-8d63e03563b9))
-  (no_connect (at 118.745 53.34) (uuid 7ac68aa5-bcac-4852-9136-8d63e03563b9))
+  (no_connect (at 118.745 53.34) (uuid 7ac68aa5-bcac-4852-9136-8d63e03563ba))
 
   (wire (pts (xy 120.015 68.58) (xy 120.015 69.85))
     (stroke (width 0) (type default) (color 0 0 0 0))
