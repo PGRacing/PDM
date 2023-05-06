@@ -476,12 +476,12 @@
       "ADC_PROT"
     ],
     [
-      "f973e110-c9eb-4494-a7eb-37628bac99f8",
-      "IMU"
-    ],
-    [
       "f45d3215-b43f-44a4-abd3-b7200f9eb300",
       "POWER1"
+    ],
+    [
+      "f973e110-c9eb-4494-a7eb-37628bac99f8",
+      "IMU"
     ],
     [
       "3a9bdda9-fc33-41d9-ad17-3c690e3d0220",

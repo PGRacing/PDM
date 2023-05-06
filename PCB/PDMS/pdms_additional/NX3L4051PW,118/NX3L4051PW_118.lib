@@ -1,0 +1,39 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model NX3L4051PW,118
+#/351788/665215/2.50/16/3/Integrated Circuit
+DEF NX3L4051PW,118 IC 0 30 Y Y 1 F N
+F0 "IC" 950 300 50 H V L CNN
+F1 "NX3L4051PW,118" 950 200 50 H V L CNN
+F2 "SOP65P640X110-16N" 950 100 50 H I L CNN
+F3 "http://www.nxp.com/docs/en/data-sheet/NX3L4051.pdf" 950 0 50 H I L CNN
+F4 "Analog Switch ICs ANLG SWT SPST 3.3V" 950 -100 50 H I L CNN "Description"
+F5 "1.1" 950 -200 50 H I L CNN "Height"
+F6 "NXP" 950 -300 50 H I L CNN "Manufacturer_Name"
+F7 "NX3L4051PW,118" 950 -400 50 H I L CNN "Manufacturer_Part_Number"
+F8 "771-NX3L4051PW118" 950 -500 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/NXP-Semiconductors/NX3L4051PW118?qs=vbj%2FKoHZRAgFepmnkfH0Pw%3D%3D" 950 -600 50 H I L CNN "Mouser Price/Stock"
+F10 "NX3L4051PW,118" 950 -700 50 H I L CNN "Arrow Part Number"
+F11 "https://www.arrow.com/en/products/nx3l4051pw118/nxp-semiconductors?region=nac" 950 -800 50 H I L CNN "Arrow Price/Stock"
+DRAW
+X Y4 1 0 0 200 R 50 50 0 0 P
+X Y6 2 0 -100 200 R 50 50 0 0 P
+X Z 3 0 -200 200 R 50 50 0 0 P
+X Y7 4 0 -300 200 R 50 50 0 0 P
+X Y5 5 0 -400 200 R 50 50 0 0 P
+X ~E 6 0 -500 200 R 50 50 0 0 P
+X N.C. 7 0 -600 200 R 50 50 0 0 N
+X GND 8 0 -700 200 R 50 50 0 0 P
+X VCC 16 1100 0 200 L 50 50 0 0 P
+X Y2 15 1100 -100 200 L 50 50 0 0 P
+X Y1 14 1100 -200 200 L 50 50 0 0 P
+X Y0 13 1100 -300 200 L 50 50 0 0 P
+X Y3 12 1100 -400 200 L 50 50 0 0 P
+X S1 11 1100 -500 200 L 50 50 0 0 P
+X S2 10 1100 -600 200 L 50 50 0 0 P
+X S3 9 1100 -700 200 L 50 50 0 0 P
+P 5 0 1 6 200 100 900 100 900 -800 200 -800 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library

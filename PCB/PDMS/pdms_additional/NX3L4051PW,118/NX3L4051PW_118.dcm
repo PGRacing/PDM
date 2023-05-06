@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP NX3L4051PW,118
+D Analog Switch ICs ANLG SWT SPST 3.3V
+K
+F http://www.nxp.com/docs/en/data-sheet/NX3L4051.pdf
+$ENDCMP
+#
+#End Doc Library
