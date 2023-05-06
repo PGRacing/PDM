@@ -262,7 +262,6 @@
     )
   )
 
-
   (junction (at 120.015 60.96) (diameter 0) (color 0 0 0 0)
     (uuid 0a17673e-1aa3-4fda-8e5e-63ec525ec5be)
   )
@@ -371,10 +370,10 @@
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
   )
-  (global_label "IMU_SCL" (shape input) (at 100.965 38.1 90) (fields_autoplaced)
+  (global_label "IMU_I2C_SCL" (shape input) (at 100.965 38.1 90) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 58dd668b-25f6-49f2-970b-70241fae311d)
-    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 100.8856 27.825 90)
+    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 100.8856 23.7731 90)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
   )
