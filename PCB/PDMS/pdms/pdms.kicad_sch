@@ -1913,7 +1913,7 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 4d101364-c5ad-489a-8986-97ec8baa64a8)
   )
-  (polyline (pts (xy 311.15 151.13) (xy 209.55 151.13))
+  (polyline (pts (xy 311.15 151.13) (xy 210.82 151.13))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 4e5f1768-542d-4ff2-9f41-b9e6dd7cc357)
   )
@@ -5768,9 +5768,6 @@
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/839b5c3e-94e7-4458-9070-cb387ff247e0"
       (reference "IC14") (unit 1) (value "TMP126NDCKR") (footprint "PDM_Additional:SOT65P210X110-6N")
     )
-    (path "/38112cda-c962-4efc-8abd-7fa61cf21a14/00d313be-bcfa-462a-b5da-a9caa923fd18"
-      (reference "IC15") (unit 1) (value "LM74700QDBVRQ1") (footprint "PDMS_Additional:SOT95P280X145-6N")
-    )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b/61abcc6c-3eb2-4cfd-8d3e-1f7b9860fc20"
       (reference "IC16") (unit 1) (value "BTS722204ESAXUMA1") (footprint "PDM_Additional:SOP65P600X115-25N")
     )
@@ -5785,6 +5782,9 @@
     )
     (path "/4f59302e-7a26-462e-a34f-af19716fa545"
       (reference "IC20") (unit 1) (value "AT25SF128A-SHB-T") (footprint "PDM_Additional:SOIC127P798X216-8N")
+    )
+    (path "/38112cda-c962-4efc-8abd-7fa61cf21a14/fca9331b-b9ba-4fc8-a2ac-16178519212a"
+      (reference "IC?") (unit 1) (value "LM74700MDDFREP") (footprint "SOT65P280X110-8N")
     )
     (path "/4bce9876-f351-4009-9ccd-39c14009e741"
       (reference "J2") (unit 1) (value "12V_CONN") (footprint "")
