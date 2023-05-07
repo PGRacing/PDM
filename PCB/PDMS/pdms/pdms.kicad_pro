@@ -469,19 +469,19 @@
     ],
     [
       "ede01c72-e1bf-446e-aa54-1b058e72b3c5",
-      "CAN_BUS1"
+      "CAN_BUS"
     ],
     [
       "2d272d29-2d37-453d-ba8c-6739a3d9a27c",
       "ADC_PROT"
     ],
     [
-      "f45d3215-b43f-44a4-abd3-b7200f9eb300",
-      "POWER1"
-    ],
-    [
       "f973e110-c9eb-4494-a7eb-37628bac99f8",
       "IMU"
+    ],
+    [
+      "f45d3215-b43f-44a4-abd3-b7200f9eb300",
+      "POWER1"
     ],
     [
       "3a9bdda9-fc33-41d9-ad17-3c690e3d0220",

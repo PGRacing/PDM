@@ -1,3 +1,7 @@
-1. Finish schematics and components selection for power section
-2. Check if IMU has enough inputs (10 ADC's input's for current sensing + 8 analog inputs as part digital part normal input)
-3. Add NTC's
+1. Add connector
+2. Take measurments to check if any inverter will be needed
+3. Connect peripheral's
+4. Input selection section
+5. Change Powersection include
+6. Add programming header
+7. Test if it's possible to generate PWM on 87 channels
