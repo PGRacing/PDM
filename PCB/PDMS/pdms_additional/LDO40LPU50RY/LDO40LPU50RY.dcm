@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LDO40LPU50RY
+D LDO Voltage Regulators 400 mA, 38 V low-dropout regulator
+K
+F https://componentsearchengine.com/Datasheets/1/LDO40LPU50RY.pdf
+$ENDCMP
+#
+#End Doc Library
