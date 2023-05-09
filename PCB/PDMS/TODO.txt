@@ -1,5 +1,3 @@
 1. Add connector
 2. Take measurments to check if any inverter will be needed
-4. Input selection section
-6. Add programming header
 7. Test if it's possible to generate PWM on 4 channels

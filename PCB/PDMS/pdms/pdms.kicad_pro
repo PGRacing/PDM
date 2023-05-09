@@ -486,6 +486,14 @@
     [
       "3a9bdda9-fc33-41d9-ad17-3c690e3d0220",
       "NTC_SECTION"
+    ],
+    [
+      "72233c42-cc52-48f1-96b2-587884f89204",
+      "ARGB_LEDS"
+    ],
+    [
+      "5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5",
+      "INPUT_SELECTION"
     ]
   ],
   "text_variables": {}
