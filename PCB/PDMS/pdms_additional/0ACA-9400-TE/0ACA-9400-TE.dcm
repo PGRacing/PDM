@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 0ACA-9400-TE
+D BEL FUSE - 0ACA-9400-TE - FUSE, SLOW BLOW, 40A, 63VDC, 2410
+K
+F https://belfuse.com/resources/datasheets/circuitprotection/ds-CP-0ACA-series.pdf
+$ENDCMP
+#
+#End Doc Library

@@ -1,4 +1,4 @@
-20563999564438336
+20567367955289515
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61530,12 +61530,26 @@ DIL DIP PDIP 2.54mm 7.62mm 300mil
 4
 4
 PDMS_Additional
+0ACA9400TE
+0ACA-9400-TE-2
+Fuse
+0
+2
+2
+PDMS_Additional
 64372882
 6437288-2-1
 Connector
 0
 36
 36
+PDMS_Additional
+LGA-14_2.5X3X0.86_
+LGA-14(2.5x3x0.86)
+Integrated Circuit
+0
+14
+14
 PDMS_Additional
 PG-TO263-7-3_3
 PG-TO263-7-3_2

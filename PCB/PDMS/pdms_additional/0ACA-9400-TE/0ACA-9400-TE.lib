@@ -1,0 +1,26 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model 0ACA-9400-TE
+#/13632684/665215/2.50/2/3/Fuse
+DEF 0ACA-9400-TE F 0 30 Y Y 1 F N
+F0 "F" 550 250 50 H V L CNN
+F1 "0ACA-9400-TE" 550 150 50 H V L CNN
+F2 "0ACA9400TE" 550 50 50 H I L CNN
+F3 "https://belfuse.com/resources/datasheets/circuitprotection/ds-CP-0ACA-series.pdf" 550 -50 50 H I L CNN
+F4 "BEL FUSE - 0ACA-9400-TE - FUSE, SLOW BLOW, 40A, 63VDC, 2410" 550 -150 50 H I L CNN "Description"
+F5 "3.1" 550 -250 50 H I L CNN "Height"
+F6 "BelFuse" 550 -350 50 H I L CNN "Manufacturer_Name"
+F7 "0ACA-9400-TE" 550 -450 50 H I L CNN "Manufacturer_Part_Number"
+F8 "530-0ACA-9400-TE" 550 -550 50 H I L CNN "Mouser Part Number"
+F9 "https://www.mouser.co.uk/ProductDetail/Bel-Fuse/0ACA-9400-TE?qs=stqOd1AaK78vaosvbNaWHw%3D%3D" 550 -650 50 H I L CNN "Mouser Price/Stock"
+F10 "" 550 -750 50 H I L CNN "Arrow Part Number"
+F11 "" 550 -850 50 H I L CNN "Arrow Price/Stock"
+DRAW
+X ~ 1 0 0 200 R 50 50 0 0 P
+X ~ 2 700 0 200 L 50 50 0 0 P
+P 5 0 1 6 200 50 500 50 500 -50 200 -50 200 50 N
+P 2 0 1 6 200 0 500 0 N
+ENDDRAW
+ENDDEF
+#
+#End Library

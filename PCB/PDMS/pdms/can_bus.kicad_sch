@@ -269,7 +269,6 @@
     )
   )
 
-
   (junction (at 64.262 95.377) (diameter 0) (color 0 0 0 0)
     (uuid 5fb34f9e-625a-491c-b2ca-4b3b9d2c41be)
   )
@@ -554,7 +553,7 @@
     (property "Value" "PESD2CANFD24L-UX" (id 1) (at 67.564 114.427 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "" (id 2) (at 66.802 120.777 0)
+    (property "Footprint" "PDMS_Additional:SOT65P210X110-3N" (id 2) (at 66.802 120.777 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PESD2CANFD24L-U.pdf" (id 3) (at 64.262 120.777 0)
@@ -706,7 +705,7 @@
     (property "Value" "PESD2CANFD24L-UX" (id 1) (at 68.199 54.6099 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "" (id 2) (at 66.675 60.96 0)
+    (property "Footprint" "PDMS_Additional:SOT65P210X110-3N" (id 2) (at 66.675 60.96 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PESD2CANFD24L-U.pdf" (id 3) (at 64.135 60.96 0)

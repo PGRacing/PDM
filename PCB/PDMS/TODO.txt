@@ -1,3 +1,9 @@
 1. Add connector
 2. Take measurments to check if any inverter will be needed
-7. Test if it's possible to generate PWM on 4 channels
+3. Test if it's possible to generate PWM on 4 channels
+4. Change footprint of debug connectors
+
+
+Remember about:
+1. 5V and 3.3V output for sensors -> 5VA will be carried from BSPD
+2. 
