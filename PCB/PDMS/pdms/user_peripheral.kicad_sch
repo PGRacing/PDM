@@ -794,7 +794,7 @@
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 711b4dc4-e25b-4b0b-85d5-e90241c39956)
   )
-  (hierarchical_label "TEMP1_ALERT" (shape input) (at 184.785 51.435 0)
+  (hierarchical_label "TEMP2_ALERT" (shape input) (at 184.785 51.435 0)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid a425af18-ae75-48c3-b8dd-3623f802f9b1)
   )
