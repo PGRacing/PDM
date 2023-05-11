@@ -1,0 +1,127 @@
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x0000027DD2EDB4C0>
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 387:Preparing replicator with IC1 as a reference
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.replicate_layout 113:getting a list of all footprints on board
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 435:source anchor footprint is 'IC1'
+Located on: ['POWER_SWITCHES', 'BTS50010-1TAE']
+With filenames: ['File: power_switches.kicad_sch', 'File: bts50010.kicad_sch']
+With sheet_id:['POWER_SWITCHES', 'BTS50010-1TAE']
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 442:Corresponding footprints are 
+[('IC9', ['POWER_SWITCHES', 'BTS50010-1TAE5']), ('IC8', ['POWER_SWITCHES', 'BTS50010-1TAE7']), ('IC6', ['POWER_SWITCHES', 'BTS50010-1TAE6']), ('IC5', ['POWER_SWITCHES', 'BTS50010-1TAE4']), ('IC4', ['POWER_SWITCHES', 'BTS50010-1TAE3']), ('IC3', ['POWER_SWITCHES', 'BTS50010-1TAE2']), ('IC2', ['POWER_SWITCHES', 'BTS50010-1TAE1']), ('IC1', ['POWER_SWITCHES', 'BTS50010-1TAE'])]
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 454:Showing dialog
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50010-1TAE', file:'File: bts50010.kicad_sch'
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['POWER_SWITCHES', 'BTS50010-1TAE1'], ['POWER_SWITCHES', 'BTS50010-1TAE2'], ['POWER_SWITCHES', 'BTS50010-1TAE3'], ['POWER_SWITCHES', 'BTS50010-1TAE4'], ['POWER_SWITCHES', 'BTS50010-1TAE5'], ['POWER_SWITCHES', 'BTS50010-1TAE6'], ['POWER_SWITCHES', 'BTS50010-1TAE7']]
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['POWER_SWITCHES', 'BTS50010-1TAE']
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 460:Toolbar position: wx.Point(1883, 80)
+05-11 18:54:01 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 465:Dialog position: wx.Point(1519, 80)
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50010-1TAE', file:'File: bts50010.kicad_sch'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['POWER_SWITCHES', 'BTS50010-1TAE1'], ['POWER_SWITCHES', 'BTS50010-1TAE2'], ['POWER_SWITCHES', 'BTS50010-1TAE3'], ['POWER_SWITCHES', 'BTS50010-1TAE4'], ['POWER_SWITCHES', 'BTS50010-1TAE5'], ['POWER_SWITCHES', 'BTS50010-1TAE6'], ['POWER_SWITCHES', 'BTS50010-1TAE7']]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 207:Replicating layout
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 237:Starting replication of sheets: [['POWER_SWITCHES', 'BTS50010-1TAE1'], ['POWER_SWITCHES', 'BTS50010-1TAE2'], ['POWER_SWITCHES', 'BTS50010-1TAE3'], ['POWER_SWITCHES', 'BTS50010-1TAE4'], ['POWER_SWITCHES', 'BTS50010-1TAE5'], ['POWER_SWITCHES', 'BTS50010-1TAE6'], ['POWER_SWITCHES', 'BTS50010-1TAE7']]
+on level: ['POWER_SWITCHES', 'BTS50010-1TAE']
+with tracks=True, zone=True, text=True, text=True, intersecting=False, remove=False, locked footprints=False, group_only=False
+05-11 18:54:04 root 299:updating GUI message: 'Preparing for replication'
+05-11 18:54:04 root 304:updating GUI with: 0
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 307:Getting the list of source footprints
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 317:Getting the list of all the remaining footprints
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 324:Getting source tracks
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 328:Getting source zones
+05-11 18:54:04 root 304:updating GUI with: 50
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 332:Getting source text items
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 336:Getting source drawing items
+05-11 18:54:04 root 299:updating GUI message: 'Replicating footprints'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 742:Replicating footprints
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS50010-1TAE1']
+05-11 18:54:04 root 304:updating GUI with: 14
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS50010-1TAE2']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS50010-1TAE3']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS50010-1TAE4']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS50010-1TAE5']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS50010-1TAE6']
+05-11 18:54:04 root 304:updating GUI with: 81
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS50010-1TAE7']
+05-11 18:54:04 root 299:updating GUI message: 'Replicating tracks'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 907:Replicating tracks
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS50010-1TAE1']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE1'] :[('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE1/OUT'), ('SIG_IN1', 'SIG_IN2'), ('Net-(D1-Pad2)', 'Net-(D2-Pad2)'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE1/IS'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE1/IN'), ('HP_MOS1', 'HP_MOS2'), ('+12V', '+12V'), ('SENS_OUT1', 'SENS_OUT2')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS50010-1TAE2']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE2'] :[('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE2/IN'), ('HP_MOS1', 'HP_MOS3'), ('Net-(D1-Pad2)', 'Net-(D3-Pad2)'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE2/OUT'), ('SENS_OUT1', 'SENS_OUT3'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE2/IS'), ('GND', 'GND'), ('SIG_IN1', 'SIG_IN3'), ('+12V', '+12V')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS50010-1TAE3']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE3'] :[('HP_MOS1', 'HP_MOS4'), ('+12V', '+12V'), ('Net-(D1-Pad2)', 'Net-(D5-Pad2)'), ('SENS_OUT1', 'SENS_OUT4'), ('GND', 'GND'), ('SIG_IN1', 'SIG_IN4'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE3/IS'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE3/OUT'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE3/IN')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS50010-1TAE4']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE4'] :[('SENS_OUT1', 'SENS_OUT5'), ('HP_MOS1', 'HP_MOS5'), ('Net-(D1-Pad2)', 'Net-(D6-Pad2)'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE4/IS'), ('SIG_IN1', 'SIG_IN5'), ('+12V', '+12V'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE4/OUT'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE4/IN')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS50010-1TAE5']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE5'] :[('HP_MOS1', 'HP_MOS7'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE5/IS'), ('Net-(D1-Pad2)', 'Net-(D9-Pad2)'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE5/IN'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE5/OUT'), ('SENS_OUT1', 'SENS_OUT8'), ('+12V', '+12V'), ('SIG_IN1', 'SIG_IN8')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS50010-1TAE6']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE6'] :[('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE6/OUT'), ('SENS_OUT1', 'SENS_OUT6'), ('+12V', '+12V'), ('GND', 'GND'), ('SIG_IN1', 'SIG_IN6'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE6/IN'), ('HP_MOS1', 'HP_MOS6'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE6/IS'), ('Net-(D1-Pad2)', 'Net-(D7-Pad2)')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS50010-1TAE7']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE7'] :[('SIG_IN1', 'SIG_IN7'), ('HP_MOS1', 'HP_MOS7'), ('Net-(D1-Pad2)', 'Net-(D8-Pad2)'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE7/OUT'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE7/IN'), ('SENS_OUT1', 'SENS_OUT7'), ('+12V', '+12V'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE7/IS')]
+05-11 18:54:04 root 304:updating GUI with: 91
+05-11 18:54:04 root 299:updating GUI message: 'Replicating zones'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 967:Replicating zones
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS50010-1TAE1']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE1'] :[('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE1/OUT'), ('SIG_IN1', 'SIG_IN2'), ('Net-(D1-Pad2)', 'Net-(D2-Pad2)'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE1/IS'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE1/IN'), ('HP_MOS1', 'HP_MOS2'), ('+12V', '+12V'), ('SENS_OUT1', 'SENS_OUT2')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS50010-1TAE/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS50010-1TAE1/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS50010-1TAE2']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE2'] :[('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE2/IN'), ('HP_MOS1', 'HP_MOS3'), ('Net-(D1-Pad2)', 'Net-(D3-Pad2)'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE2/OUT'), ('SENS_OUT1', 'SENS_OUT3'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE2/IS'), ('GND', 'GND'), ('SIG_IN1', 'SIG_IN3'), ('+12V', '+12V')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS50010-1TAE/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS50010-1TAE2/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS50010-1TAE3']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE3'] :[('HP_MOS1', 'HP_MOS4'), ('+12V', '+12V'), ('Net-(D1-Pad2)', 'Net-(D5-Pad2)'), ('SENS_OUT1', 'SENS_OUT4'), ('GND', 'GND'), ('SIG_IN1', 'SIG_IN4'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE3/IS'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE3/OUT'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE3/IN')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS50010-1TAE/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS50010-1TAE3/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS50010-1TAE4']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE4'] :[('SENS_OUT1', 'SENS_OUT5'), ('HP_MOS1', 'HP_MOS5'), ('Net-(D1-Pad2)', 'Net-(D6-Pad2)'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE4/IS'), ('SIG_IN1', 'SIG_IN5'), ('+12V', '+12V'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE4/OUT'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE4/IN')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS50010-1TAE/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS50010-1TAE4/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS50010-1TAE5']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE5'] :[('HP_MOS1', 'HP_MOS7'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE5/IS'), ('Net-(D1-Pad2)', 'Net-(D9-Pad2)'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE5/IN'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE5/OUT'), ('SENS_OUT1', 'SENS_OUT8'), ('+12V', '+12V'), ('SIG_IN1', 'SIG_IN8')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS50010-1TAE/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS50010-1TAE5/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS50010-1TAE6']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE6'] :[('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE6/OUT'), ('SENS_OUT1', 'SENS_OUT6'), ('+12V', '+12V'), ('GND', 'GND'), ('SIG_IN1', 'SIG_IN6'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE6/IN'), ('HP_MOS1', 'HP_MOS6'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE6/IS'), ('Net-(D1-Pad2)', 'Net-(D7-Pad2)')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS50010-1TAE/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS50010-1TAE6/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS50010-1TAE7']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS50010-1TAE7'] :[('SIG_IN1', 'SIG_IN7'), ('HP_MOS1', 'HP_MOS7'), ('Net-(D1-Pad2)', 'Net-(D8-Pad2)'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS50010-1TAE/OUT', '/POWER_SWITCHES/BTS50010-1TAE7/OUT'), ('/POWER_SWITCHES/BTS50010-1TAE/IN', '/POWER_SWITCHES/BTS50010-1TAE7/IN'), ('SENS_OUT1', 'SENS_OUT7'), ('+12V', '+12V'), ('/POWER_SWITCHES/BTS50010-1TAE/IS', '/POWER_SWITCHES/BTS50010-1TAE7/IS')]
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS50010-1TAE/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS50010-1TAE7/OUT'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-11 18:54:04 root 299:updating GUI message: 'Replicating text'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1047:Replicating text
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS50010-1TAE1']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS50010-1TAE2']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS50010-1TAE3']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS50010-1TAE4']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS50010-1TAE5']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS50010-1TAE6']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS50010-1TAE7']
+05-11 18:54:04 root 299:updating GUI message: 'Replicating drawings'
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1088:Replicating drawings
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS50010-1TAE1']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS50010-1TAE2']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS50010-1TAE3']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS50010-1TAE4']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS50010-1TAE5']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS50010-1TAE6']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS50010-1TAE7']
+05-11 18:54:04 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 223:Replication complete
