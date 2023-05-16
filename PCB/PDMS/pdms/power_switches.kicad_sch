@@ -749,7 +749,7 @@
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
   )
-  (global_label "HP_MOS7" (shape input) (at 154.305 132.08 0) (fields_autoplaced)
+  (global_label "HP_MOS8" (shape input) (at 154.305 132.08 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 3808d484-f76e-4308-a678-a2f581f1a27c)
     (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 165.4871 132.0006 0)
