@@ -1815,9 +1815,9 @@
   )
 
   (bus_alias "QUADSPI" (members "CLK" "NCS" "BK1_IO0" "BK1_IO1" "BK1_IO2" "BK1_IO3"))
-  (bus_alias "SPI2" (members "SCK" "MISO" "MOSI"))
-  (bus_alias "SPI1" (members "SCK" "MOSI" "MISO"))
   (bus_alias "SPI3" (members "SCK" "MOSI" "MISO"))
+  (bus_alias "SPI1" (members "SCK" "MOSI" "MISO"))
+  (bus_alias "SPI2" (members "SCK" "MISO" "MOSI"))
   (junction (at 262.89 106.68) (diameter 0) (color 0 0 0 0)
     (uuid 0386eb8e-88c5-4cdc-837f-4a4ec5c080f6)
   )
@@ -4734,7 +4734,7 @@
     (uuid 3e968dc6-4b4f-40cc-bb81-01963d659485)
     (property "Reference" "J2" (id 0) (at 368.3 158.75 0))
     (property "Value" "6473427-1" (id 1) (at 368.3 161.29 0))
-    (property "Footprint" "64734271" (id 2) (at 377.19 164.465 0)
+    (property "Footprint" "" (id 2) (at 377.19 164.465 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Customer+Drawing%7F9-1437287-8%7FA1%7Fpdf%7FEnglish%7FENG_CD_9-1437287-8_A1.pdf%7F6473427-1" (id 3) (at 377.19 167.005 0)
@@ -6896,16 +6896,16 @@
       (reference "C13") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0402_1005Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/382312d4-d5fa-4b39-ace5-70b089c5702e/3370c7ea-69b3-4a24-9f00-dcee23cfca4d"
-      (reference "C14") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C14") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/382312d4-d5fa-4b39-ace5-70b089c5702e/ea05a7b0-a751-41e9-9025-7282beaf4e1d"
-      (reference "C15") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C15") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/382312d4-d5fa-4b39-ace5-70b089c5702e/1d67a290-67f8-4c45-a531-ecadc3675a3a"
-      (reference "C16") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C16") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/382312d4-d5fa-4b39-ace5-70b089c5702e/5bf50f4d-56e9-48bb-98a7-9ba919c6cef3"
-      (reference "C17") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C17") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/382312d4-d5fa-4b39-ace5-70b089c5702e/a56d669c-c591-4097-b59f-91a85033a48d"
       (reference "C18") (unit 1) (value "220pF") (footprint "Capacitor_SMD:C_0402_1005Metric")
@@ -7064,16 +7064,16 @@
       (reference "C69") (unit 1) (value "100nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b/3370c7ea-69b3-4a24-9f00-dcee23cfca4d"
-      (reference "C70") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C70") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b/ea05a7b0-a751-41e9-9025-7282beaf4e1d"
-      (reference "C71") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C71") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b/1d67a290-67f8-4c45-a531-ecadc3675a3a"
-      (reference "C72") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C72") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b/5bf50f4d-56e9-48bb-98a7-9ba919c6cef3"
-      (reference "C73") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")
+      (reference "C73") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/f973e110-c9eb-4494-a7eb-37628bac99f8/808924b7-27d2-4209-a500-7d9830d3c986"
       (reference "C74") (unit 1) (value "100nF") (footprint "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder")
@@ -7355,7 +7355,7 @@
       (reference "J1") (unit 1) (value "DBG") (footprint "Connector_PinHeader_1.27mm:PinHeader_2x03_P1.27mm_Vertical")
     )
     (path "/3e968dc6-4b4f-40cc-bb81-01963d659485"
-      (reference "J2") (unit 1) (value "6473427-1") (footprint "64734271")
+      (reference "J2") (unit 1) (value "6473427-1") (footprint "")
     )
     (path "/2ac18ad3-7152-47d9-8b69-5b63b2971d75"
       (reference "JP1") (unit 1) (value "SolderJumper_3_Open") (footprint "Jumper:SolderJumper-3_P1.3mm_Open_Pad1.0x1.5mm")

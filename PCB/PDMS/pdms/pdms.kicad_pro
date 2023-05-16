@@ -38,7 +38,7 @@
           "width": 1.524
         },
         "silk_line_width": 0.15,
-        "silk_text_italic": false,
+        "silk_text_italic": true,
         "silk_text_size_h": 1.0,
         "silk_text_size_v": 1.0,
         "silk_text_thickness": 0.15,
@@ -120,15 +120,27 @@
       },
       "track_widths": [
         0.0,
-        0.2,
-        0.25,
-        0.3,
-        0.4
+        0.127,
+        0.254,
+        0.508,
+        0.762
       ],
       "via_dimensions": [
         {
           "diameter": 0.0,
           "drill": 0.0
+        },
+        {
+          "diameter": 0.6,
+          "drill": 0.3
+        },
+        {
+          "diameter": 0.6858,
+          "drill": 0.3302
+        },
+        {
+          "diameter": 0.889,
+          "drill": 0.381
         }
       ],
       "zones_allow_external_fillets": false,
@@ -470,11 +482,11 @@
     ],
     [
       "382312d4-d5fa-4b39-ace5-70b089c5702e",
-      "BTS722204"
+      "BTS722204-1"
     ],
     [
       "3f236385-25de-4e3f-a771-f7ba7d7dd03b",
-      "BTS722205"
+      "BTS722204-2"
     ],
     [
       "0bc730b5-3de0-4ee2-82e7-e6324d6cb059",
