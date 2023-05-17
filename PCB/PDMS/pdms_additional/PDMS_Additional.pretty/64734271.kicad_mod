@@ -103,7 +103,7 @@
   (pad "MH1" thru_hole circle (at -7.25 14.5) (size 5.1 5.1) (drill 3.4) (layers *.Cu *.Mask) (tstamp f22eee2e-b400-4a14-b03a-635ee3496d49))
   (pad "MH2" thru_hole circle (at 31.25 14.5) (size 5.1 5.1) (drill 3.4) (layers *.Cu *.Mask) (tstamp 0684236a-1252-41f7-a5c5-c26affb0447d))
   (pad "MH3" thru_hole circle (at 63.75 14.5) (size 5.1 5.1) (drill 3.4) (layers *.Cu *.Mask) (tstamp feea0c56-bef2-470b-ae54-84750444e1a0))
-  (model "6473427-1.stp"
+  (model "C:/Users/Karol/Documents/GitHub/PDM/PCB/PDMS/pdms_additional/TE_6473427-1/6473427-1.stp"
     (offset (xyz 31.24999953 -33.99999949 14.22999933))
     (scale (xyz 1 1 1))
     (rotate (xyz -90 0 0))
