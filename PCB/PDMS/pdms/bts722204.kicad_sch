@@ -1154,7 +1154,7 @@
     (property "Value" "BTS722204ESAXUMA1" (id 1) (at 78.74 38.1 0)
       (effects (font (size 0.8 0.8)))
     )
-    (property "Footprint" "PDM_Additional:SOP65P600X115-25N" (id 2) (at 92.71 40.64 0)
+    (property "Footprint" "PDMS_Additional:SOP65P600X115-25N" (id 2) (at 92.71 40.64 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
     (property "Datasheet" "https://www.infineon.com/dgdl/Infineon-BTS72220-4ESA-DS-v01_00-EN.pdf?fileId=5546d462636cc8fb0163feab173708d9" (id 3) (at 92.71 43.18 0)

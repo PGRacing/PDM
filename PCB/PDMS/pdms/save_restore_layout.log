@@ -1,0 +1,31 @@
+05-17 02:33:19 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 172:Plugin executed on: 'win32'
+05-17 02:33:19 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 173:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
+05-17 02:33:19 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 174:KiCad build version: (6.0.8)
+05-17 02:33:19 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 175:Plugin version: 1.1.11
+05-17 02:33:19 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 176:Frame repr: <wx._core.Frame object at 0x0000029F768BD550>
+05-17 02:33:19 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 194:Anchor footprint reference is 'L2'
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 203:Save layout chosen
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 333:Working on C:/Users/Karol/Documents/GitHub/PDM/PCB/PDMS/pdms/pdms.kicad_pcb
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 132:getting a list of all footprints on board
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 338:Saving the current board temporary in order to leave current layout intact
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 344:Saving board as tempfile: C:\Users\Karol\AppData\Local\Temp\temp_board_file_for_save.kicad_pcb
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 349:Loaded temp boardfile: C:\Users\Karol\AppData\Local\Temp\temp_board_file_for_save.kicad_pcb
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 350:Get project schematics and layout data
+05-17 02:33:20 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 132:getting a list of all footprints on board
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 250:Saving the layout in 'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\power_b.pckl' for level 0
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 361:Saving layout for level: ['POWER1']
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 362:Calculating hash of the layout schematics
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 366:Saving hash for files: ['File: power.kicad_sch']
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 370:===RCP HACKFile: power.kicad_sch
+05-17 02:33:29 root 379:Source footprints are: ['C63', 'C62', 'Q1', 'C57', 'R64', 'R62', 'R61', 'C59', 'IC11', 'F1', 'C61', 'C60', 'IC10', 'L2', 'C58', 'C55', 'C56', 'R60', 'C54', 'R63']
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 390:Removing everything else from the layout
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 457:Removing text
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 436:Removing drawing
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 478:Removing zones
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 497:Removing tracks
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 499:Bounding box points: (102605000, 121405000, 414730000, 436100000)
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 520:Removing footprints
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 408:Saving layout in temporary file
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 412:Reading layout as text
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 419:Saving layout data
+05-17 02:33:29 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 433:Successfully saved the layout
