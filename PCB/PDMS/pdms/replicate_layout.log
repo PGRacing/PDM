@@ -1,5 +1,9 @@
-05-17 02:28:09 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
-05-17 02:28:09 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
-05-17 02:28:09 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
-05-17 02:28:09 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
-05-17 02:28:09 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x0000029F768BD550>
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x0000023342F9B4C0>
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 387:Preparing replicator with R111 as a reference
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.replicate_layout 113:getting a list of all footprints on board
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint J** does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64076DF0 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
