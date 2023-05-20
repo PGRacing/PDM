@@ -1,9 +1,68 @@
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x0000023342F9B4C0>
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 387:Preparing replicator with R111 as a reference
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.replicate_layout 113:getting a list of all footprints on board
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint J** does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
-05-17 21:39:35 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64076DF0 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x000001F50198B4C0>
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 387:Preparing replicator with IC7 as a reference
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.replicate_layout 113:getting a list of all footprints on board
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint J** does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64076DF0 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 435:source anchor footprint is 'IC7'
+Located on: ['POWER_SWITCHES', 'BTS722204-1']
+With filenames: ['File: power_switches.kicad_sch', 'File: bts722204.kicad_sch']
+With sheet_id:['POWER_SWITCHES', 'BTS722204-1']
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 442:Corresponding footprints are 
+[('IC16', ['POWER_SWITCHES', 'BTS722204-2']), ('IC7', ['POWER_SWITCHES', 'BTS722204-1'])]
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 454:Showing dialog
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS722204-1', file:'File: bts722204.kicad_sch'
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['POWER_SWITCHES', 'BTS722204-2']]
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['POWER_SWITCHES', 'BTS722204-1']
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 460:Toolbar position: wx.Point(-42, 308)
+05-20 17:28:00 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 465:Dialog position: wx.Point(-406, 308)
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS722204-1', file:'File: bts722204.kicad_sch'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['POWER_SWITCHES', 'BTS722204-2']]
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 207:Replicating layout
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 237:Starting replication of sheets: [['POWER_SWITCHES', 'BTS722204-2']]
+on level: ['POWER_SWITCHES', 'BTS722204-1']
+with tracks=True, zone=True, text=True, text=True, intersecting=False, remove=False, locked footprints=False, group_only=False
+05-20 17:28:02 root 299:updating GUI message: 'Preparing for replication'
+05-20 17:28:02 root 304:updating GUI with: 0
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 307:Getting the list of source footprints
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 317:Getting the list of all the remaining footprints
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 324:Getting source tracks
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 328:Getting source zones
+05-20 17:28:02 root 304:updating GUI with: 50
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 332:Getting source text items
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 336:Getting source drawing items
+05-20 17:28:02 root 299:updating GUI message: 'Replicating footprints'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 742:Replicating footprints
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['POWER_SWITCHES', 'BTS722204-2']
+05-20 17:28:02 root 304:updating GUI with: 13
+05-20 17:28:02 root 299:updating GUI message: 'Replicating tracks'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 907:Replicating tracks
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['POWER_SWITCHES', 'BTS722204-2']
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS722204-2'] :[('LP_SIG_IN2', 'LP_SIG_IN6'), ('/POWER_SWITCHES/BTS722204-1/OUT1', '/POWER_SWITCHES/BTS722204-2/OUT1'), ('Net-(IC7-Pad5)', 'Net-(IC16-Pad5)'), ('Net-(IC7-Pad11)', 'Net-(IC16-Pad11)'), ('Net-(IC7-Pad6)', 'Net-(IC16-Pad6)'), ('/POWER_SWITCHES/BTS722204-1/LHI', '/POWER_SWITCHES/BTS722204-2/LHI'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS722204-1/IS', '/POWER_SWITCHES/BTS722204-2/IS'), ('Net-(IC7-Pad8)', 'Net-(IC16-Pad8)'), ('/POWER_SWITCHES/BTS722204-1/VDD_IO', '/POWER_SWITCHES/BTS722204-2/VDD_IO'), ('/POWER_SWITCHES/BTS722204-1/SI', '/POWER_SWITCHES/BTS722204-2/SI'), ('Net-(C19-Pad1)', 'Net-(C68-Pad1)'), ('LP_SIG_IN1', 'LP_SIG_IN5'), ('/POWER_SWITCHES/BTS722204-1/SO', '/POWER_SWITCHES/BTS722204-2/SO'), ('SCK', 'SCK'), ('LP_SIG_IN4', 'LP_SIG_IN8'), ('MOSI', 'MOSI'), ('LP_CSN1', 'LP_CSN2'), ('+12V', '+12V'), ('/POWER_SWITCHES/BTS722204-1/OUT3', '/POWER_SWITCHES/BTS722204-2/OUT3'), ('/POWER_SWITCHES/BTS722204-1/OUT0', '/POWER_SWITCHES/BTS722204-2/OUT0'), ('/POWER_SWITCHES/BTS722204-1/OUT2', '/POWER_SWITCHES/BTS722204-2/OUT2'), ('+3.3V', '+3.3V'), ('MISO', 'MISO'), ('Net-(IC7-Pad10)', 'Net-(IC16-Pad10)'), ('Net-(IC7-Pad9)', 'Net-(IC16-Pad9)'), ('LP_SIG_IN3', 'LP_SIG_IN7'), ('SENS_OUT_LP1', 'SENS_OUT_LP2')]
+05-20 17:28:02 root 299:updating GUI message: 'Replicating zones'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 967:Replicating zones
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['POWER_SWITCHES', 'BTS722204-2']
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['POWER_SWITCHES', 'BTS722204-2'] :[('LP_SIG_IN2', 'LP_SIG_IN6'), ('/POWER_SWITCHES/BTS722204-1/OUT1', '/POWER_SWITCHES/BTS722204-2/OUT1'), ('Net-(IC7-Pad5)', 'Net-(IC16-Pad5)'), ('Net-(IC7-Pad11)', 'Net-(IC16-Pad11)'), ('Net-(IC7-Pad6)', 'Net-(IC16-Pad6)'), ('/POWER_SWITCHES/BTS722204-1/LHI', '/POWER_SWITCHES/BTS722204-2/LHI'), ('GND', 'GND'), ('/POWER_SWITCHES/BTS722204-1/IS', '/POWER_SWITCHES/BTS722204-2/IS'), ('Net-(IC7-Pad8)', 'Net-(IC16-Pad8)'), ('/POWER_SWITCHES/BTS722204-1/VDD_IO', '/POWER_SWITCHES/BTS722204-2/VDD_IO'), ('/POWER_SWITCHES/BTS722204-1/SI', '/POWER_SWITCHES/BTS722204-2/SI'), ('Net-(C19-Pad1)', 'Net-(C68-Pad1)'), ('LP_SIG_IN1', 'LP_SIG_IN5'), ('/POWER_SWITCHES/BTS722204-1/SO', '/POWER_SWITCHES/BTS722204-2/SO'), ('SCK', 'SCK'), ('LP_SIG_IN4', 'LP_SIG_IN8'), ('MOSI', 'MOSI'), ('LP_CSN1', 'LP_CSN2'), ('+12V', '+12V'), ('/POWER_SWITCHES/BTS722204-1/OUT3', '/POWER_SWITCHES/BTS722204-2/OUT3'), ('/POWER_SWITCHES/BTS722204-1/OUT0', '/POWER_SWITCHES/BTS722204-2/OUT0'), ('/POWER_SWITCHES/BTS722204-1/OUT2', '/POWER_SWITCHES/BTS722204-2/OUT2'), ('+3.3V', '+3.3V'), ('MISO', 'MISO'), ('Net-(IC7-Pad10)', 'Net-(IC16-Pad10)'), ('Net-(IC7-Pad9)', 'Net-(IC16-Pad9)'), ('LP_SIG_IN3', 'LP_SIG_IN7'), ('SENS_OUT_LP1', 'SENS_OUT_LP2')]
+05-20 17:28:02 root 304:updating GUI with: 20
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS722204-1/OUT2'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS722204-2/OUT2'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS722204-1/OUT3'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS722204-2/OUT3'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS722204-1/OUT0'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS722204-2/OUT0'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: '/POWER_SWITCHES/BTS722204-1/OUT1'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: '/POWER_SWITCHES/BTS722204-2/OUT1'
+05-20 17:28:02 root 299:updating GUI message: 'Replicating text'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1047:Replicating text
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1054:Replicating text on sheet ['POWER_SWITCHES', 'BTS722204-2']
+05-20 17:28:02 root 299:updating GUI message: 'Replicating drawings'
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1088:Replicating drawings
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1094:Replicating drawings on sheet ['POWER_SWITCHES', 'BTS722204-2']
+05-20 17:28:02 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 223:Replication complete
