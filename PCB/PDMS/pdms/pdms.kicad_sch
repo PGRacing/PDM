@@ -1886,6 +1886,7 @@
   )
 
   (no_connect (at 124.46 82.55) (uuid 0bc1ec5b-324a-40a0-b428-40c245aba90f))
+  (no_connect (at 119.38 82.55) (uuid 178b5f16-2384-410b-8949-5f7e347af0de))
   (no_connect (at 99.06 212.09) (uuid 1efe0fed-e261-4958-94a3-6b591eb13ddc))
   (no_connect (at 60.96 115.57) (uuid 214ae262-148c-448f-a105-4ba74389354d))
   (no_connect (at 165.1 143.51) (uuid 21cbd139-9bc1-4789-b02f-818adc029a97))
@@ -1899,7 +1900,6 @@
   (no_connect (at 165.1 123.19) (uuid 48b3bd85-01a0-45b6-b1bc-982f5707b764))
   (no_connect (at 144.78 82.55) (uuid 4c12ab28-3840-4292-9b6e-4b789262eb1b))
   (no_connect (at 121.92 82.55) (uuid 513dd78e-9c5f-4818-ba3d-cb9af7801a73))
-  (no_connect (at 96.52 82.55) (uuid 5312d4ec-9cc4-4c5b-82f0-1a20b443c294))
   (no_connect (at 60.96 120.65) (uuid 5c5cd545-cbff-4470-996a-53da2c368c9d))
   (no_connect (at 96.52 212.09) (uuid 7254ab26-2169-4127-b2d6-21b178f0c474))
   (no_connect (at 165.1 194.31) (uuid 7c6dfe21-0d69-4428-a32a-7b1c7759d545))
@@ -2395,6 +2395,10 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 2d1d8e4f-d119-486d-aa7e-6f692345b21b)
   )
+  (wire (pts (xy 103.505 66.675) (xy 103.505 59.69))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 2e214732-bbf6-4b5c-9973-6f6ae625257f)
+  )
   (bus (pts (xy 191.77 128.27) (xy 191.77 130.81))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 2e3d7829-6f28-452e-9718-abca23c893c3)
@@ -2480,6 +2484,10 @@
   (wire (pts (xy 284.48 59.69) (xy 284.48 62.23))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 405045bc-bb68-4876-9e7f-370b971d1e66)
+  )
+  (wire (pts (xy 96.52 66.675) (xy 103.505 66.675))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 40f723c3-d417-4349-b96c-aa7306ea39a5)
   )
   (wire (pts (xy 285.75 166.37) (xy 285.75 168.91))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -2815,6 +2823,10 @@
     (uuid 837500c9-5b18-465a-bfd2-c99cf5d4f2eb)
   )
 
+  (wire (pts (xy 96.52 82.55) (xy 96.52 66.675))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 83a5d60d-db19-4918-8c5a-c8a22edfa98b)
+  )
   (wire (pts (xy 44.45 135.89) (xy 60.96 135.89))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 86bcb24d-4f90-4d2d-b164-65a57fb22232)
@@ -3441,10 +3453,6 @@
     (uuid e89324c9-b6fe-4624-8177-ce1155769d84)
   )
 
-  (wire (pts (xy 119.38 59.69) (xy 119.38 82.55))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e969f700-14d9-4cb6-a15e-edc181070446)
-  )
   (wire (pts (xy 260.35 139.7) (xy 273.05 139.7))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid e9e70e52-bbae-4f4c-80fe-09487fb38c97)
@@ -4461,7 +4469,7 @@
   (symbol (lib_id "Device:C_Small") (at 289.56 166.37 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 106b9e99-2d4e-4538-afc1-ec6d65a05146)
-    (property "Reference" "C?" (id 0) (at 290.83 161.925 90)
+    (property "Reference" "C66" (id 0) (at 290.83 161.925 90)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "100n" (id 1) (at 292.1 163.83 90)
@@ -5129,7 +5137,7 @@
   (symbol (lib_id "power:GND") (at 293.37 166.37 90) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 49e3d0ed-69fc-4961-abe6-05d932213401)
-    (property "Reference" "#PWR?" (id 0) (at 299.72 166.37 0)
+    (property "Reference" "#PWR0303" (id 0) (at 299.72 166.37 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (id 1) (at 297.18 166.3699 90)
@@ -6599,7 +6607,7 @@
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid f044ba78-189c-46b0-a9f2-08a34fa4b2a5)
     )
-    (pin "IMU_INT2" output (at 119.38 59.69 270)
+    (pin "IMU_INT2" output (at 103.505 59.69 270)
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid e70b7baa-905a-4d7e-ba61-e39b7e0c4cdb)
     )
@@ -7247,6 +7255,9 @@
     (path "/aebdd7e4-8a0a-4028-880d-d23c15372916"
       (reference "#PWR0302") (unit 1) (value "GND") (footprint "")
     )
+    (path "/49e3d0ed-69fc-4961-abe6-05d932213401"
+      (reference "#PWR0303") (unit 1) (value "GND") (footprint "")
+    )
     (path "/181003fa-bf1f-4d06-989f-a4f72472cb56"
       (reference "#PWR0313") (unit 1) (value "GND") (footprint "")
     )
@@ -7381,9 +7392,6 @@
     )
     (path "/53d77b7e-0aac-486a-a740-0e7fc9a2be77"
       (reference "#PWR0365") (unit 1) (value "+3.3V") (footprint "")
-    )
-    (path "/49e3d0ed-69fc-4961-abe6-05d932213401"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
     )
     (path "/0bc730b5-3de0-4ee2-82e7-e6324d6cb059/afc75a69-04d1-4636-8ea3-b3fe3061a65f"
       (reference "BZ1") (unit 1) (value "Buzzer") (footprint "Buzzer_Beeper:Buzzer_Murata_PKLCS1212E")
@@ -7583,6 +7591,9 @@
     (path "/ede01c72-e1bf-446e-aa54-1b058e72b3c5/272101dc-df18-4a1b-a0dd-ef285e0816b6"
       (reference "C65") (unit 1) (value "100nF") (footprint "Capacitor_SMD:C_0402_1005Metric")
     )
+    (path "/106b9e99-2d4e-4538-afc1-ec6d65a05146"
+      (reference "C66") (unit 1) (value "100n") (footprint "Resistor_SMD:R_0402_1005Metric")
+    )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b/a56d669c-c591-4097-b59f-91a85033a48d"
       (reference "C67") (unit 1) (value "220pF") (footprint "Capacitor_SMD:C_0402_1005Metric")
     )
@@ -7648,9 +7659,6 @@
     )
     (path "/d5f37ccf-c48c-460a-86fe-ec162df78c8b/b1c5bd9c-d8f2-4269-99e7-81a8f719db71"
       (reference "C89") (unit 1) (value "100nF") (footprint "Capacitor_SMD:C_0402_1005Metric")
-    )
-    (path "/106b9e99-2d4e-4538-afc1-ec6d65a05146"
-      (reference "C?") (unit 1) (value "100n") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/34207786-e978-4c45-a5a6-f374522bab76/489a5137-a2b9-4263-917a-4451b07c9591"
       (reference "D1") (unit 1) (value "40V") (footprint "Diode_SMD:D_SMA")
