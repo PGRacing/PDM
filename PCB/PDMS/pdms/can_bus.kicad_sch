@@ -320,7 +320,6 @@
     )
   )
 
-
   (junction (at 46.482 85.852) (diameter 0) (color 0 0 0 0)
     (uuid 18ad1ea3-0b29-422d-b1c7-fc38c04cef33)
   )
@@ -632,7 +631,7 @@
     (uuid 25f3af05-b459-4c36-b1d9-2c242c5f6afa)
     (property "Reference" "C64" (id 0) (at 50.292 22.225 90))
     (property "Value" "100nF" (id 1) (at 51.562 28.575 90))
-    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" (id 2) (at 50.292 25.4 0)
+    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric" (id 2) (at 50.292 25.4 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 50.292 25.4 0)
@@ -647,7 +646,7 @@
     (uuid 272101dc-df18-4a1b-a0dd-ef285e0816b6)
     (property "Reference" "C65" (id 0) (at 50.292 82.677 90))
     (property "Value" "100nF" (id 1) (at 51.562 89.027 90))
-    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" (id 2) (at 50.292 85.852 0)
+    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric" (id 2) (at 50.292 85.852 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 50.292 85.852 0)

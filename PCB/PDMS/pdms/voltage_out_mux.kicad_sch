@@ -1126,7 +1126,7 @@
     (uuid b1c5bd9c-d8f2-4269-99e7-81a8f719db71)
     (property "Reference" "C89" (id 0) (at 104.14 32.385 90))
     (property "Value" "100nF" (id 1) (at 105.41 38.735 90))
-    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" (id 2) (at 104.14 35.56 0)
+    (property "Footprint" "Capacitor_SMD:C_0402_1005Metric" (id 2) (at 104.14 35.56 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 104.14 35.56 0)
