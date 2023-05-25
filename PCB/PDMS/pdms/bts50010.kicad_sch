@@ -963,7 +963,7 @@
   (symbol (lib_id "power:+3.3V") (at 62.865 49.53 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 922690c4-27c0-45a6-a8c4-7dc89b8da630)
-    (property "Reference" "#PWR?" (id 0) (at 62.865 53.34 0)
+    (property "Reference" "#PWR0109" (id 0) (at 62.865 53.34 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "+3.3V" (id 1) (at 62.865 44.45 0))

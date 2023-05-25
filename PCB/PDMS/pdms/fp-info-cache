@@ -1,4 +1,4 @@
-20572437065566505
+20574122092339100
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61550,6 +61550,13 @@ Connector
 0
 63
 63
+PDMS_Additional
+CAPCP3225X100N
+
+
+0
+2
+2
 PDMS_Additional
 LGA-14_2.5X3X0.86_
 LGA-14(2.5x3x0.86)
