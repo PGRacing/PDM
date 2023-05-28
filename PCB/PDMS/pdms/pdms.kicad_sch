@@ -2505,7 +2505,7 @@
   (no_connect (at 121.92 212.09) (uuid 54a3b654-a668-4c6b-ba85-e96ca4d1899f))
   (no_connect (at 119.38 212.09) (uuid 54a3b654-a668-4c6b-ba85-e96ca4d189a0))
   (no_connect (at 332.105 164.465) (uuid 55e34d97-3f24-4d88-8609-8e6534304699))
-  (no_connect (at 332.105 169.545) (uuid 55e34d97-3f24-4d88-8609-8e6534304699))
+  (no_connect (at 332.105 169.545) (uuid 55e34d97-3f24-4d88-8609-8e653430469a))
   (no_connect (at 60.96 120.65) (uuid 5c5cd545-cbff-4470-996a-53da2c368c9d))
   (no_connect (at 96.52 212.09) (uuid 7254ab26-2169-4127-b2d6-21b178f0c474))
   (no_connect (at 93.98 212.09) (uuid 8e88d286-1b69-4160-8794-aad37d06bd72))
@@ -4586,10 +4586,10 @@
       (effects (font (size 1.27 1.27)) (justify right) hide)
     )
   )
-  (global_label "HP_MOS7" (shape input) (at 332.105 159.385 180) (fields_autoplaced)
+  (global_label "HP_MOS7" (shape input) (at 332.105 161.925 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 144bb71e-a0d6-4983-bbed-e31b1d3f205b)
-    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 320.9229 159.3056 0)
+    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 320.9229 161.8456 0)
       (effects (font (size 1.27 1.27)) (justify right) hide)
     )
   )
@@ -4908,10 +4908,10 @@
       (effects (font (size 1.27 1.27)) (justify right) hide)
     )
   )
-  (global_label "LP_MOS7" (shape input) (at 332.105 161.925 180) (fields_autoplaced)
+  (global_label "LP_MOS7" (shape input) (at 332.105 159.385 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 96e017aa-5bc3-4585-aed5-8aedbb0e984f)
-    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 321.2252 161.8456 0)
+    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 321.2252 159.3056 0)
       (effects (font (size 1.27 1.27)) (justify right) hide)
     )
   )
@@ -8903,6 +8903,9 @@
     (path "/cf3aa2f9-96db-4655-b607-36bd8d41a616"
       (reference "#PWR0378") (unit 1) (value "+5V") (footprint "")
     )
+    (path "/5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5/a440236e-372c-41e7-add7-4b8781296e41"
+      (reference "#PWR0379") (unit 1) (value "GND") (footprint "")
+    )
     (path "/c4ca1078-fd8d-4af6-b44e-00e6aed0cd5e"
       (reference "#PWR0380") (unit 1) (value "GND") (footprint "")
     )
@@ -8913,10 +8916,7 @@
       (reference "#PWR0382") (unit 1) (value "GND") (footprint "")
     )
     (path "/5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5/50334e3e-f97b-45b1-a00b-5148d7178b01"
-      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5/a440236e-372c-41e7-add7-4b8781296e41"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0383") (unit 1) (value "+5V") (footprint "")
     )
     (path "/12a3a5c1-ac79-4586-9274-31138d63f5db/afc75a69-04d1-4636-8ea3-b3fe3061a65f"
       (reference "BZ1") (unit 1) (value "Buzzer") (footprint "Buzzer_Beeper:Buzzer_12x9.5RM7.6")
@@ -9959,11 +9959,11 @@
     (path "/45493c35-65b4-4957-95a5-52f30f2492b3"
       (reference "R168") (unit 1) (value "1.2k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
-    (path "/5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5/064f68cd-33aa-440f-a561-ea7f56e641ba"
-      (reference "R?") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
-    )
     (path "/5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5/e56fe53b-8d81-47aa-bdfc-2ba550736a36"
-      (reference "R?") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R169") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
+    )
+    (path "/5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5/064f68cd-33aa-440f-a561-ea7f56e641ba"
+      (reference "R170") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b84c6964-5564-4d57-8b96-ee4462f76a3a"
       (reference "TP1") (unit 1) (value "3.3V PG") (footprint "TestPoint:TestPoint_Pad_D1.0mm")
