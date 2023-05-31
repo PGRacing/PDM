@@ -6216,7 +6216,7 @@
     (property "Value" "SPBTLE-RF" (id 1) (at 43.9294 249.809 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "RF_Module:ST_SPBTLE" (id 2) (at 54.61 275.844 0)
+    (property "Footprint" "PDMS_Additional:XCVR_SPBTLE-RF" (id 2) (at 54.61 275.844 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "http://www.st.com/resource/en/datasheet/spbtle-rf.pdf" (id 3) (at 27.94 251.714 0)
@@ -10419,7 +10419,7 @@
       (reference "U10") (unit 1) (value "CPC1117N") (footprint "Package_SO:SOP-4_3.8x4.1mm_P2.54mm")
     )
     (path "/3bd3a751-7d87-46c8-83fc-77ed2a9e4c3b"
-      (reference "U11") (unit 1) (value "SPBTLE-RF") (footprint "RF_Module:ST_SPBTLE")
+      (reference "U11") (unit 1) (value "SPBTLE-RF") (footprint "PDMS_Additional:XCVR_SPBTLE-RF")
     )
     (path "/ad53e72b-8846-45b3-8238-61a743b440ac/7f51cc6c-2d89-42ac-9175-ff66b0ad958b"
       (reference "U12") (unit 1) (value "USBLC6-2SC6") (footprint "Package_TO_SOT_SMD:SOT-23-6")
