@@ -22,27 +22,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f79d1f12-ea07-40a0-b634-ffd37bdd7e0b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/F746_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/F746_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/F746_Test.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/F746_Test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/F746_Test.elf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/F746_Test.hex" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/F746_Test.hex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/F746_Test.map" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/F746_Test.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/CMakeFiles/L475_Test.elf.dir/Core/Src/main.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.elf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.hex" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.hex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.map" beforeDir="false" afterPath="$PROJECT_DIR$/../L475_Test/cmake-build-debug/L475_Test.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_025949.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-22_031006.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/PDM-backups/PDM-2023-02-23_011325.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/PDM/fp-info-cache" beforeDir="false" afterPath="$PROJECT_DIR$/../../../PCB/PDM/fp-info-cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../PCB/Tests/VNF1048FTR_TestBoard/VNF1048FTR_TestBoard-backups/VNF1048FTR_TestBoard-2023-02-11_161307.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +93,8 @@
       <updated>1681756434026</updated>
       <workItem from="1681756440834" duration="9056000" />
       <workItem from="1682244416177" duration="1000" />
-      <workItem from="1685229670261" duration="2000" />
+      <workItem from="1685229670261" duration="651000" />
+      <workItem from="1685236545199" duration="684000" />
     </task>
     <servers />
   </component>
