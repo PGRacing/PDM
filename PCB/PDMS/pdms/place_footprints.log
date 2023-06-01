@@ -1,5 +1,52 @@
-05-19 01:07:24 com_github_MitjaNemec_PlaceFootprints.action_place_footprints 405:Plugin executed on: 'win32'
-05-19 01:07:24 com_github_MitjaNemec_PlaceFootprints.action_place_footprints 406:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
-05-19 01:07:24 com_github_MitjaNemec_PlaceFootprints.action_place_footprints 407:KiCad build version: (6.0.8)
-05-19 01:07:24 com_github_MitjaNemec_PlaceFootprints.action_place_footprints 408:Plugin version: 1.2.12
-05-19 01:07:24 com_github_MitjaNemec_PlaceFootprints.action_place_footprints 409:Frame repr: <wx._core.Frame object at 0x00000238985FB4C0>
+06-01 03:28:37 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:37 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:37 svg2mod-unfiltered 262:Found SVG layer: F.SilkS
+06-01 03:28:37 svg2mod 263:  Detailed names: [F.SilkS]
+06-01 03:28:37 svg2mod 304:  Inlining 5 segments...
+06-01 03:28:37 svg2mod 339:  Writing Text with 158 points
+06-01 03:28:37 svg2mod 339:  Writing Text with 15 points
+06-01 03:28:37 svg2mod 339:  Writing Text with 13 points
+06-01 03:28:37 svg2mod 339:  Writing Text with 7 points
+06-01 03:28:39 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:39 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:39 svg2mod-unfiltered 262:Found SVG layer: F.SilkS
+06-01 03:28:39 svg2mod 263:  Detailed names: [F.SilkS]
+06-01 03:28:39 svg2mod 304:  Inlining 5 segments...
+06-01 03:28:39 svg2mod 339:  Writing Text with 158 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 15 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 13 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 7 points
+06-01 03:28:39 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:39 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:39 svg2mod-unfiltered 262:Found SVG layer: F.SilkS
+06-01 03:28:39 svg2mod 263:  Detailed names: [F.SilkS]
+06-01 03:28:39 svg2mod 304:  Inlining 5 segments...
+06-01 03:28:39 svg2mod 339:  Writing Text with 158 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 15 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 13 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 7 points
+06-01 03:28:39 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:39 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:39 svg2mod-unfiltered 262:Found SVG layer: F.SilkS
+06-01 03:28:39 svg2mod 263:  Detailed names: [F.SilkS]
+06-01 03:28:39 svg2mod 304:  Inlining 5 segments...
+06-01 03:28:39 svg2mod 339:  Writing Text with 158 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 15 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 13 points
+06-01 03:28:39 svg2mod 339:  Writing Text with 7 points
+06-01 03:28:40 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:40 svg2mod 1301:Font "UbuntuMono-B" does not natively support style "Regular" using "Path" instead
+06-01 03:28:40 svg2mod-unfiltered 262:Found SVG layer: F.SilkS
+06-01 03:28:40 svg2mod 263:  Detailed names: [F.SilkS]
+06-01 03:28:40 svg2mod 304:  Inlining 5 segments...
+06-01 03:28:40 svg2mod 339:  Writing Text with 158 points
+06-01 03:28:40 svg2mod 339:  Writing Text with 15 points
+06-01 03:28:40 svg2mod 339:  Writing Text with 13 points
+06-01 03:28:40 svg2mod 339:  Writing Text with 7 points
+06-01 03:28:40 svg2mod-unfiltered 262:Found SVG layer: F.SilkS
+06-01 03:28:40 svg2mod 263:  Detailed names: [F.SilkS]
+06-01 03:28:40 svg2mod 304:  Inlining 5 segments...
+06-01 03:28:40 svg2mod 339:  Writing Text with 158 points
+06-01 03:28:40 svg2mod 339:  Writing Text with 15 points
+06-01 03:28:40 svg2mod 339:  Writing Text with 13 points
+06-01 03:28:40 svg2mod 339:  Writing Text with 7 points
