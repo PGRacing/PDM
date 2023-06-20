@@ -10,3 +10,9 @@ TODO:
 3. Check for ADC performance in high current enviroment
 4. Current limiting on VNF1048 using PWM contolled PMOS between charge-pump output and Power-MOS gate.
 5. Add buck-converter for 3.3V automotive grade only!
+
+TODO on next PCB:
+
+1. Add fuse for external sensors supply (100mA)
+2. Change CPC1117N to CPC1017N
+3. Add clamping diodes on any signals 
