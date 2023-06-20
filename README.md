@@ -15,4 +15,5 @@ TODO on next PCB:
 
 1. Add fuse for external sensors supply (100mA)
 2. Change CPC1117N to CPC1017N
-3. Add clamping diodes on any signals 
+3. Add clamping diodes on any signals
+4. Change input filtration for low profile SMD capacitor instead of tht
