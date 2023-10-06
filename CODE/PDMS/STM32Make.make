@@ -42,8 +42,9 @@ Core/Src/canhandler.c \
 Core/Src/dma.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
+Core/Src/llgpio.c \
 Core/Src/main.c \
-Core/Src/pwmdrv.c \
+Core/Src/out.c \
 Core/Src/stm32l4xx_hal_msp.c \
 Core/Src/stm32l4xx_hal_timebase_tim.c \
 Core/Src/stm32l4xx_it.c \

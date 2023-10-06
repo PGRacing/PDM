@@ -1,12 +1,24 @@
-#ifndef __TYPEDEFS_H__
-#define _TYPEDEFS_H__
-#include "stdbool.h"
-#include "gpio.h"
+#ifndef __TYPEDEFS_H_
+#define __TYPEDEFS_H_
 
-typedef struct
+#include <stdbool.h>
+#include <stdint.h>
+
+#define FALSE false
+#define TRUE  true
+
+#define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
+
+typedef enum
 {
-    GPIO_TypeDef* port;
-    uint16_t pin;
-}io_t;
+    STATUS_OK,
+    STATUS_ERR,
+}T_STATUS;
 
-#endif
+typedef struct _T_IO
+{
+    GPIO_TypeDef* gpio;
+    uint16_t pin;
+}T_IO;
+
+#endif 

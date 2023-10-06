@@ -278,8 +278,6 @@ uint32_t adcRawData[ADC_CHANNEL_COUNT];
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-    BaseType_t  checkIfYieldRequired;
-
     /* Can be possibly changed to semaphore */
     static portBASE_TYPE xHigherPriorityTaskWoken;
     xHigherPriorityTaskWoken = pdFALSE;
