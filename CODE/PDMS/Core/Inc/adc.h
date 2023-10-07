@@ -37,14 +37,16 @@ extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 
 /* USER CODE BEGIN Private defines */
-
+#define ADC1_CHANNEL_COUNT 6
+#define ADC2_CHANNEL_COUNT 8
 /* USER CODE END Private defines */
 
 void MX_ADC1_Init(void);
 void MX_ADC2_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+extern uint32_t adc1RawData[ADC1_CHANNEL_COUNT];
+extern uint32_t adc2RawData[ADC2_CHANNEL_COUNT];
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

@@ -31,11 +31,11 @@ typedef enum
 
 typedef struct _T_OUT_CFG
 {
-    const uint8_t id; // id should reflect position in outsCfg
-    const T_IO    io;
-    T_OUT_MODE    mode;
-    T_OUT_STATE   state;
-    T_OUT_ID      batch; /* optional for OUT_MODE_BATCH */
+    const T_OUT_ID id;    // id should reflect position in outsCfg
+    const T_IO     io;
+    T_OUT_MODE     mode;
+    T_OUT_STATE    state;
+    T_OUT_ID       batch; // optional for OUT_MODE_BATCH
 }T_OUT_CFG;
 
 // Main outputs config

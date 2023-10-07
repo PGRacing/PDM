@@ -42,6 +42,7 @@ Core/Src/canhandler.c \
 Core/Src/dma.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
+Core/Src/input.c \
 Core/Src/llgpio.c \
 Core/Src/main.c \
 Core/Src/out.c \

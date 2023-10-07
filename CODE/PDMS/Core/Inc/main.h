@@ -76,6 +76,22 @@ void Error_Handler(void);
 #define SENS_OUT2_GPIO_Port GPIOA
 #define SENS_OUT1_Pin GPIO_PIN_2
 #define SENS_OUT1_GPIO_Port GPIOA
+#define IO_CONN8_Pin GPIO_PIN_3
+#define IO_CONN8_GPIO_Port GPIOA
+#define IO_CONN7_Pin GPIO_PIN_4
+#define IO_CONN7_GPIO_Port GPIOA
+#define IO_CONN6_Pin GPIO_PIN_5
+#define IO_CONN6_GPIO_Port GPIOA
+#define IO_CONN5_Pin GPIO_PIN_6
+#define IO_CONN5_GPIO_Port GPIOA
+#define IO_CONN4_Pin GPIO_PIN_7
+#define IO_CONN4_GPIO_Port GPIOA
+#define IO_CONN3_Pin GPIO_PIN_4
+#define IO_CONN3_GPIO_Port GPIOC
+#define IO_CONN2_Pin GPIO_PIN_5
+#define IO_CONN2_GPIO_Port GPIOC
+#define IO_CONN1_Pin GPIO_PIN_0
+#define IO_CONN1_GPIO_Port GPIOB
 #define PWM_SIG1_Pin GPIO_PIN_9
 #define PWM_SIG1_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
