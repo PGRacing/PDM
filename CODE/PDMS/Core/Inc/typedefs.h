@@ -9,6 +9,9 @@
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
+#define USE_FULL_ASSERT 1
+#define ASSERT(...) assert_param(__VA_ARGS__)
+
 typedef enum
 {
     STATUS_OK,

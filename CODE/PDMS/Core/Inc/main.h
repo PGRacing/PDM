@@ -46,7 +46,6 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -59,6 +58,26 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define STATUS_LED_Pin GPIO_PIN_2
 #define STATUS_LED_GPIO_Port GPIOE
+#define SENS_OUT8_Pin GPIO_PIN_5
+#define SENS_OUT8_GPIO_Port GPIOF
+#define SENS_OUT7_Pin GPIO_PIN_10
+#define SENS_OUT7_GPIO_Port GPIOF
+#define SENS_OUT6_Pin GPIO_PIN_0
+#define SENS_OUT6_GPIO_Port GPIOC
+#define SENS_OUT5_Pin GPIO_PIN_1
+#define SENS_OUT5_GPIO_Port GPIOC
+#define HP_MOS_ADC_Pin GPIO_PIN_2
+#define HP_MOS_ADC_GPIO_Port GPIOC
+#define SENS_OUT4_Pin GPIO_PIN_3
+#define SENS_OUT4_GPIO_Port GPIOC
+#define SENS_OUT3_Pin GPIO_PIN_0
+#define SENS_OUT3_GPIO_Port GPIOA
+#define SENS_OUT2_Pin GPIO_PIN_1
+#define SENS_OUT2_GPIO_Port GPIOA
+#define SENS_OUT1_Pin GPIO_PIN_2
+#define SENS_OUT1_GPIO_Port GPIOA
+#define PWM_SIG1_Pin GPIO_PIN_9
+#define PWM_SIG1_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

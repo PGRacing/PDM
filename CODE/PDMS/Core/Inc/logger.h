@@ -1,9 +1,14 @@
 #ifndef __LOGGER_H_
 #define __LOGGER_H_
 
-#define LOGF(...)
+// Uncomment to use printf handler of log
+//#define LOG_ENABLED 
 
-//#define LOGF(...) printf(__VA_ARGS__)
+#ifdef LOG_ENABLED 
+#define LOGF(...) printf(__VA_ARGS__)
+#else
+#define LOGF(...)
+#endif
 
 #define STRINGIZE(x) STRINGIZE2(x)
 #define STRINGIZE2(x) #x

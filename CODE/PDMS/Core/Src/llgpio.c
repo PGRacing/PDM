@@ -8,26 +8,24 @@
 
 void LLGPIO_SetMode(T_IO io, T_LLGPIO_MODE mode)
 {
-    io.gpio->MODER &= ~(3U << (io.pin * 2));        // Clear existing setting
-    io.gpio->MODER |= (mode & 3) << (io.pin * 2);   // Set new mode
+    // io.gpio->MODER &= ~(3U << (io.pin * 2));        // Clear existing setting
+    // io.gpio->MODER |= (mode & 3) << (io.pin * 2);   // Set new mode
 }
 
 void LLGPIO_SetStdState(T_IO io, bool state)
 {
-
+    HAL_GPIO_WritePin(io.gpio, io.pin, state);
 }
 
-void LLGPIO_EnablePWM(T_IO io)
+void LLGPIO_InitPWM(T_IO io)
 {
-
 }
 
-void LLGPIO_DisablePWM(T_IO io)
+void LLGPIO_DeInitPWM(T_IO io)
 {
-
 }
 
 void LLGPIO_SetDutyPWM(T_IO io, uint8_t duty)
 {
-
 }
+
