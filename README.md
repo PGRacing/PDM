@@ -18,3 +18,5 @@ TODO on next PCB:
 3. Add clamping diodes on any signals
 4. Change input filtration for low profile SMD capacitor instead of tht
 5. Add SWO pin
+6. Current sensors output should be collected by one ADC !!! - for eg. ADC3 (change pinout)
+7. Add clamping diodes on current sensor to allow lower range current detecion
