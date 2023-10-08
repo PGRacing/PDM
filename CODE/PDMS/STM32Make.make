@@ -44,6 +44,7 @@ Core/Src/freertos.c \
 Core/Src/gpio.c \
 Core/Src/input.c \
 Core/Src/llgpio.c \
+Core/Src/logic.c \
 Core/Src/main.c \
 Core/Src/out.c \
 Core/Src/stm32l4xx_hal_msp.c \

@@ -14,7 +14,7 @@ typedef enum
     IN_PHY_ID_7 = 0x06,
     IN_PHY_ID_8 = 0x07,
     IN_PHY_MAX
-}T_OUT_ID;
+}T_IN_PHY_ID;
 
 typedef enum
 {

@@ -167,16 +167,16 @@ static bool OUT_ToggleState(T_OUT_CFG* cfg)
   return OUT_SetState( cfg, !cfg->state);
 }
 
-void testTaskEntry(void *argument)
-{
-  /* TODO There is possibility to add UT here for setting output mode and setting output state */
-  T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
+// void testTaskEntry(void *argument)
+// {
+//   /* TODO There is possibility to add UT here for setting output mode and setting output state */
+//   T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
 
-  OUT_ChangeMode( out, OUT_MODE_STD ); 
-  //OUT_SetState( out, OUT_STATE_ON );
-  for (;;)
-  {
-    OUT_ToggleState( out );
-    osDelay(3000);
-  }
-}
+//   OUT_ChangeMode( out, OUT_MODE_STD ); 
+//   //OUT_SetState( out, OUT_STATE_ON );
+//   for (;;)
+//   {
+//     OUT_ToggleState( out );
+//     osDelay(3000);
+//   }
+// }
