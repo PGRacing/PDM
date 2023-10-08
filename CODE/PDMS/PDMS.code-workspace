@@ -9,7 +9,8 @@
 		"cortex-debug.openocdPath": "C:\\USERS\\KAROL\\APPDATA\\ROAMING\\CODE\\USER\\GLOBALSTORAGE\\BMD.STM32-FOR-VSCODE\\@XPACK-DEV-TOOLS\\OPENOCD\\0.12.0-2.1\\.CONTENT\\BIN\\OPENOCD.EXE",
 		"files.associations": {
 			"typedefs.h": "c",
-			"adc.h": "c"
+			"adc.h": "c",
+			"main.h": "c"
 		}
 	}
 }

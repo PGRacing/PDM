@@ -10,6 +10,8 @@
 #include "adc.h"
 #include "cmsis_os2.h"
 
+/* TODO Add debouncing for phy digital inputs */
+
 // Physical inputs shouldn't be redefined
 T_IN_CFG inputsCfg[] =
     {

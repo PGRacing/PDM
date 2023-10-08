@@ -43,7 +43,7 @@ typedef struct
 } T_LOGIC_OPERATOR_RELATION;
 
 // TODO add all operators
-const T_LOGIC_OPERATOR_RELATION operatorsRelation[] =
+const T_LOGIC_OPERATOR_RELATION operatorsConfig[] =
     {
         [LOGIC_OPERATOR_AND] =
             {
@@ -114,7 +114,7 @@ static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
 
   bool res = FALSE;
 
-  T_LOGIC_OPERATOR_RELATION relation = operatorsRelation[exp.operator];
+  T_LOGIC_OPERATOR_RELATION relation = operatorsConfig[exp.operator];
 
   if( relation.allowedFirst == LOGIC_EXPRESSION_VAR_ANY 
   || exp.var1type == relation.allowedFirst)
@@ -146,7 +146,12 @@ static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
 
 bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 {
-  ASSERT( LOGIC_IsExpValid( exp ));
+  if( LOGIC_IsExpValid( exp ) == FALSE )
+  {
+    LOG_WARN("LOGIC: Logic expression invalid!");
+    ASSERT( FALSE );
+  }
+  
   
   bool result = FALSE;
 
@@ -247,10 +252,13 @@ void testTaskEntry(void *argument)
     .var2type = LOGIC_EXPRESSION_VAR_ANALOG,
     .var2data = &a
   };
-  //OUT_SetState( out, OUT_STATE_ON );
+
+  OUT_ChangeMode( OUT_GetPtr(OUT_ID_1), OUT_MODE_STD);
+
   for (;;)
   {
     expResult = LOGIC_EvaluateExpression( exp1 );
-    osDelay(500);
+    OUT_SetState( OUT_GetPtr(OUT_ID_1), expResult);
+    osDelay(10);
   }
 }

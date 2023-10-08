@@ -20,7 +20,7 @@ T_OUT_CFG outsCfg[] =
         },
 };
 
-static T_OUT_CFG* OUT_GetPtr( uint8_t id )
+T_OUT_CFG* OUT_GetPtr( T_OUT_ID id )
 {
   ASSERT( id > 0 && id < ARRAY_COUNT(outsCfg) );
   return &(outsCfg[id]);
