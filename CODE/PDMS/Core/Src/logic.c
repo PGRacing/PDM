@@ -42,7 +42,6 @@ typedef struct
   T_LOGIC_EXP_VAR allowedSecond;
 } T_LOGIC_OPERATOR_RELATION;
 
-// TODO add all operators
 const T_LOGIC_OPERATOR_RELATION operatorsConfig[] =
     {
         [LOGIC_OPERATOR_AND] =
@@ -174,14 +173,33 @@ bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
   case LOGIC_OPERATOR_NE:
   {
     // A != B
-    result = (*((uint32_t*)exp.var1data) != *((uint32_t*)exp.var2data));
+    if ( exp.var1type == LOGIC_EXPRESSION_VAR_ANALOG &&
+          exp.var2type == LOGIC_EXPRESSION_VAR_ANALOG)
+          {
+            result = (*((uint32_t*)exp.var1data) != *((uint32_t*)exp.var2data));
+          }
+          else if( exp.var1type == LOGIC_EXPRESSION_VAR_SCHMITT &&
+          exp.var2type == LOGIC_EXPRESSION_VAR_SCHMITT )
+          {
+            result = (*((bool*)exp.var1data) != *((bool*)exp.var2data));
+          }
+    
     break;
   }
 
   case LOGIC_OPERATOR_E:
   {
     // A == B
-    result = (*((uint32_t*)exp.var1data) == *((uint32_t*)exp.var2data));
+    if ( exp.var1type == LOGIC_EXPRESSION_VAR_ANALOG &&
+      exp.var2type == LOGIC_EXPRESSION_VAR_ANALOG)
+      {
+        result = (*((uint32_t*)exp.var1data) == *((uint32_t*)exp.var2data));
+      }
+      else if( exp.var1type == LOGIC_EXPRESSION_VAR_SCHMITT &&
+      exp.var2type == LOGIC_EXPRESSION_VAR_SCHMITT )
+      {
+        result = (*((bool*)exp.var1data) == *((bool*)exp.var2data));
+      }
     break;
   }
 
@@ -250,7 +268,7 @@ void testTaskEntry(void *argument)
     .var1type = LOGIC_EXPRESSION_VAR_ANALOG,
     .var1data = inputsCfg[0].rawData,
     .var2type = LOGIC_EXPRESSION_VAR_ANALOG,
-    .var2data = &a
+    .var2data = (2000)
   };
 
   OUT_ChangeMode( OUT_GetPtr(OUT_ID_1), OUT_MODE_STD);
