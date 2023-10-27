@@ -21,3 +21,4 @@ TODO on next PCB:
 6. Current sensors output should be collected by one ADC !!! - for eg. ADC3 (change pinout)
 7. Add clamping diodes on current sensor to allow lower range current detecion
 8. Selection and redirection od IO is not imporant
+9. Fix WS2812B footprint
