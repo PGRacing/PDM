@@ -9,6 +9,8 @@
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
+#define POWER_OUT_COUNT 16
+
 #define USE_FULL_ASSERT 1
 #define ASSERT(...) assert_param(__VA_ARGS__)
 

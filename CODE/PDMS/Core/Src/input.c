@@ -121,3 +121,36 @@ void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode)
   cfg->mode = targetMode;
 
 }
+
+bool IN_GetValueSchmitt(uint16_t id)
+{
+  T_IN_CFG* in = IN_GetPtr(id);
+  
+  if( in->mode != IN_MODE_SCHMITT )
+  {
+    LOG_ERR( "IN: trying to get boolean value from non schmitt input");
+    return FALSE;
+  }
+
+  // Now using adc values -- add debouncing
+  if( *(in->rawData) > 1500 )
+  {
+    return TRUE;
+  }else
+  {
+    return FALSE;
+  }
+}
+
+uint32_t IN_GetValueAnalog(uint16_t id)
+{
+  T_IN_CFG* in = IN_GetPtr(id);
+
+  if( in->mode != IN_MODE_ANALOG )
+  {
+    LOG_ERR("IN: trying to get analog value from non analog input");
+    return 0;
+  }
+
+  return *(in->rawData);
+}
