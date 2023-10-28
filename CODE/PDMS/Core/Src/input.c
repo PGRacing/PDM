@@ -73,7 +73,7 @@ T_IN_CFG inputsCfg[] =
                 .mode = IN_MODE_UNUSED},
 };
 
-static T_IN_CFG *IN_GetPtr(uint8_t id)
+static T_IN_CFG *IN_GetCfgPtr(uint8_t id)
 {
   // TODO Extend for can inputs
   ASSERT(id > 0 && id < ARRAY_COUNT(inputsCfg));
@@ -124,7 +124,7 @@ void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode)
 
 bool IN_GetValueSchmitt(uint16_t id)
 {
-  T_IN_CFG* in = IN_GetPtr(id);
+  T_IN_CFG* in = IN_GetCfgPtr(id);
   
   if( in->mode != IN_MODE_SCHMITT )
   {
@@ -144,7 +144,7 @@ bool IN_GetValueSchmitt(uint16_t id)
 
 uint32_t IN_GetValueAnalog(uint16_t id)
 {
-  T_IN_CFG* in = IN_GetPtr(id);
+  T_IN_CFG* in = IN_GetCfgPtr(id);
 
   if( in->mode != IN_MODE_ANALOG )
   {

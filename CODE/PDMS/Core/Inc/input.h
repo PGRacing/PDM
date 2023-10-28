@@ -3,6 +3,7 @@
 
 #include "typedefs.h"
 
+typedef uint16_t T_INPUT_ID;
 typedef enum
 {
     IN_PHY_ID_1 = 0x00,
@@ -32,7 +33,7 @@ typedef enum
 
 typedef struct _T_IN_CFG
 {
-    const uint16_t    id;      // id should reflect position in inputsCfg
+    const T_INPUT_ID  id;      // id should reflect position in inputsCfg
     const T_IO        io;
     const uint32_t*   rawData; // pointer to rawData from input
     T_IN_TYPE         type;

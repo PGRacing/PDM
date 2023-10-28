@@ -47,6 +47,7 @@ Core/Src/llgpio.c \
 Core/Src/logic.c \
 Core/Src/main.c \
 Core/Src/out.c \
+Core/Src/pdm.c \
 Core/Src/stm32l4xx_hal_msp.c \
 Core/Src/stm32l4xx_hal_timebase_tim.c \
 Core/Src/stm32l4xx_it.c \

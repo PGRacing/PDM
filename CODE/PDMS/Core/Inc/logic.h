@@ -34,8 +34,8 @@ typedef enum
 }T_LOGIC_INPUT_TYPE;
 
 /* TODO At home 
-    1. Change below T_LOGIC_VAR into T_LOGIC_INPUT_TYPE
-    2. Change var1data and var2data into input id or const value
+    1. DONE Change below T_LOGIC_VAR into T_LOGIC_INPUT_TYPE
+    2. DONE Change var1data and var2data into input id or const value
     3. operator ok
     4. Change expression validation that checks input configuration (or const)
     5. Change expression evaluation so that it reads input data specific to configuration analog or digital
@@ -46,10 +46,20 @@ typedef enum
 /// @brief Logic expression
 typedef struct
 {
-  T_LOGIC_VAR var1type;
-  void* var1data;
-  T_LOGIC_VAR var2type;
-  void* var2data;
+  T_LOGIC_INPUT_TYPE var1_type;
+  union
+  {
+    uint32_t   var1_const;
+    T_INPUT_ID var1_data;
+  };
+
+  T_LOGIC_INPUT_TYPE var2_type;
+    union
+  {
+    uint32_t   var2_const;
+    T_INPUT_ID var2_data;
+  };
+
   T_LOGIC_OPERATOR opr;
 } T_LOGIC_EXPRESSION;
 
