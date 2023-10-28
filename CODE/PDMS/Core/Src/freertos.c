@@ -89,6 +89,13 @@ const osThreadAttr_t testTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for vmuxTask */
+osThreadId_t vmuxTaskHandle;
+const osThreadAttr_t vmuxTask_attributes = {
+  .name = "vmuxTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -101,6 +108,7 @@ extern void can1TaskStart(void *argument);
 extern void can2TaskStart(void *argument);
 extern void adcTaskStart(void *argument);
 extern void testTaskEntry(void *argument);
+extern void vmuxTaskStart(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -148,6 +156,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of testTask */
   testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
+
+  /* creation of vmuxTask */
+  vmuxTaskHandle = osThreadNew(vmuxTaskStart, NULL, &vmuxTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

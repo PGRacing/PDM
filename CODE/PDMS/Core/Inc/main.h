@@ -58,6 +58,12 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define STATUS_LED_Pin GPIO_PIN_2
 #define STATUS_LED_GPIO_Port GPIOE
+#define VOLTAGE_MUX_SEL1_Pin GPIO_PIN_3
+#define VOLTAGE_MUX_SEL1_GPIO_Port GPIOE
+#define VOLTAGE_MUX_SEL2_Pin GPIO_PIN_4
+#define VOLTAGE_MUX_SEL2_GPIO_Port GPIOE
+#define VOLTAGE_MUX_SEL3_Pin GPIO_PIN_5
+#define VOLTAGE_MUX_SEL3_GPIO_Port GPIOE
 #define SENS_OUT8_Pin GPIO_PIN_5
 #define SENS_OUT8_GPIO_Port GPIOF
 #define SENS_OUT7_Pin GPIO_PIN_10
@@ -66,8 +72,8 @@ void Error_Handler(void);
 #define SENS_OUT6_GPIO_Port GPIOC
 #define SENS_OUT5_Pin GPIO_PIN_1
 #define SENS_OUT5_GPIO_Port GPIOC
-#define HP_MOS_ADC_Pin GPIO_PIN_2
-#define HP_MOS_ADC_GPIO_Port GPIOC
+#define VOLTAGE_MUX_ADC_Pin GPIO_PIN_2
+#define VOLTAGE_MUX_ADC_GPIO_Port GPIOC
 #define SENS_OUT4_Pin GPIO_PIN_3
 #define SENS_OUT4_GPIO_Port GPIOC
 #define SENS_OUT3_Pin GPIO_PIN_0

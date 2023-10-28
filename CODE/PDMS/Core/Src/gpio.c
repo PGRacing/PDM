@@ -33,9 +33,6 @@
 /* USER CODE END 1 */
 
 /** Configure pins
-     PF5   ------> ADC3_IN8
-     PF10   ------> ADC3_IN13
-     PC2   ------> ADCx_IN3
 */
 void MX_GPIO_Init(void)
 {
@@ -50,29 +47,17 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, STATUS_LED_Pin|VOLTAGE_MUX_SEL1_Pin|VOLTAGE_MUX_SEL2_Pin|VOLTAGE_MUX_SEL3_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PWM_SIG1_GPIO_Port, PWM_SIG1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = STATUS_LED_Pin;
+  /*Configure GPIO pins : PEPin PEPin PEPin PEPin */
+  GPIO_InitStruct.Pin = STATUS_LED_Pin|VOLTAGE_MUX_SEL1_Pin|VOLTAGE_MUX_SEL2_Pin|VOLTAGE_MUX_SEL3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(STATUS_LED_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PFPin PFPin */
-  GPIO_InitStruct.Pin = SENS_OUT8_Pin|SENS_OUT7_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = HP_MOS_ADC_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(HP_MOS_ADC_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = PWM_SIG1_Pin;
