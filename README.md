@@ -22,3 +22,5 @@ TODO on next PCB:
 7. Add clamping diodes on current sensor to allow lower range current detecion
 8. Selection and redirection od IO is not imporant
 9. Fix WS2812B footprint
+10. Use smaller footprint for voltage mux and can transceiver
+11. Change FET's to BTS50010-1LUA
