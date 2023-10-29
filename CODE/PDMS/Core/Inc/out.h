@@ -47,6 +47,8 @@ void OUT_ChangeMode(T_OUT_CFG* cfg, T_OUT_MODE targetMode);
 
 bool OUT_SetState(T_OUT_CFG* cfg, T_OUT_STATE state);
 
+bool OUT_ToggleState(T_OUT_CFG* cfg);
+
 bool OUT_AttachAdditional(T_OUT_CFG* cfg, T_OUT_ID batch);
 
 #endif

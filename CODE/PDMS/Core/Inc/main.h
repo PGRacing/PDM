@@ -56,6 +56,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define USE_FULL_ASSERT 1
 #define STATUS_LED_Pin GPIO_PIN_2
 #define STATUS_LED_GPIO_Port GPIOE
 #define VOLTAGE_MUX_SEL1_Pin GPIO_PIN_3
@@ -98,6 +99,20 @@ void Error_Handler(void);
 #define IO_CONN2_GPIO_Port GPIOC
 #define IO_CONN1_Pin GPIO_PIN_0
 #define IO_CONN1_GPIO_Port GPIOB
+#define PWM_SIG8_Pin GPIO_PIN_12
+#define PWM_SIG8_GPIO_Port GPIOD
+#define PWM_SIG7_Pin GPIO_PIN_13
+#define PWM_SIG7_GPIO_Port GPIOD
+#define PWM_SIG6_Pin GPIO_PIN_14
+#define PWM_SIG6_GPIO_Port GPIOD
+#define PWM_SIG5_Pin GPIO_PIN_15
+#define PWM_SIG5_GPIO_Port GPIOD
+#define PWM_SIG4_Pin GPIO_PIN_6
+#define PWM_SIG4_GPIO_Port GPIOC
+#define PWM_SIG3_Pin GPIO_PIN_7
+#define PWM_SIG3_GPIO_Port GPIOC
+#define PWM_SIG2_Pin GPIO_PIN_8
+#define PWM_SIG2_GPIO_Port GPIOC
 #define PWM_SIG1_Pin GPIO_PIN_9
 #define PWM_SIG1_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */

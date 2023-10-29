@@ -14,6 +14,8 @@
 #define USE_FULL_ASSERT 1
 #define ASSERT(...) assert_param(__VA_ARGS__)
 
+typedef uint16_t T_INPUT_ID;
+
 typedef enum
 {
     STATUS_OK,

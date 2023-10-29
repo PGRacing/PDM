@@ -2,8 +2,6 @@
 #define __INPUT_H_
 
 #include "typedefs.h"
-
-typedef uint16_t T_INPUT_ID;
 typedef enum
 {
     IN_PHY_ID_1 = 0x00,
@@ -22,7 +20,7 @@ typedef enum
     IN_MODE_UNUSED  = 0x00,
     IN_MODE_SCHMITT = 0x01,
     IN_MODE_ANALOG  = 0x02,
-    IN_MODE_OUTPUT  = 0x03, // Change this IO pin to output
+    IN_MODE_OUTPUT  = 0x03 // Change this IO pin to output
 }T_IN_MODE;
 
 typedef enum
@@ -46,5 +44,13 @@ extern T_IN_CFG inputsCfg[];
 bool IN_GetValueSchmitt(uint16_t id);
 
 uint32_t IN_GetValueAnalog(uint16_t id);
+
+uint32_t IN_GetValue(T_INPUT_ID id);
+
+T_IN_CFG *IN_GetCfgPtr(T_INPUT_ID id);
+
+void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode);
+
+T_IN_MODE IN_GetMode(T_INPUT_ID id);
 
 #endif

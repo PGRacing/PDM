@@ -10,11 +10,55 @@
 #include "tim.h"
 #include "cmsis_os2.h"
 
-T_OUT_CFG outsCfg[] =
+#define OUT_MAX 8
+
+T_OUT_CFG outsCfg[OUT_MAX] =
     {
-        [0] = {
+        [OUT_ID_1] = {
             .id = OUT_ID_1,
             .io = {PWM_SIG1_GPIO_Port, PWM_SIG1_Pin},
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF,
+        },
+        [OUT_ID_2] = {
+            .id = OUT_ID_2,
+            .io = {PWM_SIG2_GPIO_Port, PWM_SIG2_Pin},
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF,
+        },
+        [OUT_ID_3] = {
+            .id = OUT_ID_3,
+            .io = {PWM_SIG3_GPIO_Port, PWM_SIG3_Pin},
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF,
+        },
+        [OUT_ID_4] = {
+            .id = OUT_ID_4,
+            .io = {PWM_SIG4_GPIO_Port, PWM_SIG4_Pin},
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF,
+        },
+        [OUT_ID_5] = {
+            .id = OUT_ID_5,
+            .io = {PWM_SIG5_GPIO_Port, PWM_SIG5_Pin},
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF,
+        },
+        [OUT_ID_6] = {
+            .id = OUT_ID_6,
+            .io = {PWM_SIG6_GPIO_Port, PWM_SIG6_Pin},
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF,
+        },
+        [OUT_ID_7] = {
+            .id = OUT_ID_7,
+            .io = {PWM_SIG7_GPIO_Port, PWM_SIG7_Pin},
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF,
+        },
+        [OUT_ID_8] = {
+            .id = OUT_ID_8,
+            .io = {PWM_SIG8_GPIO_Port, PWM_SIG8_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
@@ -162,21 +206,21 @@ bool OUT_AttachAdditional(T_OUT_CFG *cfg, T_OUT_ID batch)
   return TRUE;
 }
 
-static bool OUT_ToggleState(T_OUT_CFG* cfg)
+bool OUT_ToggleState(T_OUT_CFG* cfg)
 {
   return OUT_SetState( cfg, !cfg->state);
 }
 
-void testTaskEntry(void *argument)
-{
-  /* TODO There is possibility to add UT here for setting output mode and setting output state */
-  T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
+// void testTaskEntry(void *argument)
+// {
+//   /* TODO There is possibility to add UT here for setting output mode and setting output state */
+//   T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
 
-  OUT_ChangeMode( out, OUT_MODE_STD ); 
-  //OUT_SetState( out, OUT_STATE_ON );
-  for (;;)
-  {
-    OUT_ToggleState( out );
-    osDelay(3000);
-  }
-}
+//   OUT_ChangeMode( out, OUT_MODE_STD ); 
+//   //OUT_SetState( out, OUT_STATE_ON );
+//   for (;;)
+//   {
+//     OUT_ToggleState( out );
+//     osDelay(3000);
+//   }
+// }

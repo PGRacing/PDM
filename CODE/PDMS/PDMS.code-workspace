@@ -10,7 +10,11 @@
 		"files.associations": {
 			"typedefs.h": "c",
 			"adc.h": "c",
-			"main.h": "c"
+			"main.h": "c",
+			"cmsis_os2.h": "c",
+			"stm32l4xx_hal_def.h": "c",
+			"stm32l4xx_hal_gpio.h": "c",
+			"pdm.h": "c"
 		}
 	}
 }

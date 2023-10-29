@@ -20,44 +20,36 @@ typedef enum
 
 typedef enum
 {
-  // REMEMBER SCHMITT ALSO ALLOWS CONST (TRUE / FALSE )
-  LOGIC_VAR_SCHMITT = 0x00,
-  LOGIC_VAR_ANALOG = 0x01,
-  LOGIC_VAR_ANY = 0x02,
-  LOGIC_VAR_NONE = 0x03
-} T_LOGIC_VAR;
+  LOGIC_VAR_TYPE_SCHMITT = 0x00,
+  LOGIC_VAR_TYPE_ANALOG = 0x01,
+  LOGIC_VAR_TYPE_ANY = 0x02,
+  LOGIC_VAR_TYPE_NONE = 0x03
+} T_LOGIC_VAR_TYPE;
 
 typedef enum
 {
     LOGIC_INPUT_TYPE_SENSOR = 0x00,
-    LOGIC_INPUT_TYPE_CONST  = 0x01
+    LOGIC_INPUT_TYPE_CONST_SCHMITT = 0x01,
+    LOGIC_INPUT_TYPE_CONST_ANALOG = 0x02,
+    LOGIC_INPUT_TYPE_UNSET = 0x03
 }T_LOGIC_INPUT_TYPE;
-
-/* TODO At home 
-    1. DONE Change below T_LOGIC_VAR into T_LOGIC_INPUT_TYPE
-    2. DONE Change var1data and var2data into input id or const value
-    3. operator ok
-    4. Change expression validation that checks input configuration (or const)
-    5. Change expression evaluation so that it reads input data specific to configuration analog or digital
-    6. Evaluate value
-*/
 
 
 /// @brief Logic expression
 typedef struct
 {
-  T_LOGIC_INPUT_TYPE var1_type;
+  T_LOGIC_INPUT_TYPE input1Type;
   union
   {
-    uint32_t   var1_const;
-    T_INPUT_ID var1_data;
+    uint32_t   input1Const;
+    T_INPUT_ID input1ID;
   };
 
-  T_LOGIC_INPUT_TYPE var2_type;
-    union
+  T_LOGIC_INPUT_TYPE input2Type;
+  union
   {
-    uint32_t   var2_const;
-    T_INPUT_ID var2_data;
+    uint32_t   input2Const;
+    T_INPUT_ID input2ID;
   };
 
   T_LOGIC_OPERATOR opr;

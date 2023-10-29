@@ -11,6 +11,7 @@
 #include "cmsis_os2.h"
 
 /* TODO Add debouncing for phy digital inputs */
+#define IN_SCHMITT_HIGH_THRESHOLD 1500
 
 // Physical inputs shouldn't be redefined
 T_IN_CFG inputsCfg[] =
@@ -73,7 +74,7 @@ T_IN_CFG inputsCfg[] =
                 .mode = IN_MODE_UNUSED},
 };
 
-static T_IN_CFG *IN_GetCfgPtr(uint8_t id)
+T_IN_CFG *IN_GetCfgPtr(T_INPUT_ID id)
 {
   // TODO Extend for can inputs
   ASSERT(id > 0 && id < ARRAY_COUNT(inputsCfg));
@@ -122,7 +123,7 @@ void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode)
 
 }
 
-bool IN_GetValueSchmitt(uint16_t id)
+bool IN_GetValueSchmitt(T_INPUT_ID id)
 {
   T_IN_CFG* in = IN_GetCfgPtr(id);
   
@@ -133,7 +134,7 @@ bool IN_GetValueSchmitt(uint16_t id)
   }
 
   // Now using adc values -- add debouncing
-  if( *(in->rawData) > 1500 )
+  if( *(in->rawData) > IN_SCHMITT_HIGH_THRESHOLD )
   {
     return TRUE;
   }else
@@ -142,7 +143,7 @@ bool IN_GetValueSchmitt(uint16_t id)
   }
 }
 
-uint32_t IN_GetValueAnalog(uint16_t id)
+uint32_t IN_GetValueAnalog(T_INPUT_ID id)
 {
   T_IN_CFG* in = IN_GetCfgPtr(id);
 
@@ -153,4 +154,31 @@ uint32_t IN_GetValueAnalog(uint16_t id)
   }
 
   return *(in->rawData);
+}
+
+uint32_t IN_GetValue(T_INPUT_ID id)
+{
+  T_IN_CFG* in = IN_GetCfgPtr(id);
+
+  if( in->mode == IN_MODE_ANALOG)
+  {
+    return IN_GetValueAnalog(id);
+  }
+  else if (in->mode == IN_MODE_SCHMITT)
+  {
+    return IN_GetValueSchmitt(id);
+  }
+  
+  return 0;
+}
+
+T_IN_MODE IN_GetMode(T_INPUT_ID id)
+{
+  T_IN_CFG* in = IN_GetCfgPtr(id);
+  if( in != NULL)
+  {
+    return in->mode; 
+  }
+
+  return IN_MODE_UNUSED;
 }
