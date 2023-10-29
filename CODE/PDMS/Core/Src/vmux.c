@@ -39,7 +39,7 @@ static void VMUX_SelectInput( uint8_t selector )
 {
     ASSERT( selector >= 0 );
     ASSERT( selector < VMUX_SELECTOR_MAX_VAL );
-
+    
     LLGPIO_SetStdState(VMUX_SelectorConfig[0], 0 != (selector & 0x01));
     LLGPIO_SetStdState(VMUX_SelectorConfig[1], 0 != (selector & 0x02));
     LLGPIO_SetStdState(VMUX_SelectorConfig[2], 0 != (selector & 0x04));
