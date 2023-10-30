@@ -17,6 +17,8 @@
 
 volatile uint32_t VMUX_AdcValue[VMUX_INPUT_COUNT];
 
+static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 1, 0, 3, 5, 7, 6, 4};
+
 static T_IO VMUX_SelectorConfig[VMUX_SELECTOR_COUNT] = 
 {
     {.gpio = VOLTAGE_MUX_SEL1_GPIO_Port,
@@ -49,7 +51,8 @@ static void VMUX_GetAllPooling()
 {
     for( uint8_t sel = 0; sel < VMUX_SELECTOR_MAX_VAL; sel++)
     {
-        VMUX_SelectInput( sel );
+
+        VMUX_SelectInput( VMUX_ReadOrder[sel] );
         HAL_ADC_Start(&hadc3);
         if(HAL_ADC_PollForConversion(&hadc3, 20) == HAL_OK)
         {

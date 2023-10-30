@@ -46,7 +46,7 @@
             "svdFile": "STM32L4R9.svd",
             "liveWatch": {
                 "enabled": true,
-                "samplesPerSecond": 4
+                "samplesPerSecond": 20
             }
         },
     ]
