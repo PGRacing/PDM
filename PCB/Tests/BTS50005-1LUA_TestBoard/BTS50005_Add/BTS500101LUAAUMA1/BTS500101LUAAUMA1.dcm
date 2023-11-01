@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP BTS500101LUAAUMA1
+D Power Switch ICs - Power Distribution 46A PG-HSOF-8
+K
+F https://www.infineon.com/dgdl/Infineon-BTS50010-1LUA-DataSheet-v01_10-EN.pdf?fileId=8ac78c8c85ecb3470186015e6ce406a0
+$ENDCMP
+#
+#End Doc Library
