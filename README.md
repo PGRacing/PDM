@@ -24,3 +24,4 @@ TODO on next PCB:
 9. Fix WS2812B footprint
 10. Use smaller footprint for voltage mux and can transceiver
 11. Change FET's to BTS50010-1LUA
+12. Add RX/TX information leds to CAN bus (software driven)
