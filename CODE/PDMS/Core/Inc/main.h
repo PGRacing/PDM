@@ -67,6 +67,14 @@ void Error_Handler(void);
 #define VOLTAGE_MUX_SEL3_GPIO_Port GPIOE
 #define SENS_OUT8_Pin GPIO_PIN_5
 #define SENS_OUT8_GPIO_Port GPIOF
+#define LP_SIG1_Pin GPIO_PIN_6
+#define LP_SIG1_GPIO_Port GPIOF
+#define LP_SIG2_Pin GPIO_PIN_7
+#define LP_SIG2_GPIO_Port GPIOF
+#define LP_SIG3_Pin GPIO_PIN_8
+#define LP_SIG3_GPIO_Port GPIOF
+#define LP_SIG4_Pin GPIO_PIN_9
+#define LP_SIG4_GPIO_Port GPIOF
 #define SENS_OUT7_Pin GPIO_PIN_10
 #define SENS_OUT7_GPIO_Port GPIOF
 #define SENS_OUT6_Pin GPIO_PIN_0
@@ -115,6 +123,10 @@ void Error_Handler(void);
 #define PWM_SIG2_GPIO_Port GPIOC
 #define PWM_SIG1_Pin GPIO_PIN_9
 #define PWM_SIG1_GPIO_Port GPIOC
+#define LP_CSN2_Pin GPIO_PIN_7
+#define LP_CSN2_GPIO_Port GPIOD
+#define LP_CSN1_Pin GPIO_PIN_9
+#define LP_CSN1_GPIO_Port GPIOG
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
