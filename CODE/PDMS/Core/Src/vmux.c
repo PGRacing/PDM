@@ -99,7 +99,7 @@ void vmuxTaskStart(void *argument)
     for(;;)
     {
         VMUX_GetAllPooling();
-        osDelay(50);
+        osDelay(10);
     }
     /* USER CODE END vmuxTaskStart */
 }

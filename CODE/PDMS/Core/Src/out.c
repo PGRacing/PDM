@@ -9,55 +9,45 @@
 #include "tim.h"
 #include "cmsis_os2.h"
 
-#define OUT_MAX 8
-
 T_OUT_CFG outsCfg[OUT_MAX] =
     {
         [OUT_ID_1] = {
             .id = OUT_ID_1,
-            .io = {PWM_SIG1_GPIO_Port, PWM_SIG1_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_2] = {
             .id = OUT_ID_2,
-            .io = {PWM_SIG2_GPIO_Port, PWM_SIG2_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_3] = {
             .id = OUT_ID_3,
-            .io = {PWM_SIG3_GPIO_Port, PWM_SIG3_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_4] = {
             .id = OUT_ID_4,
-            .io = {PWM_SIG4_GPIO_Port, PWM_SIG4_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_5] = {
             .id = OUT_ID_5,
-            .io = {PWM_SIG5_GPIO_Port, PWM_SIG5_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_6] = {
             .id = OUT_ID_6,
-            .io = {PWM_SIG6_GPIO_Port, PWM_SIG6_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_7] = {
             .id = OUT_ID_7,
-            .io = {PWM_SIG7_GPIO_Port, PWM_SIG7_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_8] = {
             .id = OUT_ID_8,
-            .io = {PWM_SIG8_GPIO_Port, PWM_SIG8_Pin},
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
@@ -82,26 +72,26 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
   {
     if (cfg->mode == OUT_MODE_PWM)
     {
-      BSP_OUT_DeInitPWM(cfg->io);
+      BSP_OUT_DeInitPWM(id);
     }
-    BSP_OUT_SetMode(cfg->io, targetMode);
+    BSP_OUT_SetMode(id, targetMode);
     break;
   }
   case OUT_MODE_STD:
   {
     if (cfg->mode == OUT_MODE_PWM)
     {
-      BSP_OUT_DeInitPWM(cfg->io);
+      BSP_OUT_DeInitPWM(id);
     }
-    BSP_OUT_SetMode(cfg->io, targetMode);
+    BSP_OUT_SetMode(id, targetMode);
     OUT_SetState(cfg->id, OUT_STATE_OFF);
     break;
   }
   case OUT_MODE_PWM:
   {
-    BSP_OUT_InitPWM(cfg->io);
+    BSP_OUT_InitPWM(id);
     // Set PWM duty to 0%
-    BSP_OUT_SetDutyPWM(cfg->io, 0);
+    BSP_OUT_SetDutyPWM(id, 0);
     break;
   }
   case OUT_MODE_BATCH:
@@ -113,8 +103,8 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
 
     // LL MODE STD
-    BSP_OUT_SetMode(cfg->io, OUT_MODE_STD);
-    BSP_OUT_SetMode(batchCfg->io, OUT_MODE_STD);
+    BSP_OUT_SetMode(id, OUT_MODE_STD);
+    BSP_OUT_SetMode(cfg->batch, OUT_MODE_STD);
     OUT_SetState(cfg->id, OUT_STATE_OFF);
     OUT_SetState(batchCfg->id, OUT_STATE_OFF);
     batchCfg->mode = OUT_MODE_BATCH;
@@ -148,7 +138,7 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
   }
   case OUT_MODE_STD:
   {
-    BSP_OUT_SetStdState(cfg->io, state);
+    BSP_OUT_SetStdState(id, state);
 
     cfg->state = state;
     res = TRUE;
@@ -166,7 +156,7 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
 
     T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
 
-    BSP_OUT_SetBatchState(cfg->io, batchCfg->io, state);
+    BSP_OUT_SetBatchState(id, cfg->batch, state);
 
     cfg->state = state;
     batchCfg->state = state;
@@ -194,7 +184,7 @@ bool OUT_Batch(T_OUT_ID id, T_OUT_ID batchId)
     return FALSE;
   }
 
-  if( cfg->io.port != batchCfg->io.port)
+  if(!BSP_OUT_IsBatchPossible(id, batchId))
   {
     LOG_ERR("Batch with diffrent port");
     return FALSE;

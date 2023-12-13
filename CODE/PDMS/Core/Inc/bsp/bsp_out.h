@@ -4,6 +4,18 @@
 #include "stm32l496xx.h"
 #include "typedefs.h"
 
+#define OUT_MAX 8
+typedef enum
+{
+    OUT_ID_1 = 0x00,
+    OUT_ID_2 = 0x01,
+    OUT_ID_3 = 0x02,
+    OUT_ID_4 = 0x03,
+    OUT_ID_5 = 0x04,
+    OUT_ID_6 = 0x05,
+    OUT_ID_7 = 0x06,
+    OUT_ID_8 = 0x07,
+}T_OUT_ID;
 typedef enum
 {
     OUT_MODE_UNUSED   = 0x00, // Unused - external control
@@ -20,20 +32,22 @@ typedef enum
 
 // STD Pin control
 
-void BSP_OUT_SetMode(T_IO io, T_OUT_MODE mode);
+void BSP_OUT_SetMode(T_OUT_ID id, T_OUT_MODE mode);
 
-void BSP_OUT_SetStdState(T_IO io, bool state);
+void BSP_OUT_SetStdState(T_OUT_ID id, bool state);
 
 // Batch Pin control
 
-void BSP_OUT_SetBatchState(T_IO io, T_IO batchIo, bool state);
+void BSP_OUT_SetBatchState(T_OUT_ID id, T_OUT_ID batchId, bool state);
+
+bool BSP_OUT_IsBatchPossible(T_OUT_ID id, T_OUT_ID batchId);
 
 // PWM related pin control
 
-void BSP_OUT_InitPWM(T_IO io);
+void BSP_OUT_InitPWM(T_OUT_ID id);
 
-void BSP_OUT_DeInitPWM(T_IO io);
+void BSP_OUT_DeInitPWM(T_OUT_ID id);
 
-void BSP_OUT_SetDutyPWM(T_IO io, uint8_t duty);
+void BSP_OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty);
 
 #endif
