@@ -4,7 +4,6 @@
 #include "stm32l4xx_hal_gpio.h"
 #include "typedefs.h"
 #include "logger.h"
-#include "llgpio.h"
 #include "out.h"
 #include "input.h"
 #include "FreeRTOS.h"

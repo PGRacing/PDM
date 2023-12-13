@@ -2,6 +2,7 @@
 #define __OUT_H_
 
 #include "typedefs.h"
+#include "bsp_out.h"
 
 typedef enum
 {
@@ -15,20 +16,6 @@ typedef enum
     OUT_ID_8 = 0x07,
 }T_OUT_ID;
 
-typedef enum
-{
-    OUT_MODE_UNUSED   = 0x00, // Unused - external control
-    OUT_MODE_STD      = 0x01, // Standard control mode
-    OUT_MODE_PWM      = 0x02, // PWM output for load balancing
-    OUT_MODE_BATCH    = 0x03  // Batching two inputs works for std
-}T_OUT_MODE;
-
-typedef enum
-{
-    OUT_STATE_OFF     = 0x00,
-    OUT_STATE_ON      = 0x01,
-}T_OUT_STATE;
-
 typedef struct _T_OUT_CFG
 {
     const T_OUT_ID id;    // id should reflect position in outsCfg
@@ -36,6 +23,9 @@ typedef struct _T_OUT_CFG
     T_OUT_MODE     mode;
     T_OUT_STATE    state;
     T_OUT_ID       batch; // optional for OUT_MODE_BATCH
+    /* TODO ADD handling w safety*/
+    bool           wsafety;
+    uint8_t        octhreshold;
 }T_OUT_CFG;
 
 // Main outputs config

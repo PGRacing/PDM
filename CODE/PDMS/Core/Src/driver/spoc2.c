@@ -31,13 +31,3 @@
 // SPOC2 Restart counter disable register
 #define SPOC2_RCD 1100
 
-
-static uint8_t SPOC2_ReadReg(uint8_t reg)
-{
-    uint8_t result;
-    
-}
-
-void SPOC2_Init()
-{
-}

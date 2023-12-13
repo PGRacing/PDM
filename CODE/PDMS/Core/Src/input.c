@@ -156,20 +156,33 @@ uint32_t IN_GetValueAnalog(T_INPUT_ID id)
   return *(in->rawData);
 }
 
+// TODO MOVE Elsewhere
+#define IN_VALUE_UNUSED 0xFFFF
+
 uint32_t IN_GetValue(T_INPUT_ID id)
 {
   T_IN_CFG* in = IN_GetCfgPtr(id);
+  uint16_t ret = 0x0;
 
-  if( in->mode == IN_MODE_ANALOG)
+  switch (in->mode)
   {
-    return IN_GetValueAnalog(id);
-  }
-  else if (in->mode == IN_MODE_SCHMITT)
-  {
-    return IN_GetValueSchmitt(id);
+  case IN_MODE_ANALOG:
+    ret = IN_GetValueAnalog(id);
+    break;
+  
+  case IN_MODE_SCHMITT:
+    ret = IN_GetValueSchmitt(id);
+    break;
+
+  case IN_MODE_UNUSED:
+    ret = IN_VALUE_UNUSED;
+    break; 
+
+  default:
+    break;
   }
   
-  return 0;
+  return ret;
 }
 
 T_IN_MODE IN_GetMode(T_INPUT_ID id)

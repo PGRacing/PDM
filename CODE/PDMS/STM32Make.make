@@ -37,17 +37,19 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/adc.c \
+Core/Src/bsp/bsp_out.c \
 Core/Src/can.c \
 Core/Src/canhandler.c \
 Core/Src/dma.c \
+Core/Src/driver/spoc2.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
 Core/Src/input.c \
-Core/Src/llgpio.c \
 Core/Src/logic.c \
 Core/Src/main.c \
 Core/Src/out.c \
 Core/Src/pdm.c \
+Core/Src/spi.c \
 Core/Src/stm32l4xx_hal_msp.c \
 Core/Src/stm32l4xx_hal_timebase_tim.c \
 Core/Src/stm32l4xx_it.c \
@@ -76,6 +78,11 @@ Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_dma.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_exti.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_gpio.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_spi.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_utils.c \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c \
 Middlewares/Third_Party/FreeRTOS/Source/croutine.c \
 Middlewares/Third_Party/FreeRTOS/Source/event_groups.c \
@@ -143,12 +150,14 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DSTM32L496xx \
+-DUSE_FULL_LL_DRIVER \
 -DUSE_HAL_DRIVER
 
 
 # CXX defines
 CXX_DEFS =  \
 -DSTM32L496xx \
+-DUSE_FULL_LL_DRIVER \
 -DUSE_HAL_DRIVER
 
 
@@ -158,6 +167,8 @@ AS_INCLUDES = \
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-ICore/Inc/bsp \
+-ICore/Inc/driver \
 -IDrivers/CMSIS/Device/ST/STM32L4xx/Include \
 -IDrivers/CMSIS/Include \
 -IDrivers/STM32L4xx_HAL_Driver/Inc \

@@ -29,6 +29,17 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 
+#include "stm32l4xx_ll_spi.h"
+#include "stm32l4xx_ll_system.h"
+#include "stm32l4xx_ll_gpio.h"
+#include "stm32l4xx_ll_exti.h"
+#include "stm32l4xx_ll_bus.h"
+#include "stm32l4xx_ll_cortex.h"
+#include "stm32l4xx_ll_rcc.h"
+#include "stm32l4xx_ll_utils.h"
+#include "stm32l4xx_ll_pwr.h"
+#include "stm32l4xx_ll_dma.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -57,75 +68,75 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 #define USE_FULL_ASSERT 1
-#define STATUS_LED_Pin GPIO_PIN_2
+#define STATUS_LED_Pin LL_GPIO_PIN_2
 #define STATUS_LED_GPIO_Port GPIOE
-#define VOLTAGE_MUX_SEL1_Pin GPIO_PIN_3
+#define VOLTAGE_MUX_SEL1_Pin LL_GPIO_PIN_3
 #define VOLTAGE_MUX_SEL1_GPIO_Port GPIOE
-#define VOLTAGE_MUX_SEL2_Pin GPIO_PIN_4
+#define VOLTAGE_MUX_SEL2_Pin LL_GPIO_PIN_4
 #define VOLTAGE_MUX_SEL2_GPIO_Port GPIOE
-#define VOLTAGE_MUX_SEL3_Pin GPIO_PIN_5
+#define VOLTAGE_MUX_SEL3_Pin LL_GPIO_PIN_5
 #define VOLTAGE_MUX_SEL3_GPIO_Port GPIOE
-#define SENS_OUT8_Pin GPIO_PIN_5
+#define SENS_OUT8_Pin LL_GPIO_PIN_5
 #define SENS_OUT8_GPIO_Port GPIOF
-#define LP_SIG1_Pin GPIO_PIN_6
+#define LP_SIG1_Pin LL_GPIO_PIN_6
 #define LP_SIG1_GPIO_Port GPIOF
-#define LP_SIG2_Pin GPIO_PIN_7
+#define LP_SIG2_Pin LL_GPIO_PIN_7
 #define LP_SIG2_GPIO_Port GPIOF
-#define LP_SIG3_Pin GPIO_PIN_8
+#define LP_SIG3_Pin LL_GPIO_PIN_8
 #define LP_SIG3_GPIO_Port GPIOF
-#define LP_SIG4_Pin GPIO_PIN_9
+#define LP_SIG4_Pin LL_GPIO_PIN_9
 #define LP_SIG4_GPIO_Port GPIOF
-#define SENS_OUT7_Pin GPIO_PIN_10
+#define SENS_OUT7_Pin LL_GPIO_PIN_10
 #define SENS_OUT7_GPIO_Port GPIOF
-#define SENS_OUT6_Pin GPIO_PIN_0
+#define SENS_OUT6_Pin LL_GPIO_PIN_0
 #define SENS_OUT6_GPIO_Port GPIOC
-#define SENS_OUT5_Pin GPIO_PIN_1
+#define SENS_OUT5_Pin LL_GPIO_PIN_1
 #define SENS_OUT5_GPIO_Port GPIOC
-#define VOLTAGE_MUX_ADC_Pin GPIO_PIN_2
+#define VOLTAGE_MUX_ADC_Pin LL_GPIO_PIN_2
 #define VOLTAGE_MUX_ADC_GPIO_Port GPIOC
-#define SENS_OUT4_Pin GPIO_PIN_3
+#define SENS_OUT4_Pin LL_GPIO_PIN_3
 #define SENS_OUT4_GPIO_Port GPIOC
-#define SENS_OUT3_Pin GPIO_PIN_0
+#define SENS_OUT3_Pin LL_GPIO_PIN_0
 #define SENS_OUT3_GPIO_Port GPIOA
-#define SENS_OUT2_Pin GPIO_PIN_1
+#define SENS_OUT2_Pin LL_GPIO_PIN_1
 #define SENS_OUT2_GPIO_Port GPIOA
-#define SENS_OUT1_Pin GPIO_PIN_2
+#define SENS_OUT1_Pin LL_GPIO_PIN_2
 #define SENS_OUT1_GPIO_Port GPIOA
-#define IO_CONN8_Pin GPIO_PIN_3
+#define IO_CONN8_Pin LL_GPIO_PIN_3
 #define IO_CONN8_GPIO_Port GPIOA
-#define IO_CONN7_Pin GPIO_PIN_4
+#define IO_CONN7_Pin LL_GPIO_PIN_4
 #define IO_CONN7_GPIO_Port GPIOA
-#define IO_CONN6_Pin GPIO_PIN_5
+#define IO_CONN6_Pin LL_GPIO_PIN_5
 #define IO_CONN6_GPIO_Port GPIOA
-#define IO_CONN5_Pin GPIO_PIN_6
+#define IO_CONN5_Pin LL_GPIO_PIN_6
 #define IO_CONN5_GPIO_Port GPIOA
-#define IO_CONN4_Pin GPIO_PIN_7
+#define IO_CONN4_Pin LL_GPIO_PIN_7
 #define IO_CONN4_GPIO_Port GPIOA
-#define IO_CONN3_Pin GPIO_PIN_4
+#define IO_CONN3_Pin LL_GPIO_PIN_4
 #define IO_CONN3_GPIO_Port GPIOC
-#define IO_CONN2_Pin GPIO_PIN_5
+#define IO_CONN2_Pin LL_GPIO_PIN_5
 #define IO_CONN2_GPIO_Port GPIOC
-#define IO_CONN1_Pin GPIO_PIN_0
+#define IO_CONN1_Pin LL_GPIO_PIN_0
 #define IO_CONN1_GPIO_Port GPIOB
-#define PWM_SIG8_Pin GPIO_PIN_12
+#define PWM_SIG8_Pin LL_GPIO_PIN_12
 #define PWM_SIG8_GPIO_Port GPIOD
-#define PWM_SIG7_Pin GPIO_PIN_13
+#define PWM_SIG7_Pin LL_GPIO_PIN_13
 #define PWM_SIG7_GPIO_Port GPIOD
-#define PWM_SIG6_Pin GPIO_PIN_14
+#define PWM_SIG6_Pin LL_GPIO_PIN_14
 #define PWM_SIG6_GPIO_Port GPIOD
-#define PWM_SIG5_Pin GPIO_PIN_15
+#define PWM_SIG5_Pin LL_GPIO_PIN_15
 #define PWM_SIG5_GPIO_Port GPIOD
-#define PWM_SIG4_Pin GPIO_PIN_6
+#define PWM_SIG4_Pin LL_GPIO_PIN_6
 #define PWM_SIG4_GPIO_Port GPIOC
-#define PWM_SIG3_Pin GPIO_PIN_7
+#define PWM_SIG3_Pin LL_GPIO_PIN_7
 #define PWM_SIG3_GPIO_Port GPIOC
-#define PWM_SIG2_Pin GPIO_PIN_8
+#define PWM_SIG2_Pin LL_GPIO_PIN_8
 #define PWM_SIG2_GPIO_Port GPIOC
-#define PWM_SIG1_Pin GPIO_PIN_9
+#define PWM_SIG1_Pin LL_GPIO_PIN_9
 #define PWM_SIG1_GPIO_Port GPIOC
-#define LP_CSN2_Pin GPIO_PIN_7
+#define LP_CSN2_Pin LL_GPIO_PIN_7
 #define LP_CSN2_GPIO_Port GPIOD
-#define LP_CSN1_Pin GPIO_PIN_9
+#define LP_CSN1_Pin LL_GPIO_PIN_9
 #define LP_CSN1_GPIO_Port GPIOG
 /* USER CODE BEGIN Private defines */
 

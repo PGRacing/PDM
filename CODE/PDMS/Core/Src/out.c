@@ -4,7 +4,6 @@
 #include "stm32l4xx_hal_gpio.h"
 #include "typedefs.h"
 #include "logger.h"
-#include "llgpio.h"
 #include "out.h"
 #include "FreeRTOS.h"
 #include "tim.h"
@@ -82,26 +81,26 @@ void OUT_ChangeMode(T_OUT_CFG *cfg, T_OUT_MODE targetMode)
   {
     if (cfg->mode == OUT_MODE_PWM)
     {
-      LLGPIO_DeInitPWM(cfg->io);
+      BSP_OUT_DeInitPWM(cfg->io);
     }
-    LLGPIO_SetMode(cfg->io, LL_GPIO_MODE_ANALOG);
+    BSP_OUT_SetMode(cfg->io, targetMode);
     break;
   }
   case OUT_MODE_STD:
   {
     if (cfg->mode == OUT_MODE_PWM)
     {
-      LLGPIO_DeInitPWM(cfg->io);
+      BSP_OUT_DeInitPWM(cfg->io);
     }
-    LLGPIO_SetMode(cfg->io, LL_GPIO_MODE_OUTPUT);
+    BSP_OUT_SetMode(cfg->io, targetMode);
     OUT_SetState(cfg, OUT_STATE_OFF);
     break;
   }
   case OUT_MODE_PWM:
   {
-    LLGPIO_InitPWM(cfg->io);
+    BSP_OUT_InitPWM(cfg->io);
     // Set PWM duty to 0%
-    LLGPIO_SetDutyPWM(cfg->io, 0);
+    BSP_OUT_SetDutyPWM(cfg->io, 0);
     break;
   }
   case OUT_MODE_BATCH:
@@ -150,7 +149,7 @@ bool OUT_SetState(T_OUT_CFG *cfg, T_OUT_STATE state)
   }
   case OUT_MODE_STD:
   {
-    LLGPIO_SetStdState(cfg->io, state);
+    BSP_OUT_SetStdState(cfg->io, state);
 
     cfg->state = state;
     res = TRUE;
@@ -164,13 +163,13 @@ bool OUT_SetState(T_OUT_CFG *cfg, T_OUT_STATE state)
   }
   case OUT_MODE_BATCH:
   {
-    LLGPIO_SetStdState(cfg->io, TRUE);
+    BSP_OUT_SetStdState(cfg->io, state);
 
     ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
 
     T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
 
-    LLGPIO_SetStdState(batchCfg->io, TRUE);
+    BSP_OUT_SetStdState(batchCfg->io, state);
 
     cfg->state = state;
     batchCfg->state = state;
@@ -224,3 +223,5 @@ bool OUT_ToggleState(T_OUT_CFG* cfg)
 //     osDelay(3000);
 //   }
 // }
+
+// TODO Add OUT_SetPWMDuty(T_OUT_CFG *cfg, T_OUT_STATE state)

@@ -24,8 +24,14 @@ typedef enum
 
 typedef struct _T_IO
 {
-    GPIO_TypeDef* gpio;
+    GPIO_TypeDef* port;
     uint16_t pin;
 }T_IO;
+
+typedef struct _T_CAN_IO
+{
+    uint32_t stdId;
+    uint16_t offset;
+}T_CAN_IO;
 
 #endif 
