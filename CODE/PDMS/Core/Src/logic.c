@@ -311,22 +311,20 @@ void testTaskEntry(void *argument)
     .input2Type =  LOGIC_INPUT_TYPE_UNSET,
   };
 
-  IN_ChangeMode( IN_GetCfgPtr(IN_PHY_ID_1), IN_MODE_ANALOG);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_1), OUT_MODE_STD);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_2), OUT_MODE_STD);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_3), OUT_MODE_STD);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_4), OUT_MODE_STD);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_5), OUT_MODE_STD);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_6), OUT_MODE_STD);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_7), OUT_MODE_STD);
-  OUT_ChangeMode( OUT_GetPtr(OUT_ID_8), OUT_MODE_STD);
+  OUT_Batch( OUT_ID_1, OUT_ID_2);
+  OUT_ChangeMode( OUT_ID_3, OUT_MODE_UNUSED);
+  OUT_ChangeMode( OUT_ID_4, OUT_MODE_STD);
+  
+  OUT_Batch(OUT_ID_5,OUT_ID_8);
+  OUT_ChangeMode( OUT_ID_6, OUT_MODE_STD);
+  OUT_ChangeMode( OUT_ID_7, OUT_MODE_STD);
 
   for (;;)
   {
     //expResult = LOGIC_EvaluateExpression( exp2 );
     for( uint8_t i = 0; i < 8; i++)
     {
-      OUT_ToggleState(OUT_GetPtr(i));
+      OUT_ToggleState(i);
       osDelay(2000);
     }
   }

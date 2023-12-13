@@ -33,12 +33,12 @@ extern T_OUT_CFG outsCfg[];
 
 T_OUT_CFG* OUT_GetPtr( T_OUT_ID id );
 
-void OUT_ChangeMode(T_OUT_CFG* cfg, T_OUT_MODE targetMode);
+void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode);
 
-bool OUT_SetState(T_OUT_CFG* cfg, T_OUT_STATE state);
+bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state);
 
-bool OUT_ToggleState(T_OUT_CFG* cfg);
+bool OUT_ToggleState(T_OUT_ID id);
 
-bool OUT_AttachAdditional(T_OUT_CFG* cfg, T_OUT_ID batch);
+bool OUT_Batch(T_OUT_ID id, T_OUT_ID batch);
 
 #endif

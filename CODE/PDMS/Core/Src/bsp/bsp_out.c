@@ -32,6 +32,7 @@ void BSP_OUT_SetMode(T_IO io, T_OUT_MODE mode)
         break;
 
         case OUT_MODE_PWM:
+            LL_GPIO_ResetOutputPin(io.port, io.pin);
         break;
 
         default:
@@ -48,6 +49,21 @@ void BSP_OUT_SetStdState(T_IO io, bool state)
     else
     {
         LL_GPIO_ResetOutputPin(io.port, io.pin);
+    }
+}
+
+void BSP_OUT_SetBatchState(T_IO io, T_IO batchIo, bool state)
+{
+    if( io.port == batchIo.port )
+    {
+        if(state)
+        {
+            LL_GPIO_SetOutputPin(io.port, (io.pin | batchIo.pin));
+        }
+        else
+        {
+            LL_GPIO_ResetOutputPin(io.port, (io.pin | batchIo.pin));
+        }
     }
 }
 

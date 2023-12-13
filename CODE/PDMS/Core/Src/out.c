@@ -70,8 +70,9 @@ T_OUT_CFG* OUT_GetPtr( T_OUT_ID id )
 }
 
 // Remember this function will reinit even if targetMode == currentMode
-void OUT_ChangeMode(T_OUT_CFG *cfg, T_OUT_MODE targetMode)
+void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
 {
+  T_OUT_CFG* cfg = OUT_GetPtr(id);
   ASSERT( cfg );
   ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(outsCfg) );
 
@@ -93,7 +94,7 @@ void OUT_ChangeMode(T_OUT_CFG *cfg, T_OUT_MODE targetMode)
       BSP_OUT_DeInitPWM(cfg->io);
     }
     BSP_OUT_SetMode(cfg->io, targetMode);
-    OUT_SetState(cfg, OUT_STATE_OFF);
+    OUT_SetState(cfg->id, OUT_STATE_OFF);
     break;
   }
   case OUT_MODE_PWM:
@@ -108,18 +109,15 @@ void OUT_ChangeMode(T_OUT_CFG *cfg, T_OUT_MODE targetMode)
     LOG_WARN("Batching two inputs!");
 
     /* Batch shouldn't be out of range */
-    ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
-
+    ASSERT(cfg->batchId < ARRAY_COUNT(outsCfg));
     T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
 
-    OUT_ChangeMode(cfg, OUT_MODE_STD);
-    OUT_ChangeMode(batchCfg, OUT_MODE_STD);
-
+    // LL MODE STD
+    BSP_OUT_SetMode(cfg->io, OUT_MODE_STD);
+    BSP_OUT_SetMode(batchCfg->io, OUT_MODE_STD);
+    OUT_SetState(cfg->id, OUT_STATE_OFF);
+    OUT_SetState(batchCfg->id, OUT_STATE_OFF);
     batchCfg->mode = OUT_MODE_BATCH;
-    batchCfg->batch = cfg->id;
-
-    OUT_SetState(cfg, OUT_STATE_OFF);
-
     /* From now on actions on batch outputs are performed simultaniously */
     break;
   }
@@ -132,9 +130,10 @@ void OUT_ChangeMode(T_OUT_CFG *cfg, T_OUT_MODE targetMode)
   cfg->state = OUT_STATE_OFF;
 }
 
-bool OUT_SetState(T_OUT_CFG *cfg, T_OUT_STATE state)
+bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
 {
   bool res = TRUE;
+  T_OUT_CFG* cfg = OUT_GetPtr(id);
 
   ASSERT(cfg);
   ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(outsCfg) );
@@ -163,13 +162,11 @@ bool OUT_SetState(T_OUT_CFG *cfg, T_OUT_STATE state)
   }
   case OUT_MODE_BATCH:
   {
-    BSP_OUT_SetStdState(cfg->io, state);
-
     ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
 
     T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
 
-    BSP_OUT_SetStdState(batchCfg->io, state);
+    BSP_OUT_SetBatchState(cfg->io, batchCfg->io, state);
 
     cfg->state = state;
     batchCfg->state = state;
@@ -183,31 +180,37 @@ bool OUT_SetState(T_OUT_CFG *cfg, T_OUT_STATE state)
   return res;
 }
 
-bool OUT_AttachAdditional(T_OUT_CFG *cfg, T_OUT_ID batch)
+/* Note: For BTS500 you can batch between 1-4 and 5-8*/
+bool OUT_Batch(T_OUT_ID id, T_OUT_ID batchId)
 {
+  T_OUT_CFG* cfg = OUT_GetPtr(id);
+  T_OUT_CFG* batchCfg = OUT_GetPtr(batchId);
   ASSERT(cfg);
   ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(outsCfg) );
 
-  if (cfg->mode != OUT_MODE_STD)
-  {
-    LOG_ERR("Unable to set batch on output not std!");
-    return FALSE;
-  }
-
-  if (batch >= ARRAY_COUNT(outsCfg))
+  if (batchId >= ARRAY_COUNT(outsCfg))
   {
     LOG_ERR("Setting batch out of range!");
     return FALSE;
   }
 
-  cfg->batch = batch;
+  if( cfg->io.port != batchCfg->io.port)
+  {
+    LOG_ERR("Batch with diffrent port");
+    return FALSE;
+  }
 
+  cfg->batch = batchId;
+  batchCfg->batch = id;
+
+  OUT_ChangeMode(id, OUT_MODE_BATCH);
   return TRUE;
 }
 
-bool OUT_ToggleState(T_OUT_CFG* cfg)
+bool OUT_ToggleState(T_OUT_ID id)
 {
-  return OUT_SetState( cfg, !cfg->state);
+  T_OUT_CFG* cfg = OUT_GetPtr(id);
+  return OUT_SetState( id, !cfg->state);
 }
 
 // void testTaskEntry(void *argument)

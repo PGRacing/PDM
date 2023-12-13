@@ -24,6 +24,10 @@ void BSP_OUT_SetMode(T_IO io, T_OUT_MODE mode);
 
 void BSP_OUT_SetStdState(T_IO io, bool state);
 
+// Batch Pin control
+
+void BSP_OUT_SetBatchState(T_IO io, T_IO batchIo, bool state);
+
 // PWM related pin control
 
 void BSP_OUT_InitPWM(T_IO io);
