@@ -25,3 +25,4 @@ TODO on next PCB:
 10. Use smaller footprint for voltage mux and can transceiver
 11. Change FET's to BTS50010-1LUA
 12. Add RX/TX information leds to CAN bus (software driven)
+13. Add MUX for mutlichannel switch
