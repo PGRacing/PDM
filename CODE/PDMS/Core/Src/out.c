@@ -9,7 +9,7 @@
 #include "tim.h"
 #include "cmsis_os2.h"
 
-T_OUT_CFG outsCfg[OUT_MAX] =
+T_OUT_CFG outsCfg[OUT_ID_MAX] =
     {
         [OUT_ID_1] = {
             .id = OUT_ID_1,
