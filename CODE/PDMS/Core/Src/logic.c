@@ -311,8 +311,9 @@ void testTaskEntry(void *argument)
     .input2Type =  LOGIC_INPUT_TYPE_UNSET,
   };
 
-  OUT_Batch( OUT_ID_1, OUT_ID_2);
-  OUT_ChangeMode( OUT_ID_3, OUT_MODE_UNUSED);
+  OUT_ChangeMode( OUT_ID_1, OUT_MODE_STD);
+  OUT_ChangeMode( OUT_ID_2, OUT_MODE_PWM);
+  OUT_ChangeMode( OUT_ID_3, OUT_MODE_STD);
   OUT_ChangeMode( OUT_ID_4, OUT_MODE_STD);
   
   OUT_Batch(OUT_ID_5,OUT_ID_8);
@@ -322,10 +323,27 @@ void testTaskEntry(void *argument)
   for (;;)
   {
     //expResult = LOGIC_EvaluateExpression( exp2 );
-    for( uint8_t i = 0; i < 8; i++)
+
+    OUT_ChangeMode( OUT_ID_2, OUT_MODE_PWM);
+    
+    for( uint8_t i = 0; i < 100; i++)
     {
-      OUT_ToggleState(i);
-      osDelay(2000);
+      BSP_OUT_SetDutyPWM(OUT_ID_2, i);
+      osDelay(100);
+    }
+
+    for( uint8_t i = 100; i > 0; i--)
+    {
+      BSP_OUT_SetDutyPWM(OUT_ID_2, i);
+      osDelay(100);
+    }
+
+    OUT_ChangeMode( OUT_ID_2, OUT_MODE_STD);
+
+    for( uint8_t i = 0; i < 10; i++)
+    {
+      OUT_ToggleState(OUT_ID_2);
+      osDelay(1000);
     }
   }
 }

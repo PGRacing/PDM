@@ -46,4 +46,8 @@ bool BSP_OUT_IsBatchPossible(T_OUT_ID id, T_OUT_ID batchId);
 
 void BSP_OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty);
 
+void BSP_OUT_InitPWM(T_OUT_ID id);
+
+void BSP_OUT_DeInitPWM(T_OUT_ID id);
+
 #endif

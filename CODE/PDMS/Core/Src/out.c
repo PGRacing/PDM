@@ -89,7 +89,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
   }
   case OUT_MODE_PWM:
   {
-    BSP_OUT_InitPWM(id);
+    BSP_OUT_SetMode(id, targetMode);
     // Set PWM duty to 0%
     BSP_OUT_SetDutyPWM(id, 0);
     break;

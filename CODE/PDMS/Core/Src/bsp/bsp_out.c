@@ -9,14 +9,16 @@
 
 //#define LL_TIM_OC_SetCompare(TIM, CNUM, CMP) LL_TIM_OC_SetCompareCH##CNUM(TIM, CMP)
 
+#define BSP_OUT_CURRENT_CLK 16000000
+
 /* Prescaler value used for PWM channels */
-#define BSP_OUT_PWM_PRESCALER 16000-1
+#define BSP_OUT_PWM_PRESCALER 160-1
 
 /* Auto-reload value used for PWM channels */
 #define BSP_OUT_PWM_ARR 500-1
 
 /* TODO Change duty 0-100% to CCR register value */
-#define BSP_OUT_DutyToCompare(X) X
+#define BSP_OUT_DutyToCompare(X) (X * BSP_OUT_PWM_ARR)/100
 
 /* Value used when starting PWM channel */
 #define BSP_OUT_PWM_START_DUTY 0
@@ -120,13 +122,13 @@ static void BSP_OUT_SetTimerCompare(TIM_TypeDef* tim, uint8_t ch, uint32_t cmp)
         LL_TIM_OC_SetCompareCH1(tim, cmp);
         break;
     case 2:
-        LL_TIM_OC_SetCompareCH1(tim, cmp);
+        LL_TIM_OC_SetCompareCH2(tim, cmp);
         break;
     case 3:
-        LL_TIM_OC_SetCompareCH1(tim, cmp);
+        LL_TIM_OC_SetCompareCH3(tim, cmp);
         break;
     case 4:
-        LL_TIM_OC_SetCompareCH1(tim, cmp);
+        LL_TIM_OC_SetCompareCH4(tim, cmp);
         break;
     
     default:
@@ -134,7 +136,7 @@ static void BSP_OUT_SetTimerCompare(TIM_TypeDef* tim, uint8_t ch, uint32_t cmp)
     }
 }
 
-static void BSP_OUT_InitPWM(T_OUT_ID id)
+void BSP_OUT_InitPWM(T_OUT_ID id)
 {
     ASSERT( id < OUT_ID_MAX);
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -181,7 +183,7 @@ static void BSP_OUT_InitPWM(T_OUT_ID id)
     }
 }
 
-static void BSP_OUT_DeInitPWM(T_OUT_ID id)
+void BSP_OUT_DeInitPWM(T_OUT_ID id)
 {
     ASSERT( id < OUT_ID_MAX);
 
@@ -190,7 +192,7 @@ static void BSP_OUT_DeInitPWM(T_OUT_ID id)
     LL_TIM_OC_SetMode(bspOutsCfg[id].tim, bspOutsCfg[id].chmask, LL_TIM_OCMODE_FORCED_INACTIVE);
 }
 
-static void BSP_OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
+ void BSP_OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
 {
     ASSERT( id < OUT_ID_MAX );
     BSP_OUT_SetTimerCompare(bspOutsCfg[id].tim, bspOutsCfg[id].ch, BSP_OUT_DutyToCompare(duty));
