@@ -14,7 +14,7 @@ TODO:
 TODO on next PCB:
 | NAME | DIFFICULTY | PRIORITY | STATUS |
 | --- | --- | --- | --- |
-| 1. Add fuse for external sensors supply (100mA). Can also be solved with second 5V regulator for sensors + fuse. | 1 | 3 | |
+| 1. Add fuse for external sensors supply (100mA). Can also be solved with second 5V regulator for sensors + fuse. | 1 | 3 | SCHEMATIC DONE |
 | 2. Change CPC1117N to CPC1017N | 1 | 2 ||
 | 3. Add clamping diodes on any signals | 2 | 3 | |
 | 4. Change input filtration for low profile SMD capacitor instead of tht | 1 | 1 | |
