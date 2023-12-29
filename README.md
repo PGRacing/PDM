@@ -23,7 +23,7 @@ TODO on next PCB:
 | 7. Add clamping diodes on current sensor to allow lower range current detecion | 2 | 3 | |
 | 8. Selection and redirection of IO is not imporant | 1 | 1 ||
 | 9. Fix WS2812B footprint | 1 | 3 | |
-| 10. Use smaller footprint for voltage mux and can transceiver | 2 | 1 | |
+| 10. Use smaller footprint for voltage mux and can transceiver | 2 | 1 | NOT APP |
 | 11. Change FET's to BTS50010-1LUA | 3 | 2 ||
-| 12. Add RX/TX information leds to CAN bus (software driven) | 1 | 1 ||
+| 12. Add RX/TX information leds to CAN bus (software driven) | 1 | 1 | NOT APP |
 | 13. Add MUX for mutlichannel switch | 2 | 2 ||
