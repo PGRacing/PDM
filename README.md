@@ -27,5 +27,5 @@ TODO on next PCB:
 | 11. Change FET's to BTS50010-1LUA | 3 | 2 ||
 | 12. Add RX/TX information leds to CAN bus (software driven) | 1 | 1 | NOT APP |
 | 13. Add MUX for mutlichannel switch | 2 | 2 ||
-| 14. Add CAN software switching | 2 | 2 ||
+| 14. Add CAN software switching | 2 | 2 | SCHEMATIC DONE |
 | 14. Remove additional header for stlink | 2 | 2 | DONE |
