@@ -1,5 +1,655 @@
-05-27 03:56:41 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
-05-27 03:56:41 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
-05-27 03:56:41 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
-05-27 03:56:41 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
-05-27 03:56:41 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x0000020A19E86040>
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x000001E001474700>
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 387:Preparing replicator with Q3 as a reference
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 113:getting a list of all footprints on board
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64714FCB does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64698A06 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-6477F9ED does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-6477C3F8 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64716719 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-646F7EA8 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64713E79 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64713E5A does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64076DF0 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint G*** does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 435:source anchor footprint is 'Q3'
+Located on: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+With filenames: ['C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\hp_power_channel.kicad_sch', 'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch']
+With sheet_id:['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 442:Corresponding footprints are 
+[('Q6', ['HP_POWER_CHANNEL', 'BTS50005-1LUA4']), ('Q4', ['HP_POWER_CHANNEL', 'BTS50005-1LUA2']), ('Q8', ['HP_POWER_CHANNEL', 'BTS50005-1LUA6']), ('Q5', ['HP_POWER_CHANNEL', 'BTS50005-1LUA3']), ('Q10', ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']), ('Q7', ['HP_POWER_CHANNEL', 'BTS50005-1LUA5']), ('Q3', ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']), ('Q9', ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'])]
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 454:Showing dialog
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50005-1LUA1', file:'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch'
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+01-10 01:30:50 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-10 01:30:51 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 460:Toolbar position: wx.Point(1883, 80)
+01-10 01:30:51 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 465:Dialog position: wx.Point(1519, 80)
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50005-1LUA1', file:'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch'
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:30:53 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50005-1LUA1', file:'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch'
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:02 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50005-1LUA1', file:'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch'
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50005-1LUA1', file:'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch'
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:03 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50005-1LUA1', file:'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch'
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1356:Level selected: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:04 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:12 com_github_MitjaNemec_ReplicateLayout.replicate_layout 391:constructing a list of sheets suitable for replication on level:'BTS50005-1LUA1', file:'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\PDMS\\pdms\\bts50005-1lua.kicad_sch'
+01-10 01:31:12 com_github_MitjaNemec_ReplicateLayout.replicate_layout 428:suitable sheets are:[['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+01-10 01:31:12 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 207:Replicating layout
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 237:Starting replication of sheets: [['HP_POWER_CHANNEL', 'BTS50005-1LUA2'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'], ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']]
+on level: ['HP_POWER_CHANNEL', 'BTS50005-1LUA1']
+with tracks=True, zone=True, text=True, text=True, intersecting=False, remove=False, locked footprints=False, group_only=True
+01-10 01:31:13 root 299:updating GUI message: 'Preparing for replication'
+01-10 01:31:13 root 304:updating GUI with: 0
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 307:Getting the list of source footprints
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 317:Getting the list of all the remaining footprints
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 324:Getting source tracks
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1191:Filtering list of tracks
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1197:Track group: , src group:
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 328:Getting source zones
+01-10 01:31:13 root 304:updating GUI with: 50
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 332:Getting source text items
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 336:Getting source drawing items
+01-10 01:31:13 root 299:updating GUI message: 'Replicating footprints'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 742:Replicating footprints
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA2']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA3']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA4']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA5']
+01-10 01:31:13 root 304:updating GUI with: 57
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA6']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA7']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 748:Replicating footprints on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']
+01-10 01:31:13 root 299:updating GUI message: 'Replicating tracks'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 907:Replicating tracks
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA2']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA2'] :[('HP_MOS1', 'HP_MOS2'), ('Net-(C113-Pad2)', 'Net-(C99-Pad2)'), ('Net-(R181-Pad1)', 'Net-(R186-Pad1)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA2/IN'), ('+12V', '+12V'), ('GND', 'GND'), ('+3.3V', '+3.3V')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA3']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'] :[('Net-(R181-Pad1)', 'Net-(R191-Pad1)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA3/IN'), ('+12V', '+12V'), ('GND', 'GND'), ('HP_MOS1', 'HP_MOS3'), ('+3.3V', '+3.3V'), ('Net-(C113-Pad2)', 'Net-(C104-Pad2)')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA4']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 721:Cannot pair src net: ['HP_MOS1'] and dst net: ['', 'HP_POWER_CHANNEL', 'BTS50005-1LUA4', 'MOS_OUT'], with src_net_depth=1, dst_net_depth=4, src_fp_depth=2, dst_fp_depth=2
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 721:Cannot pair src net: ['HP_MOS1'] and dst net: ['', 'HP_POWER_CHANNEL', 'BTS50005-1LUA4', 'MOS_OUT'], with src_net_depth=1, dst_net_depth=4, src_fp_depth=2, dst_fp_depth=2
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'] :[('Net-(C113-Pad2)', 'Net-(C109-Pad2)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA4/IN'), ('+12V', '+12V'), ('GND', 'GND'), ('+3.3V', '+3.3V'), ('Net-(R181-Pad1)', 'Net-(R196-Pad1)')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA5']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA5'] :[('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA5/IN'), ('Net-(R181-Pad1)', 'Net-(R202-Pad1)'), ('HP_MOS1', 'HP_MOS5'), ('Net-(C113-Pad2)', 'Net-(C115-Pad2)'), ('+12V', '+12V'), ('+3.3V', '+3.3V'), ('GND', 'GND')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA6']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA6'] :[('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA6/IN'), ('Net-(R181-Pad1)', 'Net-(R207-Pad1)'), ('Net-(C113-Pad2)', 'Net-(C120-Pad2)'), ('HP_MOS1', 'HP_MOS6'), ('+12V', '+12V'), ('GND', 'GND'), ('+3.3V', '+3.3V')]
+01-10 01:31:13 root 304:updating GUI with: 70
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA7']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA7'] :[('HP_MOS1', 'HP_MOS7'), ('Net-(C113-Pad2)', 'Net-(C125-Pad2)'), ('Net-(R181-Pad1)', 'Net-(R212-Pad1)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA7/IN'), ('+12V', '+12V'), ('GND', 'GND'), ('+3.3V', '+3.3V')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 913:Replicating tracks on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA8']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA8'] :[('HP_MOS1', 'HP_MOS8'), ('Net-(C113-Pad2)', 'Net-(C130-Pad2)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA8/IN'), ('Net-(R181-Pad1)', 'Net-(R217-Pad1)'), ('+12V', '+12V'), ('GND', 'GND'), ('+3.3V', '+3.3V')]
+01-10 01:31:13 root 299:updating GUI message: 'Replicating zones'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 967:Replicating zones
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA2']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA2'] :[('HP_MOS1', 'HP_MOS2'), ('Net-(C113-Pad2)', 'Net-(C99-Pad2)'), ('Net-(R181-Pad1)', 'Net-(R186-Pad1)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA2/IN'), ('+12V', '+12V'), ('GND', 'GND'), ('+3.3V', '+3.3V')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'HP_MOS1'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'HP_MOS2'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA3']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA3'] :[('Net-(R181-Pad1)', 'Net-(R191-Pad1)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA3/IN'), ('+12V', '+12V'), ('GND', 'GND'), ('HP_MOS1', 'HP_MOS3'), ('+3.3V', '+3.3V'), ('Net-(C113-Pad2)', 'Net-(C104-Pad2)')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'HP_MOS1'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'HP_MOS3'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 974:Replicating zones on sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA4']
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 721:Cannot pair src net: ['HP_MOS1'] and dst net: ['', 'HP_POWER_CHANNEL', 'BTS50005-1LUA4', 'MOS_OUT'], with src_net_depth=1, dst_net_depth=4, src_fp_depth=2, dst_fp_depth=2
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 721:Cannot pair src net: ['HP_MOS1'] and dst net: ['', 'HP_POWER_CHANNEL', 'BTS50005-1LUA4', 'MOS_OUT'], with src_net_depth=1, dst_net_depth=4, src_fp_depth=2, dst_fp_depth=2
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 737:Net pairs for sheet ['HP_POWER_CHANNEL', 'BTS50005-1LUA4'] :[('Net-(C113-Pad2)', 'Net-(C109-Pad2)'), ('/HP_POWER_CHANNEL/BTS50005-1LUA1/IN', '/HP_POWER_CHANNEL/BTS50005-1LUA4/IN'), ('+12V', '+12V'), ('GND', 'GND'), ('+3.3V', '+3.3V'), ('Net-(R181-Pad1)', 'Net-(R196-Pad1)')]
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1005:Dst zone on new: 'GND'
+01-10 01:31:13 com_github_MitjaNemec_ReplicateLayout.replicate_layout 1003:Src zone on new: 'HP_MOS1'

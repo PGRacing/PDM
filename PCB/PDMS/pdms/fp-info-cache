@@ -1,4 +1,4 @@
-20582573597354098
+20584291182576937
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61635,6 +61635,13 @@ Integrated Circuit
 8
 8
 PDMS_Additional
+SOTFL127P485X190-4N
+4-SSOP
+Integrated Circuit
+0
+4
+4
+PDMS_Additional
 TE_2305018-2
 
 
@@ -61648,6 +61655,13 @@ Thermistor
 0
 2
 2
+PDMS_Additional
+WS2812B2020
+WS2812B-2020-2
+LED (Multiple)
+0
+4
+4
 PDMS_Additional
 XCVR_SPBTLE-RF
 
@@ -86554,10 +86568,3 @@ varistor
 0
 2
 2
-adc2can_additional
-SON95P300X300X90-7N-D
-LDO40LPU33RY_
-Integrated Circuit
-0
-7
-7

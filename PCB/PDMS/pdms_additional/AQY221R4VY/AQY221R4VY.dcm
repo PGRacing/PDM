@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP AQY221R4VY
+D Solid State Relays - PCB Mount PhotoMos
+K
+F https://www3.panasonic.biz/ac/cdn/e/control/relay/photomos/catalog/semi_eng_rf1a_aqy22_v_cr10.pdf
+$ENDCMP
+#
+#End Doc Library
