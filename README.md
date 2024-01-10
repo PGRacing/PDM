@@ -18,13 +18,13 @@ TODO on next PCB:
 | 2. Change CPC1117N to CPC1017N (or diffrent PhotoMos) | 1 | 2 | SCHEMATIC DONE |
 | 3. Add clamping diodes on any signals | 2 | 3 | SCHEMATIC DON |
 | 4. Change input filtration for low profile SMD capacitor instead of tht | 1 | 1 | DONE |
-| 5. Add SWO pin | 2 | 2 | SCHEMATIC DONE |
+| 5. Add SWO pin | 2 | 2 | DONE |
 | 6. Current sensors output should be collected by one ADC !!! - for eg. ADC3 (change pinout) | 3 | 2 | |
 | 7. Add clamping diodes on current sensor to allow lower range current detecion | 2 | 3 | IN TESTING |
 | 8. Selection and redirection of IO is not imporant | 1 | 1 | SCHEMATIC DONE |
 | 9. Fix WS2812B footprint | 1 | 3 | SCHEMATIC DONE |
 | 10. Use smaller footprint for voltage mux and can transceiver | 2 | 1 | NOT APP |
-| 11. Change FET's to BTS50010-1LUA | 3 | 2 ||
+| 11. Change FET's to BTS50010-1LUA | 3 | 2 | |
 | 12. Add RX/TX information leds to CAN bus (software driven) | 1 | 1 | NOT APP |
 | 13. Add MUX for mutlichannel switch | 2 | 2 ||
 | 14. Add CAN software switching | 2 | 2 | SCHEMATIC DONE |
