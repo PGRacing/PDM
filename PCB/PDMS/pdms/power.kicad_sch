@@ -1425,6 +1425,11 @@
     (uuid e6b10321-c5e9-42d9-8322-c3337ff9d6e4)
   )
 
+  (label "VOUT" (at 77.47 40.64 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid ef37f867-3d8c-4087-b39c-ba3f5135ca7b)
+  )
+
   (global_label "12V_LOGIC_ONLY" (shape input) (at 66.675 115.57 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 23576706-d981-40fa-a043-29bc98a136b8)
