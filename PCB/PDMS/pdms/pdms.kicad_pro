@@ -629,6 +629,10 @@
       "HP_VMUX"
     ],
     [
+      "74831011-8ee4-447e-a486-77c3a37218b5",
+      "NTC_MUX"
+    ],
+    [
       "65c1da23-85d0-403e-8f07-4d4fb44d49eb",
       "HP_POWER_CHANNEL"
     ],
