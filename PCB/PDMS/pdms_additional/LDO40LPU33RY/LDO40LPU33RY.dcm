@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LDO40LPU33RY
+D LDO Voltage Regulators POWER MANAGEMENT
+K
+F https://www.st.com/resource/en/datasheet/ldo40l.pdf
+$ENDCMP
+#
+#End Doc Library
