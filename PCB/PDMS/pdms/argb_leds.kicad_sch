@@ -1011,9 +1011,9 @@
     (uuid fea917c7-c258-4d20-b6bc-70c8658d07d4)
   )
 
-  (text "PIN STATUS LED'S" (at 20.574 43.688 0)
-    (effects (font (size 2 2)) (justify left bottom))
-    (uuid 2dbc8d2a-80ba-4993-a16b-cac3470efde6)
+  (text "ARGB - informing LED's" (at 187.071 191.008 0)
+    (effects (font (size 2 2) italic) (justify left bottom))
+    (uuid 7d517935-eed9-4f09-b995-b5d131237072)
   )
 
   (hierarchical_label "LED_DATA_IN" (shape input) (at 29.718 60.198 180)

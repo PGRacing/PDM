@@ -301,7 +301,7 @@
     (uuid f3c1a68c-56ac-4737-8b7d-c4bdd578c9e9)
   )
 
-  (text "High power switches section based on BTS500" (at 186.69 191.135 0)
+  (text "High current - power channels - BTS500" (at 186.69 191.135 0)
     (effects (font (size 2 2) italic) (justify left bottom))
     (uuid c2f4fa77-a502-44d1-aa08-1ac22bfe97a7)
   )

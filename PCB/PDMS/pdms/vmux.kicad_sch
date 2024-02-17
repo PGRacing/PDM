@@ -1148,6 +1148,11 @@
     (uuid ff6ef033-8916-4352-bcc8-9b0f474d3b44)
   )
 
+  (text "Output channel voltage measurement mux" (at 99.187 129.159 0)
+    (effects (font (size 2 2) italic) (justify left bottom))
+    (uuid 56a3ef0e-ac55-4462-af09-477ba313d688)
+  )
+
   (label "HP_MOS_DIV7" (at 88.138 54.102 0)
     (effects (font (size 0.7 0.7)) (justify left bottom))
     (uuid 0d104ce5-d70c-4c5f-8a12-1233d6df2327)

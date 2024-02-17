@@ -554,7 +554,6 @@
     )
   )
 
-
   (junction (at 42.545 91.44) (diameter 0) (color 0 0 0 0)
     (uuid ae2332d7-37bb-437a-8429-bb8576000095)
   )
@@ -645,6 +644,10 @@
   (text "USB-C Legacy mode + Optional STLINK" (at 27.94 26.035 0)
     (effects (font (size 2 2)) (justify left bottom))
     (uuid 15e33357-a10b-4211-9a71-abd684846451)
+  )
+  (text "USB-C Interface + SWD" (at 99.949 129.032 0)
+    (effects (font (size 2 2) italic) (justify left bottom))
+    (uuid d25d2cf2-a98d-4e86-a016-11f57c17c349)
   )
 
   (global_label "SWCLK" (shape input) (at 48.895 59.69 0) (fields_autoplaced)

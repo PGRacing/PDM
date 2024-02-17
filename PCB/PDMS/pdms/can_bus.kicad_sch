@@ -620,8 +620,8 @@
     (uuid fc6074c3-8800-4ec9-b605-1206ec47864c)
   )
 
-  (text "CANBUS w/ software enabled termination" (at 99.695 128.27 0)
-    (effects (font (size 1.4 1.4)) (justify left bottom))
+  (text "CANBUS w/ software enabled termination" (at 99.441 129.032 0)
+    (effects (font (size 2 2)) (justify left bottom))
     (uuid 49fca812-6be3-424d-bfd1-bf170f0db85e)
   )
   (text "CAN1" (at 16.51 20.32 0)
