@@ -8,46 +8,55 @@
 #include "FreeRTOS.h"
 #include "tim.h"
 #include "cmsis_os2.h"
+#include "spoc2.h"
 
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
     {
         [OUT_ID_1] = {
             .id = OUT_ID_1,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_2] = {
             .id = OUT_ID_2,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_3] = {
             .id = OUT_ID_3,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_4] = {
             .id = OUT_ID_4,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_5] = {
             .id = OUT_ID_5,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_6] = {
             .id = OUT_ID_6,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_7] = {
             .id = OUT_ID_7,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
         [OUT_ID_8] = {
             .id = OUT_ID_8,
+            .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
@@ -203,18 +212,42 @@ bool OUT_ToggleState(T_OUT_ID id)
   return OUT_SetState( id, !cfg->state);
 }
 
-// void testTaskEntry(void *argument)
-// {
-//   /* TODO There is possibility to add UT here for setting output mode and setting output state */
-//   T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
+SPOC2_chain_t chain = {
+    .devices = {
+        {
+            .deviceIdentifier = BTS72220_4ESA,
+            .adcChannel = 0,
+        },
+        {
+            .deviceIdentifier = BTS72220_4ESA,
+            .adcChannel = 1,
+        },
+    },
+    .numDevices = 2,
+    .spiBusId = 0,
+    .spiChipSelect = 0,
+};
 
-//   OUT_ChangeMode( out, OUT_MODE_STD ); 
-//   //OUT_SetState( out, OUT_STATE_ON );
-//   for (;;)
-//   {
-//     OUT_ToggleState( out );
-//     osDelay(3000);
-//   }
-// }
+void testTaskEntry(void *argument)
+{
+  // /* TODO There is possibility to add UT here for setting output mode and setting output state */
+  // T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
+
+  // OUT_ChangeMode( out, OUT_MODE_STD ); 
+  // //OUT_SetState( out, OUT_STATE_ON );
+  // for (;;)
+  // {
+  //   OUT_ToggleState( out );
+  //   osDelay(3000);
+  // }
+
+  SPOC2_Chain_init(&chain);
+  SPOC2_Config_disableSleepMode(&chain.devices[0]);
+  SPOC2_Config_disableSleepMode(&chain.devices[1]);
+  SPOC2_Config_enableOutputChannel(&chain.devices[0], 0);
+  SPOC2_Config_enableOutputChannel(&chain.devices[0], 1);
+  SPOC2_Config_enableOutputChannel(&chain.devices[1], 2);
+  SPOC2_Chain_applyDeviceConfigs(&chain);
+}
 
 // TODO Add OUT_SetPWMDuty(T_OUT_CFG *cfg, T_OUT_STATE state)

@@ -290,60 +290,60 @@ T_LOGIC logics[POWER_OUT_COUNT] =
 
 volatile bool expResult;
 
-void testTaskEntry(void *argument)
-{
-  /* TODO There is possibility to add UT here for setting output mode and setting output state */
+// void testTaskEntry(void *argument)
+// {
+//   /* TODO There is possibility to add UT here for setting output mode and setting output state */
 
-  T_LOGIC_EXPRESSION exp1 = 
-  {
-    .opr = LOGIC_OPERATOR_GE,
-    .input1Type = LOGIC_INPUT_TYPE_SENSOR,
-    .input1ID = IN_PHY_ID_1,
-    .input2Type = LOGIC_INPUT_TYPE_CONST_ANALOG,
-    .input2Const = 400
-  };
+//   T_LOGIC_EXPRESSION exp1 = 
+//   {
+//     .opr = LOGIC_OPERATOR_GE,
+//     .input1Type = LOGIC_INPUT_TYPE_SENSOR,
+//     .input1ID = IN_PHY_ID_1,
+//     .input2Type = LOGIC_INPUT_TYPE_CONST_ANALOG,
+//     .input2Const = 400
+//   };
 
-  T_LOGIC_EXPRESSION exp2 = 
-  {
-    .opr = LOGIC_OPERATOR_IT,
-    .input1Type = LOGIC_INPUT_TYPE_SENSOR,
-    .input1ID = IN_PHY_ID_1,
-    .input2Type =  LOGIC_INPUT_TYPE_UNSET,
-  };
+//   T_LOGIC_EXPRESSION exp2 = 
+//   {
+//     .opr = LOGIC_OPERATOR_IT,
+//     .input1Type = LOGIC_INPUT_TYPE_SENSOR,
+//     .input1ID = IN_PHY_ID_1,
+//     .input2Type =  LOGIC_INPUT_TYPE_UNSET,
+//   };
 
-  OUT_ChangeMode( OUT_ID_1, OUT_MODE_STD);
-  OUT_ChangeMode( OUT_ID_2, OUT_MODE_PWM);
-  OUT_ChangeMode( OUT_ID_3, OUT_MODE_STD);
-  OUT_ChangeMode( OUT_ID_4, OUT_MODE_STD);
+//   OUT_ChangeMode( OUT_ID_1, OUT_MODE_STD);
+//   OUT_ChangeMode( OUT_ID_2, OUT_MODE_PWM);
+//   OUT_ChangeMode( OUT_ID_3, OUT_MODE_STD);
+//   OUT_ChangeMode( OUT_ID_4, OUT_MODE_STD);
   
-  OUT_Batch(OUT_ID_5,OUT_ID_8);
-  OUT_ChangeMode( OUT_ID_6, OUT_MODE_STD);
-  OUT_ChangeMode( OUT_ID_7, OUT_MODE_STD);
+//   OUT_Batch(OUT_ID_5,OUT_ID_8);
+//   OUT_ChangeMode( OUT_ID_6, OUT_MODE_STD);
+//   OUT_ChangeMode( OUT_ID_7, OUT_MODE_STD);
 
-  for (;;)
-  {
-    //expResult = LOGIC_EvaluateExpression( exp2 );
+//   for (;;)
+//   {
+//     //expResult = LOGIC_EvaluateExpression( exp2 );
 
-    OUT_ChangeMode( OUT_ID_2, OUT_MODE_PWM);
+//     OUT_ChangeMode( OUT_ID_2, OUT_MODE_PWM);
     
-    for( uint8_t i = 0; i < 100; i++)
-    {
-      BSP_OUT_SetDutyPWM(OUT_ID_2, i);
-      osDelay(100);
-    }
+//     for( uint8_t i = 0; i < 100; i++)
+//     {
+//       BSP_OUT_SetDutyPWM(OUT_ID_2, i);
+//       osDelay(100);
+//     }
 
-    for( uint8_t i = 100; i > 0; i--)
-    {
-      BSP_OUT_SetDutyPWM(OUT_ID_2, i);
-      osDelay(100);
-    }
+//     for( uint8_t i = 100; i > 0; i--)
+//     {
+//       BSP_OUT_SetDutyPWM(OUT_ID_2, i);
+//       osDelay(100);
+//     }
 
-    OUT_ChangeMode( OUT_ID_2, OUT_MODE_STD);
+//     OUT_ChangeMode( OUT_ID_2, OUT_MODE_STD);
 
-    for( uint8_t i = 0; i < 10; i++)
-    {
-      OUT_ToggleState(OUT_ID_2);
-      osDelay(1000);
-    }
-  }
-}
+//     for( uint8_t i = 0; i < 10; i++)
+//     {
+//       OUT_ToggleState(OUT_ID_2);
+//       osDelay(1000);
+//     }
+//   }
+// }

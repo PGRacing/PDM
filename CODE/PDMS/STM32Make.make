@@ -38,10 +38,12 @@ BUILD_DIR = build
 C_SOURCES =  \
 Core/Src/adc.c \
 Core/Src/bsp/bsp_out.c \
+Core/Src/bsp/bsp_spoc2.c \
 Core/Src/can.c \
 Core/Src/canhandler.c \
 Core/Src/dma.c \
 Core/Src/driver/spoc2.c \
+Core/Src/driver/spoc2_unused.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
 Core/Src/input.c \
@@ -76,12 +78,12 @@ Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi_ex.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_dma.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_exti.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_gpio.c \
-Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_spi.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_utils.c \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c \
 Middlewares/Third_Party/FreeRTOS/Source/croutine.c \
@@ -231,7 +233,6 @@ vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
 
-# list of ASM program objects
 # list of ASM program objects
 UPPER_CASE_ASM_SOURCES = $(filter %.S,$(ASM_SOURCES))
 LOWER_CASE_ASM_SOURCES = $(filter %.s,$(ASM_SOURCES))

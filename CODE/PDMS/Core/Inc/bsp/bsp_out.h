@@ -1,5 +1,5 @@
-#ifndef __LLGPIO_H_
-#define __LLGPIO_H_
+#ifndef __BSP_OUT_H_
+#define __BSP_OUT_H_
 
 #include "stm32l496xx.h"
 #include "typedefs.h"

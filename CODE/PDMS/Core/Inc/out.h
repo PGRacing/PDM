@@ -4,9 +4,16 @@
 #include "typedefs.h"
 #include "bsp_out.h"
 
+typedef enum
+{
+    OUT_TYPE_BTS500   = 0x00, // Simple high current switch Infineon BTS50010-1LUA
+    OUT_TYPE_BTS72220 = 0x01, // Complex SPI based switch Infineon BTS72220-4ESA
+}T_OUT_TYPE;
+
 typedef struct _T_OUT_CFG
 {
     const T_OUT_ID id;    // id should reflect position in outsCfg
+    T_OUT_TYPE     type;
     T_OUT_MODE     mode;
     T_OUT_STATE    state;
     T_OUT_ID       batch; // optional for OUT_MODE_BATCH
