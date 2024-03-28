@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "stm32l496xx.h"
 
 #define FALSE false
 #define TRUE  true

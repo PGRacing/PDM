@@ -9,54 +9,66 @@
 #include "bsp_spoc2.h"
 #include "spi.h"
 
-
-void BSP_SPOC2_SlaveSelect()
+typedef struct _T_BSP_SPOC2_CFG
 {
-    // WARN Using both slave select same time and daisy chainging for easier outcome
-    LL_GPIO_SetOutputPin(LP_CSN1_GPIO_Port, LP_CSN1_Pin);
-    LL_GPIO_SetOutputPin(LP_CSN2_GPIO_Port, LP_CSN2_Pin);
+    SPI_HandleTypeDef* phspi;
+    T_IO csnIo;
+    T_IO adcChannelIo;
+}T_BSP_SPOC2_CFG;
+
+// Configuration of on-board SPOC-2 (whole) devices
+static T_BSP_SPOC2_CFG bspSpoc2Cfg[SPOC2_NUM_OF_DEVICES] = 
+{
+    {
+        .phspi = &hspi2,
+        .csnIo = {.port = LP_CSN1_GPIO_Port, .pin = LP_CSN1_Pin },
+        .adcChannelIo = {.port = SENS_OUT_LP1_GPIO_Port, SENS_OUT_LP1_Pin}
+    },
+    {
+        .phspi = &hspi2,
+        .csnIo = {.port = LP_CSN2_GPIO_Port, .pin = LP_CSN2_Pin },
+        .adcChannelIo = {.port = SENS_OUT_LP2_GPIO_Port, SENS_OUT_LP2_Pin}
+    },
+};
+
+static void BSP_SPOC2_SlaveSelect(T_SPOC2_ID id)
+{   
+    ASSERT( id < SPOC2_ID_MAX);
+
+    LL_GPIO_ResetOutputPin(bspSpoc2Cfg[id].csnIo.port, bspSpoc2Cfg[id].csnIo.pin);
 }
 
-void BSP_SPOC2_SlaveDeselect()
+static void BSP_SPOC2_SlaveDeselect(T_SPOC2_ID id)
 {
-    // WARN Using both slave select same time and daisy chainging for easier outcome
-    LL_GPIO_ResetOutputPin(LP_CSN1_GPIO_Port, LP_CSN1_Pin);
-    LL_GPIO_ResetOutputPin(LP_CSN2_GPIO_Port, LP_CSN2_Pin);
+    ASSERT( id < SPOC2_ID_MAX);
+
+    LL_GPIO_SetOutputPin(bspSpoc2Cfg[id].csnIo.port, bspSpoc2Cfg[id].csnIo.pin);
 }   
 
-
-// FIXME Here function definitions change naming convention due to the fact that external driver is used
-
-SPOC2_error_t SPOC2_SPI_writeBuffer(uint32 spiBusId, uint8 spiChipSelect, uint8* txBuffer, uint32 dataLen) 
+bool BSP_SPOC2_TransferBlocking(T_SPOC2_ID id, uint8* txBuffer, uint8* rxBuffer, uint32 dataLen)
 {
-    BSP_SPOC2_SlaveSelect();
-    HAL_SPI_Transmit(&hspi2, txBuffer, dataLen, HAL_MAX_DELAY);
-    // these API functions cannot fail
+    ASSERT( id < SPOC2_ID_MAX);
+
+    HAL_StatusTypeDef result = HAL_OK;
+    // Transfer data over selected spi interface in blocking mode (requiered by spoc2 library)
+    BSP_SPOC2_SlaveSelect(id);
+
+    if( txBuffer != NULL)
+    {
+        result = HAL_SPI_Transmit(bspSpoc2Cfg[id].phspi, txBuffer, dataLen, HAL_MAX_DELAY);
+    }
     
-    return SPOC2_ERROR_OK;
-}
-
-// function to read data from the SPOC+2 out of the SPI receive buffer
-SPOC2_error_t SPOC2_SPI_readRxBuffer(uint32 spiBusId, uint8* rxBuffer, uint32 dataLen) 
-{
-
-    HAL_StatusTypeDef status = HAL_OK;
-    status = HAL_SPI_Receive(&hspi2, rxBuffer, dataLen, HAL_MAX_DELAY);
+    if( rxBuffer != NULL)
+    {
+        result |= HAL_SPI_Receive(bspSpoc2Cfg[id].phspi, rxBuffer, dataLen, HAL_MAX_DELAY);
+    }
     
-    BSP_SPOC2_SlaveDeselect();
+    BSP_SPOC2_SlaveDeselect(id);
 
-    return (status == HAL_OK) ? SPOC2_ERROR_OK : SPOC2_ERROR_RX_FAILURE;
-}
+    if( result != HAL_OK)
+    {
+        return false;
+    }
 
-// function to clear the internal RX FIFO of unread data
-void SPOC2_SPI_clearRxBuffer(uint32 spiBusId) 
-{ 
-    //HAL_SPI_FlushRxFifo(&hspi2);
-    __NOP();
-}
-
-// function to indicate whether the previous SPI transfer is complete
-boolean SPOC2_SPI_isTransferComplete(uint32 spiBusId) 
-{ 
-    return true; 
+    return true;
 }

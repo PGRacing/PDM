@@ -7,7 +7,7 @@
 typedef enum
 {
     OUT_TYPE_BTS500   = 0x00, // Simple high current switch Infineon BTS50010-1LUA
-    OUT_TYPE_BTS72220 = 0x01, // Complex SPI based switch Infineon BTS72220-4ESA
+    OUT_TYPE_SPOC2 = 0x01, // Complex SPI based switch Infineon BTS72220-4ESA
 }T_OUT_TYPE;
 
 typedef struct _T_OUT_CFG

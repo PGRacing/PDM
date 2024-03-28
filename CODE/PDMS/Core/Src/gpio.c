@@ -56,14 +56,16 @@ void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(GPIOF, LP_SIG1_Pin|LP_SIG2_Pin|LP_SIG3_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(GPIOD, PWM_SIG8_Pin|PWM_SIG7_Pin|PWM_SIG6_Pin|PWM_SIG5_Pin
-                          |LP_CSN2_Pin);
+  LL_GPIO_ResetOutputPin(GPIOD, PWM_SIG8_Pin|PWM_SIG7_Pin|PWM_SIG6_Pin|PWM_SIG5_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(GPIOC, PWM_SIG4_Pin|PWM_SIG3_Pin|PWM_SIG2_Pin|PWM_SIG1_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(LP_CSN1_GPIO_Port, LP_CSN1_Pin);
+  LL_GPIO_SetOutputPin(LP_CSN2_GPIO_Port, LP_CSN2_Pin);
+
+  /**/
+  LL_GPIO_SetOutputPin(LP_CSN1_GPIO_Port, LP_CSN1_Pin);
 
   /**/
   GPIO_InitStruct.Pin = STATUS_LED_Pin|VOLTAGE_MUX_SEL1_Pin|VOLTAGE_MUX_SEL2_Pin|VOLTAGE_MUX_SEL3_Pin;

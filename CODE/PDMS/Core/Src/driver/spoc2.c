@@ -43,6 +43,19 @@ static SPOC2_error_t SPOC2_SPI_transferBlocking(uint32 spiBusId, uint8 spiChipSe
     return result;
 }
 
+// FIXME (Add notes) New transfer function based on BSP
+static SPOC2_error_t SPOC2_SPI_transferBlocking2(T_SPOC2_ID id, uint8* txBuffer, uint8* rxBuffer, uint32 dataLen)
+{
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+
+    bool status = BSP_SPOC2_TransferBlocking(id, txBuffer, rxBuffer, dataLen);
+
+    result = (status) ? SPOC2_ERROR_OK : SPOC2_ERROR_INVALID_OPERATION;
+
+    return result;
+
+}
+
 /// @brief Enables the desired channel in the specified device configuration
 /// @param cfg Pointer to the SPOC™ +2 device configuration structure
 /// @param channel The channel to enable, should be 0-3 for 4-channel devices and 0-5 for 6-channel devices
@@ -1181,6 +1194,294 @@ SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain) {
     // send a reset signal to the whole chain to clear any old configuration and diagnostics
     if (result == SPOC2_ERROR_OK) {
         result = SPOC2_Chain_resetAllDevices(chain);
+    }
+
+    return result;
+}
+
+// Single device write register
+SPOC2_error_t SPOC2_writeRegister(SPOC2_deviceConfig_t* dev, SPOC2_register_t reg, uint8* txBuffer) {
+    uint8 txBufferDCR;
+    boolean register_bank_1 = (reg == SPOC2_REGISTER_RCD) || (reg == SPOC2_REGISTER_PCS) || (reg == SPOC2_REGISTER_ICS);
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+
+    if (result == SPOC2_ERROR_OK) {
+        // write the value into the shadow registers
+        dev->registers[reg] = *txBuffer; 
+
+        // prepare to switch register banks if necessary
+        if (register_bank_1) {
+            txBufferDCR = SPOC2_WRITE_DCR_HEADER | SPOC2_DCR_SWR_MASK;
+        }
+    }
+
+    // select register bank 1 if necessary
+    if ((result == SPOC2_ERROR_OK) && register_bank_1) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, txBuffer, NULL, 1);
+    }
+    // write the register to the chain
+    if (result == SPOC2_ERROR_OK) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, txBuffer, NULL, 1);
+    }
+    // reset register bank to 0 if necessary
+    if ((result == SPOC2_ERROR_OK) && register_bank_1) {
+        txBufferDCR =  dev->registers[SPOC2_REGISTER_DCR];
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBufferDCR, NULL, 1);
+    }
+    return result;
+}
+
+// Read single device register
+SPOC2_error_t SPOC2_readRegister(const SPOC2_deviceConfig_t* dev, SPOC2_register_t reg, uint8* rxBuffer) {
+    uint8 txBuffer;
+    uint8 dummyBuffer = 0;
+    uint8 readCommand;
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+
+
+    switch (reg) {
+    case SPOC2_REGISTER_OUT:
+        readCommand = SPOC2_READ_OUT;
+        break;
+    case SPOC2_REGISTER_RCS:
+        readCommand = SPOC2_READ_RCS;
+        break;
+    case SPOC2_REGISTER_SRC:
+        readCommand = SPOC2_READ_SRC;
+        break;
+    case SPOC2_REGISTER_OCR:
+        readCommand = SPOC2_READ_OCR;
+        break;
+    case SPOC2_REGISTER_RCD:
+        readCommand = SPOC2_READ_RCD;
+        break;
+    case SPOC2_REGISTER_KRC:
+        readCommand = SPOC2_READ_KRC;
+        break;
+    case SPOC2_REGISTER_PCS:
+        readCommand = SPOC2_READ_PCS;
+        break;
+    case SPOC2_REGISTER_HWCR:
+        readCommand = SPOC2_READ_KRC;
+        break;
+    case SPOC2_REGISTER_ICS:
+        readCommand = SPOC2_READ_ICS;
+        break;
+    case SPOC2_REGISTER_DCR:
+        readCommand = SPOC2_READ_DCR;
+        break;
+    default:
+        result = SPOC2_ERROR_BAD_PARAMETER;
+        break;
+    }
+
+    if (result == SPOC2_ERROR_OK) {
+        txBuffer = readCommand;
+
+        // Write the read command out to the devices
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBuffer, NULL, 1);
+
+        // Read the responses back from the devices into the user buffer
+        if (result == SPOC2_ERROR_OK) {
+            result = SPOC2_SPI_transferBlocking2(dev->id, &dummyBuffer, rxBuffer, 1);
+        }
+    }
+    return result;
+}
+
+// Single device read input states
+SPOC2_error_t SPOC2_readInputStates(const SPOC2_deviceConfig_t* dev, uint8* rxBuffer) {
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+
+    result = SPOC2_readRegister(dev, SPOC2_REGISTER_ICS, rxBuffer);
+
+    if (result == SPOC2_ERROR_OK) {
+        *rxBuffer &= SPOC2_ICS_INSTn_MASK;
+    }
+
+    return result;
+}
+
+SPOC2_error_t SPOC2_readDiagnostics(const SPOC2_deviceConfig_t* dev, uint8* stdDiagBuffer, uint8* wrnDiagBuffer,
+                                          uint8* errDiagBuffer) {
+    uint8 txBuffer1;
+    uint8 txBuffer2;
+    uint8 txBuffer3;
+
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+
+    txBuffer1 = SPOC2_READ_STDDIAG;
+    txBuffer2 = SPOC2_READ_WRNDIAG;
+    txBuffer3 = SPOC2_READ_ERRDIAG;
+
+    // send STDDIAG read command, discard previous response
+    result = SPOC2_SPI_transferBlocking2(dev->id, &txBuffer1, NULL, 1);
+
+    // send WRNDIAG read command, read STDDIAG response
+    if (result == SPOC2_ERROR_OK)
+    {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBuffer2, stdDiagBuffer, 1);
+    }
+    else
+    {
+    }
+    // send ERRDIAG read command, read WRNDIAG response
+    if (result == SPOC2_ERROR_OK)
+    {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBuffer3, wrnDiagBuffer, 1);
+    }
+    else
+    {
+    }
+    // send duplicate ERRDIAG read command, read ERRDIAG response
+    if (result == SPOC2_ERROR_OK)
+    {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBuffer3, errDiagBuffer, 1);
+    }
+    else
+    {
+    }
+
+    return result;
+}
+
+SPOC2_error_t SPOC2_applyDeviceConfig(SPOC2_deviceConfig_t* dev) {
+    uint8 txBufferDCR;
+    uint8 txBufferR1;
+    uint8 txBufferR2;
+    uint8 txBufferR3;
+    uint8 rcdDataMask;
+    uint8 pcsDataMask;
+    uint8 ocrDataMask;
+    uint8 krcDataMask;
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+
+    // write registers in bank 0
+
+    // clear the DCR.SWR bit to choose register bank 0
+    // ignore the user-selected current sense channel, as this may put the device into sleep mode
+    txBufferDCR = SPOC2_WRITE_DCR_HEADER;
+
+    // prepare data for HWCR register write
+    txBufferR1 = SPOC2_WRITE_HWCR_HEADER | (dev->registers[SPOC2_REGISTER_HWCR] &
+                                                (SPOC2_HWCR_COL_MASK | SPOC2_HWCR_RST_MASK | SPOC2_HWCR_CLC_MASK));
+    // clear the RST and CLC bits in the shadow HWCR register to prevent multiple resets
+    dev->registers[SPOC2_REGISTER_HWCR] &= ~(SPOC2_HWCR_RST_MASK | SPOC2_HWCR_CLC_MASK);
+
+    // prepare data for OCR register write
+    ocrDataMask =
+        SPOC2_deviceIs6Channel(*dev) ? SPOC2_6CHANNEL_OCR_OCTn_MASK : SPOC2_4CHANNEL_OCR_OCTn_MASK;
+    txBufferR2 = SPOC2_WRITE_OCR_HEADER | (dev->registers[SPOC2_REGISTER_OCR] & ocrDataMask);
+
+    // prepare data for KRC register write
+    krcDataMask =
+        SPOC2_deviceIs6Channel(*dev) ? SPOC2_6CHANNEL_KRC_KRCn_MASK : SPOC2_4CHANNEL_KRC_KRCn_MASK;
+    txBufferR3 = SPOC2_WRITE_KRC_HEADER | (dev->registers[SPOC2_REGISTER_KRC] & krcDataMask);
+
+    // write to DCR to select register bank 0
+    if (result == SPOC2_ERROR_OK) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBufferDCR, NULL, 1);
+    }
+    // write to all device HWCR registers (this can trigger a device reset, so make sure it is done first)
+    if (result == SPOC2_ERROR_OK) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBufferR1, NULL, 1); 
+    }
+
+    // write to all device OCR registers
+    if (result == SPOC2_ERROR_OK) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBufferR2, NULL, 1);
+    }
+    // write to all device KRC registers
+    if (result == SPOC2_ERROR_OK) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBufferR3, NULL, 1);
+    }
+    // write to registers in bank 1
+    // set the SWR bit to choose register bank 1
+    // make sure the user's current sense channel is selected for PCS config
+    txBufferDCR = SPOC2_WRITE_DCR_HEADER | SPOC2_DCR_SWR_MASK |
+                        (dev->registers[SPOC2_REGISTER_DCR] & SPOC2_DCR_MUX_MASK);
+
+    // prepare data for RCD register write
+    rcdDataMask =
+        SPOC2_deviceIs6Channel(*dev) ? SPOC2_6CHANNEL_RCD_RCDn_MASK : SPOC2_4CHANNEL_RCD_RCDn_MASK;
+    txBufferR1 = SPOC2_WRITE_RCD_HEADER | (dev->registers[SPOC2_REGISTER_RCD] & rcdDataMask);
+
+    // prepare data for PCS register write
+    pcsDataMask =
+        SPOC2_deviceIs6Channel(*dev) ? SPOC2_6CHANNEL_PCS_PCCn_MASK : SPOC2_4CHANNEL_PCS_PCCn_MASK;
+    txBufferR2 = SPOC2_WRITE_PCS_HEADER | (dev->registers[SPOC2_REGISTER_PCS] &
+                                                (pcsDataMask | SPOC2_PCS_CLCS_MASK | SPOC2_PCS_SRCS_MASK));
+    // clear the CLCS bit in the shadow PCS register to prevent multiple resets
+    dev->registers[SPOC2_REGISTER_PCS] &= ~(SPOC2_PCS_CLCS_MASK);
+
+    // prepare buffer for OUT register write
+    txBufferR3 = SPOC2_WRITE_OUT_HEADER | (dev->registers[SPOC2_REGISTER_OUT]);
+
+    // write to DCR to select register bank 1
+    if (result == SPOC2_ERROR_OK) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBufferDCR, NULL, 1);
+    }
+    // write to all device RCD registers
+    if (result == SPOC2_ERROR_OK) {
+        result = SPOC2_SPI_transferBlocking2(dev->id, &txBufferR1, NULL, 1);
+    }
+    // write to all device PCS registers
+    if (result == SPOC2_ERROR_OK) {
+        SPOC2_SPI_transferBlocking2(dev->id, &txBufferR2, NULL, 1);
+    }
+    // write to the DCR register (selected current sense channel or sleep mode)
+    // and the OUT register to switch the user-selected channels
+    // set DCR.SWR to 0 for consistency
+    txBufferDCR = (SPOC2_WRITE_DCR_HEADER & ~SPOC2_DCR_SWR_MASK) |
+                        (dev->registers[SPOC2_REGISTER_DCR] & SPOC2_DCR_MUX_MASK);
+
+    if (result == SPOC2_ERROR_OK) {
+        SPOC2_SPI_transferBlocking2(dev->id, &txBufferDCR, NULL, 1);
+    }
+    // write to all device OUT registers
+    if (result == SPOC2_ERROR_OK) {
+        SPOC2_SPI_transferBlocking2(dev->id, &txBufferR3, NULL, 1);
+    }
+
+    return result;
+}
+
+// Reset device
+SPOC2_error_t SPOC2_resetDevice(SPOC2_deviceConfig_t* dev) {
+    uint8 txBufferDCR;
+    uint8 txBufferHWCR;
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+    
+    (void)SPOC2_Config_resetDevice(dev);
+
+    // ensure DCR.SWR is set to 0 to allow writes to HWCR
+    txBufferDCR = SPOC2_WRITE_DCR_HEADER;
+
+    // write to the reset bit in the HWCR register
+    txBufferHWCR = SPOC2_WRITE_HWCR_HEADER | SPOC2_HWCR_RST_MASK;
+
+    SPOC2_SPI_transferBlocking2(dev->id, &txBufferDCR, NULL, 1);
+
+    if (result == SPOC2_ERROR_OK) 
+    {
+        SPOC2_SPI_transferBlocking2(dev->id, &txBufferHWCR, NULL, 1);
+    } else
+    {
+    }
+
+    return result;
+}
+
+// Single device init
+SPOC2_error_t SPOC2_init(SPOC2_deviceConfig_t* dev) {
+    SPOC2_error_t result = SPOC2_ERROR_OK;
+                          
+    result = SPOC2_ERROR_BAD_PARAMETER;
+
+    // send a reset signal to the whole chain to clear any old configuration and diagnostics
+    if (result == SPOC2_ERROR_OK) 
+    {
+        result = SPOC2_resetDevice(dev);
     }
 
     return result;

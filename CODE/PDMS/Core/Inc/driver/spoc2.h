@@ -2,6 +2,7 @@
 #define SPOC2_H_
 
 #include "spoc2_definitions.h"
+#include "bsp_spoc2.h"
 #include <stdint.h>
 
 /// @addtogroup defs Definitions
@@ -166,6 +167,8 @@ typedef enum {
 
 /// @brief Configuration of a SPOC+2 device, including shadow registers
 typedef struct {
+    // Single device identifier in current code logic
+    T_SPOC2_ID id;
     /// @brief The product ID of the SPOC+2 device
     SPOC2_deviceIdentifier_t deviceIdentifier;
     /// @brief The logical ADC channel the current sense pin of this device is connected to
@@ -196,6 +199,11 @@ typedef struct {
     /// @brief The logical chip select number assigned to this chain
     uint8 spiChipSelect;
 } SPOC2_chain_t;
+
+typedef struct 
+{
+    SPOC2_deviceConfig_t devices[SPOC2_NUM_OF_DEVICES];
+}SPOC2_config_t;
 
 /// @}
 
@@ -333,5 +341,9 @@ SPOC2_error_t SPOC2_Chain_verifyDeviceConfigs(const SPOC2_chain_t* chain);
 uint32 SPOC2_readCurrentSense(const SPOC2_deviceConfig_t* cfg);
 SPOC2_error_t SPOC2_verifyCurrentSense(const SPOC2_chain_t* chain, uint8 deviceIndex, uint32 expectedMv);
 SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain);
+
+// FIXME New functions
+SPOC2_error_t SPOC2_init(SPOC2_deviceConfig_t* dev);
+SPOC2_error_t SPOC2_applyDeviceConfig(SPOC2_deviceConfig_t* dev);
 
 #endif // SPOC2_H_

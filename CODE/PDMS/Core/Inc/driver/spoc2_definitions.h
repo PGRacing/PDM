@@ -5,6 +5,17 @@
 /// @addtogroup defs Definitions
 /// @{
 
+// Number of devices used on bus
+#define SPOC2_NUM_OF_DEVICES 2
+
+// Devices id enum for SPOC2
+typedef enum
+{
+    SPOC2_ID_1 = 0x00,
+    SPOC2_ID_2 = 0x01,
+    SPOC2_ID_MAX
+}T_SPOC2_ID;
+
 // Registers in bank 0
 /// @brief Message header to write data into the OCR register (bank 0)
 #define SPOC2_WRITE_OCR_HEADER ((uint8)0b11000000)
