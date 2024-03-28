@@ -14,7 +14,7 @@ typedef enum
     OUT_ID_6 = 0x05,
     OUT_ID_7 = 0x06,
     OUT_ID_8 = 0x07,
-    OUT_ID_MAX = 0x08
+    OUT_ID_MAX
 }T_OUT_ID;
 typedef enum
 {

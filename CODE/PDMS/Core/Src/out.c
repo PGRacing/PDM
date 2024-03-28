@@ -8,7 +8,6 @@
 #include "FreeRTOS.h"
 #include "tim.h"
 #include "cmsis_os2.h"
-#include "spoc2.h"
 
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
     {
@@ -259,21 +258,6 @@ bool OUT_ToggleState(T_OUT_ID id)
   return OUT_SetState( id, !cfg->state);
 }
 
-SPOC2_chain_t chain = {
-    .devices = {
-        {
-            .deviceIdentifier = BTS72220_4ESA,
-            .adcChannel = 0,
-        },
-        // {
-        //     .deviceIdentifier = BTS72220_4ESA,
-        //     .adcChannel = 1,
-        // },
-    },
-    .numDevices = 2,
-    .spiBusId = 0,
-    .spiChipSelect = 0,
-};
 
 SPOC2_config_t spoc2config = 
 {

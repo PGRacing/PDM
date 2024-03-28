@@ -1199,7 +1199,12 @@ SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain) {
     return result;
 }
 
-// Single device write register
+/// @brief Write values to the specified register for a single device
+/// @param dev Pointer to the SPOC™ +2 device configuration
+/// @param reg The device register to write the data into
+/// @param txBuffer Pointer to a byte buffer containing enough data to write a register
+/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+/// @details This function is provided to cover use-cases where \ref SPOC2_applyDeviceConfigs is inappropriate.
 SPOC2_error_t SPOC2_writeRegister(SPOC2_deviceConfig_t* dev, SPOC2_register_t reg, uint8* txBuffer) {
     uint8 txBufferDCR;
     boolean register_bank_1 = (reg == SPOC2_REGISTER_RCD) || (reg == SPOC2_REGISTER_PCS) || (reg == SPOC2_REGISTER_ICS);
@@ -1231,7 +1236,13 @@ SPOC2_error_t SPOC2_writeRegister(SPOC2_deviceConfig_t* dev, SPOC2_register_t re
     return result;
 }
 
-// Read single device register
+/// @brief Reads values from the specified register for a single device
+/// @param dev Pointer to the SPOC™ +2 device configuration
+/// @param reg The device register to read the data from
+/// @param rxBuffer Pointer to a byte buffer large enough to read a register
+/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+/// @details This function is provided to cover use-cases where the other provided API functions are inappropriate. This
+/// function will perform 2 bytes of SPI communication per device.
 SPOC2_error_t SPOC2_readRegister(const SPOC2_deviceConfig_t* dev, SPOC2_register_t reg, uint8* rxBuffer) {
     uint8 txBuffer;
     uint8 dummyBuffer = 0;
@@ -1289,7 +1300,13 @@ SPOC2_error_t SPOC2_readRegister(const SPOC2_deviceConfig_t* dev, SPOC2_register
     return result;
 }
 
-// Single device read input states
+/// @brief Read the states of the input pins for a single device
+/// @param dev Pointer to the SPOC™ +2 device configuration
+/// @param rxBuffer Pointer to a byte buffer large enough to read a register from the whole chain
+/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+/// @details This funtion internally calls \ref SPOC2_readRegister and so will perform 2 bytes of SPI
+/// communication per device in the chain
+// Implements: SPOC2_readInputStates
 SPOC2_error_t SPOC2_readInputStates(const SPOC2_deviceConfig_t* dev, uint8* rxBuffer) {
     SPOC2_error_t result = SPOC2_ERROR_OK;
 
@@ -1302,6 +1319,19 @@ SPOC2_error_t SPOC2_readInputStates(const SPOC2_deviceConfig_t* dev, uint8* rxBu
     return result;
 }
 
+/// @brief Read the diagnostic registers from a single device
+/// @param dev Pointer to the SPOC™ +2 device configuration
+/// @param stdDiagBuffer STDDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
+/// chain
+/// @param wrnDiagBuffer WRNDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
+/// chain
+/// @param errDiagBuffer ERRDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
+/// chain
+/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+/// @details The diagnostic registers contain flags which indicate various events that can occur during operation.
+/// Please refer to the device datasheet for details on the layout of these registers. This function will perform 4
+/// bytes of SPI communication per device.
+// Implements: SPOC2_Chain_readDiagnostics
 SPOC2_error_t SPOC2_readDiagnostics(const SPOC2_deviceConfig_t* dev, uint8* stdDiagBuffer, uint8* wrnDiagBuffer,
                                           uint8* errDiagBuffer) {
     uint8 txBuffer1;
@@ -1345,6 +1375,13 @@ SPOC2_error_t SPOC2_readDiagnostics(const SPOC2_deviceConfig_t* dev, uint8* stdD
     return result;
 }
 
+/// @brief Apply the current shadow configurations to a selected device
+/// @param dev Pointer to the SPOC™ +2 device configuration
+/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+/// @details This function should be called after all desired configuration changes are made to minimize unnecessary SPI
+/// communication. This function performs 9 bytes of SPI communication per device.
+// Implements: SPOC2_applyDeviceConfigs
+// Implements: S2DD-VD1_IPVSR-3
 SPOC2_error_t SPOC2_applyDeviceConfig(SPOC2_deviceConfig_t* dev) {
     uint8 txBufferDCR;
     uint8 txBufferR1;
@@ -1446,7 +1483,13 @@ SPOC2_error_t SPOC2_applyDeviceConfig(SPOC2_deviceConfig_t* dev) {
     return result;
 }
 
-// Reset device
+/// @brief Sends a reset signal to a selected device and resets their shadow configurations
+/// @param dev Pointer to the SPOC™ +2 device configuration
+/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+/// @details Unlike \ref SPOC2_Config_resetDevice, this function will perform SPI communication to immediately reset
+/// devices in the chain, and can be used when a fault occurs, leaving the devices configured in an unknown state that
+/// may not match the shadow configuration. This function performs 2 bytes of SPI communication per device.
+// Implements: SPOC2_resetDevice
 SPOC2_error_t SPOC2_resetDevice(SPOC2_deviceConfig_t* dev) {
     uint8 txBufferDCR;
     uint8 txBufferHWCR;
@@ -1472,7 +1515,14 @@ SPOC2_error_t SPOC2_resetDevice(SPOC2_deviceConfig_t* dev) {
     return result;
 }
 
-// Single device init
+/// @brief Initialize a single SPOC™ +2 device
+/// @param dev Pointer to the SPOC™ +2 device configuration
+/// @return \ref SPOC2_ERROR_OK if successful, \ref SPOC2_ERROR_BAD_PARAMETER if the chain is configured with too many
+/// devices, or another error value if failed
+/// @details This function must be called on the chain before attempting to apply any configuration, and will reset the
+/// devices and the shadow registers into a known state.
+// Implements: SPOC2_init
+// Implements: S2DD-VD1_IPVSR-4
 SPOC2_error_t SPOC2_init(SPOC2_deviceConfig_t* dev) {
     SPOC2_error_t result = SPOC2_ERROR_OK;
                           
@@ -1485,6 +1535,11 @@ SPOC2_error_t SPOC2_init(SPOC2_deviceConfig_t* dev) {
     }
 
     return result;
+}
+
+boolean SPOC2_SetState()
+{
+    return false;
 }
 
 /// @}
