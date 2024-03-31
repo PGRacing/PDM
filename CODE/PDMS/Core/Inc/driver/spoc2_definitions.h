@@ -16,6 +16,16 @@ typedef enum
     SPOC2_ID_MAX
 }T_SPOC2_ID;
 
+// Devices channel id enum for SPOC2 
+typedef enum
+{
+    SPOC2_CH_ID_1 = 0x00,
+    SPOC2_CH_ID_2 = 0x01,
+    SPOC2_CH_ID_3 = 0x02,
+    SPOC2_CH_ID_4 = 0x03,
+    SPOC2_CH_ID_MAX
+}T_SPOC2_CH_ID;
+
 // Registers in bank 0
 /// @brief Message header to write data into the OCR register (bank 0)
 #define SPOC2_WRITE_OCR_HEADER ((uint8)0b11000000)

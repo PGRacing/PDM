@@ -59,6 +59,71 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
         },
+        [OUT_ID_9] = {
+            .id = OUT_ID_9,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_1,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },
+        [OUT_ID_10] = {
+            .id = OUT_ID_10,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_2,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },
+        [OUT_ID_11] = {
+            .id = OUT_ID_11,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_3,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },
+        [OUT_ID_12] = {
+            .id = OUT_ID_12,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_4,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },
+        [OUT_ID_13] = {
+            .id = OUT_ID_13,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_1,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },        
+        [OUT_ID_14] = {
+            .id = OUT_ID_14,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_2,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },        
+        [OUT_ID_15] = {
+            .id = OUT_ID_15,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_3,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },        
+        [OUT_ID_16] = {
+            .id = OUT_ID_16,
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_4,
+            .mode = OUT_MODE_UNUSED,
+            .state = OUT_STATE_OFF
+        },        
+
 };
 
 T_OUT_CFG* OUT_GetPtr( T_OUT_ID id )
@@ -177,8 +242,7 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
-      // TODO Add handler
-      //SPOC2_SetState(id, state);
+      SPOC2_SetStdState(outsCfg[id].spocId, outsCfg[id].spocChId, state);
     }
     
     cfg->state = state;
@@ -258,21 +322,9 @@ bool OUT_ToggleState(T_OUT_ID id)
   return OUT_SetState( id, !cfg->state);
 }
 
-
-SPOC2_config_t spoc2config = 
-{
-  .devices = 
-  {
-    {
-    .id = SPOC2_ID_1,
-    .deviceIdentifier = BTS72220_4ESA,
-    },
-    {
-    .id = SPOC2_ID_2,
-    .deviceIdentifier = BTS72220_4ESA,
-    },
-  }
-};
+// TODO remove this
+#include "adc.h"
+volatile uint32_t adc_val = 0;
 
 void testTaskEntry(void *argument)
 {
@@ -287,60 +339,33 @@ void testTaskEntry(void *argument)
   //   osDelay(3000);
   // }
 
-  // SPOC2_Chain_init(&chain);
-  // HAL_Delay(10);
-  // SPOC2_Config_disableSleepMode(&chain.devices[0]);
-  // SPOC2_Config_disableSleepMode(&chain.devices[1]);
-  // SPOC2_Config_enableOutputChannel(&chain.devices[0], 0);
-  // SPOC2_Config_enableOutputChannel(&chain.devices[0], 1);
-  // SPOC2_Config_disableOutputChannel(&chain.devices[0], 2);
-  // SPOC2_Config_enableOutputChannel(&chain.devices[0], 3);
-  // //SPOC2_Config_enableOutputChannel(&chain.devices[1], 2);
-  // SPOC2_Chain_applyDeviceConfigs(&chain);
+  SPOC2_Init();
 
-  // TODO New
-  SPOC2_init(&spoc2config.devices[0]);
-  SPOC2_init(&spoc2config.devices[1]);
+  ADC_ChannelConfTypeDef sConfig = {0};
+  sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Rank = 2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  HAL_ADC_Start(&hadc3);
+  HAL_ADC_PollForConversion(&hadc3, HAL_MAX_DELAY);
+  adc_val = HAL_ADC_GetValue(&hadc3);
 
-  SPOC2_Config_disableSleepMode(&spoc2config.devices[0]);
-  SPOC2_Config_disableSleepMode(&spoc2config.devices[1]);
-  SPOC2_Config_enableOutputChannel(&spoc2config.devices[0], 0);
-  SPOC2_Config_enableOutputChannel(&spoc2config.devices[0], 1);
-  SPOC2_Config_enableOutputChannel(&spoc2config.devices[1], 2);
-  SPOC2_Config_enableOutputChannel(&spoc2config.devices[1], 3);
+  for( T_OUT_ID i = OUT_ID_9; i < OUT_ID_MAX; i++)
+  {
+    OUT_ChangeMode( i, OUT_MODE_STD);
+  }
 
-  SPOC2_applyDeviceConfig(&spoc2config.devices[0]);
-  SPOC2_applyDeviceConfig(&spoc2config.devices[1]);
-  
   for(;;)
   {
-    osDelay(1500);
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[0], 0);
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[0], 1);
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[0], 2);
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[0], 3);
-
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[1], 0);
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[1], 1);
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[1], 2);
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[1], 3);
-
-    SPOC2_applyDeviceConfig(&spoc2config.devices[0]);
-    SPOC2_applyDeviceConfig(&spoc2config.devices[1]);
-
-    osDelay(1500);
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[0], 0);
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[0], 1);
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[0], 2);
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[0], 3);
-
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[1], 0);
-    SPOC2_Config_enableOutputChannel(&spoc2config.devices[1], 1);
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[1], 2);
-    SPOC2_Config_disableOutputChannel(&spoc2config.devices[1], 3);
-
-    SPOC2_applyDeviceConfig(&spoc2config.devices[0]);
-    SPOC2_applyDeviceConfig(&spoc2config.devices[1]);
+    for( T_OUT_ID i = OUT_ID_9; i < OUT_ID_MAX; i++)
+    {
+      OUT_ToggleState(i);
+    }
+    osDelay(2000);
+    SPOC2_SelectSenseMux(SPOC2_ID_1, 0);
   }
 }
 

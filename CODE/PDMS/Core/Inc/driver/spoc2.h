@@ -343,7 +343,13 @@ SPOC2_error_t SPOC2_verifyCurrentSense(const SPOC2_chain_t* chain, uint8 deviceI
 SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain);
 
 // FIXME New functions
-SPOC2_error_t SPOC2_init(SPOC2_deviceConfig_t* dev);
+SPOC2_error_t SPOC2_devinit(SPOC2_deviceConfig_t* dev);
 SPOC2_error_t SPOC2_applyDeviceConfig(SPOC2_deviceConfig_t* dev);
+
+// Whole module configuration
+void SPOC2_Init();
+
+void SPOC2_SetStdState(T_SPOC2_ID id, T_SPOC2_CH_ID ch, bool state);
+void SPOC2_SelectSenseMux(T_SPOC2_ID id, T_SPOC2_CH_ID ch);
 
 #endif // SPOC2_H_

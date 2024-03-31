@@ -14,6 +14,14 @@ typedef enum
     OUT_ID_6 = 0x05,
     OUT_ID_7 = 0x06,
     OUT_ID_8 = 0x07,
+    OUT_ID_9 = 0x08,
+    OUT_ID_10 = 0x09,
+    OUT_ID_11 = 0x0A,
+    OUT_ID_12 = 0x0B,
+    OUT_ID_13 = 0x0C,
+    OUT_ID_14 = 0x0D,
+    OUT_ID_15 = 0x0E,
+    OUT_ID_16 = 0x0F,
     OUT_ID_MAX
 }T_OUT_ID;
 typedef enum

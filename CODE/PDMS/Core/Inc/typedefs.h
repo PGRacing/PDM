@@ -12,8 +12,9 @@
 
 #define POWER_OUT_COUNT 16
 
+// TODO assert function 
 #define USE_FULL_ASSERT 1
-#define ASSERT(...) assert_param(__VA_ARGS__)
+#define ASSERT(...)
 
 typedef uint16_t T_INPUT_ID;
 

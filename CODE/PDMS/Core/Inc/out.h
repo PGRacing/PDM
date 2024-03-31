@@ -14,13 +14,13 @@ typedef enum
 
 typedef struct _T_OUT_CFG
 {
-    const T_OUT_ID   id;    // id should reflect position in outsCfg
-    const T_OUT_TYPE type;  // device type - can be BTS500 or BTS72220
-    const T_SPOC2_ID subId; // If device is BTS72220 this holds sub device id
+    const T_OUT_ID   id;         // id should reflect position in outsCfg
+    const T_OUT_TYPE type;       // device type - can be BTS500 or BTS72220
+    const T_SPOC2_ID spocId;     // If device is BTS72220 this holds sub device id
+    const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
     T_OUT_MODE       mode;
     T_OUT_STATE      state;
     T_OUT_ID         batch; // optional for OUT_MODE_BATCH
-
     /* TODO ADD handling w safety*/
     bool             wsafety;
     uint8_t          octhreshold;

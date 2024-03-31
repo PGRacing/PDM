@@ -83,7 +83,17 @@ static void VMUX_GetAllPooling()
     {
 
         VMUX_SelectInput( VMUX_ReadOrder[sel] );
+
+        ADC_ChannelConfTypeDef sConfig = {0};
+        sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+        sConfig.Channel = ADC_CHANNEL_3;
+        sConfig.Rank = 1;
+        if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+        {
+        Error_Handler();
+        }
         HAL_ADC_Start(&hadc3);
+        
         if(HAL_ADC_PollForConversion(&hadc3, 20) == HAL_OK)
         {
             VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);

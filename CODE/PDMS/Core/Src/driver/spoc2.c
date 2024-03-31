@@ -1,4 +1,21 @@
 #include "spoc2.h"
+#include "typedefs.h"
+
+SPOC2_config_t spoc2Cfg = 
+{
+  .devices = 
+  {
+    {
+    .id = SPOC2_ID_1,
+    .deviceIdentifier = BTS72220_4ESA,
+    },
+    {
+    .id = SPOC2_ID_2,
+    .deviceIdentifier = BTS72220_4ESA,
+    },
+  }
+};
+
 
 /// @addtogroup driverFunctions Driver functions
 /// @{
@@ -1521,9 +1538,9 @@ SPOC2_error_t SPOC2_resetDevice(SPOC2_deviceConfig_t* dev) {
 /// devices, or another error value if failed
 /// @details This function must be called on the chain before attempting to apply any configuration, and will reset the
 /// devices and the shadow registers into a known state.
-// Implements: SPOC2_init
+// Implements: SPOC2_devinit
 // Implements: S2DD-VD1_IPVSR-4
-SPOC2_error_t SPOC2_init(SPOC2_deviceConfig_t* dev) {
+SPOC2_error_t SPOC2_devinit(SPOC2_deviceConfig_t* dev) {
     SPOC2_error_t result = SPOC2_ERROR_OK;
                           
     result = SPOC2_ERROR_BAD_PARAMETER;
@@ -1540,6 +1557,57 @@ SPOC2_error_t SPOC2_init(SPOC2_deviceConfig_t* dev) {
 boolean SPOC2_SetState()
 {
     return false;
+}
+
+void SPOC2_Init()
+{
+    // Initialize both devices
+    SPOC2_devinit(&spoc2Cfg.devices[SPOC2_ID_1]);
+    SPOC2_devinit(&spoc2Cfg.devices[SPOC2_ID_2]);
+
+    // Disable sleep mode on both devices
+    SPOC2_Config_disableSleepMode(&spoc2Cfg.devices[SPOC2_ID_1]);
+    SPOC2_Config_disableSleepMode(&spoc2Cfg.devices[SPOC2_ID_2]);
+
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_1], 0);
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_1], 1);
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_1], 2);
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_1], 3);
+
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_2], 0);
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_2], 1);
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_2], 2);
+    SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_2], 3);
+
+    // Apply both device config
+    SPOC2_applyDeviceConfig(&spoc2Cfg.devices[SPOC2_ID_1]);
+    SPOC2_applyDeviceConfig(&spoc2Cfg.devices[SPOC2_ID_2]);
+}
+
+void SPOC2_SetStdState(T_SPOC2_ID id, T_SPOC2_CH_ID ch, bool state)
+{
+    ASSERT( id < SPOC2_ID_MAX );
+    ASSERT( ch < SPOC2_CH_ID_MAX );
+
+    if(state == true)
+    {
+        SPOC2_Config_enableOutputChannel(&spoc2Cfg.devices[id], (uint8_t)ch);
+    }
+    else
+    {
+        SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[id], (uint8_t)ch);
+    }
+
+    SPOC2_applyDeviceConfig(&spoc2Cfg.devices[id]);
+}
+
+void SPOC2_SelectSenseMux(T_SPOC2_ID id, T_SPOC2_CH_ID ch)
+{
+    ASSERT( id < SPOC2_ID_MAX );
+    ASSERT( ch < SPOC2_CH_ID_MAX );
+
+    SPOC2_Config_selectCurrentSenseChannel(&spoc2Cfg.devices[id], ch);
+    SPOC2_applyDeviceConfig(&spoc2Cfg.devices[id]);
 }
 
 /// @}
