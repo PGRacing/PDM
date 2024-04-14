@@ -39,7 +39,6 @@ typedef struct _T_IN_CFG
 }T_IN_CFG;
 
 
-/* TODO If we want to use database structure and non static definition of inputs loaded from flash this should be created with dynamic - malloc */
 extern T_IN_CFG inputsCfg[];
 
 bool IN_GetValueSchmitt(uint16_t id);

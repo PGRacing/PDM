@@ -15,6 +15,14 @@
 #define VMUX_SELECTOR_MAX_VAL 8
 #define VMUX_SELECTOR_PORT GPIOE
 
+// This assumes that voltage divider is same on all channels
+#define VMUX_STORE_VOLTAGE
+#define VMUX_USED_DIVIDER (2.32 / 12.32)
+#define VMUX_USED_DIVIDER_INV 5.310344827586207
+#define VMUX_ADC_12BIT_MAX_VALUE 4096
+
+#define VMUX_GET_VOLTAGE_MV(X) (X * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
+
 volatile uint32_t VMUX_AdcValue[VMUX_INPUT_COUNT];
 
 static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 1, 0, 3, 5, 7, 6, 4};
@@ -95,8 +103,12 @@ static void VMUX_GetAllPooling()
         HAL_ADC_Start(&hadc3);
         
         if(HAL_ADC_PollForConversion(&hadc3, 20) == HAL_OK)
-        {
-            VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);
+        {   
+            #ifdef VMUX_STORE_VOLTAGE
+                VMUX_AdcValue[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+            #elif
+                VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);
+            #endif
         }
     }
 }

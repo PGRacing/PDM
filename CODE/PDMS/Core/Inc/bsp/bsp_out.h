@@ -58,4 +58,8 @@ void BSP_OUT_InitPWM(T_OUT_ID id);
 
 void BSP_OUT_DeInitPWM(T_OUT_ID id);
 
+uint32_t BSP_OUT_GetVoltageAdcValue(T_OUT_ID id);
+
+uint32_t BSP_OUT_GetCurrentAdcValue(T_OUT_ID id);   
+
 #endif

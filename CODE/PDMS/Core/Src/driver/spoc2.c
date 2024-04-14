@@ -60,7 +60,12 @@ static SPOC2_error_t SPOC2_SPI_transferBlocking(uint32 spiBusId, uint8 spiChipSe
     return result;
 }
 
-// FIXME (Add notes) New transfer function based on BSP
+/// @brief Transfer data in blocking mode using basic HAL transfer
+/// @param id SPOC2 device id
+/// @param txBuffer 
+/// @param rxBuffer 
+/// @param dataLen 
+/// @return \ref SPOC2_ERROR_OK if successful, \ref SPOC2_ERROR_BAD_PARAMETER if the channel is out of range
 static SPOC2_error_t SPOC2_SPI_transferBlocking2(T_SPOC2_ID id, uint8* txBuffer, uint8* rxBuffer, uint32 dataLen)
 {
     SPOC2_error_t result = SPOC2_ERROR_OK;

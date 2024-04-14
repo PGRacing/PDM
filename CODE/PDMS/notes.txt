@@ -1,0 +1,1 @@
+// Remeber that both voltage and current must be intact to make sure that all readings are correct

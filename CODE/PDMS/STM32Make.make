@@ -40,10 +40,11 @@ Core/Src/adc.c \
 Core/Src/bsp/bsp_out.c \
 Core/Src/bsp/bsp_spoc2.c \
 Core/Src/can.c \
-Core/Src/canhandler.c \
+Core/Src/can_handler.c \
 Core/Src/dma.c \
 Core/Src/driver/spoc2.c \
 Core/Src/driver/spoc2_unused.c \
+Core/Src/driver/vmux.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
 Core/Src/input.c \
@@ -59,7 +60,6 @@ Core/Src/syscalls.c \
 Core/Src/sysmem.c \
 Core/Src/system_stm32l4xx.c \
 Core/Src/tim.c \
-Core/Src/vmux.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_adc.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_adc_ex.c \

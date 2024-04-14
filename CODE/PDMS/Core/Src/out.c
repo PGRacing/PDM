@@ -9,6 +9,11 @@
 #include "tim.h"
 #include "cmsis_os2.h"
 
+// Safety related defines
+#define OUT_SAFETY_OC_OFF 0xFFFF
+
+//#define OUT_DIAG_BTS500_ADC_VOLTAGE_TO_MA
+
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
     {
         [OUT_ID_1] = {
@@ -128,7 +133,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 
 T_OUT_CFG* OUT_GetPtr( T_OUT_ID id )
 {
-  ASSERT( id > 0 && id < ARRAY_COUNT(outsCfg) );
+  ASSERT( id > 0 && id < AR`Y_COUNT(outsCfg) );
   return &(outsCfg[id]);
 }
 
@@ -320,6 +325,36 @@ bool OUT_ToggleState(T_OUT_ID id)
 {
   T_OUT_CFG* cfg = OUT_GetPtr(id);
   return OUT_SetState( id, !cfg->state);
+}
+
+// TODO maybe move to separate diag module
+// When new data from ADC comes start this function
+void OUT_Diag_OnAdcDataSingle(T_OUT_ID id)
+{
+  ASSERT( id < ARRAY_COUNT(outsCfg) );
+  
+  // Currently for BTS500 only
+  if( outsCfg[id].type != OUT_TYPE_BTS500)
+  {
+    return;
+  }
+
+  uint32_t adc_current = BSP_OUT_GetCurrentAdcValue(id);
+  uint32_t adc_voltage = BSP_OUT_GetVoltageAdcValue(id); // Already in mV
+
+  // TODO Here change adc value to some physical values
+
+  uint16_t val_current = 0;
+
+  // Currently for BTS500 only
+  if( outsCfg[id].type == OUT_TYPE_BTS500)
+  {
+    // Check both adc values here
+  }
+  else
+  {
+    
+  }
 }
 
 // TODO remove this

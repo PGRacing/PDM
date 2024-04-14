@@ -12,18 +12,37 @@ typedef enum
     OUT_TYPE_SPOC2    = 0x01, // Complex SPI based switch Infineon BTS72220-4ESA
 }T_OUT_TYPE;
 
+typedef enum
+{
+    OUT_ERR_NO         = 0x00,  // In case of error nothing happens
+    OUT_ERR_LATCH      = 0x01,  // In case of error output is latched till channel reset
+    OUT_ERR_OFF        = 0x02,  // In case of error output is turned off till device reset
+    OUT_ERR_TIME_LATCH = 0x03   // In case of error output us latched for give amount of time
+}T_OUT_ERR_BEHAVIOR;
+
+// After error configuration
+typedef struct _T_OUT_SAFETY_AERR_CFG
+{
+    T_OUT_ERR_BEHAVIOR behavior;
+    uint32_t latchTime; // Time for /ref OUT_ERR_TIME_LATCH in ms
+}T_OUT_SAFETY_AERR_CFG;
+typedef struct _T_OUT_SAFETY_CFG
+{
+    T_OUT_SAFETY_AERR_CFG aerrCfg;  // Type beahavior if error occurs
+    bool               actOnSafety; // This specifies if this channel should be turned of when "safety line" is opened
+    uint16_t           ocTreshold;  // Over-current treshold in 10e-2 ampers
+}T_OUT_SAFETY_CFG;
+
 typedef struct _T_OUT_CFG
 {
-    const T_OUT_ID   id;         // id should reflect position in outsCfg
-    const T_OUT_TYPE type;       // device type - can be BTS500 or BTS72220
-    const T_SPOC2_ID spocId;     // If device is BTS72220 this holds sub device id
+    const T_OUT_ID   id;          // Id should reflect position in outsCfg
+    const T_OUT_TYPE type;        // Device type - can be BTS500 or BTS72220
+    const T_SPOC2_ID spocId;      // If device is BTS72220 this holds sub device id
     const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
     T_OUT_MODE       mode;
     T_OUT_STATE      state;
-    T_OUT_ID         batch; // optional for OUT_MODE_BATCH
-    /* TODO ADD handling w safety*/
-    bool             wsafety;
-    uint8_t          octhreshold;
+    T_OUT_ID         batch;       // Optional for OUT_MODE_BATCH (BTS500 only)
+    T_OUT_SAFETY_CFG safety;
 }T_OUT_CFG;
 
 // Main outputs config

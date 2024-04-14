@@ -620,6 +620,7 @@ void ADC_Start()
 
 }
 
+// TODO split this task into 2 for each ADC
 void adcTaskStart(void *argument)
 {
     /* USER CODE BEGIN adcTaskStart */
@@ -633,8 +634,8 @@ void adcTaskStart(void *argument)
     /* Infinite loop */
     for(;;)
     {
-        vTaskSuspend(NULL);
         /* Do something with data */
+        vTaskSuspend(NULL); 
     }
     /* USER CODE END adcTaskStart */
 }
