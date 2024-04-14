@@ -21,22 +21,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83b49235-db89-477c-aa5a-bd593b8a4c91" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Inc/bsp/bsp_out.h" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Inc/bsp/bsp_out.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Inc/canhandler.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../PDMS/Core/Inc/input.h" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Inc/input.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Inc/typedefs.h" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Inc/typedefs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/input.c" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Src/input.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/logic.c" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Src/logic.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Inc/out.h" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Inc/out.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/adc.c" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Src/adc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/bsp/bsp_out.c" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Src/bsp/bsp_out.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/canhandler.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/driver/spoc2.c" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Src/driver/spoc2.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/out.c" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/Core/Src/out.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/Core/Src/vmux.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PDMS/STM32Make.make" beforeDir="false" afterPath="$PROJECT_DIR$/../PDMS/STM32Make.make" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/cache-v2-af6a3a2b69bec1b86f12.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2023-10-06T20-19-02-0787.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/bts50010.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/bts50010.kicad_sch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/PDMS.code-workspace" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/PDMS.code-workspace" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/bts50005-1lua.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/bts50005-1lua.kicad_sch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/input_selection.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/input_selection.kicad_sch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.kicad_prl" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.kicad_prl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.kicad_pro" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.kicad_pro" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.kicad_sch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/pdms.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/power.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/power.kicad_sch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/PDMS/pdms/vmux.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/PDMS/pdms/vmux.kicad_sch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../PCB/system_schema.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/../../PCB/system_schema.drawio" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,11 +87,6 @@
   }
 }</component>
   <component name="RunManager" selected="Embedded GDB Server.PDM_BASIC">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="PDM_STARTER_CODE.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="PDM_STARTER_CODE" TARGET_NAME="PDM_STARTER_CODE.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="PDM_STARTER_CODE" RUN_TARGET_NAME="PDM_STARTER_CODE.elf">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -112,6 +114,8 @@
       <workItem from="1695153775602" duration="7133000" />
       <workItem from="1696623394499" duration="1655000" />
       <workItem from="1696972624470" duration="101000" />
+      <workItem from="1706468893383" duration="3729000" />
+      <workItem from="1712590661525" duration="2299000" />
     </task>
     <servers />
   </component>

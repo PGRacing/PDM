@@ -1152,6 +1152,11 @@
     (effects (font (size 2 2) italic) (justify left bottom))
     (uuid 56a3ef0e-ac55-4462-af09-477ba313d688)
   )
+  (text "This values were verified! 2.32k and 10k is ok\n2.32kOhm instead of 2.3k is used due to availabillity"
+    (at 51.562 98.171 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 929bc8f9-23e5-4737-9525-2aac66011448)
+  )
 
   (label "HP_MOS_DIV7" (at 88.138 54.102 0)
     (effects (font (size 0.7 0.7)) (justify left bottom))

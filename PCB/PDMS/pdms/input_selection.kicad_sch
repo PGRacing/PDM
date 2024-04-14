@@ -1631,7 +1631,7 @@
     (uuid aeb8c245-f5b2-4bf0-b92c-01aaccd61507)
     (data
       iVBORw0KGgoAAAANSUhEUgAABEQAAAI9CAIAAAC8GjpHAAAAA3NCSVQICAjb4U/gAAAACXBIWXMA
-      AA7DAAAOwwHHb6hkAAAgAElEQVR4nOy9ebhlRXnv/33fqjXs4czdp2lAECIgDqBB4xC9Md6f6DWo
+      AA50AAAOdAFrJLPWAAAgAElEQVR4nOy9ebhlRXnv/33fqjXs4czdp2lAECIgDqBB4xC9Md6f6DWo
       wXhFFMUhCXo1Go3DvcYBxSm5zpqoMUZ9xAGSnxpxiLNJjJo4YmKiIiJDAz2dYY9rqKr3/lF7r969
       zyCN9Ok+fep9zrPO2jW8n1q16ll7vfuteotEZM+ePfPz8yJCRM45Zq6OIgKAiJgZB8uquV6JP7fW
       OueiKMIaEriBG7iBG7iBG7iBG7iBG7iBe6hcEbHWAmAR8YzRYyUrc1f9WBUeyxrTtr7mwA3cwA3c
@@ -5065,7 +5065,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 0acf14e5-cef9-4dd6-a523-89b8692a85fc)
   )
-  (text "For 5V it should be around 386 Ohms\nIf = <5 to 30mA>"
+  (text "For 5V it should be around 4.7k\nIf = 0.9mA\nVf = 1.14V\n"
     (at 34.544 22.352 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 0f2f60b7-de4e-40a3-8ee3-5b390f79e4ed)

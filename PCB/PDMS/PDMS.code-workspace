@@ -11,7 +11,15 @@
 			"bsp_out.h": "c",
 			"typedefs.h": "c",
 			"stm32l4xx_hal_def.h": "c",
-			"cmsis_os2.h": "c"
+			"cmsis_os2.h": "c",
+			"logger.h": "c",
+			"bsp_spoc2.h": "c",
+			"spi.h": "c",
+			"spoc2.h": "c",
+			"stm32l496xx.h": "c",
+			"spoc2_definitions.h": "c",
+			"stm32l4xx_hal_adc.h": "c",
+			"stm32l4xx_hal_tim.h": "c"
 		}
 	}
 }
