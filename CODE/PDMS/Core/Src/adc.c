@@ -30,7 +30,8 @@
 #include "stm32l4xx_hal_adc.h"
 
 xTaskHandle adcTaskHandleLocal;
-SemaphoreHandle_t adcConvReadySemaphore = NULL;
+SemaphoreHandle_t adc1ConvReadySemaphore = NULL;
+SemaphoreHandle_t adc2ConvReadySemaphore = NULL;
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -297,47 +298,68 @@ void MX_ADC3_Init(void)
   /** Common config
   */
   hadc3.Instance = ADC3;
-  hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
+  hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
   hadc3.Init.Resolution = ADC_RESOLUTION_12B;
   hadc3.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc3.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc3.Init.LowPowerAutoWait = DISABLE;
-  hadc3.Init.ContinuousConvMode = DISABLE;
-  hadc3.Init.NbrOfConversion = 2;
+  hadc3.Init.ContinuousConvMode = ENABLE;
+  // TODO NbrOfConversions must be zero;
+  hadc3.Init.NbrOfConversion = 1;
   hadc3.Init.DiscontinuousConvMode = DISABLE;
   hadc3.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc3.Init.DMAContinuousRequests = DISABLE;
-  hadc3.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc3.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
   hadc3.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc3) != HAL_OK)
   {
     Error_Handler();
   }
 
-  /** Configure Regular Channel
-  */
-  sConfig.Channel = ADC_CHANNEL_7;
-  sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_12CYCLES_5;
-  sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.OffsetNumber = ADC_OFFSET_NONE;
-  sConfig.Offset = 0;
-  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  // TODO Must be commented out
+  // /** Configure Regular Channel
+  // */
+  // sConfig.Channel = ADC_CHANNEL_6;
+  // sConfig.Rank = ADC_REGULAR_RANK_1;
+  // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  // sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  // sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  // sConfig.Offset = 0;
+  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
 
-  /** Configure Regular Channel
-  */
-  sConfig.Channel = ADC_CHANNEL_6;
-  sConfig.Rank = ADC_REGULAR_RANK_2;
-  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
-  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  // /** Configure Regular Channel
+  // */
+  // sConfig.Channel = ADC_CHANNEL_7;
+  // sConfig.Rank = ADC_REGULAR_RANK_2;
+  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
+
+  // /** Configure Regular Channel
+  // */
+  // sConfig.Channel = ADC_CHANNEL_8;
+  // sConfig.Rank = ADC_REGULAR_RANK_3;
+  // sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
+
+  // /** Configure Regular Channel
+  // */
+  // sConfig.Channel = ADC_CHANNEL_13;
+  // sConfig.Rank = ADC_REGULAR_RANK_4;
+  // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
   /* USER CODE BEGIN ADC3_Init 2 */
 
   /* USER CODE END ADC3_Init 2 */
@@ -482,8 +504,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     PF3     ------> ADC3_IN6
     PF4     ------> ADC3_IN7
     PF5     ------> ADC3_IN8
+    PF10     ------> ADC3_IN13
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+    GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_10;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
@@ -576,8 +599,9 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     PF3     ------> ADC3_IN6
     PF4     ------> ADC3_IN7
     PF5     ------> ADC3_IN8
+    PF10     ------> ADC3_IN13
     */
-    HAL_GPIO_DeInit(GPIOF, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5);
+    HAL_GPIO_DeInit(GPIOF, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_10);
 
   /* USER CODE BEGIN ADC3_MspDeInit 1 */
 
@@ -591,12 +615,30 @@ uint32_t adc2RawData[ADC2_CHANNEL_COUNT];
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-    /* Can be possibly changed to semaphore */
-    static portBASE_TYPE xHigherPriorityTaskWoken;
-    xHigherPriorityTaskWoken = pdFALSE;
+    if(hadc = &hadc1)
+    {
+      /* Can be possibly changed to semaphore */
+      static portBASE_TYPE xHigherPriorityTaskWoken;
+      xHigherPriorityTaskWoken = pdFALSE;
 
-    if(adcConvReadySemaphore != NULL)
-        xSemaphoreGiveFromISR(adcConvReadySemaphore, &xHigherPriorityTaskWoken);
+      if(adc1ConvReadySemaphore != NULL)
+      {
+        xSemaphoreGiveFromISR(adc1ConvReadySemaphore, &xHigherPriorityTaskWoken);
+      }
+    }else if(hadc == &hadc2)
+    {
+      static portBASE_TYPE xHigherPriorityTaskWoken;
+      xHigherPriorityTaskWoken = pdFALSE;
+
+      if(adc1ConvReadySemaphore != NULL)
+      {
+        xSemaphoreGiveFromISR(adc2ConvReadySemaphore, &xHigherPriorityTaskWoken);
+      }
+    }
+    else if(hadc == &hadc3)
+    {
+
+    }
 }
 
 void ADC_Start()
@@ -623,17 +665,28 @@ void ADC_Start()
 void adcTaskStart(void *argument)
 {
     /* USER CODE BEGIN adcTaskStart */
-    adcConvReadySemaphore = xSemaphoreCreateBinary();
-    if(adcConvReadySemaphore == NULL)
+    adc1ConvReadySemaphore = xSemaphoreCreateBinary();
+    adc2ConvReadySemaphore = xSemaphoreCreateBinary();
+
+    if(adc1ConvReadySemaphore == NULL)
+    {
         /* Error creating semaphore -> heap too small [?] */
         __NOP();
+    }
 
+    if(adc2ConvReadySemaphore == NULL)
+    {
+        /* Error creating semaphore -> heap too small [?] */
+        __NOP();
+    }
+      
     adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
     ADC_Start();
     /* Infinite loop */
     for(;;)
     {
         /* Do something with data */
+        xSemaphoreTake( adc1ConvReadySemaphore, portMAX_DELAY );
         vTaskSuspend(NULL); 
     }
     /* USER CODE END adcTaskStart */

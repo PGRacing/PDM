@@ -91,6 +91,8 @@ void Error_Handler(void);
 #define LP_SIG3_GPIO_Port GPIOF
 #define LP_SIG4_Pin LL_GPIO_PIN_9
 #define LP_SIG4_GPIO_Port GPIOF
+#define MAIN_12V_Pin LL_GPIO_PIN_10
+#define MAIN_12V_GPIO_Port GPIOF
 #define SENS_OUT8_Pin LL_GPIO_PIN_0
 #define SENS_OUT8_GPIO_Port GPIOC
 #define SENS_OUT7_Pin LL_GPIO_PIN_1

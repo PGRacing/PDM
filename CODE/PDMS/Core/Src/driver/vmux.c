@@ -10,9 +10,9 @@
 #include "adc.h"
 #include "cmsis_os2.h"
 
-#define VMUX_SELECTOR_COUNT 3
-#define VMUX_INPUT_COUNT 8
-#define VMUX_SELECTOR_MAX_VAL 8
+#define VMUX_SELECTOR_COUNT 4
+#define VMUX_INPUT_COUNT 16
+#define VMUX_SELECTOR_MAX_VAL 16
 #define VMUX_SELECTOR_PORT GPIOE
 
 // This assumes that voltage divider is same on all channels
@@ -23,9 +23,9 @@
 
 #define VMUX_GET_VOLTAGE_MV(X) (X * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
 
-volatile uint32_t VMUX_AdcValue[VMUX_INPUT_COUNT];
+volatile uint32_t VMUX_AdcValue[VMUX_INPUT_COUNT] = {0};
 
-static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 1, 0, 3, 5, 7, 6, 4};
+static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 4, 3, 5, 6, 7, 0, 1, 8, 9, 10, 11, 12, 13, 14, 15};
 
 static T_IO VMUX_SelectorConfig[VMUX_SELECTOR_COUNT] = 
 {
@@ -35,6 +35,9 @@ static T_IO VMUX_SelectorConfig[VMUX_SELECTOR_COUNT] =
      .pin  = VOLTAGE_MUX_SEL2_Pin},
     {.port = VOLTAGE_MUX_SEL3_GPIO_Port,
      .pin  = VOLTAGE_MUX_SEL3_Pin},
+    {.port = VOLTAGE_MUX_SEL4_GPIO_Port,
+     .pin  = VOLTAGE_MUX_SEL4_Pin
+    }
 };
 
 void VMUX_Init()
@@ -45,6 +48,7 @@ void VMUX_Init()
     LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[0].port, VMUX_SelectorConfig[0].pin);
     LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[1].port, VMUX_SelectorConfig[1].pin);
     LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[2].port, VMUX_SelectorConfig[2].pin);
+    LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[3].port, VMUX_SelectorConfig[3].pin);
 
     GPIO_InitStruct.Pin = VMUX_SelectorConfig[0].pin;
     GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
@@ -59,6 +63,9 @@ void VMUX_Init()
     
     GPIO_InitStruct.Pin = VMUX_SelectorConfig[2].pin;
     LL_GPIO_Init(VMUX_SelectorConfig[2].port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = VMUX_SelectorConfig[3].pin;
+    LL_GPIO_Init(VMUX_SelectorConfig[3].port, &GPIO_InitStruct);
 }
 
 static void VMUX_SelectInput( uint8_t selector )
@@ -85,32 +92,44 @@ static void VMUX_SelectInput( uint8_t selector )
     LL_GPIO_ResetOutputPin(VMUX_SELECTOR_PORT, resetMask);
 }
 
+void VMUX_SelectAdcChannel (void)
+{
+	ADC_ChannelConfTypeDef sConfig = {0};
+	  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	  */
+	  sConfig.Channel = ADC_CHANNEL_8;
+	  sConfig.Rank = 1;
+	  sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+      sConfig.Offset = 0;
+      sConfig.OffsetNumber = ADC_OFFSET_NONE;
+      sConfig.SingleDiff = ADC_SINGLE_ENDED;
+	  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+}
+
 static void VMUX_GetAllPooling()
 {
-    // for( uint8_t sel = 0; sel < VMUX_SELECTOR_MAX_VAL; sel++)
-    // {
+    VMUX_SelectAdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
 
-    //     VMUX_SelectInput( VMUX_ReadOrder[sel] );
+    for( uint8_t sel = 0; sel < VMUX_SELECTOR_MAX_VAL; sel++)
+    {
+        VMUX_SelectInput( VMUX_ReadOrder[sel] );
 
-    //     ADC_ChannelConfTypeDef sConfig = {0};
-    //     sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
-    //     sConfig.Channel = ADC_CHANNEL_3;
-    //     sConfig.Rank = 1;
-    //     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-    //     {
-    //     Error_Handler();
-    //     }
-    //     HAL_ADC_Start(&hadc3);
-        
-    //     if(HAL_ADC_PollForConversion(&hadc3, 20) == HAL_OK)
-    //     {   
-    //         #ifdef VMUX_STORE_VOLTAGE
-    //             VMUX_AdcValue[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
-    //         #elif
-    //             VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);
-    //         #endif
-    //     }
-    // }
+        if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
+        {   
+            #ifdef VMUX_STORE_VOLTAGE
+                VMUX_AdcValue[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+            #else
+                VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);
+            #endif
+        }       
+    }
+
+    HAL_ADC_Stop(&hadc3);
 }
 
 void vmuxTaskStart(void *argument)
@@ -121,7 +140,7 @@ void vmuxTaskStart(void *argument)
     for(;;)
     {
         VMUX_GetAllPooling();
-        osDelay(10);
+        osDelay(5);
     }
     /* USER CODE END vmuxTaskStart */
 }
