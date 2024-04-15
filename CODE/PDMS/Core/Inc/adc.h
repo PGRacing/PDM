@@ -39,7 +39,7 @@ extern ADC_HandleTypeDef hadc2;
 extern ADC_HandleTypeDef hadc3;
 
 /* USER CODE BEGIN Private defines */
-#define ADC1_CHANNEL_COUNT 6
+#define ADC1_CHANNEL_COUNT 8
 #define ADC2_CHANNEL_COUNT 8
 /* USER CODE END Private defines */
 

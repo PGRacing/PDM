@@ -42,9 +42,11 @@ Core/Src/bsp/bsp_spoc2.c \
 Core/Src/can.c \
 Core/Src/can_handler.c \
 Core/Src/dma.c \
+Core/Src/driver/buzzer.c \
 Core/Src/driver/spoc2.c \
 Core/Src/driver/spoc2_unused.c \
 Core/Src/driver/vmux.c \
+Core/Src/driver/ws2812b.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
 Core/Src/input.c \

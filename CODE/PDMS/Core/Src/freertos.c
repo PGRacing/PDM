@@ -96,6 +96,13 @@ const osThreadAttr_t vmuxTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for pdmTask */
+osThreadId_t pdmTaskHandle;
+const osThreadAttr_t pdmTask_attributes = {
+  .name = "pdmTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -109,6 +116,7 @@ extern void can2TaskStart(void *argument);
 extern void adcTaskStart(void *argument);
 extern void testTaskEntry(void *argument);
 extern void vmuxTaskStart(void *argument);
+extern void pdmTaskStart(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -159,6 +167,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of vmuxTask */
   vmuxTaskHandle = osThreadNew(vmuxTaskStart, NULL, &vmuxTask_attributes);
+
+  /* creation of pdmTask */
+  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

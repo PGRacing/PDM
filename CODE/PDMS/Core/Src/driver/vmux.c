@@ -87,30 +87,30 @@ static void VMUX_SelectInput( uint8_t selector )
 
 static void VMUX_GetAllPooling()
 {
-    for( uint8_t sel = 0; sel < VMUX_SELECTOR_MAX_VAL; sel++)
-    {
+    // for( uint8_t sel = 0; sel < VMUX_SELECTOR_MAX_VAL; sel++)
+    // {
 
-        VMUX_SelectInput( VMUX_ReadOrder[sel] );
+    //     VMUX_SelectInput( VMUX_ReadOrder[sel] );
 
-        ADC_ChannelConfTypeDef sConfig = {0};
-        sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
-        sConfig.Channel = ADC_CHANNEL_3;
-        sConfig.Rank = 1;
-        if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-        {
-        Error_Handler();
-        }
-        HAL_ADC_Start(&hadc3);
+    //     ADC_ChannelConfTypeDef sConfig = {0};
+    //     sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+    //     sConfig.Channel = ADC_CHANNEL_3;
+    //     sConfig.Rank = 1;
+    //     if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+    //     {
+    //     Error_Handler();
+    //     }
+    //     HAL_ADC_Start(&hadc3);
         
-        if(HAL_ADC_PollForConversion(&hadc3, 20) == HAL_OK)
-        {   
-            #ifdef VMUX_STORE_VOLTAGE
-                VMUX_AdcValue[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
-            #elif
-                VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);
-            #endif
-        }
-    }
+    //     if(HAL_ADC_PollForConversion(&hadc3, 20) == HAL_OK)
+    //     {   
+    //         #ifdef VMUX_STORE_VOLTAGE
+    //             VMUX_AdcValue[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+    //         #elif
+    //             VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);
+    //         #endif
+    //     }
+    // }
 }
 
 void vmuxTaskStart(void *argument)

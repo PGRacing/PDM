@@ -357,12 +357,13 @@ void OUT_Diag_OnAdcDataSingle(T_OUT_ID id)
   }
 }
 
-// TODO remove this
-#include "adc.h"
-volatile uint32_t adc_val = 0;
 
 void testTaskEntry(void *argument)
 {
+  for(;;)
+  {
+
+  }
   // /* TODO There is possibility to add UT here for setting output mode and setting output state */
   // T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
 
@@ -374,34 +375,44 @@ void testTaskEntry(void *argument)
   //   osDelay(3000);
   // }
 
-  SPOC2_Init();
+  // SPOC2_Init();
+  // OUT_ChangeMode(OUT_ID_1, OUT_MODE_PWM);
+  // for(;;)
+  // {
+  //   for(uint8_t i = 0; i < 100; i++)
+  //   {
+  //     BSP_OUT_SetDutyPWM(OUT_ID_1, i);
+  //     osDelay(10);
+  //   }
 
-  ADC_ChannelConfTypeDef sConfig = {0};
-  sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
-  sConfig.Channel = ADC_CHANNEL_6;
-  sConfig.Rank = 2;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  HAL_ADC_Start(&hadc3);
-  HAL_ADC_PollForConversion(&hadc3, HAL_MAX_DELAY);
-  adc_val = HAL_ADC_GetValue(&hadc3);
+  // }
 
-  for( T_OUT_ID i = OUT_ID_9; i < OUT_ID_MAX; i++)
-  {
-    OUT_ChangeMode( i, OUT_MODE_STD);
-  }
+  // ADC_ChannelConfTypeDef sConfig = {0};
+  // sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+  // sConfig.Channel = ADC_CHANNEL_6;
+  // sConfig.Rank = 2;
+  // if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
+  // HAL_ADC_Start(&hadc3);
+  // HAL_ADC_PollForConversion(&hadc3, HAL_MAX_DELAY);
+  // adc_val = HAL_ADC_GetValue(&hadc3);
 
-  for(;;)
-  {
-    for( T_OUT_ID i = OUT_ID_9; i < OUT_ID_MAX; i++)
-    {
-      OUT_ToggleState(i);
-    }
-    osDelay(2000);
-    SPOC2_SelectSenseMux(SPOC2_ID_1, 0);
-  }
+  // for( T_OUT_ID i = OUT_ID_1; i < OUT_ID_MAX; i++)
+  // {
+  //   OUT_ChangeMode( i, OUT_MODE_STD);
+  // }
+
+  // for(;;)
+  // {
+  //   for( T_OUT_ID i = OUT_ID_1; i < OUT_ID_MAX; i++)
+  //   {
+  //     OUT_ToggleState(i);
+  //   }
+  //   osDelay(2000);
+  //   //SPOC2_SelectSenseMux(SPOC2_ID_1, 0);
+  // }
 }
 
 // TODO Add OUT_SetPWMDuty(T_OUT_CFG *cfg, T_OUT_STATE state)

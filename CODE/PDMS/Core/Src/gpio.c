@@ -50,7 +50,8 @@ void MX_GPIO_Init(void)
   LL_PWR_EnableVddIO2();
 
   /**/
-  LL_GPIO_ResetOutputPin(GPIOE, STATUS_LED_Pin|VOLTAGE_MUX_SEL1_Pin|VOLTAGE_MUX_SEL2_Pin|VOLTAGE_MUX_SEL3_Pin);
+  LL_GPIO_ResetOutputPin(GPIOE, STATUS_LED_Pin|VOLTAGE_MUX_SEL4_Pin|VOLTAGE_MUX_SEL3_Pin|VOLTAGE_MUX_SEL2_Pin
+                          |VOLTAGE_MUX_SEL1_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(GPIOF, LP_SIG1_Pin|LP_SIG2_Pin|LP_SIG3_Pin);
@@ -60,13 +61,14 @@ void MX_GPIO_Init(void)
                           |LP_CSN2_Pin);
 
   /**/
+  LL_GPIO_ResetOutputPin(GPIOG, BUZZ_CTRL_Pin|LP_CSN1_Pin);
+
+  /**/
   LL_GPIO_ResetOutputPin(GPIOC, PWM_SIG4_Pin|PWM_SIG3_Pin|PWM_SIG2_Pin|PWM_SIG1_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(LP_CSN1_GPIO_Port, LP_CSN1_Pin);
-
-  /**/
-  GPIO_InitStruct.Pin = STATUS_LED_Pin|VOLTAGE_MUX_SEL1_Pin|VOLTAGE_MUX_SEL2_Pin|VOLTAGE_MUX_SEL3_Pin;
+  GPIO_InitStruct.Pin = STATUS_LED_Pin|VOLTAGE_MUX_SEL4_Pin|VOLTAGE_MUX_SEL3_Pin|VOLTAGE_MUX_SEL2_Pin
+                          |VOLTAGE_MUX_SEL1_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
@@ -97,20 +99,20 @@ void MX_GPIO_Init(void)
   LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /**/
+  GPIO_InitStruct.Pin = BUZZ_CTRL_Pin|LP_CSN1_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+  /**/
   GPIO_InitStruct.Pin = PWM_SIG4_Pin|PWM_SIG3_Pin|PWM_SIG2_Pin|PWM_SIG1_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /**/
-  GPIO_InitStruct.Pin = LP_CSN1_Pin;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(LP_CSN1_GPIO_Port, &GPIO_InitStruct);
 
 }
 

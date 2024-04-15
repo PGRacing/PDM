@@ -19,7 +19,9 @@
 			"stm32l496xx.h": "c",
 			"spoc2_definitions.h": "c",
 			"stm32l4xx_hal_adc.h": "c",
-			"stm32l4xx_hal_tim.h": "c"
+			"stm32l4xx_hal_tim.h": "c",
+			"stm32l4xx_hal_gpio.h": "c",
+			"logic.h": "c"
 		}
 	}
 }
