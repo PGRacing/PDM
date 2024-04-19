@@ -223,7 +223,7 @@ void statusTaskStart(void *argument)
   /* Infinite loop */
     for(;;)
     {
-        //HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+        HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
         osDelay(500);
     }
   /* USER CODE END statusTaskStart */

@@ -77,14 +77,14 @@ T_IN_CFG inputsCfg[] =
 T_IN_CFG *IN_GetCfgPtr(T_INPUT_ID id)
 {
   // TODO Extend for can inputs
-  ASSERT(id > 0 && id < ARRAY_COUNT(inputsCfg));
+  ASSERT(id >= 0 && id < ARRAY_COUNT(inputsCfg));
   return &(inputsCfg[id]);
 }
 
 bool IN_IsPhysical(T_IN_CFG* cfg)
 {
   ASSERT( cfg );
-  ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(inputsCfg) );
+  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(inputsCfg) );
 
   if( cfg->id < IN_PHY_MAX )
   {
@@ -99,7 +99,7 @@ bool IN_IsPhysical(T_IN_CFG* cfg)
 void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode)
 {
   ASSERT( cfg );
-  ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(inputsCfg) );
+  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(inputsCfg) );
 
   switch (targetMode)
   {

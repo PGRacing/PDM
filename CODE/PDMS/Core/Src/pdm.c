@@ -50,6 +50,7 @@ void pdmTaskStart(void *argument)
 
     BSP_OUT_SetDutyPWM(OUT_ID_1, 90);
 
+    OUT_SetState( OUT_ID_2, OUT_STATE_ON);
     for(;;)
     {
         for(uint8_t i = 0; i < 16; i++)
@@ -58,7 +59,6 @@ void pdmTaskStart(void *argument)
             osDelay(500);
         }
     }
-
 
     // BSP_OUT_SetDutyPWM(OUT_ID_1, 10);
     // BSP_OUT_SetDutyPWM(OUT_ID_2, 20);

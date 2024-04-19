@@ -5,6 +5,7 @@
 #include "typedefs.h"
 #include "logger.h"
 #include "out.h"
+#include "vmux.h"
 #include "FreeRTOS.h"
 #include "tim.h"
 #include "cmsis_os2.h"
@@ -27,6 +28,11 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = 
+            {
+              .useOc = true,
+              .ocThreshold = 2000 // 1000mA Threshold
+            }
         },
         [OUT_ID_3] = {
             .id = OUT_ID_3,
@@ -131,9 +137,12 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 
 };
 
+// Faster macro way (w/unsafe)
+#define OUT_GETPTR(id) &(outsCfg[id])
+
 T_OUT_CFG* OUT_GetPtr( T_OUT_ID id )
 {
-  ASSERT( id > 0 && id < ARRAY_COUNT(outsCfg) );
+  ASSERT( id >= 0 && id < ARRAY_COUNT(outsCfg) );
   return &(outsCfg[id]);
 }
 
@@ -142,7 +151,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
 {
   T_OUT_CFG* cfg = OUT_GetPtr(id);
   ASSERT( cfg );
-  ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(outsCfg) );
+  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(outsCfg) );
 
   switch (targetMode)
   {
@@ -201,7 +210,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
       LOG_WARN("Batching two inputs!");
 
       /* Batch shouldn't be out of range */
-      ASSERT(cfg->batchId < ARRAY_COUNT(outsCfg));
+      ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
       T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
 
       // LL MODE STD
@@ -229,7 +238,7 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
   T_OUT_CFG* cfg = OUT_GetPtr(id);
 
   ASSERT(cfg);
-  ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(outsCfg) );
+  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(outsCfg) );
 
   switch (cfg->mode)
   {
@@ -294,7 +303,7 @@ bool OUT_Batch(T_OUT_ID id, T_OUT_ID batchId)
   T_OUT_CFG* cfg = OUT_GetPtr(id);
   T_OUT_CFG* batchCfg = OUT_GetPtr(batchId);
   ASSERT(cfg);
-  ASSERT( cfg->id > 0 && cfg->id < ARRAY_COUNT(outsCfg) );
+  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(outsCfg) );
 
   if(cfg->type != OUT_TYPE_BTS500 || batchCfg->type != OUT_TYPE_BTS500)
   {
@@ -327,33 +336,80 @@ bool OUT_ToggleState(T_OUT_ID id)
   return OUT_SetState( id, !cfg->state);
 }
 
-// TODO maybe move to separate diag module
-// When new data from ADC comes start this function
-void OUT_Diag_OnAdcDataSingle(T_OUT_ID id)
+static void OUT_DIAG_OnSoftOC(T_OUT_ID id)
+{
+  BSP_OUT_SetStdState(id, false);
+}
+
+
+static void OUT_DIAG_Single(T_OUT_ID id)
 {
   ASSERT( id < ARRAY_COUNT(outsCfg) );
   
+  T_OUT_CFG* cfg = OUT_GETPTR(id);
+
   // Currently for BTS500 only
   if( outsCfg[id].type != OUT_TYPE_BTS500)
   {
     return;
   }
 
-  uint32_t adc_current = BSP_OUT_GetCurrentAdcValue(id);
-  uint32_t adc_voltage = BSP_OUT_GetVoltageAdcValue(id); // Already in mV
+  uint32_t current_ma = BSP_OUT_CalcCurrent(id);
 
-  // TODO Here change adc value to some physical values
-
-  uint16_t val_current = 0;
-
-  // Currently for BTS500 only
-  if( outsCfg[id].type == OUT_TYPE_BTS500)
+  // For now this is done first
+  if(true == cfg->safety.useOc)
   {
-    // Check both adc values here
+    if(current_ma > cfg->safety.ocThreshold)
+    {
+      OUT_DIAG_OnSoftOC(id);
+    }
+  }
+  
+  uint32_t voltage_mv = VMUX_GetValue(id);
+  //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
+  uint32_t fault_level = 12000;
+
+  if(OUT_STATE_OFF == cfg->state)
+  {
+      if(current_ma >= fault_level)
+      { 
+          // TODO Fix this shit
+          // 12000 = 12V
+          if(voltage_mv == 12000)
+          {
+            cfg->status = OUT_STATUS_SHORT_TO_VSS;
+          }
+          else
+          {
+            cfg->status = OUT_STATUS_OK;
+          }
+      }
   }
   else
   {
-    
+    // TODO Fix magic values
+      if(current_ma >= fault_level)
+      {
+        cfg->status = OUT_STATUS_HARD_OC_OR_OT;
+      }
+      else if(((current_ma <= 0.0000143 * (float)BSP_OUT_GetDkilis(id)) && (current_ma > 0.000001 * (float)BSP_OUT_GetDkilis(id))) 
+      || (current_ma <= 0.000001 * (float)BSP_OUT_GetDkilis(id)))
+      {
+        cfg->status = OUT_STATUS_OPEN_LOAD;
+      }
+      // 12000 = 12V
+      else if((voltage_mv <= 12000) && (current_ma > 0.0000143 * (float)BSP_OUT_GetDkilis(id)))
+      {
+        cfg->status = OUT_STATUS_OK;
+      }
+  }
+}
+
+void OUT_DIAG_All()
+{
+  for(uint8_t id = 0; id < OUT_ID_MAX; id++)
+  {
+    OUT_DIAG_Single(id);
   }
 }
 

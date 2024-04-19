@@ -33,7 +33,7 @@ typedef struct _T_IN_CFG
 {
     const T_INPUT_ID  id;      // id should reflect position in inputsCfg
     const T_IO        io;
-    const uint32_t*   rawData; // pointer to rawData from input
+    uint16_t * const  rawData; // pointer to rawData from input
     T_IN_TYPE         type;
     T_IN_MODE         mode;
 }T_IN_CFG;

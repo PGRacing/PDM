@@ -30,7 +30,8 @@ typedef struct _T_OUT_SAFETY_CFG
 {
     T_OUT_SAFETY_AERR_CFG aerrCfg;  // Type beahavior if error occurs
     bool               actOnSafety; // This specifies if this channel should be turned of when "safety line" is opened
-    uint16_t           ocTreshold;  // Over-current treshold in 10e-2 ampers
+    bool               useOc;
+    uint32_t           ocThreshold;  // Over-current treshold in mili-ampers
 }T_OUT_SAFETY_CFG;
 
 typedef struct _T_OUT_CFG
@@ -41,6 +42,7 @@ typedef struct _T_OUT_CFG
     const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
     T_OUT_MODE       mode;
     T_OUT_STATE      state;
+    T_OUT_STATUS     status;
     T_OUT_ID         batch;       // Optional for OUT_MODE_BATCH (BTS500 only)
     T_OUT_SAFETY_CFG safety;
 }T_OUT_CFG;
@@ -57,5 +59,7 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state);
 bool OUT_ToggleState(T_OUT_ID id);
 
 bool OUT_Batch(T_OUT_ID id, T_OUT_ID batch);
+
+void OUT_DIAG_All();
 
 #endif

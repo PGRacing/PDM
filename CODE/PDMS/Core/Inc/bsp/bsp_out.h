@@ -38,6 +38,15 @@ typedef enum
     OUT_STATE_ON      = 0x01,
 }T_OUT_STATE;
 
+typedef enum
+{
+    OUT_STATUS_OK            = 0x00,
+    OUT_STATUS_SOFT_OC       = 0x01,
+    OUT_STATUS_HARD_OC_OR_OT = 0x02,
+    OUT_STATUS_SHORT_TO_VSS  = 0x03,
+    OUT_STATUS_OPEN_LOAD     = 0x04
+}T_OUT_STATUS;
+
 // STD Pin control
 
 void BSP_OUT_SetMode(T_OUT_ID id, T_OUT_MODE mode);
@@ -64,6 +73,6 @@ uint32_t BSP_OUT_GetCurrentAdcValue(T_OUT_ID id);
 
 uint32_t BSP_OUT_GetDkilis(T_OUT_ID id);
 
-uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id, uint32_t isValue);
+uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id);
 
 #endif

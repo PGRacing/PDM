@@ -321,16 +321,16 @@ void MX_ADC3_Init(void)
 
   /** Configure Regular Channel
   */
-  // sConfig.Channel = ADC_CHANNEL_6;
-  // sConfig.Rank = ADC_REGULAR_RANK_1;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
-  // sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  // sConfig.OffsetNumber = ADC_OFFSET_NONE;
-  // sConfig.Offset = 0;
-  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
+  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN ADC3_Init 2 */
 
   /* USER CODE END ADC3_Init 2 */
@@ -671,7 +671,7 @@ void ADC_Start()
     // hadc2.State = 0;
 }
 
-#include "bsp_out.h"
+#include "out.h"
 // TODO split this task into 2 for each ADC
 void adcTaskStart(void *argument)
 {
@@ -700,23 +700,25 @@ void adcTaskStart(void *argument)
         if(xSemaphoreTake( adc1ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
         {
           xSemaphoreGive(adc1ConvReadySemaphore);
-          for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
-          {
-            // value in mV
-            uint32_t voltage = ((float)adc1RawData[i]/(float)ADC_12BIT_MAX_VALUE)*(float)VDD_VALUE; 
-            isCurrent[i] = BSP_OUT_CalcCurrent(i, voltage);
-            if(isCurrent[1] > 100)
-            {
-              HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
-            }else
-            {
-              HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
-            }
-            // if(isCurrent[1] > 1000)
-            // {
-            //   BSP_OUT_SetStdState(OUT_ID_2, false);
-            // }
-          }
+          // Start channel diagnostics
+          OUT_DIAG_All();
+          // for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
+          // {
+          //   // value in mV
+          //   // uint32_t voltage = 
+          //   // isCurrent[i] = BSP_OUT_CalcCurrent(i);
+          //   // if(isCurrent[1] > 100)
+          //   // {
+          //   //   HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
+          //   // }else
+          //   // {
+          //   //   HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
+          //   // }
+          //   // if(isCurrent[1] > 1000)
+          //   // {
+          //   //   BSP_OUT_SetStdState(OUT_ID_2, false);
+          //   // }
+          // }
         }
     }
     /* USER CODE END adcTaskStart */

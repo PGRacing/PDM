@@ -199,6 +199,13 @@ void PeriphCommonClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void assert_failed_pdm(uint8_t *file, uint32_t line)
+{
+    __disable_irq();
+    while (1)
+    {
+    }
+}
 
 /* USER CODE END 4 */
 

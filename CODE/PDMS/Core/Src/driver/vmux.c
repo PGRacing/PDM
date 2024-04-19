@@ -8,6 +8,7 @@
 #include "FreeRTOS.h"
 #include "tim.h"
 #include "adc.h"
+#include "bsp_out.h"
 #include "cmsis_os2.h"
 
 #define VMUX_SELECTOR_COUNT 4
@@ -23,7 +24,7 @@
 
 #define VMUX_GET_VOLTAGE_MV(X) (X * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
 
-volatile uint32_t VMUX_AdcValue[VMUX_INPUT_COUNT] = {0};
+volatile uint32_t VMUX_Value[VMUX_INPUT_COUNT] = {0};
 
 static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 4, 3, 5, 6, 7, 0, 1, 8, 9, 10, 11, 12, 13, 14, 15};
 
@@ -122,14 +123,20 @@ static void VMUX_GetAllPooling()
         if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
         {   
             #ifdef VMUX_STORE_VOLTAGE
-                VMUX_AdcValue[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+                VMUX_Value[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
             #else
-                VMUX_AdcValue[sel] = HAL_ADC_GetValue(&hadc3);
+                VMUX_Value[sel] = HAL_ADC_GetValue(&hadc3);
             #endif
         }       
     }
 
     HAL_ADC_Stop(&hadc3);
+}
+
+uint32_t VMUX_GetValue(uint8_t index)
+{
+    ASSERT(index < VMUX_INPUT_COUNT);
+    return VMUX_Value[index];
 }
 
 void vmuxTaskStart(void *argument)

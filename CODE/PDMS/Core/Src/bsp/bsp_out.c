@@ -32,7 +32,6 @@ typedef struct _T_BSP_OUT_CFG
     const uint32_t alt;
     const uint32_t clock;
     const uint16_t* currentRawData;
-    const uint32_t* voltageRawData;
     const uint32_t dkilis;
     const uint32_t sensRValue;
 }T_BSP_OUT_CFG;
@@ -60,7 +59,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH3,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
-        .currentRawData = &(adc1RawData[0]),
+        .currentRawData = &(adc1RawData[1]),
         .dkilis = 38000,
         .sensRValue = 8200
     },
@@ -72,7 +71,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH2,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
-        .currentRawData = &(adc1RawData[0]),
+        .currentRawData = &(adc1RawData[2]),
         .dkilis = 38000,
         .sensRValue = 8200
     },
@@ -84,7 +83,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH1,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
-        .currentRawData = &(adc1RawData[0]),
+        .currentRawData = &(adc1RawData[3]),
         .dkilis = 38000,
         .sensRValue = 8200
     },
@@ -96,7 +95,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH4,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
-        .currentRawData = &(adc1RawData[0]),
+        .currentRawData = &(adc1RawData[4]),
         .dkilis = 38000,
         .sensRValue = 8200
     },
@@ -108,7 +107,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH3,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
-        .currentRawData = &(adc1RawData[0]),
+        .currentRawData = &(adc1RawData[5]),
         .dkilis = 38000,
         .sensRValue = 8200
     },
@@ -120,7 +119,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH2,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
-        .currentRawData = &(adc1RawData[0]),
+        .currentRawData = &(adc1RawData[6]),
         .dkilis = 38000,
         .sensRValue = 8200
     },
@@ -132,7 +131,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH1,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
-        .currentRawData = &(adc1RawData[0]),
+        .currentRawData = &(adc1RawData[7]),
         .dkilis = 38000,
         .sensRValue = 8200
     },
@@ -149,10 +148,11 @@ uint32_t BSP_OUT_GetDkilis(T_OUT_ID id)
     return bspOutsCfg[id].dkilis;
 }
 
-uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id, uint32_t isValue)
+uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id)
 {
     ASSERT( id < OUT_ID_MAX);
-    return isValue *  bspOutsCfg[id].dkilis/8200.0;
+    uint32_t isVoltage = ((float)*(bspOutsCfg[id].currentRawData)/(float)4096)*(float)VDD_VALUE; 
+    return isVoltage *  bspOutsCfg[id].dkilis/8200.0;
 }
 
 static void BSP_OUT_SetTimerCompare(TIM_TypeDef* tim, uint8_t ch, uint32_t cmp)
@@ -320,25 +320,9 @@ void BSP_OUT_SetMode(T_OUT_ID id, T_OUT_MODE mode)
     }
 }
 
-uint32_t BSP_OUT_GetVoltageAdcValue(T_OUT_ID id)
-{
-    ASSERT( id < OUT_ID_MAX);
-    ASSERT( batchId < OUT_ID_MAX);
-
-    if( bspOutsCfg[id].voltageRawData != NULL)
-    {
-        return *(bspOutsCfg[id].voltageRawData);
-    }
-    else
-    {
-        return 0xFFFFFFFF;
-    }  
-}
-
 uint32_t BSP_OUT_GetCurrentAdcValue(T_OUT_ID id)
 {
     ASSERT( id < OUT_ID_MAX);
-    ASSERT( batchId < OUT_ID_MAX);
 
     if( bspOutsCfg[id].currentRawData != NULL)
     {

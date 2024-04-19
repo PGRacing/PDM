@@ -66,7 +66,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define USE_FULL_ASSERT 1
 #define STATUS_LED_Pin LL_GPIO_PIN_2
 #define STATUS_LED_GPIO_Port GPIOE
 #define VOLTAGE_MUX_SEL4_Pin LL_GPIO_PIN_3
