@@ -32,6 +32,8 @@
 xTaskHandle adcTaskHandleLocal;
 SemaphoreHandle_t adc1ConvReadySemaphore = NULL;
 SemaphoreHandle_t adc2ConvReadySemaphore = NULL;
+
+#define ADC_12BIT_MAX_VALUE 4096
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -70,7 +72,7 @@ void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T8_TRGO;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc1.Init.DMAContinuousRequests = ENABLE;
-  hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
   hadc1.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
@@ -298,14 +300,13 @@ void MX_ADC3_Init(void)
   /** Common config
   */
   hadc3.Instance = ADC3;
-  hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
+  hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc3.Init.Resolution = ADC_RESOLUTION_12B;
   hadc3.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc3.Init.ScanConvMode = ADC_SCAN_ENABLE;
-  hadc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc3.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc3.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc3.Init.LowPowerAutoWait = DISABLE;
   hadc3.Init.ContinuousConvMode = ENABLE;
-  // TODO NbrOfConversions must be zero;
   hadc3.Init.NbrOfConversion = 1;
   hadc3.Init.DiscontinuousConvMode = DISABLE;
   hadc3.Init.ExternalTrigConv = ADC_SOFTWARE_START;
@@ -318,44 +319,14 @@ void MX_ADC3_Init(void)
     Error_Handler();
   }
 
-  // TODO Must be commented out
-  // /** Configure Regular Channel
-  // */
+  /** Configure Regular Channel
+  */
   // sConfig.Channel = ADC_CHANNEL_6;
   // sConfig.Rank = ADC_REGULAR_RANK_1;
   // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
   // sConfig.SingleDiff = ADC_SINGLE_ENDED;
   // sConfig.OffsetNumber = ADC_OFFSET_NONE;
   // sConfig.Offset = 0;
-  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
-  // /** Configure Regular Channel
-  // */
-  // sConfig.Channel = ADC_CHANNEL_7;
-  // sConfig.Rank = ADC_REGULAR_RANK_2;
-  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
-  // /** Configure Regular Channel
-  // */
-  // sConfig.Channel = ADC_CHANNEL_8;
-  // sConfig.Rank = ADC_REGULAR_RANK_3;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
-  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
-  // /** Configure Regular Channel
-  // */
-  // sConfig.Channel = ADC_CHANNEL_13;
-  // sConfig.Rank = ADC_REGULAR_RANK_4;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
   // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
   // {
   //   Error_Handler();
@@ -412,10 +383,10 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
     hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
     hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-    hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+    hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
     hdma_adc1.Init.Mode = DMA_CIRCULAR;
-    hdma_adc1.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
     if (HAL_DMA_Init(&hdma_adc1) != HAL_OK)
     {
       Error_Handler();
@@ -423,6 +394,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 
     __HAL_LINKDMA(adcHandle,DMA_Handle,hdma_adc1);
 
+    /* ADC1 interrupt Init */
+    HAL_NVIC_SetPriority(ADC1_2_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
   /* USER CODE BEGIN ADC1_MspInit 1 */
 
   /* USER CODE END ADC1_MspInit 1 */
@@ -473,10 +447,10 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     hdma_adc2.Init.Direction = DMA_PERIPH_TO_MEMORY;
     hdma_adc2.Init.PeriphInc = DMA_PINC_DISABLE;
     hdma_adc2.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_adc2.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-    hdma_adc2.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+    hdma_adc2.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+    hdma_adc2.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
     hdma_adc2.Init.Mode = DMA_CIRCULAR;
-    hdma_adc2.Init.Priority = DMA_PRIORITY_LOW;
+    hdma_adc2.Init.Priority = DMA_PRIORITY_HIGH;
     if (HAL_DMA_Init(&hdma_adc2) != HAL_OK)
     {
       Error_Handler();
@@ -484,6 +458,9 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
 
     __HAL_LINKDMA(adcHandle,DMA_Handle,hdma_adc2);
 
+    /* ADC2 interrupt Init */
+    HAL_NVIC_SetPriority(ADC1_2_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
   /* USER CODE BEGIN ADC2_MspInit 1 */
 
   /* USER CODE END ADC2_MspInit 1 */
@@ -547,6 +524,16 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
+
+    /* ADC1 interrupt Deinit */
+  /* USER CODE BEGIN ADC1:ADC1_2_IRQn disable */
+    /**
+    * Uncomment the line below to disable the "ADC1_2_IRQn" interrupt
+    * Be aware, disabling shared interrupt may affect other IPs
+    */
+    /* HAL_NVIC_DisableIRQ(ADC1_2_IRQn); */
+  /* USER CODE END ADC1:ADC1_2_IRQn disable */
+
   /* USER CODE BEGIN ADC1_MspDeInit 1 */
 
   /* USER CODE END ADC1_MspDeInit 1 */
@@ -580,6 +567,16 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
     /* ADC2 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
+
+    /* ADC2 interrupt Deinit */
+  /* USER CODE BEGIN ADC2:ADC1_2_IRQn disable */
+    /**
+    * Uncomment the line below to disable the "ADC1_2_IRQn" interrupt
+    * Be aware, disabling shared interrupt may affect other IPs
+    */
+    /* HAL_NVIC_DisableIRQ(ADC1_2_IRQn); */
+  /* USER CODE END ADC2:ADC1_2_IRQn disable */
+
   /* USER CODE BEGIN ADC2_MspDeInit 1 */
 
   /* USER CODE END ADC2_MspDeInit 1 */
@@ -610,12 +607,14 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 }
 
 /* USER CODE BEGIN 1 */
-uint32_t adc1RawData[ADC1_CHANNEL_COUNT];
-uint32_t adc2RawData[ADC2_CHANNEL_COUNT];
+uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
+uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+ #pragma GCC push_options 
+ #pragma GCC optimize ("-O0")
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-    if(hadc = &hadc1)
+    if(hadc == &hadc1)
     {
       /* Can be possibly changed to semaphore */
       static portBASE_TYPE xHigherPriorityTaskWoken;
@@ -641,6 +640,15 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     }
 }
 
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+  __NOP();
+}
+#pragma GCC pop_options
+
+volatile uint32_t isCurrent[ADC1_CHANNEL_COUNT];
+
 void ADC_Start()
 {
     /* Timer 3 configured to execute ADC conversion each 5ms */
@@ -651,16 +659,19 @@ void ADC_Start()
     /* Start ADC in DMA mode */
     // ADC1 - BSP current sensors
     HAL_ADC_Start_DMA(&hadc1, adc1RawData, ADC1_CHANNEL_COUNT);
+
     // ADC2 - BSP inputs
     HAL_ADC_Start_DMA(&hadc2, adc2RawData, ADC2_CHANNEL_COUNT);
 
     // ADC Calibration for better accuracy TODO - not tested
-    HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-    HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-
+    // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+    // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+    // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    // hadc1.State = 0;
+    // hadc2.State = 0;
 }
 
+#include "bsp_out.h"
 // TODO split this task into 2 for each ADC
 void adcTaskStart(void *argument)
 {
@@ -686,8 +697,27 @@ void adcTaskStart(void *argument)
     for(;;)
     {
         /* Do something with data */
-        xSemaphoreTake( adc1ConvReadySemaphore, portMAX_DELAY );
-        vTaskSuspend(NULL); 
+        if(xSemaphoreTake( adc1ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
+        {
+          xSemaphoreGive(adc1ConvReadySemaphore);
+          for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
+          {
+            // value in mV
+            uint32_t voltage = ((float)adc1RawData[i]/(float)ADC_12BIT_MAX_VALUE)*(float)VDD_VALUE; 
+            isCurrent[i] = BSP_OUT_CalcCurrent(i, voltage);
+            if(isCurrent[1] > 100)
+            {
+              HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
+            }else
+            {
+              HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
+            }
+            // if(isCurrent[1] > 1000)
+            // {
+            //   BSP_OUT_SetStdState(OUT_ID_2, false);
+            // }
+          }
+        }
     }
     /* USER CODE END adcTaskStart */
 }

@@ -103,6 +103,13 @@ const osThreadAttr_t pdmTask_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for spoc2CurrTask */
+osThreadId_t spoc2CurrTaskHandle;
+const osThreadAttr_t spoc2CurrTask_attributes = {
+  .name = "spoc2CurrTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -117,6 +124,7 @@ extern void adcTaskStart(void *argument);
 extern void testTaskEntry(void *argument);
 extern void vmuxTaskStart(void *argument);
 extern void pdmTaskStart(void *argument);
+extern void spoc2CurrTaskStart(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -171,6 +179,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of pdmTask */
   pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
 
+  /* creation of spoc2CurrTask */
+  spoc2CurrTaskHandle = osThreadNew(spoc2CurrTaskStart, NULL, &spoc2CurrTask_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -212,7 +223,7 @@ void statusTaskStart(void *argument)
   /* Infinite loop */
     for(;;)
     {
-        HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+        //HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
         osDelay(500);
     }
   /* USER CODE END statusTaskStart */

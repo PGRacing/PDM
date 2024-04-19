@@ -62,4 +62,8 @@ uint32_t BSP_OUT_GetVoltageAdcValue(T_OUT_ID id);
 
 uint32_t BSP_OUT_GetCurrentAdcValue(T_OUT_ID id);   
 
+uint32_t BSP_OUT_GetDkilis(T_OUT_ID id);
+
+uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id, uint32_t isValue);
+
 #endif

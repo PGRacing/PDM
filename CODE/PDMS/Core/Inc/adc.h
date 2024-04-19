@@ -48,8 +48,8 @@ void MX_ADC2_Init(void);
 void MX_ADC3_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-extern uint32_t adc1RawData[ADC1_CHANNEL_COUNT];
-extern uint32_t adc2RawData[ADC2_CHANNEL_COUNT];
+extern uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
+extern uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

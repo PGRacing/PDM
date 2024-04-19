@@ -55,7 +55,7 @@ void pdmTaskStart(void *argument)
         for(uint8_t i = 0; i < 16; i++)
         {
             OUT_ToggleState( i );
-            osDelay(2000);
+            osDelay(500);
         }
     }
 
