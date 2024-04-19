@@ -133,7 +133,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 
 T_OUT_CFG* OUT_GetPtr( T_OUT_ID id )
 {
-  ASSERT( id > 0 && id < AR`Y_COUNT(outsCfg) );
+  ASSERT( id > 0 && id < ARRAY_COUNT(outsCfg) );
   return &(outsCfg[id]);
 }
 
