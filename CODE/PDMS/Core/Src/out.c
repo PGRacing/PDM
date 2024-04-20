@@ -8,6 +8,7 @@
 #include "vmux.h"
 #include "FreeRTOS.h"
 #include "tim.h"
+#include "stdlib.h"
 #include "cmsis_os2.h"
 
 // Safety related defines
@@ -367,38 +368,39 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   
   uint32_t voltage_mv = VMUX_GetValue(id);
   //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
-  uint32_t fault_level = 12000;
+  uint32_t batteryVoltage = VMUX_GetBattValue();
+  uint32_t faultLevel = 12000;
+  uint32_t dkilis = BSP_OUT_GetDkilis(id);
+  uint32_t voltageHis = 500; // 500 mV for now
 
   if(OUT_STATE_OFF == cfg->state)
   {
-      if(current_ma >= fault_level)
+      if(current_ma >= faultLevel)
       { 
-          // TODO Fix this shit
-          // 12000 = 12V
-          if(voltage_mv == 12000)
-          {
-            cfg->status = OUT_STATUS_SHORT_TO_VSS;
-          }
-          else
-          {
-            cfg->status = OUT_STATUS_OK;
-          }
+        if(abs((int32_t)(batteryVoltage - voltage_mv) < voltageHis))
+        {
+          cfg->status = OUT_STATUS_SHORT_TO_VSS;
+        }
+        else
+        {
+          cfg->status = OUT_STATUS_OK;
+        }
       }
   }
   else
   {
     // TODO Fix magic values
-      if(current_ma >= fault_level)
+      if(current_ma >= faultLevel)
       {
         cfg->status = OUT_STATUS_HARD_OC_OR_OT;
       }
-      else if(((current_ma <= 0.0000143 * (float)BSP_OUT_GetDkilis(id)) && (current_ma > 0.000001 * (float)BSP_OUT_GetDkilis(id))) 
-      || (current_ma <= 0.000001 * (float)BSP_OUT_GetDkilis(id)))
+      else if(((current_ma <= 0.0000143 * (float)dkilis) && (current_ma > 0.000001 * (float)dkilis)) 
+      || (current_ma <= 0.000001 * (float)dkilis))
       {
         cfg->status = OUT_STATUS_OPEN_LOAD;
       }
       // 12000 = 12V
-      else if((voltage_mv <= 12000) && (current_ma > 0.0000143 * (float)BSP_OUT_GetDkilis(id)))
+      else if((voltage_mv <= batteryVoltage) && (current_ma > 0.0000143 * (float)dkilis))
       {
         cfg->status = OUT_STATUS_OK;
       }

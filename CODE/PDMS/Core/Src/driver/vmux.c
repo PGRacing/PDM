@@ -24,6 +24,8 @@
 
 #define VMUX_GET_VOLTAGE_MV(X) (X * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
 
+volatile uint32_t VMUX_BattVoltage = 13800;
+
 volatile uint32_t VMUX_Value[VMUX_INPUT_COUNT] = {0};
 
 static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 4, 3, 5, 6, 7, 0, 1, 8, 9, 10, 11, 12, 13, 14, 15};
@@ -93,26 +95,57 @@ static void VMUX_SelectInput( uint8_t selector )
     LL_GPIO_ResetOutputPin(VMUX_SELECTOR_PORT, resetMask);
 }
 
-void VMUX_SelectAdcChannel (void)
+void VMUX_SelectMuxAdcChannel (void)
 {
 	ADC_ChannelConfTypeDef sConfig = {0};
-	  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-	  */
-	  sConfig.Channel = ADC_CHANNEL_8;
-	  sConfig.Rank = 1;
-	  sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
-      sConfig.Offset = 0;
-      sConfig.OffsetNumber = ADC_OFFSET_NONE;
-      sConfig.SingleDiff = ADC_SINGLE_ENDED;
-	  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-	  {
-	    Error_Handler();
-	  }
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_8;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+void  VMUX_SelectBatteryAdcChannel()
+{
+    ADC_ChannelConfTypeDef sConfig = {0};
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_13;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+static void VMUX_ReadBattVoltage()
+{
+    VMUX_SelectBatteryAdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
+    {   
+        #ifdef VMUX_STORE_VOLTAGE
+            VMUX_BattVoltage = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+        #endif
+    }       
+    HAL_ADC_Stop(&hadc3);
 }
 
 static void VMUX_GetAllPooling()
 {
-    VMUX_SelectAdcChannel();
+    VMUX_SelectMuxAdcChannel();
     HAL_ADC_Start(&hadc3);
     HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
 
@@ -139,6 +172,11 @@ uint32_t VMUX_GetValue(uint8_t index)
     return VMUX_Value[index];
 }
 
+uint32_t VMUX_GetBattValue()
+{
+    return VMUX_BattVoltage;
+}
+
 void vmuxTaskStart(void *argument)
 {
     /* USER CODE BEGIN vmuxTaskStart */
@@ -146,6 +184,7 @@ void vmuxTaskStart(void *argument)
     /* Infinite loop */
     for(;;)
     {
+        VMUX_ReadBattVoltage();
         VMUX_GetAllPooling();
         osDelay(5);
     }
