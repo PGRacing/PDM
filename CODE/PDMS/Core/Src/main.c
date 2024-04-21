@@ -202,6 +202,7 @@ void PeriphCommonClock_Config(void)
 void assert_failed_pdm(uint8_t *file, uint32_t line)
 {
     __disable_irq();
+    Error_Handler();
     while (1)
     {
     }
@@ -237,6 +238,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+  LL_GPIO_ResetOutputPin(PWM_SIG1_GPIO_Port, PWM_SIG1_Pin);
+  LL_GPIO_ResetOutputPin(PWM_SIG2_GPIO_Port, PWM_SIG2_Pin);
+  LL_GPIO_ResetOutputPin(PWM_SIG3_GPIO_Port, PWM_SIG3_Pin);
+  LL_GPIO_ResetOutputPin(PWM_SIG4_GPIO_Port, PWM_SIG4_Pin);
+  LL_GPIO_ResetOutputPin(PWM_SIG5_GPIO_Port, PWM_SIG5_Pin);
+  LL_GPIO_ResetOutputPin(PWM_SIG6_GPIO_Port, PWM_SIG6_Pin);
+  LL_GPIO_ResetOutputPin(PWM_SIG7_GPIO_Port, PWM_SIG7_Pin);
+  LL_GPIO_ResetOutputPin(PWM_SIG8_GPIO_Port, PWM_SIG8_Pin);
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
   while (1)

@@ -33,7 +33,7 @@ typedef struct _T_OUT_SAFETY_CFG
     bool               useOc;
     uint32_t           ocThreshold;  // Over-current treshold in mili-ampers
     uint16_t           ocTripCounter; // Number of ms to trip of overcurrent
-    const uint16_t           ocTripThreshold;  // Number of ms to trip of overcurrent
+    const uint16_t     ocTripThreshold;  // Number of ms to trip of overcurrent
 }T_OUT_SAFETY_CFG;
 
 typedef struct _T_OUT_CFG
@@ -44,7 +44,7 @@ typedef struct _T_OUT_CFG
     const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
     T_OUT_MODE       mode;
     T_OUT_STATE      state;
-    uint8_t          status;
+    T_OUT_STATUS     status;
     T_OUT_ID         batch;       // Optional for OUT_MODE_BATCH (BTS500 only)
     T_OUT_SAFETY_CFG safety;
     uint32_t         currentMA;

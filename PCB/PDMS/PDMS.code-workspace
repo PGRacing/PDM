@@ -25,7 +25,8 @@
 			"freertos.h": "c",
 			"tim.h": "c",
 			"adc.h": "c",
-			"vmux.h": "c"
+			"vmux.h": "c",
+			"telemetry.h": "c"
 		}
 	}
 }

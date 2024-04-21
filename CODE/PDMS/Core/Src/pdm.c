@@ -50,6 +50,7 @@ void pdmTaskStart(void *argument)
     OUT_ChangeMode( OUT_ID_16, OUT_MODE_STD);
 
     BSP_OUT_SetDutyPWM(OUT_ID_1, 90);
+    BSP_OUT_SetDutyPWM(OUT_ID_2, 50);
 
     OUT_SetState( OUT_ID_2, OUT_STATE_ON);
     for(;;)

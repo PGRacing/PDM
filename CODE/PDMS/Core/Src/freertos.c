@@ -115,7 +115,7 @@ osThreadId_t telemTaskHandle;
 const osThreadAttr_t telemTask_attributes = {
   .name = "telemTask",
   .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal1,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 
 /* Private function prototypes -----------------------------------------------*/

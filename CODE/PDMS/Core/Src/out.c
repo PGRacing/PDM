@@ -12,8 +12,10 @@
 #include "cmsis_os2.h"
 
 // Safety related defines
+#define OUT_DIAG_READ_FREQ 200 // 200 Hz frequency of adc read
+#define OUT_DIAG_READ_PERIOD 1000 / OUT_DIAG_READ_FREQ
 #define OUT_SAFETY_OC_OFF 0xFFFF
-
+#define OUT_DIAG_MS_TO_OC_TRIP(X) X / OUT_DIAG_READ_PERIOD
 //#define OUT_DIAG_BTS500_ADC_VOLTAGE_TO_MA
 
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
@@ -34,7 +36,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .useOc = true,
               .ocThreshold = 2000, // 1000mA Threshold
               .ocTripCounter = 0,
-              .ocTripThreshold = 1000
+              .ocTripThreshold = 0
             }
         },
         [OUT_ID_3] = {
@@ -341,7 +343,7 @@ bool OUT_ToggleState(T_OUT_ID id)
 
 static void OUT_DIAG_OnSoftOC(T_OUT_ID id)
 {
-  BSP_OUT_SetStdState(id, false);
+  OUT_SetState(id, OUT_STATE_OFF);
 }
 
 
@@ -372,7 +374,10 @@ static void OUT_DIAG_Single(T_OUT_ID id)
         cfg->safety.ocTripCounter = 0;
       }else
       {
-        cfg->safety.ocTripCounter++;
+        if(cfg->state == OUT_STATE_ON)
+        {
+          cfg->safety.ocTripCounter++;
+        }
       }
     }
   }
