@@ -32,6 +32,8 @@ typedef struct _T_OUT_SAFETY_CFG
     bool               actOnSafety; // This specifies if this channel should be turned of when "safety line" is opened
     bool               useOc;
     uint32_t           ocThreshold;  // Over-current treshold in mili-ampers
+    uint16_t           ocTripCounter; // Number of ms to trip of overcurrent
+    const uint16_t           ocTripThreshold;  // Number of ms to trip of overcurrent
 }T_OUT_SAFETY_CFG;
 
 typedef struct _T_OUT_CFG
@@ -42,9 +44,11 @@ typedef struct _T_OUT_CFG
     const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
     T_OUT_MODE       mode;
     T_OUT_STATE      state;
-    T_OUT_STATUS     status;
+    uint8_t          status;
     T_OUT_ID         batch;       // Optional for OUT_MODE_BATCH (BTS500 only)
     T_OUT_SAFETY_CFG safety;
+    uint32_t         currentMA;
+    uint32_t         voltageMV;
 }T_OUT_CFG;
 
 // Main outputs config
@@ -61,5 +65,13 @@ bool OUT_ToggleState(T_OUT_ID id);
 bool OUT_Batch(T_OUT_ID id, T_OUT_ID batch);
 
 void OUT_DIAG_All();
+
+uint32_t OUT_DIAG_GetCurrent(T_OUT_ID id);
+
+uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id);
+
+uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id);
+
+T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id);
 
 #endif

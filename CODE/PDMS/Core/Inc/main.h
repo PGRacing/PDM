@@ -148,6 +148,10 @@ void Error_Handler(void);
 #define LP_CSN2_GPIO_Port GPIOD
 #define LP_CSN1_Pin LL_GPIO_PIN_9
 #define LP_CSN1_GPIO_Port GPIOG
+#define CAN_TERM1_Pin LL_GPIO_PIN_0
+#define CAN_TERM1_GPIO_Port GPIOE
+#define CAN_TERM2_Pin LL_GPIO_PIN_1
+#define CAN_TERM2_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

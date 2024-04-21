@@ -47,7 +47,7 @@ typedef union __packed
 
 typedef struct T_CANH_TX_PACKAGE
 {
-    CAN_TxHeaderTypeDef header;
+    const CAN_TxHeaderTypeDef header;
     T_CANH_DATA data;
 }T_CANH_TX_PACKAGE;
 
@@ -55,5 +55,22 @@ typedef struct T_CANH_TX_PACKAGE
 void can1TaskStart(void *argument);
 void can2TaskStart(void *argument);
 
+void CANH_PushToQueue1(T_CANH_TX_PACKAGE pkg);
+void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg);
+
 extern xQueueHandle can1QueueHandle;
 extern xQueueHandle can2QueueHandle;
+
+/* TX MESSAGES */
+void CANH_Send_TxVoltage1_4(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+void CANH_Send_TxVoltage5_8(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+void CANH_Send_TxVoltage9_12(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+void CANH_Send_TxVoltage13_16(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+
+void CANH_Send_TxCurrent1_4(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrent5_8(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrent9_12(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+
+void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
+void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);

@@ -32,7 +32,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .safety = 
             {
               .useOc = true,
-              .ocThreshold = 2000 // 1000mA Threshold
+              .ocThreshold = 2000, // 1000mA Threshold
+              .ocTripCounter = 0,
+              .ocTripThreshold = 1000
             }
         },
         [OUT_ID_3] = {
@@ -348,6 +350,7 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   ASSERT( id < ARRAY_COUNT(outsCfg) );
   
   T_OUT_CFG* cfg = OUT_GETPTR(id);
+  T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
 
   // Currently for BTS500 only
   if( outsCfg[id].type != OUT_TYPE_BTS500)
@@ -355,55 +358,75 @@ static void OUT_DIAG_Single(T_OUT_ID id)
     return;
   }
 
-  uint32_t current_ma = BSP_OUT_CalcCurrent(id);
-
+  cfg->currentMA = BSP_OUT_CalcCurrent(id);
+  
   // For now this is done first
   if(true == cfg->safety.useOc)
   {
-    if(current_ma > cfg->safety.ocThreshold)
+    if(cfg->currentMA > cfg->safety.ocThreshold)
     {
-      OUT_DIAG_OnSoftOC(id);
+      if(cfg->safety.ocTripCounter >= cfg->safety.ocTripThreshold)
+      {
+        OUT_DIAG_OnSoftOC(id);
+        newStatus = OUT_STATUS_SOFT_OC;
+        cfg->safety.ocTripCounter = 0;
+      }else
+      {
+        cfg->safety.ocTripCounter++;
+      }
     }
   }
   
-  uint32_t voltage_mv = VMUX_GetValue(id);
+  cfg->voltageMV = VMUX_GetValue(id);
   //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
   uint32_t batteryVoltage = VMUX_GetBattValue();
   uint32_t faultLevel = 12000;
   uint32_t dkilis = BSP_OUT_GetDkilis(id);
   uint32_t voltageHis = 500; // 500 mV for now
 
+  T_OUT_STATUS hwStatus = OUT_STATUS_NORMAL_OFF;
   if(OUT_STATE_OFF == cfg->state)
   {
-      if(current_ma >= faultLevel)
+      if(cfg->currentMA >= faultLevel)
       { 
-        if(abs((int32_t)(batteryVoltage - voltage_mv) < voltageHis))
+        if(abs((int32_t)(batteryVoltage - cfg->voltageMV) < voltageHis))
         {
-          cfg->status = OUT_STATUS_SHORT_TO_VSS;
+          hwStatus = OUT_STATUS_SHORT_TO_VSS;
         }
         else
         {
-          cfg->status = OUT_STATUS_OK;
+          hwStatus = OUT_STATUS_NORMAL_OFF;
         }
       }
   }
   else
   {
     // TODO Fix magic values
-      if(current_ma >= faultLevel)
+      if(cfg->currentMA >= faultLevel)
       {
-        cfg->status = OUT_STATUS_HARD_OC_OR_OT;
+        hwStatus = OUT_STATUS_HARD_OC_OR_OT;
       }
-      else if(((current_ma <= 0.0000143 * (float)dkilis) && (current_ma > 0.000001 * (float)dkilis)) 
-      || (current_ma <= 0.000001 * (float)dkilis))
+      else if(((cfg->currentMA <= 0.0000143 * (float)dkilis) && (cfg->currentMA > 0.000001 * (float)dkilis)) 
+      || (cfg->currentMA <= 0.000001 * (float)dkilis))
       {
-        cfg->status = OUT_STATUS_OPEN_LOAD;
+        hwStatus = OUT_STATUS_OPEN_LOAD;
       }
       // 12000 = 12V
-      else if((voltage_mv <= batteryVoltage) && (current_ma > 0.0000143 * (float)dkilis))
+      else if((cfg->voltageMV <= batteryVoltage) && (cfg->currentMA > 0.0000143 * (float)dkilis))
       {
-        cfg->status = OUT_STATUS_OK;
+        hwStatus = OUT_STATUS_NORMAL_ON;
       }
+  }
+
+  if(newStatus == OUT_STATUS_SOFT_OC && hwStatus == OUT_STATUS_HARD_OC_OR_OT)
+  {
+   cfg->status =  OUT_STATUS_HARD_OC_OR_OT;
+  }else if(newStatus == OUT_STATUS_SOFT_OC)
+  {
+    cfg->status = newStatus;
+  }else
+  {
+    cfg->status = hwStatus;
   }
 }
 
@@ -415,6 +438,29 @@ void OUT_DIAG_All()
   }
 }
 
+uint32_t OUT_DIAG_GetCurrent(T_OUT_ID id)
+{
+  ASSERT(id < OUT_ID_MAX);
+  return outsCfg[id].currentMA;
+}
+
+uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id)
+{
+  ASSERT(id < OUT_ID_MAX);
+  return outsCfg[id].currentMA / 10;
+}
+
+uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id)
+{
+  ASSERT(id < OUT_ID_MAX);
+  return outsCfg[id].voltageMV;
+}
+
+T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
+{
+  ASSERT(id < OUT_ID_MAX);
+  return outsCfg[id].status;
+}
 
 void testTaskEntry(void *argument)
 {

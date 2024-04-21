@@ -14,6 +14,7 @@
 #include "tim.h"
 #include "semphr.h"
 #include "pdm.h"
+#include "telemetry.h"
 // Main PDM file
 
 void pdmTaskStart(void *argument)
@@ -55,7 +56,7 @@ void pdmTaskStart(void *argument)
     {
         for(uint8_t i = 0; i < 16; i++)
         {
-            OUT_ToggleState( i );
+            OUT_SetState( i, OUT_STATE_ON);
             osDelay(500);
         }
     }

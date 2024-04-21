@@ -40,11 +40,13 @@ typedef enum
 
 typedef enum
 {
-    OUT_STATUS_OK            = 0x00,
-    OUT_STATUS_SOFT_OC       = 0x01,
-    OUT_STATUS_HARD_OC_OR_OT = 0x02,
-    OUT_STATUS_SHORT_TO_VSS  = 0x03,
-    OUT_STATUS_OPEN_LOAD     = 0x04
+    OUT_STATUS_NORMAL_OFF    = 0,
+    OUT_STATUS_NORMAL_ON     = 1,
+    OUT_STATUS_SOFT_OC       = 2,
+    OUT_STATUS_HARD_OC_OR_OT = 3,
+    OUT_STATUS_SHORT_TO_VSS  = 4,
+    OUT_STATUS_OPEN_LOAD     = 5,
+    OUT_STATUS_S_AND_H_OC    = 6,
 }T_OUT_STATUS;
 
 // STD Pin control

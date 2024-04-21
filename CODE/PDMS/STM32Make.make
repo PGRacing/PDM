@@ -37,12 +37,13 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/adc.c \
+Core/Src/app/telemetry.c \
 Core/Src/bsp/bsp_out.c \
 Core/Src/bsp/bsp_spoc2.c \
 Core/Src/can.c \
-Core/Src/can_handler.c \
 Core/Src/dma.c \
 Core/Src/driver/buzzer.c \
+Core/Src/driver/can_handler.c \
 Core/Src/driver/spoc2.c \
 Core/Src/driver/spoc2_unused.c \
 Core/Src/driver/vmux.c \
@@ -171,6 +172,7 @@ AS_INCLUDES = \
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-ICore/Inc/app \
 -ICore/Inc/bsp \
 -ICore/Inc/driver \
 -IDrivers/CMSIS/Device/ST/STM32L4xx/Include \

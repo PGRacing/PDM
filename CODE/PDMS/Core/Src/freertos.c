@@ -110,6 +110,13 @@ const osThreadAttr_t spoc2CurrTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for telemTask */
+osThreadId_t telemTaskHandle;
+const osThreadAttr_t telemTask_attributes = {
+  .name = "telemTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal1,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -125,6 +132,7 @@ extern void testTaskEntry(void *argument);
 extern void vmuxTaskStart(void *argument);
 extern void pdmTaskStart(void *argument);
 extern void spoc2CurrTaskStart(void *argument);
+extern void telemTaskStart(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -181,6 +189,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of spoc2CurrTask */
   spoc2CurrTaskHandle = osThreadNew(spoc2CurrTaskStart, NULL, &spoc2CurrTask_attributes);
+
+  /* creation of telemTask */
+  telemTaskHandle = osThreadNew(telemTaskStart, NULL, &telemTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

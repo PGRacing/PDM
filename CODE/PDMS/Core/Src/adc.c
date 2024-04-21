@@ -702,23 +702,6 @@ void adcTaskStart(void *argument)
           xSemaphoreGive(adc1ConvReadySemaphore);
           // Start channel diagnostics
           OUT_DIAG_All();
-          // for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
-          // {
-          //   // value in mV
-          //   // uint32_t voltage = 
-          //   // isCurrent[i] = BSP_OUT_CalcCurrent(i);
-          //   // if(isCurrent[1] > 100)
-          //   // {
-          //   //   HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
-          //   // }else
-          //   // {
-          //   //   HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
-          //   // }
-          //   // if(isCurrent[1] > 1000)
-          //   // {
-          //   //   BSP_OUT_SetStdState(OUT_ID_2, false);
-          //   // }
-          // }
         }
     }
     /* USER CODE END adcTaskStart */
