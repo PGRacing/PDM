@@ -10492,6 +10492,24 @@
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300/7964e191-5860-4a0d-8d5a-291cdb1667e3"
       (reference "F3") (unit 1) (value "3A") (footprint "Fuse:Fuse_0805_2012Metric")
     )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/c66a4d88-2e1d-470b-b1b2-2a5f3107de18/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F4") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
+    )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/1fae0e21-c263-4545-bab0-a27187c38dd4/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F5") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
+    )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/382dbc37-2146-4a9c-8462-14867ff52cd3/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F6") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
+    )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/cb8c1ee0-bf51-48c4-b16b-79d16131cbec/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F7") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
+    )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/01fce8c0-2e13-47a5-855e-a23266eae136/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F8") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
+    )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/def107cb-d534-4529-973f-257de200a861/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F9") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
+    )
     (path "/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/a51fc4d1-ad04-4bc3-ad0b-af18ad13c09c"
       (reference "F10") (unit 1) (value "7A") (footprint "Fuse:Fuse_1206_3216Metric")
     )
@@ -10524,6 +10542,12 @@
     )
     (path "/f45d3215-b43f-44a4-abd3-b7200f9eb300/396e50ee-6eb8-410a-a90b-350fe628d863"
       (reference "F20") (unit 1) (value "500mA") (footprint "Fuse:Fuse_0805_2012Metric")
+    )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/b6c48d26-9c91-45f7-ac21-3f3bb3063e98/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F21") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
+    )
+    (path "/65c1da23-85d0-403e-8f07-4d4fb44d49eb/1cc8f9d4-91e6-4f29-9806-52e9446a55da/156076bb-d4b7-44fe-8a50-3b7d80ae0eac"
+      (reference "F22") (unit 1) (value "Fuse") (footprint "Fuse:Fuse_1206_3216Metric")
     )
     (path "/6c1d22b5-f027-4640-bfd1-25286ff99cfb"
       (reference "H1") (unit 1) (value "MountingHole_Pad") (footprint "MountingHole:MountingHole_3.2mm_M3_Pad_Via")
