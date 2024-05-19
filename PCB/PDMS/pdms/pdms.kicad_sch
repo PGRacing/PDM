@@ -5022,7 +5022,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid e28dee90-02b6-4519-856c-05e3d369051d)
   )
-  (text "TODO:\nVoltage follower should be added here for low IQ solution"
+  (text "10k and 2,32 used here for now\n\nTODO:\nVoltage follower should be added here for low IQ solution"
     (at 153.67 48.26 0)
     (effects (font (size 0.5 0.5)) (justify left bottom))
     (uuid e6de88d3-4430-4575-abe1-37f0a2962d91)
