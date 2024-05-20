@@ -1,4 +1,4 @@
-20587704303605264
+20589420541276170
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61557,6 +61557,13 @@ Connector
 0
 63
 63
+PDMS_Additional
+BD50FD0WHFPTR
+BD50FD0WHFP-TR-2
+Integrated Circuit
+0
+6
+6
 PDMS_Additional
 CAPCP3225X100N
 
