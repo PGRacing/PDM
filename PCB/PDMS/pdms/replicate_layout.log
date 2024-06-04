@@ -1,0 +1,19 @@
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 359:Plugin executed on: 'win32'
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 360:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 361:KiCad build version: (6.0.8)
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 362:Plugin version: 1.3.5
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 363:Frame repr: <wx._core.Frame object at 0x000002C10811B4C0>
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.action_replicate_layout 387:Preparing replicator with C88 as a reference
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 113:getting a list of all footprints on board
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-65C96195 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64714FCB does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64698A06 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-6477C3F8 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-65C2D9B8 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64716719 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-646F7EA8 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64713E79 does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-664BC07A does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-64713E5A does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint kibuzzard-65AD9CDA does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
+05-21 00:03:47 com_github_MitjaNemec_ReplicateLayout.replicate_layout 132:Footprint Ge does not have Sheetfile property, it will not be replicated. Most likely it is only in layout
