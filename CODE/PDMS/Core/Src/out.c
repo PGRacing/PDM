@@ -34,7 +34,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .safety = 
             {
               .useOc = true,
-              .ocThreshold = 2000, // 1000mA Threshold
+              .ocThreshold = 10000, // 2000mA Threshold
               .ocTripCounter = 0,
               .ocTripThreshold = 0
             }
@@ -416,8 +416,7 @@ static void OUT_DIAG_Single(T_OUT_ID id)
       {
         hwStatus = OUT_STATUS_OPEN_LOAD;
       }
-      // 12000 = 12V
-      else if((cfg->voltageMV <= batteryVoltage) && (cfg->currentMA > 0.0000143 * (float)dkilis))
+      else if(cfg->currentMA > 0.0000143 * (float)dkilis)
       {
         hwStatus = OUT_STATUS_NORMAL_ON;
       }
@@ -465,6 +464,11 @@ T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
 {
   ASSERT(id < OUT_ID_MAX);
   return outsCfg[id].status;
+}
+
+void OUT_DIAG_SetStatusLed(T_OUT_ID id)
+{
+
 }
 
 void testTaskEntry(void *argument)

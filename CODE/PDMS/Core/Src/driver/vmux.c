@@ -19,7 +19,8 @@
 // This assumes that voltage divider is same on all channels
 #define VMUX_STORE_VOLTAGE
 #define VMUX_USED_DIVIDER (2.32 / 12.32)
-#define VMUX_USED_DIVIDER_INV 5.310344827586207
+// Correction for 9.97kOhm resistors? Should be 10k 
+#define VMUX_USED_DIVIDER_INV 5.4759
 #define VMUX_ADC_12BIT_MAX_VALUE 4096
 
 #define VMUX_GET_VOLTAGE_MV(X) (X * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
@@ -119,7 +120,7 @@ void  VMUX_SelectBatteryAdcChannel()
      */
     sConfig.Channel = ADC_CHANNEL_13;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -138,6 +139,8 @@ static void VMUX_ReadBattVoltage()
     {   
         #ifdef VMUX_STORE_VOLTAGE
             VMUX_BattVoltage = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+        #else 
+            VMUX_BattVoltage = HAL_ADC_GetValue(&hadc3);
         #endif
     }       
     HAL_ADC_Stop(&hadc3);
