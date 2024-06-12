@@ -213,6 +213,9 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+    BUZZER_TurnOn();
+    osDelay(300);
+    BUZZER_TurnOff();
   /* Infinite loop */
   for(;;)
   {

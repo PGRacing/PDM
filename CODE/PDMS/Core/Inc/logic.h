@@ -59,9 +59,12 @@ typedef struct
 {
   bool isUsed;
   T_LOGIC_EXPRESSION exp;
-  bool result;
 } T_LOGIC;
 
-extern T_LOGIC logics[POWER_OUT_COUNT];
+//extern bool logicResults[POWER_OUT_COUNT];
+
+/// @brief Evaluate logic expressions controling all outputs
+/// @return Array of evaluated results
+bool* LOGIC_Evaluate();
 
 #endif

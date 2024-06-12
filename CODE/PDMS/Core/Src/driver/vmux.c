@@ -186,7 +186,7 @@ void vmuxTaskStart(void *argument)
     {
         VMUX_ReadBattVoltage();
         VMUX_GetAllPooling();
-        osDelay(5);
+        osDelay(pdMS_TO_TICKS(5));
     }
     /* USER CODE END vmuxTaskStart */
 }

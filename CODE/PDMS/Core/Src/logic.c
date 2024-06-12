@@ -12,6 +12,8 @@
 #include "logic.h"
 // TODO WIP LOGIC
 
+// OPERATOR SHORTCUT
+#define LOGIC_EXP_ALWAYS_ON {  .opr = LOGIC_OPERATOR_E, .input1Type = LOGIC_INPUT_TYPE_CONST_SCHMITT, .input1Const = TRUE, .input2Type = LOGIC_INPUT_TYPE_CONST_SCHMITT, .input2Const = TRUE }
 typedef struct
 {
   T_LOGIC_VAR_TYPE allowedFirst;
@@ -160,7 +162,7 @@ static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
   return res;
 }
 
-bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
+static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 {
   
   uint32_t r_data1 = 0;
@@ -282,26 +284,89 @@ bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 // LOGIC Array struct
 T_LOGIC logics[POWER_OUT_COUNT] = 
 {
-  {
+  [0] = {
+    .isUsed = FALSE,
+    .exp = 
+    {
+      .opr = LOGIC_OPERATOR_GE,
+      .input1Type = LOGIC_INPUT_TYPE_SENSOR,
+      .input1ID = IN_PHY_ID_1,
+      .input2Type = LOGIC_INPUT_TYPE_CONST_ANALOG,
+      .input2Const = 400
+    }
+  },
+  [1] = {
+    .isUsed = TRUE,
+    .exp = LOGIC_EXP_ALWAYS_ON
+  },
+  [2] = {
+    .isUsed = FALSE
+  },
+  [3] = {
+    .isUsed = FALSE
+  },
+  [4] = {
+    .isUsed = FALSE
+  },
+  [5] = {
+    .isUsed = FALSE
+  },
+  [6] = {
+    .isUsed = FALSE
+  },
+  [7] = {
+    .isUsed = FALSE
+  },
+  [8] = {
+    .isUsed = FALSE
+  },
+  [9] = {
+    .isUsed = FALSE
+  },
+  [10] = {
+    .isUsed = FALSE
+  },
+  [11] = {
+    .isUsed = FALSE
+  },
+  [12] = {
+    .isUsed = FALSE
+  },
+  [13] = {
+    .isUsed = FALSE
+  },
+  [14] = {
+    .isUsed = FALSE
+  },
+  [15] = {
     .isUsed = FALSE
   }
 };
 
+bool logicResults[POWER_OUT_COUNT] = {FALSE};
 
 volatile bool expResult;
+
+bool* LOGIC_Evaluate()
+{
+  for( uint8_t i = 0; i < POWER_OUT_COUNT; i++)
+  {
+    if( logics[i].isUsed )
+    {
+      logicResults[i] = LOGIC_EvaluateExpression(logics[i].exp);
+    }
+    else
+    {
+      logicResults[i] = FALSE;
+    }
+  }
+  
+  return logicResults;
+}
 
 // void testTaskEntry(void *argument)
 // {
 //   /* TODO There is possibility to add UT here for setting output mode and setting output state */
-
-//   T_LOGIC_EXPRESSION exp1 = 
-//   {
-//     .opr = LOGIC_OPERATOR_GE,
-//     .input1Type = LOGIC_INPUT_TYPE_SENSOR,
-//     .input1ID = IN_PHY_ID_1,
-//     .input2Type = LOGIC_INPUT_TYPE_CONST_ANALOG,
-//     .input2Const = 400
-//   };
 
 //   T_LOGIC_EXPRESSION exp2 = 
 //   {
