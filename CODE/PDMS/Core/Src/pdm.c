@@ -18,6 +18,11 @@
 #include "telemetry.h"
 // Main PDM file
 
+T_PDM_SYS_STATUS PDM_GetSysStatus()
+{
+    // TODO Add status handlers CAN status etc...
+    return PDM_SYS_STATUS_OK;
+}
 
 static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] = 
 {

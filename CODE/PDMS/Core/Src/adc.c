@@ -323,8 +323,8 @@ void MX_ADC3_Init(void)
     Error_Handler();
   }
 
-  // /** Configure Regular Channel
-  // */
+  /** Configure Regular Channel
+  */
   // sConfig.Channel = ADC_CHANNEL_6;
   // sConfig.Rank = ADC_REGULAR_RANK_1;
   // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
@@ -633,7 +633,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
       static portBASE_TYPE xHigherPriorityTaskWoken;
       xHigherPriorityTaskWoken = pdFALSE;
 
-      if(adc1ConvReadySemaphore != NULL)
+      if(adc2ConvReadySemaphore != NULL)
       {
         xSemaphoreGiveFromISR(adc2ConvReadySemaphore, &xHigherPriorityTaskWoken);
       }
@@ -653,17 +653,29 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 
 volatile uint32_t isCurrent[ADC1_CHANNEL_COUNT];
 
-void ADC_Start()
+void ADC1_Start()
 {
     /* Timer 3 configured to execute ADC conversion each 5ms */
 
-    /* TODO Separate clock source for ADC1 and ADC2 */
     HAL_TIM_Base_Start(&htim8);
 
     /* Start ADC in DMA mode */
     // ADC1 - BSP current sensors
     HAL_ADC_Start_DMA(&hadc1, adc1RawData, ADC1_CHANNEL_COUNT);
 
+    // ADC Calibration for better accuracy TODO - not tested
+    // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+    // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+    // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    // hadc1.State = 0;
+    // hadc2.State = 0;
+}
+
+void ADC2_Start()
+{
+    /* Timer 3 configured to execute ADC conversion each 5ms */
+
+    /* Start ADC in DMA mode */
     // ADC2 - BSP inputs
     HAL_ADC_Start_DMA(&hadc2, adc2RawData, ADC2_CHANNEL_COUNT);
 
@@ -677,11 +689,10 @@ void ADC_Start()
 
 #include "out.h"
 // TODO split this task into 2 for each ADC
-void adcTaskStart(void *argument)
+void adc1TaskStart(void *argument)
 {
     /* USER CODE BEGIN adcTaskStart */
     adc1ConvReadySemaphore = xSemaphoreCreateBinary();
-    adc2ConvReadySemaphore = xSemaphoreCreateBinary();
 
     if(adc1ConvReadySemaphore == NULL)
     {
@@ -689,14 +700,8 @@ void adcTaskStart(void *argument)
         __NOP();
     }
 
-    if(adc2ConvReadySemaphore == NULL)
-    {
-        /* Error creating semaphore -> heap too small [?] */
-        __NOP();
-    }
-      
     adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
-    ADC_Start();
+    ADC1_Start();
     /* Infinite loop */
     for(;;)
     {
@@ -706,6 +711,32 @@ void adcTaskStart(void *argument)
           xSemaphoreGive(adc1ConvReadySemaphore);
           // Start channel diagnostics
           OUT_DIAG_All();
+        }
+    }
+    /* USER CODE END adcTaskStart */
+}
+
+void adc2TaskStart(void *argument)
+{
+    /* USER CODE BEGIN adcTaskStart */
+    adc2ConvReadySemaphore = xSemaphoreCreateBinary();
+    
+    if(adc2ConvReadySemaphore == NULL)
+    {
+        /* Error creating semaphore -> heap too small [?] */
+        __NOP();
+    }
+      
+    adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
+    ADC2_Start();
+    /* Infinite loop */
+    for(;;)
+    {
+        /* Do something with data */
+        if(xSemaphoreTake( adc2ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
+        {
+          xSemaphoreGive(adc2ConvReadySemaphore);
+          // Start channel diagnostics
         }
     }
     /* USER CODE END adcTaskStart */

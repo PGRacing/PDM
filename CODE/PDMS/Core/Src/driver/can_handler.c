@@ -194,6 +194,20 @@ T_CANH_TX_PACKAGE CANH_TxCurrent13_16 =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_SysStatus = 
+{
+    .header = 
+    {
+        .DLC = 3,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_SYS_STATUS,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
 void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
     CANH_TxStatus1_8.data.status_8ch.status[0] = s1;
@@ -300,6 +314,14 @@ void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4
     CANH_TxCurrent13_16.data.current_4ch.current[3] = c4;
 
     CANH_PushToQueue1(CANH_TxCurrent13_16);
+}
+
+void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage)
+{
+    CANH_SysStatus.data.system_status.status = sysStatus;
+    CANH_SysStatus.data.system_status.battVoltage = battVoltage;
+
+    CANH_PushToQueue1(CANH_SysStatus);
 }
 
 void CANH_SwitchTerminator1(bool state)

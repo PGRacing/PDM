@@ -22,7 +22,7 @@ T_IN_CFG inputsCfg[] =
                 .io = {IO_CONN1_GPIO_Port, IO_CONN1_Pin},
                 .rawData = &(adc2RawData[0]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_SCHMITT},
         [1] =
             {
                 .id = IN_PHY_ID_2,

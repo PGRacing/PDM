@@ -1,6 +1,8 @@
 #include "telemetry.h"
 #include "can_handler.h"
 #include "out.h"
+#include "pdm.h"
+#include "vmux.h"
 #include "cmsis_os2.h"
 
 
@@ -30,6 +32,11 @@ static void TELEM_SendStatusByCan()
         (uint8_t)OUT_DIAG_GetStatus(OUT_ID_13), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_14), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_15), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_16));
 }
 
+static void TELEM_SendSystemDataByCan()
+{
+    CANH_Send_SysStatus((uint8_t)PDM_GetSysStatus(), (uint16_t)VMUX_GetBattValue());
+}
+
 void telemTaskStart(void *argument)
 {
     /* USER CODE BEGIN telemTaskStart */
@@ -39,6 +46,7 @@ void telemTaskStart(void *argument)
         TELEM_SendVoltageByCan();
         TELEM_SendCurrentByCan();
         TELEM_SendStatusByCan();
+        TELEM_SendSystemDataByCan();
         osDelay(pdMS_TO_TICKS(50));
     }
     /* USER CODE END telemTaskStart */

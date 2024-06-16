@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "iwdg.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -75,10 +75,10 @@ const osThreadAttr_t can2Task_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for adcTask */
-osThreadId_t adcTaskHandle;
-const osThreadAttr_t adcTask_attributes = {
-  .name = "adcTask",
+/* Definitions for adc1Task */
+osThreadId_t adc1TaskHandle;
+const osThreadAttr_t adc1Task_attributes = {
+  .name = "adc1Task",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -117,6 +117,13 @@ const osThreadAttr_t telemTask_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for adc2Task */
+osThreadId_t adc2TaskHandle;
+const osThreadAttr_t adc2Task_attributes = {
+  .name = "adc2Task",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -127,12 +134,13 @@ void StartDefaultTask(void *argument);
 void statusTaskStart(void *argument);
 extern void can1TaskStart(void *argument);
 extern void can2TaskStart(void *argument);
-extern void adcTaskStart(void *argument);
+extern void adc1TaskStart(void *argument);
 extern void testTaskEntry(void *argument);
 extern void vmuxTaskStart(void *argument);
 extern void pdmTaskStart(void *argument);
 extern void spoc2CurrTaskStart(void *argument);
 extern void telemTaskStart(void *argument);
+extern void adc2TaskStart(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -175,8 +183,8 @@ void MX_FREERTOS_Init(void) {
   /* creation of can2Task */
   can2TaskHandle = osThreadNew(can2TaskStart, NULL, &can2Task_attributes);
 
-  /* creation of adcTask */
-  adcTaskHandle = osThreadNew(adcTaskStart, NULL, &adcTask_attributes);
+  /* creation of adc1Task */
+  adc1TaskHandle = osThreadNew(adc1TaskStart, NULL, &adc1Task_attributes);
 
   /* creation of testTask */
   testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
@@ -192,6 +200,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of telemTask */
   telemTaskHandle = osThreadNew(telemTaskStart, NULL, &telemTask_attributes);
+
+  /* creation of adc2Task */
+  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -219,7 +230,8 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(pdMS_TO_TICKS(100));
+    osDelay(pdMS_TO_TICKS(20));
+    HAL_IWDG_Refresh(&hiwdg);
   }
   /* USER CODE END StartDefaultTask */
 }

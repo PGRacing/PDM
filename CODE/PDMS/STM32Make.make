@@ -37,6 +37,7 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/adc.c \
+Core/Src/app/logic.c \
 Core/Src/app/telemetry.c \
 Core/Src/bsp/bsp_out.c \
 Core/Src/bsp/bsp_spoc2.c \
@@ -51,7 +52,7 @@ Core/Src/driver/ws2812b.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
 Core/Src/input.c \
-Core/Src/logic.c \
+Core/Src/iwdg.c \
 Core/Src/main.c \
 Core/Src/out.c \
 Core/Src/pdm.c \
@@ -77,6 +78,7 @@ Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c \
+Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_iwdg.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c \
 Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c \

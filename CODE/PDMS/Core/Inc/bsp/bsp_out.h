@@ -36,6 +36,7 @@ typedef enum
 {
     OUT_STATE_OFF     = 0x00,
     OUT_STATE_ON      = 0x01,
+    OUT_STATE_ERR_LATCH   = 0x02
 }T_OUT_STATE;
 
 typedef enum
@@ -47,6 +48,7 @@ typedef enum
     OUT_STATUS_SHORT_TO_VSS  = 4,
     OUT_STATUS_OPEN_LOAD     = 5,
     OUT_STATUS_S_AND_H_OC    = 6,
+    OUT_STATUS_ERR_LATCH     = 8
 }T_OUT_STATUS;
 
 // STD Pin control

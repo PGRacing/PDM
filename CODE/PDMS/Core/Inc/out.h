@@ -5,6 +5,7 @@
 #include "bsp_out.h"
 #include "spoc2.h"
 #include "spoc2_definitions.h"
+#include "cmsis_os2.h"
 
 typedef enum
 {
@@ -14,26 +15,35 @@ typedef enum
 
 typedef enum
 {
-    OUT_ERR_NO         = 0x00,  // In case of error nothing happens
-    OUT_ERR_LATCH      = 0x01,  // In case of error output is latched till channel reset
-    OUT_ERR_OFF        = 0x02,  // In case of error output is turned off till device reset
-    OUT_ERR_TIME_LATCH = 0x03   // In case of error output us latched for give amount of time
+    OUT_ERR_BEH_NO         = 0x00,  // In case of error nothing happens
+    OUT_ERR_BEH_LATCH      = 0x01,  // In case of error output is latched till channel reset
+    OUT_ERR_BEH_TIME_LATCH = 0x03,  // In case of error output is latched for give amount of time
+    OUT_ERR_BEH_TRY_RETRY  = 0x04,  // In case of error output there are few retries before latch
 }T_OUT_ERR_BEHAVIOR;
 
 // After error configuration
 typedef struct _T_OUT_SAFETY_AERR_CFG
 {
     T_OUT_ERR_BEHAVIOR behavior;
-    uint32_t latchTime; // Time for /ref OUT_ERR_TIME_LATCH in ms
+    uint32_t latchTime; // Time for /ref OUT_ERR_BEH_TIME_LATCH in ms
 }T_OUT_SAFETY_AERR_CFG;
+
+#define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
+
 typedef struct _T_OUT_SAFETY_CFG
 {
     T_OUT_SAFETY_AERR_CFG aerrCfg;  // Type beahavior if error occurs
     bool               actOnSafety; // This specifies if this channel should be turned of when "safety line" is opened
     bool               useOc;
-    uint32_t           ocThreshold;  // Over-current treshold in mili-ampers
-    uint16_t           ocTripCounter; // Number of ms to trip of overcurrent
+    uint32_t           ocThreshold;     // Over-current treshold in mili-ampers
+    uint16_t           ocTripCounter;    // Counter of ms to trip of overcurrent
     const uint16_t     ocTripThreshold;  // Number of ms to trip of overcurrent
+    uint16_t           errRetryCounter;  // Counter of performed retries
+    const uint16_t     errRetryThreshold; // Number of performed retries
+    osTimerId_t        timerHandle;       // Safety osTimer used for timer handling
+    uint32_t           timerInterval; // Retry interval
+    void               (*safetyCallback)(void); // Safety callback
+    bool               inError;
 }T_OUT_SAFETY_CFG;
 
 typedef struct _T_OUT_CFG

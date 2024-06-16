@@ -18,7 +18,8 @@ extern uint32_t can2TxMailbox[4];
 
 typedef struct _T_CANH_SYSTEM_STATUS
 {
-    uint8_t status;
+    uint8_t  status;
+    uint16_t battVoltage;
 }T_CANH_SYSTEM_STATUS;
 
 typedef struct _T_CANH_TX_STATUS_8CH
@@ -74,3 +75,5 @@ void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4
 
 void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
 void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
+
+void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage);

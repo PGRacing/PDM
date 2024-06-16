@@ -247,7 +247,7 @@ void BSP_OUT_SetStdState(T_OUT_ID id, bool state)
     
     if(state)
     {
-        LL_GPIO_SetOutputPin(io.port, io.pin);
+        LL_GPIO_SetOutputPin(io.port, io.pin);       
     }
     else
     {

@@ -22,6 +22,7 @@
 #include "adc.h"
 #include "can.h"
 #include "dma.h"
+#include "iwdg.h"
 #include "spi.h"
 #include "tim.h"
 #include "gpio.h"
@@ -104,6 +105,7 @@ int main(void)
   MX_ADC3_Init();
   MX_SPI2_Init();
   MX_TIM2_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -146,9 +148,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_MSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI
+                              |RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
   RCC_OscInitStruct.MSICalibrationValue = 0;
   RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_6;
@@ -246,10 +250,31 @@ void Error_Handler(void)
   LL_GPIO_ResetOutputPin(PWM_SIG6_GPIO_Port, PWM_SIG6_Pin);
   LL_GPIO_ResetOutputPin(PWM_SIG7_GPIO_Port, PWM_SIG7_Pin);
   LL_GPIO_ResetOutputPin(PWM_SIG8_GPIO_Port, PWM_SIG8_Pin);
+
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
+  uint32_t delay = 0;
+  const uint32_t error_delay = 200000;
   while (1)
   {
+    for (int i = 0; i < 2; i++)
+        {
+            delay = error_delay;
+            while ((delay--) != 0)
+            {
+                __NOP();
+            }
+            HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            delay = 2U * error_delay;
+            while ((delay--) != 0)
+            {
+                __NOP();
+            }
+            HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+        }
   }
   /* USER CODE END Error_Handler_Debug */
 }

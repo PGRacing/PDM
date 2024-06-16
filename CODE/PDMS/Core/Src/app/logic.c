@@ -10,10 +10,10 @@
 #include "tim.h"
 #include "cmsis_os2.h"
 #include "logic.h"
-// TODO WIP LOGIC
 
 // OPERATOR SHORTCUT
-#define LOGIC_EXP_ALWAYS_ON {  .opr = LOGIC_OPERATOR_E, .input1Type = LOGIC_INPUT_TYPE_CONST_SCHMITT, .input1Const = TRUE, .input2Type = LOGIC_INPUT_TYPE_CONST_SCHMITT, .input2Const = TRUE }
+#define LOGIC_EXP_ALWAYS_ON { .opr = LOGIC_OPERATOR_E, .input1Type = LOGIC_INPUT_TYPE_CONST_SCHMITT, .input1Const = TRUE, .input2Type = LOGIC_INPUT_TYPE_CONST_SCHMITT, .input2Const = TRUE }
+
 typedef struct
 {
   T_LOGIC_VAR_TYPE allowedFirst;
@@ -33,47 +33,50 @@ const static T_LOGIC_OPERATOR_RELATION operatorsConfig[] =
         [LOGIC_OPERATOR_NE] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_ANY,
-                .allowedFirst = LOGIC_VAR_TYPE_ANY,
+                .allowedSecond = LOGIC_VAR_TYPE_ANY,
             },
         [LOGIC_OPERATOR_E] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_ANY,
-                .allowedFirst = LOGIC_VAR_TYPE_ANY,
+                .allowedSecond = LOGIC_VAR_TYPE_ANY,
             },
         [LOGIC_OPERATOR_G] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
-                .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
+                .allowedSecond = LOGIC_VAR_TYPE_ANALOG,
             },
         [LOGIC_OPERATOR_GE] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
-                .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
+                .allowedSecond = LOGIC_VAR_TYPE_ANALOG,
             },
         [LOGIC_OPERATOR_L] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
-                .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
+                .allowedSecond = LOGIC_VAR_TYPE_ANALOG,
             },
         [LOGIC_OPERATOR_LE] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
-                .allowedFirst = LOGIC_VAR_TYPE_ANALOG,
+                .allowedSecond = LOGIC_VAR_TYPE_ANALOG,
             },
             
         [LOGIC_OPERATOR_IT] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_SCHMITT,
-                .allowedFirst = LOGIC_VAR_TYPE_NONE,
+                .allowedSecond = LOGIC_VAR_TYPE_NONE,
             },
             
         [LOGIC_OPERATOR_IF] =
             {
                 .allowedFirst = LOGIC_VAR_TYPE_SCHMITT,
-                .allowedFirst = LOGIC_VAR_TYPE_NONE,
+                .allowedSecond = LOGIC_VAR_TYPE_NONE,
             },
             
 };
+
+#pragma GCC push_options
+#pragma GCC optimize ("-O0")
 
 static T_LOGIC_VAR_TYPE LOGIC_GetInputModeAsLogicVarType( T_LOGIC_INPUT_TYPE  inType, T_INPUT_ID id)
 {
@@ -82,7 +85,6 @@ static T_LOGIC_VAR_TYPE LOGIC_GetInputModeAsLogicVarType( T_LOGIC_INPUT_TYPE  in
   switch (inType)
   {
   case LOGIC_INPUT_TYPE_SENSOR:
-  {
     T_IN_MODE mode = IN_GetMode(id);
     if( mode == IN_MODE_ANALOG)
     {
@@ -91,27 +93,20 @@ static T_LOGIC_VAR_TYPE LOGIC_GetInputModeAsLogicVarType( T_LOGIC_INPUT_TYPE  in
     else if(mode == IN_MODE_SCHMITT)
     {
       result = LOGIC_VAR_TYPE_SCHMITT;
-    }
+    } 
     break;
-  }
     
   case LOGIC_INPUT_TYPE_CONST_SCHMITT:
-  {
     result = LOGIC_VAR_TYPE_SCHMITT;
     break;
-  }
   
   case LOGIC_INPUT_TYPE_CONST_ANALOG:
-  {
     result = LOGIC_VAR_TYPE_ANALOG;
     break;
-  }
 
   case LOGIC_INPUT_TYPE_UNSET:
-  {
-    result = LOGIC_VAR_TYPE_NONE;
+    result = LOGIC_VAR_TYPE_NONE; 
     break;
-  }
    
   default:
     break;
@@ -145,7 +140,7 @@ static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
   }
   
   if(relation.allowedSecond != LOGIC_VAR_TYPE_ANY 
-  && relation.allowedSecond == LOGIC_GetInputModeAsLogicVarType(exp.input1Type, exp.input1ID))
+  && relation.allowedSecond == LOGIC_GetInputModeAsLogicVarType(exp.input2Type, exp.input2ID))
   {
     res &= TRUE;
   }
@@ -161,6 +156,8 @@ static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
   
   return res;
 }
+
+#pragma GCC pop_options
 
 static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 {
@@ -286,18 +283,10 @@ T_LOGIC logics[POWER_OUT_COUNT] =
 {
   [0] = {
     .isUsed = FALSE,
-    .exp = 
-    {
-      .opr = LOGIC_OPERATOR_GE,
-      .input1Type = LOGIC_INPUT_TYPE_SENSOR,
-      .input1ID = IN_PHY_ID_1,
-      .input2Type = LOGIC_INPUT_TYPE_CONST_ANALOG,
-      .input2Const = 400
-    }
+    .exp = LOGIC_EXP_ALWAYS_ON
   },
   [1] = {
-    .isUsed = TRUE,
-    .exp = LOGIC_EXP_ALWAYS_ON
+    .isUsed = FALSE,
   },
   [2] = {
     .isUsed = FALSE
@@ -315,7 +304,14 @@ T_LOGIC logics[POWER_OUT_COUNT] =
     .isUsed = FALSE
   },
   [7] = {
-    .isUsed = FALSE
+    .isUsed = TRUE,
+    .exp = 
+    {
+      .opr = LOGIC_OPERATOR_IT,
+      .input1Type = LOGIC_INPUT_TYPE_SENSOR,
+      .input1ID = IN_PHY_ID_1,
+      .input2Type = LOGIC_INPUT_TYPE_UNSET
+    }
   },
   [8] = {
     .isUsed = FALSE

@@ -18,13 +18,73 @@
 #define OUT_DIAG_MS_TO_OC_TRIP(X) X / OUT_DIAG_READ_PERIOD
 //#define OUT_DIAG_BTS500_ADC_VOLTAGE_TO_MA
 
+// Get current time in ms
+#define OUT_GET_TIME_MS pdTICKS_TO_MS( xTaskGetTickCount() );
+
+#define OUT_SAFETY_CALLBACK_BODY(id)   osTimerStop(OUT_GetPtr(id)->safety.timerHandle); \
+                                  OUT_GetPtr(id)->safety.timerHandle = NULL; \
+                                  OUT_SetState(id, OUT_STATE_ON); \
+                                  OUT_GetPtr(id)->safety.inError = FALSE;
+
+#pragma region SAFETY_CALLBACKS
+
+void OUT_CH1_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_1);
+}
+void OUT_CH2_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_2);
+}
+void OUT_CH3_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_3);
+}
+void OUT_CH4_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_4);
+}
+void OUT_CH5_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_5);
+}
+void OUT_CH6_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_6);
+}
+void OUT_CH7_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_7);
+}
+void OUT_CH8_SafetyCallback()
+{
+  OUT_SAFETY_CALLBACK_BODY(OUT_ID_8);
+}
+
+#pragma endregion
+
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
-    {
+{
         [OUT_ID_1] = {
             .id = OUT_ID_1,
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = 
+            {
+              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .actOnSafety = FALSE,
+              .useOc = TRUE,
+              .ocThreshold = 4000, // mA
+              .ocTripCounter = 0, // non conf
+              .ocTripThreshold = 100, // ms
+              .errRetryCounter = 0, // non conf
+              .errRetryThreshold = 6, // 
+              .timerHandle = NULL,
+              .timerInterval = 1000,
+              .safetyCallback = &OUT_CH1_SafetyCallback,
+              .inError = FALSE
+            }
         },
         [OUT_ID_2] = {
             .id = OUT_ID_2,
@@ -33,10 +93,13 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .state = OUT_STATE_OFF,
             .safety = 
             {
-              .useOc = true,
+              .useOc = TRUE,
               .ocThreshold = 2000, // 1000mA Threshold
               .ocTripCounter = 0,
-              .ocTripThreshold = 0
+              .ocTripThreshold = 0,
+              .safetyCallback = &OUT_CH2_SafetyCallback,
+              .timerHandle = NULL,
+              .timerInterval = 500,
             }
         },
         [OUT_ID_3] = {
@@ -44,36 +107,80 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = 
+            {
+              .safetyCallback = &OUT_CH3_SafetyCallback,
+              .timerHandle = NULL,
+              .timerInterval = 500,
+            }
         },
         [OUT_ID_4] = {
             .id = OUT_ID_4,
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = 
+            {
+              .safetyCallback = &OUT_CH4_SafetyCallback,
+              .timerHandle = NULL,
+              .timerInterval = 500,
+            }
         },
         [OUT_ID_5] = {
             .id = OUT_ID_5,
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = 
+            {
+              .safetyCallback = &OUT_CH5_SafetyCallback,
+              .timerHandle = NULL,
+              .timerInterval = 500,
+            }
         },
         [OUT_ID_6] = {
             .id = OUT_ID_6,
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = 
+            {
+              .safetyCallback = &OUT_CH6_SafetyCallback,
+              .timerHandle = NULL,
+              .timerInterval = 500,
+            }
         },
         [OUT_ID_7] = {
             .id = OUT_ID_7,
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = 
+            {
+              .safetyCallback = &OUT_CH7_SafetyCallback,
+              .timerHandle = NULL,
+              .timerInterval = 500,
+            }
         },
         [OUT_ID_8] = {
             .id = OUT_ID_8,
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
+            .safety = {
+              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .actOnSafety = FALSE,
+              .useOc = TRUE,
+              .ocThreshold = 1500, // mA
+              .ocTripCounter = 0, // non conf
+              .ocTripThreshold = 100, // ms
+              .errRetryCounter = 0, // non conf
+              .errRetryThreshold = 6, // 
+              .timerHandle = NULL,
+              .timerInterval = 1000,
+              .safetyCallback = &OUT_CH8_SafetyCallback,
+              .inError = FALSE
+            }
         },
         [OUT_ID_9] = {
             .id = OUT_ID_9,
@@ -245,6 +352,27 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
   ASSERT(cfg);
   ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(outsCfg) );
 
+  // If channel is latched it cannot be used
+  if(cfg->state == OUT_STATE_ERR_LATCH)
+  {
+    return FALSE;
+  }
+
+  // If channel in error handler it cannot be turned on
+  if(cfg->safety.inError == TRUE 
+    &&  state == OUT_STATE_ON)
+  {
+    return FALSE;
+  }
+
+  if(state == OUT_STATE_ERR_LATCH)
+  {
+    OUT_SetState(id, OUT_STATE_OFF);
+    cfg->state = OUT_STATE_ERR_LATCH;
+    cfg->status = OUT_STATUS_ERR_LATCH;
+    return FALSE;
+  }
+
   switch (cfg->mode)
   {
   case OUT_MODE_UNUSED:
@@ -341,9 +469,64 @@ bool OUT_ToggleState(T_OUT_ID id)
   return OUT_SetState( id, !cfg->state);
 }
 
-static void OUT_DIAG_OnSoftOC(T_OUT_ID id)
+static void OUT_DIAG_DispatchErr(T_OUT_ID id)
 {
-  OUT_SetState(id, OUT_STATE_OFF);
+  T_OUT_CFG* cfg = OUT_GETPTR(id);
+
+  if(cfg->safety.errRetryCounter >= cfg->safety.errRetryThreshold)
+  {
+    // Last error handle 
+    if(cfg->safety.timerHandle != NULL)
+    {
+      osTimerStop(cfg->safety.timerHandle);
+      cfg->safety.timerHandle = NULL;
+    }
+    // Disable timer and latch output channel
+    OUT_SetState(id, OUT_STATE_ERR_LATCH);
+    cfg->safety.inError = TRUE;
+
+    return;
+  }
+  else if( cfg->safety.timerHandle == NULL)
+  {
+    // Check if safety function callback does exist
+    ASSERT(cfg->safety.safetyCallback);
+
+    cfg->safety.timerHandle = osTimerNew(cfg->safety.safetyCallback, osTimerOnce, NULL, NULL);
+    ASSERT(cfg->safety.timerHandle);
+
+    osTimerStart(cfg->safety.timerHandle, pdMS_TO_TICKS(cfg->safety.timerInterval));
+    cfg->safety.inError = TRUE;
+  }
+
+  cfg->safety.errRetryCounter++;
+}
+
+
+static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
+{
+
+  ASSERT( id < ARRAY_COUNT(outsCfg) );
+  const T_OUT_CFG* cfg = OUT_GETPTR(id);
+
+  switch (cfg->safety.aerrCfg.behavior)
+  {
+  case OUT_ERR_BEH_NO:
+    break;
+
+  case OUT_ERR_BEH_LATCH:
+    // Latch channel in off state till device reset
+    OUT_SetState(id, OUT_STATE_ERR_LATCH);
+    break; 
+
+  case OUT_ERR_BEH_TRY_RETRY:
+    OUT_SetState(id, OUT_STATE_OFF);
+    OUT_DIAG_DispatchErr(id);
+    break;
+
+  default:
+    break;
+  }
 }
 
 
@@ -363,13 +546,12 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   cfg->currentMA = BSP_OUT_CalcCurrent(id);
   
   // For now this is done first
-  if(true == cfg->safety.useOc)
+  if(TRUE == cfg->safety.useOc)
   {
     if(cfg->currentMA > cfg->safety.ocThreshold)
     {
       if(cfg->safety.ocTripCounter >= cfg->safety.ocTripThreshold)
       {
-        OUT_DIAG_OnSoftOC(id);
         newStatus = OUT_STATUS_SOFT_OC;
         cfg->safety.ocTripCounter = 0;
       }else
@@ -423,6 +605,8 @@ static void OUT_DIAG_Single(T_OUT_ID id)
       }
   }
 
+  vPortEnterCritical();
+  T_OUT_STATUS prevStatus = cfg->status;
   if(newStatus == OUT_STATUS_SOFT_OC && hwStatus == OUT_STATUS_HARD_OC_OR_OT)
   {
    cfg->status =  OUT_STATUS_HARD_OC_OR_OT;
@@ -433,6 +617,16 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   {
     cfg->status = hwStatus;
   }
+
+  if( cfg->status != prevStatus )
+  {
+    if(cfg->status == OUT_STATUS_HARD_OC_OR_OT ||
+        cfg->status == OUT_STATUS_SOFT_OC)
+    {
+      OUT_DIAG_OnErrorFallback(id);
+    }
+  }
+  vPortExitCritical();
 }
 
 void OUT_DIAG_All()
@@ -466,6 +660,8 @@ T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
   ASSERT(id < OUT_ID_MAX);
   return outsCfg[id].status;
 }
+
+volatile uint32_t debug;
 
 void testTaskEntry(void *argument)
 {
