@@ -37,15 +37,27 @@ static void TELEM_SendSystemDataByCan()
     CANH_Send_SysStatus((uint8_t)PDM_GetSysStatus(), (uint16_t)VMUX_GetBattValue());
 }
 
+static void TELEM_SendStateByCan()
+{
+    uint8_t dummyStateArr[OUT_ID_MAX] = {0x00};
+    for(T_OUT_ID id = 0 ; id < OUT_ID_MAX; id++)
+    {
+        dummyStateArr[id] = OUT_DIAG_GetState(id);
+    }
+
+    CANH_Send_TxState1_16(dummyStateArr);
+}
+
 void telemTaskStart(void *argument)
 {
     /* USER CODE BEGIN telemTaskStart */
     /* Infinite loop */
     for(;;)
     {   
+        TELEM_SendStatusByCan();
+        TELEM_SendStateByCan();
         TELEM_SendVoltageByCan();
         TELEM_SendCurrentByCan();
-        TELEM_SendStatusByCan();
         TELEM_SendSystemDataByCan();
         osDelay(pdMS_TO_TICKS(50));
     }

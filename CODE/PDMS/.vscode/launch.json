@@ -40,6 +40,22 @@
             "servertype": "openocd",
             "preLaunchTask": "Build STM",
             "device": "stm32l496",
+            "swoConfig":
+            {
+                "enabled":  true,
+                "cpuFrequency": 16000000,
+                "swoFrequency": 200000,
+                "source": "probe",
+                "decoders": [
+                {
+                    "label": "ITM port 0 output",
+                    "type": "console",
+                    "port": 0,
+                    "showOnStartup": true,
+                    "encoding": "ascii"
+                }
+                ]
+            },
             "configFiles": [
                 "openocd.cfg"
             ],

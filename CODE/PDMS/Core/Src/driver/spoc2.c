@@ -1,4 +1,5 @@
 #include "spoc2.h"
+#include "FreeRTOS.h"
 #include "typedefs.h"
 
 SPOC2_config_t spoc2Cfg = 
@@ -68,12 +69,13 @@ static SPOC2_error_t SPOC2_SPI_transferBlocking(uint32 spiBusId, uint8 spiChipSe
 /// @return \ref SPOC2_ERROR_OK if successful, \ref SPOC2_ERROR_BAD_PARAMETER if the channel is out of range
 static SPOC2_error_t SPOC2_SPI_transferBlocking2(T_SPOC2_ID id, uint8* txBuffer, uint8* rxBuffer, uint32 dataLen)
 {
+    vPortEnterCritical();   
     SPOC2_error_t result = SPOC2_ERROR_OK;
 
     bool status = BSP_SPOC2_TransferBlocking(id, txBuffer, rxBuffer, dataLen);
 
     result = (status) ? SPOC2_ERROR_OK : SPOC2_ERROR_INVALID_OPERATION;
-
+    vPortExitCritical();
     return result;
 
 }
@@ -1583,6 +1585,17 @@ void SPOC2_Init()
     SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_2], 1);
     SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_2], 2);
     SPOC2_Config_disableOutputChannel(&spoc2Cfg.devices[SPOC2_ID_2], 3);
+
+    // Set sense ratio low kilis 830 or 1830
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 0, SPOC2_CURRENT_SENSE_RATIO_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 1, SPOC2_CURRENT_SENSE_RATIO_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 2, SPOC2_CURRENT_SENSE_RATIO_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 3, SPOC2_CURRENT_SENSE_RATIO_LOW);
+
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 0, SPOC2_CURRENT_SENSE_RATIO_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 1, SPOC2_CURRENT_SENSE_RATIO_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 2, SPOC2_CURRENT_SENSE_RATIO_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 3, SPOC2_CURRENT_SENSE_RATIO_LOW);
 
     // Apply both device config
     SPOC2_applyDeviceConfig(&spoc2Cfg.devices[SPOC2_ID_1]);

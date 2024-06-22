@@ -10,6 +10,8 @@
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
+/// CONFIG
+//#define DISABLE_BUZZER 1
 #define POWER_OUT_COUNT 16
 #define USE_PDM_ASSERT 1
 
@@ -40,5 +42,7 @@ typedef struct _T_CAN_IO
     uint32_t stdId;
     uint16_t offset;
 }T_CAN_IO;
+
+
 
 #endif 

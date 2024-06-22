@@ -54,26 +54,26 @@ static void PDM_OutConfig()
 
 static void PDM_Init()
 {
+    vPortEnterCritical();
     // SPOC2 External outputs init (all outputs disabled)
     SPOC2_Init();
 
     // Initialize output module (set correct mode and state)
     PDM_OutConfig();
 
-    // Initialize ARGB'S
-    WS2812B_Init(&htim2, TIM_CHANNEL_4);
+    vPortExitCritical();
     
-    // Do a startup led action
-    WS2812B_StartupAction();
 }
 
 void pdmTaskStart(void *argument)
 {   
     // Initialization sequence 
     PDM_Init();
+    LOG_INFO("After init");
     
     for(;;)
     {
+        
         bool* logicResults = LOGIC_Evaluate();
         for(uint8_t i = 0; i < OUT_ID_MAX; i++)
         {

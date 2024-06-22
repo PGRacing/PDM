@@ -4,7 +4,10 @@
 #include <math.h>
 #include "cmsis_os2.h"
 #include "tim.h"
+#include "out.h"
 #include "typedefs.h"
+#include "FreeRTOS.h"
+#include "pdm.h"
 
 /* This values work when full cycle of timer is set for 1.25us
  * For eg. internal clock = 16Mhz  prescaler = 0 counter_period = 20-1
@@ -51,6 +54,7 @@ struct
 }ws2812b_conf;
 
 uint8_t buff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
+uint8_t dpbuff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
 
 static void WS2812B_SetByteHelper(uint32_t pos, uint8_t value)
 {
@@ -94,16 +98,29 @@ void WS2812B_Flush(void)
     memset(buff, 0x00, RESET_SIG_SIZE);
     buff[ARRAY_COUNT(buff) - 1] = 100;
     HAL_TIM_PWM_Start_DMA(ws2812b_conf.htim, ws2812b_conf.pwm_channel, &buff, ARRAY_COUNT(buff));
+    memcpy(dpbuff, buff, sizeof(buff));
 }
+
+// Flush only if update needed
+void WS2812B_FlushIf(void)
+{
+    if(memcmp(dpbuff, buff, sizeof(buff)) != 0)
+    {
+        WS2812B_Flush();
+    }
+}
+
 
 void WS2812B_SetSingle(uint16_t led_index, rgb_t color)
 {
+    vPortEnterCritical();
     if (led_index < LED_NUM)
     {
         WS2812B_SetByteHelper(RESET_SIG_SIZE + DATA_SIZE * led_index, gamma8[color.g]);
         WS2812B_SetByteHelper(RESET_SIG_SIZE + DATA_SIZE * led_index + 8,  gamma8[color.r]);
         WS2812B_SetByteHelper(RESET_SIG_SIZE + DATA_SIZE * led_index + 16, gamma8[color.b]);
     }
+    vPortExitCritical();
 }
 
 void WS2812B_Clear(void)
@@ -137,6 +154,115 @@ void WS2812B_StartupAction()
     osDelay(500);
     WS2812B_Clear();
     WS2812B_Flush();
+}
+
+
+#define WS2812B_STAT_LED1 17
+#define WS2812B_STAT_LED2 18
+void WS2812B_EvaluateLeds()
+{
+    // SETUP LEDS
+
+    for (uint8_t id = 0; id < OUT_ID_MAX; id++)
+    {
+        
+        T_OUT_TYPE t = OUT_GetType(id);
+
+        T_OUT_STATE s = OUT_DIAG_GetState(id);
+        switch (s)
+        {
+        case OUT_STATE_ON:
+            WS2812B_SetSingle(id, green);
+            break;
+
+        case OUT_STATE_OFF:
+            WS2812B_SetSingle(id, clear);
+            break;
+
+        case OUT_STATE_ERR_LATCH:
+            WS2812B_SetSingle(id, red);
+            break;
+
+        default:
+            break;
+        }
+
+        // Better option based on Status
+        // if(t == OUT_TYPE_BTS500)
+        // {
+        //     T_OUT_STATUS s = OUT_DIAG_GetStatus(id);
+        //     switch (s)
+        //     {
+        //     case OUT_STATUS_NORMAL_OFF:
+        //         WS2812B_SetSingle(id, clear);
+        //         break;
+        //     case OUT_STATUS_NORMAL_ON:
+        //         WS2812B_SetSingle(id, green);
+        //         break;
+        //     case OUT_STATUS_ERR_LATCH:
+        //         WS2812B_SetSingle(id, red);
+        //         break;
+        //     case OUT_STATUS_OPEN_LOAD:
+        //     case OUT_STATUS_HARD_OC_OR_OT:
+        //     case OUT_STATUS_S_AND_H_OC:
+        //     case OUT_STATUS_SOFT_OC:
+        //     case OUT_STATUS_SHORT_TO_VSS:
+        //         WS2812B_SetSingle(id, rcpergol);
+        //         break;
+
+        //     default:
+        //         WS2812B_SetSingle(id, clear);
+        //         break;
+        //     }
+        // }
+        // else if(t == OUT_TYPE_SPOC2)
+        // {   
+        //     T_OUT_STATE s = OUT_DIAG_GetState(id);
+        //     switch (s)
+        //     {
+        //     case OUT_STATE_ON:
+        //         WS2812B_SetSingle(id, green);
+        //         break;
+
+        //     case OUT_STATE_OFF:
+        //         WS2812B_SetSingle(id, clear);
+        //         break;
+        //     default:
+        //         break;
+        //     }
+        // }
+    }
+
+    T_PDM_SYS_STATUS sysStat = PDM_GetSysStatus();
+    switch (sysStat)
+    {
+    case PDM_SYS_STATUS_OK:
+        WS2812B_SetSingle(WS2812B_STAT_LED1, green);
+        break;
+    case PDM_SYS_STATUS_ERROR: 
+        WS2812B_SetSingle(WS2812B_STAT_LED1, red);
+        break;
+    default:
+        break;
+    }
+}
+
+// TODO Move to another module
+void argbTaskStart(void *argument)
+{
+    /* USER CODE BEGIN telemTaskStart */
+    // Initialize ARGB'S
+    WS2812B_Init(&htim2, TIM_CHANNEL_4);
+    // Do a startup led action
+    WS2812B_StartupAction();
+    /* Infinite loop */
+    for (;;)
+    {
+        osDelay(pdMS_TO_TICKS(100));
+        WS2812B_EvaluateLeds();
+        WS2812B_FlushIf();
+    }
+    /* USER CODE END telemTaskStart */
 }
 
 void WS2812_Test()

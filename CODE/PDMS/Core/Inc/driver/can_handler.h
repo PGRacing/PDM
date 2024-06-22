@@ -27,6 +27,11 @@ typedef struct _T_CANH_TX_STATUS_8CH
    uint8_t status[8]; // Propably will be changed to some kind of casted enum
 }T_CANH_TX_STATUS_8CH; 
 
+typedef struct _T_CANH_TX_STATE_16CH
+{
+   uint8_t state[8];
+}T_CANH_TX_STATE_16CH; 
+
 typedef struct _T_CANH_TX_VOLTAGE_4CH
 {
     uint16_t voltage[4]; // Voltage of channels passed in mV value (0 - 65535 mV)
@@ -42,6 +47,7 @@ typedef union __packed
     uint8_t raw[8];
     T_CANH_SYSTEM_STATUS system_status;
     T_CANH_TX_STATUS_8CH status_8ch;
+    T_CANH_TX_STATE_16CH state_16ch;
     T_CANH_TX_VOLTAGE_4CH voltage_4ch;
     T_CANH_TX_CURRENT_4CH current_4ch;
 }T_CANH_DATA;
@@ -75,5 +81,7 @@ void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4
 
 void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
 void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
+
+void CANH_Send_TxState1_16(uint8_t s[16]);
 
 void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage);

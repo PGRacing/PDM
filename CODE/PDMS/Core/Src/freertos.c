@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "iwdg.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -124,6 +125,13 @@ const osThreadAttr_t adc2Task_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for argbTask */
+osThreadId_t argbTaskHandle;
+const osThreadAttr_t argbTask_attributes = {
+  .name = "argbTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -141,6 +149,7 @@ extern void pdmTaskStart(void *argument);
 extern void spoc2CurrTaskStart(void *argument);
 extern void telemTaskStart(void *argument);
 extern void adc2TaskStart(void *argument);
+extern void argbTaskStart(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -203,6 +212,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of adc2Task */
   adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
+
+  /* creation of argbTask */
+  argbTaskHandle = osThreadNew(argbTaskStart, NULL, &argbTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

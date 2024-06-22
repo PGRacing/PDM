@@ -282,6 +282,7 @@ static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 T_LOGIC logics[POWER_OUT_COUNT] = 
 {
   [0] = {
+    // ECUMASTER
     .isUsed = FALSE,
     .exp = LOGIC_EXP_ALWAYS_ON
   },
@@ -295,7 +296,8 @@ T_LOGIC logics[POWER_OUT_COUNT] =
     .isUsed = FALSE
   },
   [4] = {
-    .isUsed = FALSE
+    .isUsed = TRUE,
+    .exp = LOGIC_EXP_ALWAYS_ON
   },
   [5] = {
     .isUsed = FALSE
@@ -305,25 +307,23 @@ T_LOGIC logics[POWER_OUT_COUNT] =
   },
   [7] = {
     .isUsed = TRUE,
-    .exp = 
-    {
-      .opr = LOGIC_OPERATOR_IT,
-      .input1Type = LOGIC_INPUT_TYPE_SENSOR,
-      .input1ID = IN_PHY_ID_1,
-      .input2Type = LOGIC_INPUT_TYPE_UNSET
-    }
+    .exp = LOGIC_EXP_ALWAYS_ON
   },
   [8] = {
-    .isUsed = FALSE
+    .isUsed = FALSE,
   },
   [9] = {
-    .isUsed = FALSE
+    // LOGGER
+    .isUsed = TRUE,
+    .exp = LOGIC_EXP_ALWAYS_ON
   },
   [10] = {
     .isUsed = FALSE
   },
   [11] = {
-    .isUsed = FALSE
+    // DASHBOARD
+    .isUsed = TRUE,
+    .exp = LOGIC_EXP_ALWAYS_ON
   },
   [12] = {
     .isUsed = FALSE

@@ -11,7 +11,7 @@ uint32_t can1TxMailbox[4];
 /* CAN2 TxMailbox */
 uint32_t can2TxMailbox[4];
 
-#define CANH_DEFAULT_TERM1_ENABLED 1
+//#define CANH_DEFAULT_TERM1_ENABLED 1
 #define CANH_DEFAULT_TERM2_ENABLED 1
 
 /////////////////////////
@@ -28,14 +28,15 @@ typedef enum
     CANH_ID_SYS_STATUS    = 0x401, // System status
     CANH_ID_STATUS_1_8    = 0x402, // Status of channels 1-8 (default value)
     CANH_ID_STATUS_9_16   = 0x403, // Status of channels 9-16 (default value)
-    CANH_ID_VOLTAGE_1_4   = 0x404, // Voltage of channels 1-4 (default value)
-    CANH_ID_VOLTAGE_5_8   = 0x405, // Voltage of channels 5-8 (default value)
-    CANH_ID_VOLTAGE_9_12  = 0x406, // Voltage of channels 9-12 (default value)
-    CANH_ID_VOLTAGE_13_16 = 0x407, // Voltage of channels 13-16 (default value)
-    CANH_ID_CURRENT_1_4   = 0x408, // Current of channels 1-4 (default value)
-    CANH_ID_CURRENT_5_8   = 0x409, // Current of channels 5-8 (default value)
-    CANH_ID_CURRENT_9_12  = 0x410, // Current of channels 9-12 (default value)
-    CANH_ID_CURRENT_13_16 = 0x411, // Current of channels 13-16 (default value)
+    CANH_ID_STATE_1_16    = 0x404, // State of channels 1-16 (default value)
+    CANH_ID_VOLTAGE_1_4   = 0x405, // Voltage of channels 1-4 (default value)
+    CANH_ID_VOLTAGE_5_8   = 0x406, // Voltage of channels 5-8 (default value)
+    CANH_ID_VOLTAGE_9_12  = 0x407, // Voltage of channels 9-12 (default value)
+    CANH_ID_VOLTAGE_13_16 = 0x408, // Voltage of channels 13-16 (default value)
+    CANH_ID_CURRENT_1_4   = 0x409, // Current of channels 1-4 (default value)
+    CANH_ID_CURRENT_5_8   = 0x40A, // Current of channels 5-8 (default value)
+    CANH_ID_CURRENT_9_12  = 0x40B, // Current of channels 9-12 (default value)
+    CANH_ID_CURRENT_13_16 = 0x40C, // Current of channels 13-16 (default value)
 }T_CANH_ID;
 
 /// @brief [pnpTxMsg] Message sent on device power-up
@@ -194,11 +195,25 @@ T_CANH_TX_PACKAGE CANH_TxCurrent13_16 =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
-T_CANH_TX_PACKAGE CANH_SysStatus = 
+T_CANH_TX_PACKAGE CANH_TxSysStatus = 
 {
     .header = 
     {
         .DLC = 3,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_SYS_STATUS,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+T_CANH_TX_PACKAGE CANH_TxState1_16 = 
+{
+    .header = 
+    {
+        .DLC = 8,
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
@@ -219,7 +234,7 @@ void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8
     CANH_TxStatus1_8.data.status_8ch.status[6] = s7;
     CANH_TxStatus1_8.data.status_8ch.status[7] = s8;
 
-    CANH_PushToQueue1(CANH_TxStatus9_16);
+    CANH_PushToQueue2(CANH_TxStatus9_16);
 }
 
 void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
@@ -233,9 +248,25 @@ void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint
     CANH_TxStatus1_8.data.status_8ch.status[6] = s7;
     CANH_TxStatus1_8.data.status_8ch.status[7] = s8;
 
-    CANH_PushToQueue1(CANH_TxStatus9_16);
+    CANH_PushToQueue2(CANH_TxStatus9_16);
 }
 
+void CANH_Send_TxState1_16(uint8_t s[16])
+{
+    for(uint8_t i = 0; i < 8; i++)
+    {
+        CANH_TxState1_16.data.state_16ch.state[i] = 0;
+    }
+
+    for(uint8_t i = 0; i < 16; i++)
+    {
+        // Pack states to one 8 byte frame
+        CANH_TxState1_16.data.state_16ch.state[i / 2] |= s[i] << (i % 2 ? 0 : 4);
+    }
+
+    CANH_PushToQueue2(CANH_TxState1_16);
+}
+                            
 void CANH_Send_TxVoltage1_4(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
 {
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[0] = v1;
@@ -243,7 +274,7 @@ void CANH_Send_TxVoltage1_4(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue1(CANH_TxVoltage1_4);
+    CANH_PushToQueue2(CANH_TxVoltage1_4);
 }
 
 void CANH_Send_TxVoltage5_8(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
@@ -253,7 +284,7 @@ void CANH_Send_TxVoltage5_8(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue1(CANH_TxVoltage5_8);
+    CANH_PushToQueue2(CANH_TxVoltage5_8);
 }
 
 void CANH_Send_TxVoltage9_12(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
@@ -263,7 +294,7 @@ void CANH_Send_TxVoltage9_12(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue1(CANH_TxVoltage9_12);
+    CANH_PushToQueue2(CANH_TxVoltage9_12);
 }
 
 void CANH_Send_TxVoltage13_16(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
@@ -273,7 +304,7 @@ void CANH_Send_TxVoltage13_16(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue1(CANH_TxVoltage13_16);
+    CANH_PushToQueue2(CANH_TxVoltage13_16);
 }
 
 void CANH_Send_TxCurrent1_4(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -283,7 +314,7 @@ void CANH_Send_TxCurrent1_4(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
     CANH_TxCurrent1_4.data.current_4ch.current[2] = c3;
     CANH_TxCurrent1_4.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue1(CANH_TxCurrent1_4);
+    CANH_PushToQueue2(CANH_TxCurrent1_4);
 }
 
 void CANH_Send_TxCurrent5_8(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -293,7 +324,7 @@ void CANH_Send_TxCurrent5_8(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
     CANH_TxCurrent5_8.data.current_4ch.current[2] = c3;
     CANH_TxCurrent5_8.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue1(CANH_TxCurrent5_8);
+    CANH_PushToQueue2(CANH_TxCurrent5_8);
 }
 
 void CANH_Send_TxCurrent9_12(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -303,7 +334,7 @@ void CANH_Send_TxCurrent9_12(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
     CANH_TxCurrent9_12.data.current_4ch.current[2] = c3;
     CANH_TxCurrent9_12.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue1(CANH_TxCurrent9_12);
+    CANH_PushToQueue2(CANH_TxCurrent9_12);
 }
 
 void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -313,15 +344,15 @@ void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4
     CANH_TxCurrent13_16.data.current_4ch.current[2] = c3;
     CANH_TxCurrent13_16.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue1(CANH_TxCurrent13_16);
+    CANH_PushToQueue2(CANH_TxCurrent13_16);
 }
 
 void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage)
 {
-    CANH_SysStatus.data.system_status.status = sysStatus;
-    CANH_SysStatus.data.system_status.battVoltage = battVoltage;
+    CANH_TxSysStatus.data.system_status.status = sysStatus;
+    CANH_TxSysStatus.data.system_status.battVoltage = battVoltage;
 
-    CANH_PushToQueue1(CANH_SysStatus);
+    CANH_PushToQueue2(CANH_TxSysStatus);
 }
 
 void CANH_SwitchTerminator1(bool state)

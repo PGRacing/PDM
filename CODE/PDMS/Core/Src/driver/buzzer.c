@@ -13,10 +13,14 @@ static T_IO buzzerIo =
 
 void BUZZER_TurnOn()
 {
+#ifndef DISABLE_BUZZER
     LL_GPIO_SetOutputPin(buzzerIo.port, buzzerIo.pin);
+#endif
 }
 
 void BUZZER_TurnOff()
 {
+#ifndef DISABLE_BUZZER
     LL_GPIO_ResetOutputPin(buzzerIo.port, buzzerIo.pin);
+#endif
 }

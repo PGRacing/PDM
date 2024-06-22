@@ -10,6 +10,7 @@
 #include "tim.h"
 #include "stdlib.h"
 #include "cmsis_os2.h"
+#include "ws2812b.h"
 
 // Safety related defines
 #define OUT_DIAG_READ_FREQ 200 // 200 Hz frequency of adc read
@@ -133,9 +134,18 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .state = OUT_STATE_OFF,
             .safety = 
             {
-              .safetyCallback = &OUT_CH5_SafetyCallback,
+              .aerrCfg = OUT_ERR_BEH_LATCH,
+              .actOnSafety = FALSE,
+              .useOc = TRUE,
+              .ocThreshold = 7000, // mA
+              .ocTripCounter = 0, // non conf
+              .ocTripThreshold = 1000, // ms
+              .errRetryCounter = 0, // non conf
+              .errRetryThreshold = 6, // 
               .timerHandle = NULL,
-              .timerInterval = 500,
+              .timerInterval = 1000,
+              .safetyCallback = &OUT_CH5_SafetyCallback,
+              .inError = FALSE
             }
         },
         [OUT_ID_6] = {
@@ -171,7 +181,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
               .useOc = TRUE,
-              .ocThreshold = 1500, // mA
+              .ocThreshold = 5000, // mA
               .ocTripCounter = 0, // non conf
               .ocTripThreshold = 100, // ms
               .errRetryCounter = 0, // non conf
@@ -540,6 +550,17 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   // Currently for BTS500 only
   if( outsCfg[id].type != OUT_TYPE_BTS500)
   {
+    if(outsCfg[id].state == OUT_STATE_ON)
+    {
+      outsCfg[id].status = OUT_STATUS_NORMAL_ON;
+    }else if(outsCfg[id].state == OUT_STATE_OFF)
+    {
+      outsCfg[id].status = OUT_STATUS_NORMAL_OFF;
+    }else if(outsCfg[id].state == OUT_STATE_ERR_LATCH)
+    {
+      outsCfg[id].status = OUT_STATE_ERR_LATCH;
+    }
+    outsCfg[id].voltageMV = VMUX_GetValue(id);
     return;
   }
 
@@ -569,7 +590,7 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   uint32_t batteryVoltage = VMUX_GetBattValue();
   uint32_t faultLevel = 12000;
   uint32_t dkilis = BSP_OUT_GetDkilis(id);
-  uint32_t voltageHis = 500; // 500 mV for now
+  uint32_t voltageHis = 1000; // 500 mV for now
 
   T_OUT_STATUS hwStatus = OUT_STATUS_NORMAL_OFF;
   if(OUT_STATE_OFF == cfg->state)
@@ -621,7 +642,8 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   if( cfg->status != prevStatus )
   {
     if(cfg->status == OUT_STATUS_HARD_OC_OR_OT ||
-        cfg->status == OUT_STATUS_SOFT_OC)
+        cfg->status == OUT_STATUS_SOFT_OC ||
+        cfg->status == OUT_STATUS_S_AND_H_OC)
     {
       OUT_DIAG_OnErrorFallback(id);
     }
@@ -659,6 +681,18 @@ T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
 {
   ASSERT(id < OUT_ID_MAX);
   return outsCfg[id].status;
+}
+
+T_OUT_TYPE OUT_GetType(T_OUT_ID id)
+{
+  ASSERT(id < OUT_ID_MAX);
+  return outsCfg[id].type;
+}
+
+T_OUT_STATE OUT_DIAG_GetState(T_OUT_ID id)
+{
+  ASSERT(id < OUT_ID_MAX);
+  return outsCfg[id].state;
 }
 
 volatile uint32_t debug;

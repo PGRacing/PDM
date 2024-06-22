@@ -52,6 +52,7 @@ typedef struct _T_OUT_CFG
     const T_OUT_TYPE type;        // Device type - can be BTS500 or BTS72220
     const T_SPOC2_ID spocId;      // If device is BTS72220 this holds sub device id
     const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
+    char             name[16];
     T_OUT_MODE       mode;
     T_OUT_STATE      state;
     T_OUT_STATUS     status;
@@ -83,5 +84,9 @@ uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id);
 uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id);
 
 T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id);
+
+T_OUT_TYPE OUT_GetType(T_OUT_ID id);
+
+T_OUT_STATE OUT_DIAG_GetState(T_OUT_ID id);
 
 #endif
