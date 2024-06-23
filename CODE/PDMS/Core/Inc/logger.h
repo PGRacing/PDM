@@ -26,7 +26,7 @@
 #define LOG_ERR(X)  LOGF("%sERR::  " X "\n", LOG_CRED)
 
 #define LOG_VAR(X) _Generic((X), \
-                    default  : LOGF("VAR:: unhandled type") , \
+                    default  : LOGF("VAR:: unhandled type\n") , \
                     uint8_t  : LOGF("VAR:: (uint8_t)  %s = %u\n", #X, X ), \
                     uint16_t : LOGF("VAR:: (uint16_t) %s = %u\n", #X, X ), \
                     uint32_t : LOGF("VAR:: (uint32_t) %s = %u\n", #X, X ), \

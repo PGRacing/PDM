@@ -325,16 +325,16 @@ void MX_ADC3_Init(void)
 
   /** Configure Regular Channel
   */
-  sConfig.Channel = ADC_CHANNEL_6;
-  sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
-  sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.OffsetNumber = ADC_OFFSET_NONE;
-  sConfig.Offset = 0;
-  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  // sConfig.Channel = ADC_CHANNEL_6;
+  // sConfig.Rank = ADC_REGULAR_RANK_1;
+  // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  // sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  // sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  // sConfig.Offset = 0;
+  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
   /* USER CODE BEGIN ADC3_Init 2 */
 
   /* USER CODE END ADC3_Init 2 */
@@ -710,7 +710,7 @@ void adc1TaskStart(void *argument)
         {
           xSemaphoreGive(adc1ConvReadySemaphore);
           // Start channel diagnostics
-          OUT_DIAG_All();
+          OUT_DIAG_AllBts();
         }
     }
     /* USER CODE END adcTaskStart */

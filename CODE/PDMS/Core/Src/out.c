@@ -68,6 +68,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 {
         [OUT_ID_1] = {
             .id = OUT_ID_1,
+            .name = "SERVO",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -89,6 +90,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_2] = {
             .id = OUT_ID_2,
+            .name = "CAN L",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -105,6 +107,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_3] = {
             .id = OUT_ID_3,
+            .name = "GCU",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -117,6 +120,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_4] = {
             .id = OUT_ID_4,
+            .name = "-",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -129,6 +133,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_5] = {
             .id = OUT_ID_5,
+            .name = "MAINS",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -150,6 +155,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_6] = {
             .id = OUT_ID_6,
+            .name = "PUMP",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -162,6 +168,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_7] = {
             .id = OUT_ID_7,
+            .name = "FAN",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -174,6 +181,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_8] = {
             .id = OUT_ID_8,
+            .name = "ECU",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
@@ -194,6 +202,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_9] = {
             .id = OUT_ID_9,
+            .name = "TELE B",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_1,
@@ -202,6 +211,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_10] = {
             .id = OUT_ID_10,
+            .name = "E.LOG",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_2,
@@ -210,6 +220,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_11] = {
             .id = OUT_ID_11,
+            .name = "TELE F",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_3,
@@ -218,6 +229,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_12] = {
             .id = OUT_ID_12,
+            .name = "DASH",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_4,
@@ -226,6 +238,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_13] = {
             .id = OUT_ID_13,
+            .name = "COMM",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_1,
@@ -234,6 +247,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },        
         [OUT_ID_14] = {
             .id = OUT_ID_14,
+            .name = "C.LOG",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_2,
@@ -242,6 +256,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },        
         [OUT_ID_15] = {
             .id = OUT_ID_15,
+            .name = "ADD 1",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_3,
@@ -250,6 +265,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },        
         [OUT_ID_16] = {
             .id = OUT_ID_16,
+            .name = "ADD 2",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_4,
@@ -399,7 +415,11 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
-      SPOC2_SetStdState(outsCfg[id].spocId, outsCfg[id].spocChId, state);
+      // If new state is applied
+      if(state != cfg->state)
+      {
+        SPOC2_SetStdState(outsCfg[id].spocId, outsCfg[id].spocChId, state);
+      }
     }
     
     cfg->state = state;
@@ -540,27 +560,16 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
 }
 
 
-static void OUT_DIAG_Single(T_OUT_ID id)
+static void OUT_DIAG_SingleBts(T_OUT_ID id)
 {
   ASSERT( id < ARRAY_COUNT(outsCfg) );
   
   T_OUT_CFG* cfg = OUT_GETPTR(id);
   T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
 
-  // Currently for BTS500 only
+  // BTS500 ONLY
   if( outsCfg[id].type != OUT_TYPE_BTS500)
   {
-    if(outsCfg[id].state == OUT_STATE_ON)
-    {
-      outsCfg[id].status = OUT_STATUS_NORMAL_ON;
-    }else if(outsCfg[id].state == OUT_STATE_OFF)
-    {
-      outsCfg[id].status = OUT_STATUS_NORMAL_OFF;
-    }else if(outsCfg[id].state == OUT_STATE_ERR_LATCH)
-    {
-      outsCfg[id].status = OUT_STATE_ERR_LATCH;
-    }
-    outsCfg[id].voltageMV = VMUX_GetValue(id);
     return;
   }
 
@@ -651,11 +660,53 @@ static void OUT_DIAG_Single(T_OUT_ID id)
   vPortExitCritical();
 }
 
-void OUT_DIAG_All()
+void OUT_DIAG_AllBts()
 {
-  for(uint8_t id = 0; id < OUT_ID_MAX; id++)
+  for(uint8_t id = 0; id < OUT_ID_BTS_MAX; id++)
   {
-    OUT_DIAG_Single(id);
+    OUT_DIAG_SingleBts(id);
+  }
+}
+
+void OUT_DIAG_SingleSpoc(T_OUT_ID id)
+{
+  ASSERT( id < ARRAY_COUNT(outsCfg) );
+  
+  T_OUT_CFG* cfg = OUT_GETPTR(id);
+  T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
+
+  // SPOC2 ONLY
+  if( outsCfg[id].type != OUT_TYPE_SPOC2)
+  {
+    return;
+  }
+    
+  cfg->voltageMV = VMUX_GetValue(id);
+  cfg->currentMA = BSP_OUT_CalcCurrent(id);
+  uint32_t batteryVoltage = VMUX_GetBattValue();
+  uint32_t dkilis = BSP_OUT_GetDkilis(id);
+
+  if(outsCfg[id].state == OUT_STATE_ON)
+  {
+    outsCfg[id].status = OUT_STATUS_NORMAL_ON;
+  }
+  else if(outsCfg[id].state == OUT_STATE_OFF)
+  {
+    outsCfg[id].status = OUT_STATUS_NORMAL_OFF;
+  }
+  else if(outsCfg[id].state == OUT_STATE_ERR_LATCH)
+  {
+    outsCfg[id].status = OUT_STATE_ERR_LATCH;
+  }
+
+  return;   
+}
+
+void OUT_DIAG_AllSpoc()
+{
+  for(uint8_t id = OUT_ID_BTS_MAX; id < OUT_ID_MAX; id++)
+  {
+    OUT_DIAG_SingleSpoc(id);
   }
 }
 
@@ -693,6 +744,12 @@ T_OUT_STATE OUT_DIAG_GetState(T_OUT_ID id)
 {
   ASSERT(id < OUT_ID_MAX);
   return outsCfg[id].state;
+}
+
+char* OUT_DIAG_GetName(T_OUT_ID id)
+{
+ ASSERT(id < OUT_ID_MAX); 
+ return outsCfg[id].name;
 }
 
 volatile uint32_t debug;

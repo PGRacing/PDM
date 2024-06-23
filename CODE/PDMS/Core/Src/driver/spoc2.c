@@ -1180,10 +1180,10 @@ SPOC2_error_t SPOC2_verifyCurrentSense(const SPOC2_chain_t* chain, uint8 deviceI
                 adcAvg /= 3;
 
                 // Set current sense channel back to how it was
-                txBuffer[deviceIndex] =
-                    SPOC2_WRITE_DCR_HEADER | chain->devices[deviceIndex].registers[SPOC2_REGISTER_DCR];
-                result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer, NULL,
-                                                    chain->numDevices);
+                // txBuffer[deviceIndex] =
+                //     SPOC2_WRITE_DCR_HEADER | chain->devices[deviceIndex].registers[SPOC2_REGISTER_DCR];
+                // result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer, NULL,
+                //                                     chain->numDevices);
                 adcLowerBound = (expectedMv * 4) / 5;
                 adcUpperBound = (expectedMv * 6) / 5;
                 if ((result == SPOC2_ERROR_OK) && !((adcAvg >= adcLowerBound) && (adcAvg <= adcUpperBound))) {
@@ -1597,6 +1597,7 @@ void SPOC2_Init()
     SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 2, SPOC2_CURRENT_SENSE_RATIO_LOW);
     SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 3, SPOC2_CURRENT_SENSE_RATIO_LOW);
 
+    SPOC2_Config_selectCurrentSenseChannel(&spoc2Cfg.devices[SPOC2_ID_1], 3);
     // Apply both device config
     SPOC2_applyDeviceConfig(&spoc2Cfg.devices[SPOC2_ID_1]);
     SPOC2_applyDeviceConfig(&spoc2Cfg.devices[SPOC2_ID_2]);

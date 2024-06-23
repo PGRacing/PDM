@@ -29,7 +29,9 @@
 
 volatile uint32_t VMUX_BattVoltage = 13800;
 
-volatile uint32_t VMUX_LP1Voltage[4] = {0};
+volatile uint16_t VMUX_LP1Voltage[4] = {0};
+
+volatile uint16_t VMUX_LP2Voltage[4] = {0};
 
 volatile uint32_t VMUX_Value[VMUX_INPUT_COUNT] = {0};
 
@@ -141,7 +143,7 @@ void  VMUX_SelectLP1AdcChannel()
      */
     sConfig.Channel = ADC_CHANNEL_7;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -158,7 +160,7 @@ void  VMUX_SelectLP2AdcChannel()
      */
     sConfig.Channel = ADC_CHANNEL_6;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -186,23 +188,37 @@ static void VMUX_ReadBattVoltage()
 
 static void VMUX_ReadLPChannel()
 {
+    // LP1 Switch readout
     VMUX_SelectLP1AdcChannel();
-    // LP1
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
     for(uint8_t i = 0; i < 4; i++)
     {
-        SPOC2_SelectSenseMux(SPOC2_ID_1,i );
-        osDelay(100);
-        HAL_ADC_Start(&hadc3);
-        HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+        SPOC2_SelectSenseMux(SPOC2_ID_1, i);
+        osDelay(1);
         if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
         {   
-            #ifdef VMUX_STORE_VOLTAGE
-                VMUX_LP1Voltage[i] = HAL_ADC_GetValue(&hadc3);
-            #endif
-        }       
-        HAL_ADC_Stop(&hadc3);
+            VMUX_LP1Voltage[i] = HAL_ADC_GetValue(&hadc3);
+        }
     }
-   
+    HAL_ADC_Stop(&hadc3);  
+
+    // LP2 Switch readout
+    VMUX_SelectLP2AdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        SPOC2_SelectSenseMux(SPOC2_ID_2, i);
+        osDelay(1);
+        if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
+        {   
+            VMUX_LP2Voltage[i] = HAL_ADC_GetValue(&hadc3);
+        }
+    }
+    HAL_ADC_Stop(&hadc3);  
+
+    OUT_DIAG_AllSpoc();
 }
 
 static void VMUX_GetAllPooling()
@@ -243,6 +259,7 @@ void vmuxTaskStart(void *argument)
 {
     /* USER CODE BEGIN vmuxTaskStart */
     VMUX_Init();
+   
     /* Infinite loop */
     for(;;)
     {

@@ -29,6 +29,7 @@ typedef struct _T_OUT_SAFETY_AERR_CFG
 }T_OUT_SAFETY_AERR_CFG;
 
 #define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
+#define OUT_DIAG_NAME_LEN 32
 
 typedef struct _T_OUT_SAFETY_CFG
 {
@@ -52,7 +53,7 @@ typedef struct _T_OUT_CFG
     const T_OUT_TYPE type;        // Device type - can be BTS500 or BTS72220
     const T_SPOC2_ID spocId;      // If device is BTS72220 this holds sub device id
     const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
-    char             name[16];
+    char             name[OUT_DIAG_NAME_LEN];
     T_OUT_MODE       mode;
     T_OUT_STATE      state;
     T_OUT_STATUS     status;
@@ -75,7 +76,9 @@ bool OUT_ToggleState(T_OUT_ID id);
 
 bool OUT_Batch(T_OUT_ID id, T_OUT_ID batch);
 
-void OUT_DIAG_All();
+void OUT_DIAG_AllBts();
+
+void OUT_DIAG_AllSpoc();
 
 uint32_t OUT_DIAG_GetCurrent(T_OUT_ID id);
 
@@ -88,5 +91,7 @@ T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id);
 T_OUT_TYPE OUT_GetType(T_OUT_ID id);
 
 T_OUT_STATE OUT_DIAG_GetState(T_OUT_ID id);
+
+char* OUT_DIAG_GetName(T_OUT_ID id);
 
 #endif

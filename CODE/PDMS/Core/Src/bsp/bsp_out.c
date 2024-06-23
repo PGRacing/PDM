@@ -5,6 +5,7 @@
 #include "stm32l4xx_ll_tim.h"
 #include "typedefs.h"
 #include "logger.h"
+#include "vmux.h"
 #include "bsp_out.h"
 #include "adc.h"
 
@@ -135,6 +136,54 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .dkilis = 38000,
         .sensRValue = 8200
     },
+    [OUT_ID_9] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[0]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_10] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[1]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_11] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[2]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_12] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[3]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_13] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[0]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_14] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[1]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_15] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[2]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_16] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[3]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    }
 };
 
 static inline T_IO BSP_OUT_GetIO(T_OUT_ID id)
@@ -152,8 +201,9 @@ uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id)
 {
     ASSERT( id < OUT_ID_MAX);
     uint32_t isVoltage = ((float)*(bspOutsCfg[id].currentRawData)/(float)4096)*(float)VDD_VALUE; 
-    return isVoltage *  bspOutsCfg[id].dkilis/8200.0;
+    return isVoltage *  bspOutsCfg[id].dkilis/bspOutsCfg[id].sensRValue;
 }
+
 
 static void BSP_OUT_SetTimerCompare(TIM_TypeDef* tim, uint8_t ch, uint32_t cmp)
 {

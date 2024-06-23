@@ -3,8 +3,10 @@
 #include "out.h"
 #include "pdm.h"
 #include "vmux.h"
+#include "string.h"
 #include "cmsis_os2.h"
 
+#define TELEM_OUT_NAME_PART 7
 
 static void TELEM_SendVoltageByCan()
 {
@@ -48,9 +50,28 @@ static void TELEM_SendStateByCan()
     CANH_Send_TxState1_16(dummyStateArr);
 }
 
+static void TELEM_SendNamesByCan()
+{
+    for(T_OUT_ID id = 0 ; id < OUT_ID_MAX; id++)
+    {
+        char* name = OUT_DIAG_GetName(id);
+        size_t namelen = strlen(name);
+        if( namelen != 0)
+        {
+            uint8_t parts = (namelen / TELEM_OUT_NAME_PART) + 1;
+            for(uint8_t i = 0; i < parts; i++)
+            {
+                CANH_Send_Names(id, i, (name + i * TELEM_OUT_NAME_PART));
+            }
+        }
+    }
+}
+
 void telemTaskStart(void *argument)
 {
     /* USER CODE BEGIN telemTaskStart */
+    uint8_t iOffsetCounter = 0;
+    const uint8_t iOffset = 5;
     /* Infinite loop */
     for(;;)
     {   
@@ -60,6 +81,11 @@ void telemTaskStart(void *argument)
         TELEM_SendCurrentByCan();
         TELEM_SendSystemDataByCan();
         osDelay(pdMS_TO_TICKS(50));
+        if( iOffsetCounter == iOffset)
+        {
+            TELEM_SendNamesByCan();
+        }
+        iOffsetCounter++;
     }
     /* USER CODE END telemTaskStart */
 }

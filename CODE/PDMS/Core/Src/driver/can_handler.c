@@ -1,6 +1,8 @@
 #include "can_handler.h"
 #include "cmsis_os2.h"
 #include "typedefs.h"
+#include "logger.h"
+#include "string.h"
 
 xQueueHandle can1QueueHandle;
 xQueueHandle can2QueueHandle;
@@ -37,6 +39,7 @@ typedef enum
     CANH_ID_CURRENT_5_8   = 0x40A, // Current of channels 5-8 (default value)
     CANH_ID_CURRENT_9_12  = 0x40B, // Current of channels 9-12 (default value)
     CANH_ID_CURRENT_13_16 = 0x40C, // Current of channels 13-16 (default value)
+    CANH_ID_NAMES         = 0x40D, // Channel of current name
 }T_CANH_ID;
 
 /// @brief [pnpTxMsg] Message sent on device power-up
@@ -217,7 +220,21 @@ T_CANH_TX_PACKAGE CANH_TxState1_16 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_SYS_STATUS,
+        .StdId = CANH_ID_STATE_1_16,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+T_CANH_TX_PACKAGE CANH_TxNames = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_NAMES,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -234,19 +251,19 @@ void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8
     CANH_TxStatus1_8.data.status_8ch.status[6] = s7;
     CANH_TxStatus1_8.data.status_8ch.status[7] = s8;
 
-    CANH_PushToQueue2(CANH_TxStatus9_16);
+    CANH_PushToQueue2(CANH_TxStatus1_8);
 }
 
 void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
-    CANH_TxStatus1_8.data.status_8ch.status[0] = s1;
-    CANH_TxStatus1_8.data.status_8ch.status[1] = s2;
-    CANH_TxStatus1_8.data.status_8ch.status[2] = s3;
-    CANH_TxStatus1_8.data.status_8ch.status[3] = s4;
-    CANH_TxStatus1_8.data.status_8ch.status[4] = s5;
-    CANH_TxStatus1_8.data.status_8ch.status[5] = s6;
-    CANH_TxStatus1_8.data.status_8ch.status[6] = s7;
-    CANH_TxStatus1_8.data.status_8ch.status[7] = s8;
+    CANH_TxStatus9_16.data.status_8ch.status[0] = s1;
+    CANH_TxStatus9_16.data.status_8ch.status[1] = s2;
+    CANH_TxStatus9_16.data.status_8ch.status[2] = s3;
+    CANH_TxStatus9_16.data.status_8ch.status[3] = s4;
+    CANH_TxStatus9_16.data.status_8ch.status[4] = s5;
+    CANH_TxStatus9_16.data.status_8ch.status[5] = s6;
+    CANH_TxStatus9_16.data.status_8ch.status[6] = s7;
+    CANH_TxStatus9_16.data.status_8ch.status[7] = s8;
 
     CANH_PushToQueue2(CANH_TxStatus9_16);
 }
@@ -351,8 +368,15 @@ void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage)
 {
     CANH_TxSysStatus.data.system_status.status = sysStatus;
     CANH_TxSysStatus.data.system_status.battVoltage = battVoltage;
-
     CANH_PushToQueue2(CANH_TxSysStatus);
+}
+
+void CANH_Send_Names(uint8_t id, uint8_t part, char str[7])
+{
+    CANH_TxNames.data.raw[0] = (part << 4) + (id & 0x0F); 
+    memcpy(&(CANH_TxNames.data.raw[1]), str, 7);
+
+    CANH_PushToQueue2(CANH_TxNames);
 }
 
 void CANH_SwitchTerminator1(bool state)

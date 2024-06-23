@@ -24,6 +24,8 @@ typedef enum
     OUT_ID_16 = 0x0F,
     OUT_ID_MAX
 }T_OUT_ID;
+
+#define OUT_ID_BTS_MAX 8
 typedef enum
 {
     OUT_MODE_UNUSED   = 0x00, // Unused - external control
