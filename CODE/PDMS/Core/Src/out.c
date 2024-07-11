@@ -77,11 +77,11 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
               .useOc = TRUE,
-              .ocThreshold = 4000, // mA
+              .ocThreshold = 10000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 100, // ms
+              .ocTripThreshold = 1500, // ms
               .errRetryCounter = 0, // non conf
-              .errRetryThreshold = 6, // 
+              .errRetryThreshold = 3, // 
               .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH1_SafetyCallback,
@@ -97,7 +97,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .safety = 
             {
               .useOc = TRUE,
-              .ocThreshold = 2000, // 1000mA Threshold
+              .ocThreshold = 2000, // 2000mA Threshold
               .ocTripCounter = 0,
               .ocTripThreshold = 0,
               .safetyCallback = &OUT_CH2_SafetyCallback,
@@ -113,9 +113,18 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .state = OUT_STATE_OFF,
             .safety = 
             {
-              .safetyCallback = &OUT_CH3_SafetyCallback,
+              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .actOnSafety = FALSE,
+              .useOc = TRUE,
+              .ocThreshold = 8000, // mA
+              .ocTripCounter = 0, // non conf
+              .ocTripThreshold = 200, // ms
+              .errRetryCounter = 0, // non conf
+              .errRetryThreshold = 6, // 
               .timerHandle = NULL,
-              .timerInterval = 500,
+              .timerInterval = 1000,
+              .safetyCallback = &OUT_CH3_SafetyCallback,
+              .inError = FALSE
             }
         },
         [OUT_ID_4] = {
@@ -161,9 +170,18 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .state = OUT_STATE_OFF,
             .safety = 
             {
-              .safetyCallback = &OUT_CH6_SafetyCallback,
+              .aerrCfg = OUT_ERR_BEH_LATCH,
+              .actOnSafety = FALSE,
+              .useOc = TRUE,
+              .ocThreshold = 10000, // mA
+              .ocTripCounter = 0, // non conf
+              .ocTripThreshold = 1000, // ms
+              .errRetryCounter = 0, // non conf
+              .errRetryThreshold = 6, // 
               .timerHandle = NULL,
-              .timerInterval = 500,
+              .timerInterval = 1000,
+              .safetyCallback = &OUT_CH6_SafetyCallback,
+              .inError = FALSE
             }
         },
         [OUT_ID_7] = {
@@ -522,7 +540,7 @@ static void OUT_DIAG_DispatchErr(T_OUT_ID id)
     // Check if safety function callback does exist
     ASSERT(cfg->safety.safetyCallback);
 
-    cfg->safety.timerHandle = osTimerNew(cfg->safety.safetyCallback, osTimerOnce, NULL, NULL);
+    cfg->safety.timerHandle = osTimerNew((osTimerFunc_t)cfg->safety.safetyCallback, osTimerOnce, NULL, NULL);
     ASSERT(cfg->safety.timerHandle);
 
     osTimerStart(cfg->safety.timerHandle, pdMS_TO_TICKS(cfg->safety.timerInterval));
@@ -621,7 +639,9 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
     // TODO Fix magic values
       if(cfg->currentMA >= faultLevel)
       {
-        hwStatus = OUT_STATUS_HARD_OC_OR_OT;
+        // TODO WARN
+        // No latch on HW
+        //hwStatus = OUT_STATUS_HARD_OC_OR_OT;
       }
       else if(((cfg->currentMA <= 0.0000143 * (float)dkilis) && (cfg->currentMA > 0.000001 * (float)dkilis)) 
       || (cfg->currentMA <= 0.000001 * (float)dkilis))
@@ -673,7 +693,7 @@ void OUT_DIAG_SingleSpoc(T_OUT_ID id)
   ASSERT( id < ARRAY_COUNT(outsCfg) );
   
   T_OUT_CFG* cfg = OUT_GETPTR(id);
-  T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
+  //T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
 
   // SPOC2 ONLY
   if( outsCfg[id].type != OUT_TYPE_SPOC2)
@@ -683,8 +703,8 @@ void OUT_DIAG_SingleSpoc(T_OUT_ID id)
     
   cfg->voltageMV = VMUX_GetValue(id);
   cfg->currentMA = BSP_OUT_CalcCurrent(id);
-  uint32_t batteryVoltage = VMUX_GetBattValue();
-  uint32_t dkilis = BSP_OUT_GetDkilis(id);
+  //uint32_t batteryVoltage = VMUX_GetBattValue();
+  //uint32_t dkilis = BSP_OUT_GetDkilis(id);
 
   if(outsCfg[id].state == OUT_STATE_ON)
   {
@@ -751,8 +771,6 @@ char* OUT_DIAG_GetName(T_OUT_ID id)
  ASSERT(id < OUT_ID_MAX); 
  return outsCfg[id].name;
 }
-
-volatile uint32_t debug;
 
 void testTaskEntry(void *argument)
 {

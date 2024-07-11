@@ -119,6 +119,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+  /**/
+  GPIO_InitStruct.Pin = SAFETY_IN_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(SAFETY_IN_GPIO_Port, &GPIO_InitStruct);
+
 }
 
 /* USER CODE BEGIN 2 */

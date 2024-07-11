@@ -36,6 +36,7 @@ typedef struct _T_IN_CFG
     uint16_t * const  rawData; // pointer to rawData from input
     T_IN_TYPE         type;
     T_IN_MODE         mode;
+    bool              schmittState;
 }T_IN_CFG;
 
 

@@ -36,7 +36,7 @@ static void TELEM_SendStatusByCan()
 
 static void TELEM_SendSystemDataByCan()
 {
-    CANH_Send_SysStatus((uint8_t)PDM_GetSysStatus(), (uint16_t)VMUX_GetBattValue());
+    CANH_Send_SysStatus((uint8_t)PDM_GetSysStatus(), (uint16_t)VMUX_GetBattValue(), (uint8_t)PDM_GetSafetyState());
 }
 
 static void TELEM_SendStateByCan()

@@ -24,6 +24,12 @@ T_PDM_SYS_STATUS PDM_GetSysStatus()
     return PDM_SYS_STATUS_OK;
 }
 
+volatile T_PDM_ALL pdmAll =
+{
+    .status = PDM_SYS_STATUS_OK,
+    .safetyState = true
+};
+
 static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] = 
 {
     OUT_MODE_STD,
@@ -65,6 +71,24 @@ static void PDM_Init()
     
 }
 
+static void PDM_CheckSafety()
+{
+    if(HAL_GPIO_ReadPin(SAFETY_IN_GPIO_Port, SAFETY_IN_Pin) == GPIO_PIN_RESET)
+    {
+
+        pdmAll.safetyState = false;
+    }
+    else
+    {
+        pdmAll.safetyState = true;
+    }
+}
+
+bool PDM_GetSafetyState()
+{
+    return pdmAll.safetyState;
+}
+
 void pdmTaskStart(void *argument)
 {   
     // Initialization sequence 
@@ -79,6 +103,7 @@ void pdmTaskStart(void *argument)
         {
             OUT_SetState(i, logicResults[i]);
         }
+        PDM_CheckSafety();
         osDelay(pdMS_TO_TICKS(1));
     }
 }

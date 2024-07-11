@@ -11,7 +11,8 @@
 #include "cmsis_os2.h"
 
 /* TODO Add debouncing for phy digital inputs */
-#define IN_SCHMITT_HIGH_THRESHOLD 1500
+#define IN_SCHMITT_HIGH_THRESHOLD 2500
+#define IN_SCHMITT_LOW_THRESHOLD 1500
 
 // Physical inputs shouldn't be redefined
 T_IN_CFG inputsCfg[] =
@@ -22,56 +23,66 @@ T_IN_CFG inputsCfg[] =
                 .io = {IO_CONN1_GPIO_Port, IO_CONN1_Pin},
                 .rawData = &(adc2RawData[0]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_SCHMITT},
+                .mode = IN_MODE_SCHMITT,
+                .schmittState = FALSE,
+        },
         [1] =
             {
                 .id = IN_PHY_ID_2,
                 .io = {IO_CONN2_GPIO_Port, IO_CONN2_Pin},
                 .rawData = &(adc2RawData[1]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_UNUSED,
+                .schmittState = FALSE,
+                },
         [2] =
             {
                 .id = IN_PHY_ID_3,
                 .io = {IO_CONN3_GPIO_Port, IO_CONN3_Pin},
                 .rawData = &(adc2RawData[2]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_UNUSED,
+                .schmittState = FALSE},
         [3] =
             {
                 .id = IN_PHY_ID_4,
                 .io = {IO_CONN4_GPIO_Port, IO_CONN4_Pin},
                 .rawData = &(adc2RawData[3]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_UNUSED,
+                .schmittState = FALSE},
         [4] =
             {
                 .id = IN_PHY_ID_5,
                 .io = {IO_CONN5_GPIO_Port, IO_CONN5_Pin},
                 .rawData = &(adc2RawData[4]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_SCHMITT,
+                .schmittState = FALSE},
         [5] =
             {
                 .id = IN_PHY_ID_6,
                 .io = {IO_CONN6_GPIO_Port, IO_CONN6_Pin},
                 .rawData = &(adc2RawData[5]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_SCHMITT,
+                .schmittState = FALSE},
         [6] =
             {
                 .id = IN_PHY_ID_7,
                 .io = {IO_CONN7_GPIO_Port, IO_CONN7_Pin},
                 .rawData = &(adc2RawData[6]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_SCHMITT,
+                .schmittState = FALSE},
         [7] =
             {
                 .id = IN_PHY_ID_8,
                 .io = {IO_CONN8_GPIO_Port, IO_CONN8_Pin},
                 .rawData = &(adc2RawData[7]),
                 .type = IN_TYPE_PHY,
-                .mode = IN_MODE_UNUSED},
+                .mode = IN_MODE_SCHMITT,
+                .schmittState = FALSE},
 };
 
 T_IN_CFG *IN_GetCfgPtr(T_INPUT_ID id)
@@ -136,11 +147,14 @@ bool IN_GetValueSchmitt(T_INPUT_ID id)
   // Now using adc values -- add debouncing
   if( *(in->rawData) > IN_SCHMITT_HIGH_THRESHOLD )
   {
-    return TRUE;
-  }else
-  {
-    return FALSE;
+    in->schmittState = TRUE;
   }
+  else if( *(in->rawData) < IN_SCHMITT_LOW_THRESHOLD )
+  {
+    in->schmittState = FALSE;
+  }
+
+  return in->schmittState;
 }
 
 uint32_t IN_GetValueAnalog(T_INPUT_ID id)

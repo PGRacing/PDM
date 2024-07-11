@@ -97,7 +97,7 @@ void WS2812B_Flush(void)
 {
     memset(buff, 0x00, RESET_SIG_SIZE);
     buff[ARRAY_COUNT(buff) - 1] = 100;
-    HAL_TIM_PWM_Start_DMA(ws2812b_conf.htim, ws2812b_conf.pwm_channel, &buff, ARRAY_COUNT(buff));
+    HAL_TIM_PWM_Start_DMA(ws2812b_conf.htim, ws2812b_conf.pwm_channel, (const uint32_t*)&buff, ARRAY_COUNT(buff));
     memcpy(dpbuff, buff, sizeof(buff));
 }
 
@@ -166,7 +166,7 @@ void WS2812B_EvaluateLeds()
     for (uint8_t id = 0; id < OUT_ID_MAX; id++)
     {
         
-        T_OUT_TYPE t = OUT_GetType(id);
+        //T_OUT_TYPE t = OUT_GetType(id);
 
         T_OUT_STATE s = OUT_DIAG_GetState(id);
         switch (s)

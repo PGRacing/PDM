@@ -202,7 +202,7 @@ T_CANH_TX_PACKAGE CANH_TxSysStatus =
 {
     .header = 
     {
-        .DLC = 3,
+        .DLC = 4,
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
@@ -364,10 +364,12 @@ void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4
     CANH_PushToQueue2(CANH_TxCurrent13_16);
 }
 
-void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage)
+void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyState)
 {
     CANH_TxSysStatus.data.system_status.status = sysStatus;
     CANH_TxSysStatus.data.system_status.battVoltage = battVoltage;
+    CANH_TxSysStatus.data.system_status.safetyLineState = safetyState;
+
     CANH_PushToQueue2(CANH_TxSysStatus);
 }
 

@@ -7,6 +7,15 @@ typedef enum
     PDM_SYS_STATUS_ERROR = 1,
 }T_PDM_SYS_STATUS;
 
+typedef struct 
+{
+    T_PDM_SYS_STATUS status;
+    bool             safetyState;
+}T_PDM_ALL;
+
+extern volatile T_PDM_ALL pdmAll;
+
 T_PDM_SYS_STATUS PDM_GetSysStatus();
+bool PDM_GetSafetyState();
 
 #endif

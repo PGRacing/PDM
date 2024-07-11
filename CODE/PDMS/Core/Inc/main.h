@@ -144,6 +144,8 @@ void Error_Handler(void);
 #define PWM_SIG2_GPIO_Port GPIOC
 #define PWM_SIG1_Pin LL_GPIO_PIN_9
 #define PWM_SIG1_GPIO_Port GPIOC
+#define SAFETY_IN_Pin LL_GPIO_PIN_15
+#define SAFETY_IN_GPIO_Port GPIOA
 #define LP_CSN2_Pin LL_GPIO_PIN_7
 #define LP_CSN2_GPIO_Port GPIOD
 #define LP_CSN1_Pin LL_GPIO_PIN_9
