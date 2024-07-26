@@ -118,9 +118,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .useOc = TRUE,
               .ocThreshold = 8000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 200, // ms
+              .ocTripThreshold = 500, // ms
               .errRetryCounter = 0, // non conf
-              .errRetryThreshold = 6, // 
+              .errRetryThreshold = 3, // 
               .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH3_SafetyCallback,
@@ -192,9 +192,18 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .state = OUT_STATE_OFF,
             .safety = 
             {
-              .safetyCallback = &OUT_CH7_SafetyCallback,
+              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .actOnSafety = FALSE,
+              .useOc = TRUE,
+              .ocThreshold = 25000, // mA
+              .ocTripCounter = 0, // non conf
+              .ocTripThreshold = 3000, // ms
+              .errRetryCounter = 0, // non conf
+              .errRetryThreshold = 3, // 
               .timerHandle = NULL,
-              .timerInterval = 500,
+              .timerInterval = 1000,
+              .safetyCallback = &OUT_CH7_SafetyCallback,
+              .inError = FALSE
             }
         },
         [OUT_ID_8] = {
@@ -209,11 +218,11 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .useOc = TRUE,
               .ocThreshold = 5000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 100, // ms
+              .ocTripThreshold = 500, // ms
               .errRetryCounter = 0, // non conf
               .errRetryThreshold = 6, // 
               .timerHandle = NULL,
-              .timerInterval = 1000,
+              .timerInterval = 2000,
               .safetyCallback = &OUT_CH8_SafetyCallback,
               .inError = FALSE
             }

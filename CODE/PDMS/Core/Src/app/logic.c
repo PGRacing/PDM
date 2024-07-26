@@ -330,7 +330,8 @@ T_LOGIC logics[POWER_OUT_COUNT] =
     .exp = LOGIC_EXP_ALWAYS_ON
   },
   [10] = {
-    .isUsed = FALSE
+    .isUsed = TRUE,
+    .exp = LOGIC_EXP_ALWAYS_ON
   },
   [11] = {
     // DASHBOARD
@@ -338,10 +339,11 @@ T_LOGIC logics[POWER_OUT_COUNT] =
     .exp = LOGIC_EXP_ALWAYS_ON
   },
   [12] = {
-    .isUsed = FALSE
+    .isUsed = FALSE,
   },
   [13] = {
-    .isUsed = FALSE
+    .isUsed = TRUE,
+    .exp = LOGIC_EXP_ALWAYS_ON
   },
   [14] = {
     .isUsed = FALSE

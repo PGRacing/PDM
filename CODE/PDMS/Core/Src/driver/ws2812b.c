@@ -168,24 +168,24 @@ void WS2812B_EvaluateLeds()
         
         //T_OUT_TYPE t = OUT_GetType(id);
 
-        T_OUT_STATE s = OUT_DIAG_GetState(id);
-        switch (s)
-        {
-        case OUT_STATE_ON:
-            WS2812B_SetSingle(id, green);
-            break;
+        // T_OUT_STATE s = OUT_DIAG_GetState(id);
+        // switch (s)
+        // {
+        // case OUT_STATE_ON:
+        //     WS2812B_SetSingle(id, green);
+        //     break;
 
-        case OUT_STATE_OFF:
-            WS2812B_SetSingle(id, clear);
-            break;
+        // case OUT_STATE_OFF:
+        //     WS2812B_SetSingle(id, clear);
+        //     break;
 
-        case OUT_STATE_ERR_LATCH:
-            WS2812B_SetSingle(id, red);
-            break;
+        // case OUT_STATE_ERR_LATCH:
+        //     WS2812B_SetSingle(id, red);
+        //     break;
 
-        default:
-            break;
-        }
+        // default:
+        //     break;
+        // }
 
         // Better option based on Status
         // if(t == OUT_TYPE_BTS500)
@@ -240,7 +240,7 @@ void WS2812B_EvaluateLeds()
         WS2812B_SetSingle(WS2812B_STAT_LED1, green);
         break;
     case PDM_SYS_STATUS_ERROR: 
-        WS2812B_SetSingle(WS2812B_STAT_LED1, red);
+        WS2812B_SetSingle(WS2812B_STAT_LED1, blue);
         break;
     default:
         break;
