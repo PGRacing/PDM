@@ -24,6 +24,8 @@ Rev 4.3
 | 14. | Add logic-level shifter for LED's | 1 | 3 || 
 | 15. | Add separate voltage source for ARGB LED's and CAN bus | 1 | 3 || 
 | 16. | Add external voltage sources diagnosis (at least voltage on output) | 2 | 3 || 
+| 17. | Add battery insulation and reverse-polarity + huge TVS and maybe Gas Discharge Tubes | 3 | 2 || 
+| 18. | Add better connector for BAT+ | 1 | 3 || 
 
 Rev. 4.1
 | NAME | DIFFICULTY | PRIORITY | STATUS |
