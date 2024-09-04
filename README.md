@@ -6,8 +6,8 @@ Schematic mockup:
 TODO on next PCB:
 
 Rev 4.3
-| NAME | DIFFICULTY | PRIORITY | STATUS |
-| --- | --- | --- | --- |
+| ID | NAME | DIFFICULTY | PRIORITY | STATUS |
+| --- | --- | --- | --- | --- |
 | 1. | Create test board for BTS50025-1TAE | 1 | 3 | | 
 | 2. | Create schematic and brd for imporoved power delivery section optimized for autmotive use based on MP4322 TLS850F2TAV50, TVS diodes + filtering | 3 | 3 || 
 | 3. | Divide task to "safety critical real-time" hardware based (timer) ones and other normal operation tasks | 3 | 3 || 
