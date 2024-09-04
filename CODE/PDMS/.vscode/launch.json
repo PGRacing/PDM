@@ -52,6 +52,7 @@
                     "type": "console",
                     "port": 0,
                     "showOnStartup": true,
+                    "logfile": "./fan_log.txt",
                     "encoding": "ascii"
                 }
                 ]

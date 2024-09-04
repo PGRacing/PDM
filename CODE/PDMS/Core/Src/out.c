@@ -79,7 +79,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .useOc = TRUE,
               .ocThreshold = 10000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 1500, // ms
+              .ocTripThreshold = 400, // 4 x ms
               .errRetryCounter = 0, // non conf
               .errRetryThreshold = 3, // 
               .timerHandle = NULL,
@@ -118,7 +118,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .useOc = TRUE,
               .ocThreshold = 8000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 500, // ms
+              .ocTripThreshold = 1200, // 4 x ms
               .errRetryCounter = 0, // non conf
               .errRetryThreshold = 3, // 
               .timerHandle = NULL,
@@ -129,15 +129,24 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_4] = {
             .id = OUT_ID_4,
-            .name = "-",
+            .name = "FAN1",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
             .safety = 
             {
-              .safetyCallback = &OUT_CH4_SafetyCallback,
+              .aerrCfg = OUT_ERR_BEH_LATCH,
+              .actOnSafety = FALSE,
+              .useOc = TRUE,
+              .ocThreshold = 20000, // mA
+              .ocTripCounter = 0, // non conf
+              .ocTripThreshold = 1200, // 4 x ms
+              .errRetryCounter = 0, // non conf
+              .errRetryThreshold = 3, // 
               .timerHandle = NULL,
-              .timerInterval = 500,
+              .timerInterval = 1000,
+              .safetyCallback = &OUT_CH4_SafetyCallback,
+              .inError = FALSE
             }
         },
         [OUT_ID_5] = {
@@ -151,9 +160,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
               .useOc = TRUE,
-              .ocThreshold = 7000, // mA
+              .ocThreshold = 12000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 1000, // ms
+              .ocTripThreshold = 4000, // 4 x ms
               .errRetryCounter = 0, // non conf
               .errRetryThreshold = 6, // 
               .timerHandle = NULL,
@@ -175,7 +184,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .useOc = TRUE,
               .ocThreshold = 10000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 1000, // ms
+              .ocTripThreshold = 2600, // 4 x ms
               .errRetryCounter = 0, // non conf
               .errRetryThreshold = 6, // 
               .timerHandle = NULL,
@@ -186,18 +195,18 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_7] = {
             .id = OUT_ID_7,
-            .name = "FAN",
+            .name = "FAN2",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .state = OUT_STATE_OFF,
             .safety = 
             {
-              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
               .useOc = TRUE,
-              .ocThreshold = 25000, // mA
+              .ocThreshold = 20000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 3000, // ms
+              .ocTripThreshold = 1600, // 4 x ms
               .errRetryCounter = 0, // non conf
               .errRetryThreshold = 3, // 
               .timerHandle = NULL,
@@ -218,7 +227,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .useOc = TRUE,
               .ocThreshold = 5000, // mA
               .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 500, // ms
+              .ocTripThreshold = 1200, // 4 x ms
               .errRetryCounter = 0, // non conf
               .errRetryThreshold = 6, // 
               .timerHandle = NULL,
@@ -600,8 +609,7 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
     return;
   }
 
-  cfg->currentMA = BSP_OUT_CalcCurrent(id);
-  
+  cfg->currentMA = BSP_OUT_CalcCurrent(id);  
   // For now this is done first
   if(TRUE == cfg->safety.useOc)
   {
@@ -615,8 +623,15 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
       {
         if(cfg->state == OUT_STATE_ON)
         {
-          cfg->safety.ocTripCounter++;
+          cfg->safety.ocTripCounter += 4;
         }
+      }
+    }
+    else
+    {
+      if(cfg->safety.ocTripCounter > 0)
+      {
+        cfg->safety.ocTripCounter--;
       }
     }
   }

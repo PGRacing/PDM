@@ -293,7 +293,12 @@ T_LOGIC logics[POWER_OUT_COUNT] =
     .exp = LOGIC_EXP_ALWAYS_ON
   },
   [3] = {
-    .isUsed = FALSE
+    .isUsed = TRUE,
+    .exp = { .opr = LOGIC_OPERATOR_IT, 
+    .input1Type = LOGIC_INPUT_TYPE_SENSOR, 
+    .input1ID = IN_PHY_ID_7, 
+    .input2Type = LOGIC_INPUT_TYPE_UNSET, 
+    }
   },
   [4] = {
     .isUsed = TRUE,

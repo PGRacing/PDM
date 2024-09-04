@@ -50,7 +50,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         // TODO This should be later changed 
         .currentRawData = &(adc1RawData[0]),
         .dkilis = 38000,
-        .sensRValue = 8200
+        .sensRValue = 7020
     },
     [OUT_ID_2] = 
     {
@@ -62,7 +62,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
         .currentRawData = &(adc1RawData[1]),
         .dkilis = 38000,
-        .sensRValue = 8200
+        .sensRValue = 6990
     },
     [OUT_ID_3] = 
     {
@@ -74,7 +74,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
         .currentRawData = &(adc1RawData[2]),
         .dkilis = 38000,
-        .sensRValue = 8200
+        .sensRValue = 7025
     },
     [OUT_ID_4] = 
     {
@@ -86,7 +86,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
         .currentRawData = &(adc1RawData[3]),
         .dkilis = 38000,
-        .sensRValue = 8200
+        .sensRValue = 2999
     },
     [OUT_ID_5] = 
     {
@@ -97,8 +97,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[4]),
-        .dkilis = 38000,
-        .sensRValue = 8200
+        .dkilis = 50000,
+        .sensRValue = 6940
     },
     [OUT_ID_6] = 
     {
@@ -109,8 +109,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[5]),
-        .dkilis = 38000,
-        .sensRValue = 8200
+        .dkilis = 50000,
+        .sensRValue = 6975
     },
     [OUT_ID_7] = 
     {
@@ -121,8 +121,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[6]),
-        .dkilis = 38000,
-        .sensRValue = 2994
+        .dkilis = 50000,
+        .sensRValue = 2334
     },
     [OUT_ID_8] = 
     {
@@ -133,8 +133,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[7]),
-        .dkilis = 38000,
-        .sensRValue = 8200
+        .dkilis = 50000,
+        .sensRValue = 6952
     },
     [OUT_ID_9] = 
     {

@@ -1597,6 +1597,16 @@ void SPOC2_Init()
     SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 2, SPOC2_CURRENT_SENSE_RATIO_LOW);
     SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 3, SPOC2_CURRENT_SENSE_RATIO_LOW);
 
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 0, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 1, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 2, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_1], 3, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 0, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 1, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 2, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+    SPOC2_Config_setChannelCurrentSenseRatio(&spoc2Cfg.devices[SPOC2_ID_2], 3, SPOC2_OVERCURRENT_THRESHOLD_LOW);
+
     SPOC2_Config_selectCurrentSenseChannel(&spoc2Cfg.devices[SPOC2_ID_1], 3);
     // Apply both device config
     SPOC2_applyDeviceConfig(&spoc2Cfg.devices[SPOC2_ID_1]);
