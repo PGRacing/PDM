@@ -8,22 +8,22 @@ TODO on next PCB:
 Rev 4.3
 | NAME | DIFFICULTY | PRIORITY | STATUS |
 | --- | --- | --- | --- |
-| 1. | Create test board for BTS50025-1TAE | 1 | 3 |
-| 2. | Create schematic and brd for imporoved power delivery section optimized for autmotive use based on MP4322 TLS850F2TAV50, TVS diodes + filtering | 3 | 3 |
-| 3. | Divide task to "safety critical real-time" hardware based (timer) ones and other normal operation tasks | 3 | 3 |
-| 4. | Prepare I^2t wiring harness protection | 3 | 2 |
-| 5. | Prepare OCP using curve, not only single value | 2 | 3 |
-| 6. | Use buffers for MCU protection | 1 | 2 |
-| 7. | Change zenner protection diodes to extended linearity region of Is switch output | 1 | 3 |
-| 8. | Add better filtering (change RC filter values) on Is output | 1 | 3 |
-| 9. | Detect battery under-voltage and UV shutdown for battery protection | 1 | 2 |
-| 10. | Configuration over USB | 3 | 2 |
-| 11. | CAN inputs support | 2 | 2 |
-| 12. | Thermal sensing | 2 | 2 |
-| 13. | Better 3D printed caseing | 2 | 1 |
-| 14. | Add logic-level shifter for LED's | 1 | 3 |
-| 15. | Add separate voltage source for ARGB LED's and CAN bus | 1 | 3 |
-| 16. | Add external voltage sources diagnosis (at least voltage on output) | 2 | 3 |
+| 1. | Create test board for BTS50025-1TAE | 1 | 3 | | 
+| 2. | Create schematic and brd for imporoved power delivery section optimized for autmotive use based on MP4322 TLS850F2TAV50, TVS diodes + filtering | 3 | 3 || 
+| 3. | Divide task to "safety critical real-time" hardware based (timer) ones and other normal operation tasks | 3 | 3 || 
+| 4. | Prepare I^2t wiring harness protection | 3 | 2 || 
+| 5. | Prepare OCP using curve, not only single value | 2 | 3 || 
+| 6. | Use buffers for MCU protection | 1 | 2 || 
+| 7. | Change zenner protection diodes to extended linearity region of Is switch output | 1 | 3 || 
+| 8. | Add better filtering (change RC filter values) on Is output | 1 | 3 || 
+| 9. | Detect battery under-voltage and UV shutdown for battery protection | 1 | 2 || 
+| 10. | Configuration over USB | 3 | 2 || 
+| 11. | CAN inputs support | 2 | 2 || 
+| 12. | Thermal sensing | 2 | 2 || 
+| 13. | Better 3D printed caseing | 2 | 1 || 
+| 14. | Add logic-level shifter for LED's | 1 | 3 || 
+| 15. | Add separate voltage source for ARGB LED's and CAN bus | 1 | 3 || 
+| 16. | Add external voltage sources diagnosis (at least voltage on output) | 2 | 3 || 
 
 Rev. 4.1
 | NAME | DIFFICULTY | PRIORITY | STATUS |
