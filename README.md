@@ -6,26 +6,27 @@ Schematic mockup:
 TODO on next PCB:
 
 Rev 4.3
-| ID | NAME | DIFFICULTY | PRIORITY | STATUS |
-| --- | --- | --- | --- | --- |
-| 1. | Create test board for BTS50025-1TAE | 1 | 3 | | 
-| 2. | Create schematic and brd for imporoved power delivery section optimized for autmotive use based on MP4322 TLS850F2TAV50, TVS diodes + filtering | 3 | 3 || 
-| 3. | Divide task to "safety critical real-time" hardware based (timer) ones and other normal operation tasks | 3 | 3 || 
-| 4. | Prepare I^2t wiring harness protection | 3 | 2 || 
-| 5. | Prepare OCP using curve, not only single value | 2 | 3 || 
-| 6. | Use buffers for MCU protection | 1 | 2 || 
-| 7. | Change zenner protection diodes to extended linearity region of Is switch output | 1 | 3 || 
-| 8. | Add better filtering (change RC filter values) on Is output | 1 | 3 || 
-| 9. | Detect battery under-voltage and UV shutdown for battery protection | 1 | 2 || 
-| 10. | Configuration over USB | 3 | 2 || 
-| 11. | CAN inputs support | 2 | 2 || 
-| 12. | Thermal sensing | 2 | 2 || 
-| 13. | Better 3D printed caseing | 2 | 1 || 
-| 14. | Add logic-level shifter for LED's | 1 | 3 || 
-| 15. | Add separate voltage source for ARGB LED's and CAN bus | 1 | 3 || 
-| 16. | Add external voltage sources diagnosis (at least voltage on output) | 2 | 3 || 
-| 17. | Add battery insulation and reverse-polarity + huge TVS and maybe Gas Discharge Tubes | 3 | 2 || 
+| ID | NAME | CAUSE |DIFFICULTY | PRIORITY | STATUS |
+| --- | --- | --- | --- | --- | --- |
+| 1. | Create test board for BTS50025-1TAE | Switch with higher Rds(on) should perform better in terms of diagnostics on most used loads | 1 | 3 | | 
+| 2. | Create schematic and brd for imporoved power delivery section optimized for autmotive use based on MP4322 TLS850F2TAV50, TVS diodes + filtering | Current solution with MP2332 has maximum rating of 18V, which is really for load dumps | 3 | 3 || 
+| 3. | Divide task to "safety critical real-time" hardware based (timer) ones and other normal operation tasks | Current solution can cause safety issus | 3 | 3 || 
+| 4. | Prepare I^2t wiring harness protection | This should allow better WH protection| 3 | 2 || 
+| 5. | Prepare OCP using curve, not only single value | This should allow better WH protection | 2 | 3 || 
+| 6. | Use buffers for MCU protection | Protect MCU I/O pins | 1 | 2 || 
+| 7. | Change zenner protection diodes to extended linearity region of Is switch output || 1 | 3 || 
+| 8. | Add better filtering (change RC filter values) on Is output | Is output on inductive signals or fast switched signals HFreq PWM used causes invalid readings | 1 | 3 || 
+| 9. | Detect battery under-voltage and UV shutdown for battery protection || 1 | 2 || 
+| 10. | Configuration over USB | For sake of user-friendly solution | 3 | 2 || 
+| 11. | CAN inputs support || 2 | 2 || 
+| 12. | Thermal sensing | Safety critical | 2 | 2 || 
+| 13. | Better 3D printed caseing | Safety critical for splash proof | 2 | 1 || 
+| 14. | Add logic-level shifter for LED's | Some LED's turn red on random order | 1 | 3 || 
+| 15. | Add separate voltage source for ARGB LED's and CAN bus | working can bus is critical for system integrity | 1 | 3 || 
+| 16. | Add external voltage sources diagnosis (at least voltage on output) || 2 | 3 || 
+| 17. | Add battery insulation and reverse-polarity + huge TVS and maybe Gas Discharge Tubes | Load dumps + cold crank etc. | 3 | 2 || 
 | 18. | Add better connector for BAT+ | 1 | 3 || 
+| 19. | Add limp home mode when any peripheral is malfunctioning (detect those malfunctions) | 2 | 3 || 
 
 Rev. 4.1
 | NAME | DIFFICULTY | PRIORITY | STATUS |
