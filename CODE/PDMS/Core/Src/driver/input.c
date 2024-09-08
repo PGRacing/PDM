@@ -209,3 +209,7 @@ T_IN_MODE IN_GetMode(T_INPUT_ID id)
 
   return IN_MODE_UNUSED;
 }
+
+///
+/// TODO [MAJOR REWORK] Add handling of can inputs 
+///

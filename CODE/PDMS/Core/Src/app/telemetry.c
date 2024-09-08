@@ -89,3 +89,7 @@ void telemTaskStart(void *argument)
     }
     /* USER CODE END telemTaskStart */
 }
+
+/// 
+/// TODO [MAJOR REWORK] Add memory and on-board temperatures to telemetry & verify output speed (can bus)
+/// 

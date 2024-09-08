@@ -1,6 +1,8 @@
 #ifndef __PDM_H_
 #define __PDM_H_
 
+#include "typedefs.h"
+
 typedef enum
 {
     PDM_SYS_STATUS_OK = 0,

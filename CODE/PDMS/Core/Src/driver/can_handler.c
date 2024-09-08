@@ -510,3 +510,7 @@ void can2TaskStart(void *argument)
         osDelay(1);
     }
 }
+
+///
+/// TODO [MAJOR REWORK] Add CAN inputs handling
+/// 

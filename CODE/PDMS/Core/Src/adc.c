@@ -661,7 +661,7 @@ void ADC1_Start()
 
     /* Start ADC in DMA mode */
     // ADC1 - BSP current sensors
-    HAL_ADC_Start_DMA(&hadc1, adc1RawData, ADC1_CHANNEL_COUNT);
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc1RawData, ADC1_CHANNEL_COUNT);
 
     // ADC Calibration for better accuracy TODO - not tested
     // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
@@ -677,7 +677,7 @@ void ADC2_Start()
 
     /* Start ADC in DMA mode */
     // ADC2 - BSP inputs
-    HAL_ADC_Start_DMA(&hadc2, adc2RawData, ADC2_CHANNEL_COUNT);
+    HAL_ADC_Start_DMA(&hadc2, (uint32_t*)adc2RawData, ADC2_CHANNEL_COUNT);
 
     // ADC Calibration for better accuracy TODO - not tested
     // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
@@ -688,7 +688,6 @@ void ADC2_Start()
 }
 
 #include "out.h"
-// TODO split this task into 2 for each ADC
 void adc1TaskStart(void *argument)
 {
     /* USER CODE BEGIN adcTaskStart */

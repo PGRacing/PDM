@@ -853,4 +853,10 @@ void testTaskEntry(void *argument)
   // }
 }
 
-// TODO Add OUT_SetPWMDuty(T_OUT_CFG *cfg, T_OUT_STATE state)
+///
+/// TODO [MAJOR REWORK] Seperate output control code from safety functions, move safety functions into blocks, 
+/// safety on seperate core or assure that it is safe to run always (on hardware timer as critical section), 
+/// Status and state calculations should be done more properly
+/// Add signal filtering on current and voltage signals
+/// Handle PWM  signals
+///

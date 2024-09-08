@@ -282,3 +282,7 @@ void WS2812_Test()
     //     WS2812B_Flush();
     // }
 }
+
+///
+/// TODO [MAJOR REWORK] Change timing of signals to have more of head-room between limits, and add signal level shifter
+///

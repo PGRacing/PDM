@@ -427,3 +427,8 @@ bool* LOGIC_Evaluate()
 //     }
 //   }
 // }
+
+
+///
+/// TODO [MAJOR REWORK] Do some units tests on logic module
+///

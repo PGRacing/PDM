@@ -103,10 +103,7 @@ void pdmTaskStart(void *argument)
         {
             OUT_SetState(i, logicResults[i]);
         }
-        // osDelay(2000);
-        // OUT_SetState(OUT_ID_7, OUT_STATE_ON);
-        // osDelay(pdMS_TO_TICKS(2000));
-        // OUT_SetState(OUT_ID_7, OUT_STATE_OFF);
+
         PDM_CheckSafety();
         osDelay(pdMS_TO_TICKS(1));
     }
