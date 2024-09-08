@@ -2,6 +2,7 @@
 #include <stm32l4xx_hal_tim.h>
 #include <string.h>
 #include <math.h>
+#include "pdm.h"
 
 /* This values work when full cycle of timer is set for 1.25us
  * For eg. internal clock = 80Mhz  prescaler = 0 counter_period = 99
@@ -46,6 +47,7 @@ struct
 }ws2812b_conf;
 
 uint8_t buff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
+uint8_t dpbuff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
 
 static void set_byte(uint32_t pos, uint8_t value)
 {
@@ -81,6 +83,14 @@ void ws2812b_flush(void)
     memset(buff, 0x00, RESET_SIG_SIZE);
     buff[sizeof(buff) - 1] = 100;
     HAL_TIM_PWM_Start_DMA(ws2812b_conf.htim, ws2812b_conf.pwm_channel, &buff, sizeof(buff));
+    memcpy(dpbuff, buff, sizeof(buff));
+}
+
+// Flush if update necessary 
+void ws2812b_flushif(void)
+{
+    memcmp(dpbuff, buff, sizeof(buff));
+    ws2812b_flush();
 }
 
 void ws2812b_set_single(uint16_t led_index, rgb_t color)
@@ -133,4 +143,15 @@ void ws2812b_test()
     }
 
 
+}
+
+void argbTaskStart(void *argument)
+{
+    /* USER CODE BEGIN telemTaskStart */
+    /* Infinite loop */
+    for(;;)
+    {   
+        osDelay(pdMS_TO_TICKS(50));
+    }
+    /* USER CODE END telemTaskStart */
 }

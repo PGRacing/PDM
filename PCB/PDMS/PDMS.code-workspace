@@ -26,7 +26,14 @@
 			"tim.h": "c",
 			"adc.h": "c",
 			"vmux.h": "c",
-			"telemetry.h": "c"
-		}
+			"telemetry.h": "c",
+			"semphr.h": "c",
+			"buzzer.h": "c",
+			"can_handler.h": "c",
+			"pdm.h": "c",
+			"out.h": "c",
+			"ws2812b.h": "c"
+		},
+		"cortex-debug.variableUseNaturalFormat": true
 	}
 }
