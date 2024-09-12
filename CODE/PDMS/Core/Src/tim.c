@@ -44,7 +44,7 @@ void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 5;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 20-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -97,7 +97,7 @@ void MX_TIM8_Init(void)
 
   /* USER CODE END TIM8_Init 1 */
   htim8.Instance = TIM8;
-  htim8.Init.Prescaler = 1600-1;
+  htim8.Init.Prescaler = 8000-1;
   htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim8.Init.Period = 49;
   htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

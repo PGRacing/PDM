@@ -1,0 +1,7 @@
+#include "main.h"
+#include "stm32l496xx.h"
+#include "stm32l4xx_hal_gpio.h"
+#include "typedefs.h"
+#include "tim.h"
+#include "cmsis_os2.h"
+#include "tmp126.h"

@@ -49,6 +49,7 @@ Core/Src/driver/can_handler.c \
 Core/Src/driver/input.c \
 Core/Src/driver/out.c \
 Core/Src/driver/spoc2.c \
+Core/Src/driver/tmp126.c \
 Core/Src/driver/vmux.c \
 Core/Src/driver/ws2812b.c \
 Core/Src/freertos.c \

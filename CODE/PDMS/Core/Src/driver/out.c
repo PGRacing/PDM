@@ -706,10 +706,14 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
 
 void OUT_DIAG_AllBts()
 {
+  uint32_t t1 = DEBUG_ARM_GET_TIME;
   for(uint8_t id = 0; id < OUT_ID_BTS_MAX; id++)
   {
     OUT_DIAG_SingleBts(id);
   }
+  uint32_t t2 = DEBUG_ARM_GET_TIME;
+  uint32_t delta = DEBUG_ARM_CLOCKS_TO_US(t2 - t1);
+  //LOG_VAR(delta);
 }
 
 void OUT_DIAG_SingleSpoc(T_OUT_ID id)
@@ -800,7 +804,7 @@ void testTaskEntry(void *argument)
 {
   for(;;)
   {
-
+    osDelay(10);
   }
   // /* TODO There is possibility to add UT here for setting output mode and setting output state */
   // T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
@@ -859,4 +863,4 @@ void testTaskEntry(void *argument)
 /// Status and state calculations should be done more properly
 /// Add signal filtering on current and voltage signals
 /// Handle PWM  signals
-///
+/// Add safety detection as status or state

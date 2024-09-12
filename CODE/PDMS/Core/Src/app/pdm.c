@@ -93,11 +93,11 @@ void pdmTaskStart(void *argument)
 {   
     // Initialization sequence 
     PDM_Init();
+    DEBUG_ARM_DWT_INIT;
     LOG_INFO("After init");
     
     for(;;)
     {
-        
         bool* logicResults = LOGIC_Evaluate();
         for(uint8_t i = 0; i < OUT_ID_MAX; i++)
         {

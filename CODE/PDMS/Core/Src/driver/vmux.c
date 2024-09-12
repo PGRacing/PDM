@@ -109,7 +109,7 @@ void VMUX_SelectMuxAdcChannel (void)
      */
     sConfig.Channel = ADC_CHANNEL_8;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -126,7 +126,7 @@ void  VMUX_SelectBatteryAdcChannel()
      */
     sConfig.Channel = ADC_CHANNEL_13;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -143,7 +143,7 @@ void  VMUX_SelectLP1AdcChannel()
      */
     sConfig.Channel = ADC_CHANNEL_7;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -160,7 +160,7 @@ void  VMUX_SelectLP2AdcChannel()
      */
     sConfig.Channel = ADC_CHANNEL_6;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -230,7 +230,13 @@ static void VMUX_GetAllPooling()
     for( uint8_t sel = 0; sel < VMUX_SELECTOR_MAX_VAL; sel++)
     {
         VMUX_SelectInput( VMUX_ReadOrder[sel] );
-
+        // Wait 100us (0.1ms) for VMUX input to settle
+        // Dummy loop
+        uint32_t count = 400; 
+        while(count--)
+        {
+            __NOP();
+        }
         if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
         {   
             #ifdef VMUX_STORE_VOLTAGE

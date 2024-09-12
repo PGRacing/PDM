@@ -43,7 +43,7 @@
             "swoConfig":
             {
                 "enabled":  true,
-                "cpuFrequency": 16000000,
+                "cpuFrequency": 80000000,
                 "swoFrequency": 200000,
                 "source": "probe",
                 "decoders": [
@@ -60,7 +60,7 @@
             "configFiles": [
                 "openocd.cfg"
             ],
-            "svdFile": "STM32L4R9.svd",
+            "svdFile": "STM32L4x6.svd",
             "liveWatch": {
                 "enabled": true,
                 "samplesPerSecond": 20

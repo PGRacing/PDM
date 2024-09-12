@@ -29,6 +29,7 @@
 #include "semphr.h"
 #include "stm32l4xx_hal_adc.h"
 
+
 xTaskHandle adcTaskHandleLocal;
 SemaphoreHandle_t adc1ConvReadySemaphore = NULL;
 SemaphoreHandle_t adc2ConvReadySemaphore = NULL;
@@ -654,8 +655,9 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 volatile uint32_t isCurrent[ADC1_CHANNEL_COUNT];
 
 void ADC1_Start()
-{
-    /* Timer 3 configured to execute ADC conversion each 5ms */
+{ 
+  // TODO Check if it's really 5ms and how it does affect OC trip and others
+    /* Timer 8 configured to execute ADC conversion each 5ms */
 
     HAL_TIM_Base_Start(&htim8);
 
@@ -688,6 +690,7 @@ void ADC2_Start()
 }
 
 #include "out.h"
+
 void adc1TaskStart(void *argument)
 {
     /* USER CODE BEGIN adcTaskStart */
@@ -701,6 +704,7 @@ void adc1TaskStart(void *argument)
 
     adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
     ADC1_Start();
+   
     /* Infinite loop */
     for(;;)
     {
