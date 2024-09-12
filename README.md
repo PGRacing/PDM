@@ -20,13 +20,14 @@ Rev 4.3
 | 10. | Configuration over USB | For sake of user-friendly solution | 3 | 2 || 
 | 11. | CAN inputs support || 2 | 2 || 
 | 12. | Thermal sensing | Safety critical | 2 | 2 || 
-| 13. | Better 3D printed caseing | Safety critical for splash proof | 2 | 1 || 
+| 13. | Better 3D printed caseing (take care of screws outside of caseing envelope) + add honeycomb reinforcment | Safety critical for splash proof | 2 | 1 || 
 | 14. | Add logic-level shifter for LED's | Some LED's turn red on random order | 1 | 3 || 
 | 15. | Add separate voltage source for ARGB LED's and CAN bus | working can bus is critical for system integrity | 1 | 3 || 
 | 16. | Add external voltage sources diagnosis (at least voltage on output) || 2 | 3 || 
 | 17. | Add battery insulation and reverse-polarity + huge TVS and maybe Gas Discharge Tubes | Load dumps + cold crank etc. | 3 | 2 || 
 | 18. | Add better connector for BAT+ | 1 | 3 || 
 | 19. | Add limp home mode when any peripheral is malfunctioning (detect those malfunctions) | 2 | 3 || 
+| 20. | Add TVS or zenner on all inputs (in limit of absolute maximium rating) near connector | 2 | 3 || 
 
 Rev. 4.1
 | NAME | DIFFICULTY | PRIORITY | STATUS |
