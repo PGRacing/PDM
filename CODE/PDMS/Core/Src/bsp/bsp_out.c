@@ -11,10 +11,10 @@
 
 //#define LL_TIM_OC_SetCompare(TIM, CNUM, CMP) LL_TIM_OC_SetCompareCH##CNUM(TIM, CMP)
 
-#define BSP_OUT_CURRENT_CLK 16000000
+#define BSP_OUT_CURRENT_CLK 80000000
 
 /* Prescaler value used for PWM channels */
-#define BSP_OUT_PWM_PRESCALER 160-1
+#define BSP_OUT_PWM_PRESCALER 800-1
 
 /* Auto-reload value used for PWM channels */
 #define BSP_OUT_PWM_ARR 500-1
