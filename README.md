@@ -30,6 +30,7 @@ Rev 4.3
 | 20. | Add TVS or zenner on all inputs (in limit of absolute maximium rating) near connector | 1 | 3 || 
 | 21. | Add external or on-board probes for temperature sensing | 2 | 2 || 
 | 22. | Add more state/debug led's | 1 | 1 || 
+| 23. | Move safety functions oc and counters and errors into separate struct or bit mask of register | 2 | 3 || 
 
 Rev. 4.1
 | NAME | DIFFICULTY | PRIORITY | STATUS |
