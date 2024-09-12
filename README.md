@@ -27,7 +27,8 @@ Rev 4.3
 | 17. | Add battery insulation and reverse-polarity + huge TVS and maybe Gas Discharge Tubes | Load dumps + cold crank etc. | 3 | 2 || 
 | 18. | Add better connector for BAT+ | 1 | 3 || 
 | 19. | Add limp home mode when any peripheral is malfunctioning (detect those malfunctions) | 2 | 3 || 
-| 20. | Add TVS or zenner on all inputs (in limit of absolute maximium rating) near connector | 2 | 3 || 
+| 20. | Add TVS or zenner on all inputs (in limit of absolute maximium rating) near connector | 1 | 3 || 
+| 20. | Add external or on-board probes for temperature sensing | 2 | 2 || 
 
 Rev. 4.1
 | NAME | DIFFICULTY | PRIORITY | STATUS |
