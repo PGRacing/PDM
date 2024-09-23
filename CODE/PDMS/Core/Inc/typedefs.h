@@ -8,6 +8,9 @@
 #define FALSE false
 #define TRUE  true
 
+/// MACRO FUNCTIONS
+
+/// Get array elements count
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
 /// CONFIG

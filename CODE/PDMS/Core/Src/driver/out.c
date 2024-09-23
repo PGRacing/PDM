@@ -12,6 +12,7 @@
 #include "cmsis_os2.h"
 #include "ws2812b.h"
 
+/// USER DEFINES
 // Safety related defines
 #define OUT_DIAG_READ_FREQ 200 // 200 Hz frequency of adc read
 #define OUT_DIAG_READ_PERIOD 1000 / OUT_DIAG_READ_FREQ
@@ -19,13 +20,22 @@
 #define OUT_DIAG_MS_TO_OC_TRIP(X) X / OUT_DIAG_READ_PERIOD
 //#define OUT_DIAG_BTS500_ADC_VOLTAGE_TO_MA
 
-// Get current time in ms
-#define OUT_GET_TIME_MS pdTICKS_TO_MS( xTaskGetTickCount() );
+/// FUNCTION PROTOTYPES
+static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
+static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
 
-#define OUT_SAFETY_CALLBACK_BODY(id)   osTimerStop(OUT_GetPtr(id)->safety.timerHandle); \
-                                  OUT_GetPtr(id)->safety.timerHandle = NULL; \
+/// MACRO FUNCTIONS
+#define OUT_ASSERT_IN_RANGE(id) ASSERT( id >= 0 && id < OUT_ID_MAX)
+#define OUT_ASSERT_IN_RANGE_CFG(id)  ASSERT( id >= 0 && id < ARRAY_COUNT(outsCfg))
+#define OUT_ASSERT_IN_RANGE_REG(id)  ASSERT( id >= 0 && id < ARRAY_COUNT(outsReg))
+
+// Get current time in ms
+#define OUT_GET_TIME_MS pdTICKS_TO_MS( xTaskGetTickCount() )
+
+#define OUT_SAFETY_CALLBACK_BODY(id)   osTimerStop(OUT_GetRegPtr(id)->safety.timerHandle); \
+                                  OUT_GetRegPtr(id)->safety.timerHandle = NULL; \
                                   OUT_SetState(id, OUT_STATE_ON); \
-                                  OUT_GetPtr(id)->safety.inError = FALSE;
+                                  OUT_GetRegPtr(id)->safety.inError = FALSE;
 
 #pragma region SAFETY_CALLBACKS
 
@@ -64,6 +74,7 @@ void OUT_CH8_SafetyCallback()
 
 #pragma endregion
 
+/// @brief Main output channels config [1..16]
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
 {
         [OUT_ID_1] = {
@@ -71,21 +82,16 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "SERVO",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = 
             {
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
-              .useOc = TRUE,
-              .ocThreshold = 10000, // mA
-              .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 400, // 4 x ms
-              .errRetryCounter = 0, // non conf
+              .useSoc = TRUE,
+              .socThreshold = 10000, // mA
+              .socTripThreshold = 400, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH1_SafetyCallback,
-              .inError = FALSE
             }
         },
         [OUT_ID_2] = {
@@ -93,16 +99,12 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "CAN L",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = 
             {
-              .useOc = TRUE,
-              .ocThreshold = 2000, // 2000mA Threshold
-              .ocTripCounter = 0,
-              .ocTripThreshold = 0,
+              .useSoc = TRUE,
+              .socThreshold = 2000, // 2000mA Threshold
+              .socTripThreshold = 0,
               .safetyCallback = &OUT_CH2_SafetyCallback,
-              .timerHandle = NULL,
-              .timerInterval = 500,
             }
         },
         [OUT_ID_3] = {
@@ -110,21 +112,16 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "GCU",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = 
             {
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
-              .useOc = TRUE,
-              .ocThreshold = 8000, // mA
-              .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 1200, // 4 x ms
-              .errRetryCounter = 0, // non conf
+              .useSoc = TRUE,
+              .socThreshold = 8000, // mA
+              .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH3_SafetyCallback,
-              .inError = FALSE
             }
         },
         [OUT_ID_4] = {
@@ -132,21 +129,16 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "FAN1",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = 
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useOc = TRUE,
-              .ocThreshold = 20000, // mA
-              .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 1200, // 4 x ms
-              .errRetryCounter = 0, // non conf
+              .useSoc = TRUE,
+              .socThreshold = 20000, // mA
+              .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH4_SafetyCallback,
-              .inError = FALSE
             }
         },
         [OUT_ID_5] = {
@@ -154,21 +146,16 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "MAINS",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = 
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useOc = TRUE,
-              .ocThreshold = 12000, // mA
-              .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 4000, // 4 x ms
-              .errRetryCounter = 0, // non conf
+              .useSoc = TRUE,
+              .socThreshold = 12000, // mA
+              .socTripThreshold = 4000, // 4 x ms
               .errRetryThreshold = 6, // 
-              .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH5_SafetyCallback,
-              .inError = FALSE
             }
         },
         [OUT_ID_6] = {
@@ -176,21 +163,16 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "PUMP",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = 
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useOc = TRUE,
-              .ocThreshold = 10000, // mA
-              .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 2600, // 4 x ms
-              .errRetryCounter = 0, // non conf
+              .useSoc = TRUE,
+              .socThreshold = 10000, // mA
+              .socTripThreshold = 2600, // 4 x ms
               .errRetryThreshold = 6, // 
-              .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH6_SafetyCallback,
-              .inError = FALSE
             }
         },
         [OUT_ID_7] = {
@@ -198,21 +180,16 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "FAN2",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = 
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useOc = TRUE,
-              .ocThreshold = 20000, // mA
-              .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 1600, // 4 x ms
-              .errRetryCounter = 0, // non conf
+              .useSoc = TRUE,
+              .socThreshold = 20000, // mA
+              .socTripThreshold = 1600, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerHandle = NULL,
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH7_SafetyCallback,
-              .inError = FALSE
             }
         },
         [OUT_ID_8] = {
@@ -220,20 +197,15 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .name = "ECU",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF,
             .safety = {
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
-              .useOc = TRUE,
-              .ocThreshold = 5000, // mA
-              .ocTripCounter = 0, // non conf
-              .ocTripThreshold = 1200, // 4 x ms
-              .errRetryCounter = 0, // non conf
+              .useSoc = TRUE,
+              .socThreshold = 5000, // mA
+              .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 6, // 
-              .timerHandle = NULL,
               .timerInterval = 2000,
               .safetyCallback = &OUT_CH8_SafetyCallback,
-              .inError = FALSE
             }
         },
         [OUT_ID_9] = {
@@ -243,7 +215,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_1,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },
         [OUT_ID_10] = {
             .id = OUT_ID_10,
@@ -252,7 +223,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_2,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },
         [OUT_ID_11] = {
             .id = OUT_ID_11,
@@ -261,7 +231,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_3,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },
         [OUT_ID_12] = {
             .id = OUT_ID_12,
@@ -270,7 +239,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_4,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },
         [OUT_ID_13] = {
             .id = OUT_ID_13,
@@ -279,7 +247,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_1,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },        
         [OUT_ID_14] = {
             .id = OUT_ID_14,
@@ -288,7 +255,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_2,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },        
         [OUT_ID_15] = {
             .id = OUT_ID_15,
@@ -297,7 +263,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_3,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },        
         [OUT_ID_16] = {
             .id = OUT_ID_16,
@@ -306,26 +271,267 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_4,
             .mode = OUT_MODE_UNUSED,
-            .state = OUT_STATE_OFF
         },        
 
 };
 
-// Faster macro way (w/unsafe)
-#define OUT_GETPTR(id) &(outsCfg[id])
-
-T_OUT_CFG* OUT_GetPtr( T_OUT_ID id )
+/// @brief Main output channel status register
+T_OUT_REG outsReg[OUT_ID_MAX] =
 {
-  ASSERT( id >= 0 && id < ARRAY_COUNT(outsCfg) );
+  [OUT_ID_1] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_2] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_3] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_4] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_5] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_6] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_7] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_8] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_9] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_10] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_11] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_12] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_13] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_14] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_15] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  },
+  [OUT_ID_16] = 
+  {
+    .state = OUT_STATE_OFF,
+    .status = OUT_STATUS_NORMAL_OFF,
+    .safety = 
+    {
+      .ocTripCounter = 0,
+      .errRetryCounter = 0,
+      .timerHandle = NULL,
+      .inError = FALSE,
+    },
+    .currentMA = 0,
+    .voltageMV = 0
+  }
+};
+
+// Acquire config struct
+#define OUT_GETCFGPTR(id) (&(outsCfg[id]))
+
+/// @brief Acquire configuration struct with range assert
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Pointer to configuration struct
+static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id )
+{
+  OUT_ASSERT_IN_RANGE_CFG(id);
   return &(outsCfg[id]);
 }
 
-// Remember this function will reinit even if targetMode == currentMode
+/// Acquire status register of selected channel
+#define OUT_GETREGPTR(id) (&(outsReg[id]))
+
+/// @brief Acquire status register of selected channel with range assert
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Pointer to status register
+static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id )
+{
+  OUT_ASSERT_IN_RANGE_REG(id);
+  return &(outsReg[id]);
+}
+
 void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
 {
-  T_OUT_CFG* cfg = OUT_GetPtr(id);
+  T_OUT_CFG* cfg = OUT_GetCfgPtr(id);
   ASSERT( cfg );
-  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(outsCfg) );
 
   switch (targetMode)
   {
@@ -403,35 +609,42 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     break;
   }
 
-  cfg->state = OUT_STATE_OFF;
+  // TODO Should it be like this if we change state before??
+  OUT_GetRegPtr(id)->state = OUT_STATE_OFF;
 }
 
-bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
+bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
 {
   bool res = TRUE;
-  T_OUT_CFG* cfg = OUT_GetPtr(id);
 
+  OUT_ASSERT_IN_RANGE(id);
+
+  // Acquire output channel config
+  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
   ASSERT(cfg);
-  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(outsCfg) );
+
+  // Acquire output channel status reg
+  T_OUT_REG* reg = OUT_GETREGPTR(id);
+  ASSERT(reg);
 
   // If channel is latched it cannot be used
-  if(cfg->state == OUT_STATE_ERR_LATCH)
+  if(reg->state == OUT_STATE_ERR_LATCH)
   {
     return FALSE;
   }
 
   // If channel in error handler it cannot be turned on
-  if(cfg->safety.inError == TRUE 
-    &&  state == OUT_STATE_ON)
+  if(reg->safety.inError == TRUE 
+    && reqState == OUT_STATE_ON)
   {
     return FALSE;
   }
 
-  if(state == OUT_STATE_ERR_LATCH)
+  // New state will be error latch (perform channel shutdown and block)
+  if(reqState == OUT_STATE_ERR_LATCH)
   {
     OUT_SetState(id, OUT_STATE_OFF);
-    cfg->state = OUT_STATE_ERR_LATCH;
-    cfg->status = OUT_STATUS_ERR_LATCH;
+    reg->state = OUT_STATE_ERR_LATCH;
     return FALSE;
   }
 
@@ -447,23 +660,25 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
   {
     if(cfg->type == OUT_TYPE_BTS500)
     {
-      BSP_OUT_SetStdState(id, state);
+      // TODO This executes each time logic is evaluted change it!!!
+      BSP_OUT_SetStdState(id, reqState);
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
       // If new state is applied
-      if(state != cfg->state)
+      if(reqState != reg->state)
       {
-        SPOC2_SetStdState(outsCfg[id].spocId, outsCfg[id].spocChId, state);
+        SPOC2_SetStdState(cfg->spocId, cfg->spocChId, reqState);
       }
     }
     
-    cfg->state = state;
+    reg->state = reqState;
     res = TRUE;
     break;
   }
   case OUT_MODE_PWM:
   { 
+    // TODO Allow on/off also on PWM channels
     LOG_WARN("Trying to set steady state on PWM output");
     res = FALSE;
     break;
@@ -474,12 +689,13 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
     {
       ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
 
-      T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
+      T_OUT_REG* batchReg = OUT_GETREGPTR(cfg->batch);
 
-      BSP_OUT_SetBatchState(id, cfg->batch, state);
+      // Use this function to change GPIO register simultaniously for both switches
+      BSP_OUT_SetBatchState(id, cfg->batch, reqState);
 
-      cfg->state = state;
-      batchCfg->state = state;
+      reg->state = reqState;
+      batchReg->state = reqState;
       res = TRUE;
     }
     else
@@ -496,13 +712,13 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE state)
   return res;
 }
 
-/* Note: For BTS500 you can batch between 1-4 and 5-8*/
 bool OUT_Batch(T_OUT_ID id, T_OUT_ID batchId)
 {
-  T_OUT_CFG* cfg = OUT_GetPtr(id);
-  T_OUT_CFG* batchCfg = OUT_GetPtr(batchId);
+  /// TODO Add handling of SPOC2 internal batch function
+  T_OUT_CFG* cfg = OUT_GetCfgPtr(id);
+  T_OUT_CFG* batchCfg = OUT_GetCfgPtr(batchId);
   ASSERT(cfg);
-  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(outsCfg) );
+  ASSERT(batchCfg);
 
   if(cfg->type != OUT_TYPE_BTS500 || batchCfg->type != OUT_TYPE_BTS500)
   {
@@ -531,49 +747,70 @@ bool OUT_Batch(T_OUT_ID id, T_OUT_ID batchId)
 
 bool OUT_ToggleState(T_OUT_ID id)
 {
-  T_OUT_CFG* cfg = OUT_GetPtr(id);
-  return OUT_SetState( id, !cfg->state);
+  T_OUT_REG* reg = OUT_GetRegPtr(id);
+  ASSERT(reg);
+  return OUT_SetState( id, !reg->state);
 }
 
-static void OUT_DIAG_DispatchErr(T_OUT_ID id)
-{
-  T_OUT_CFG* cfg = OUT_GETPTR(id);
+#pragma region DIAG_SECTION
 
-  if(cfg->safety.errRetryCounter >= cfg->safety.errRetryThreshold)
+/// @brief If TRY_RETRY is used this function will take care of retry routine
+/// @param id Output channel id [1..16] T_OUT_ID
+static void OUT_DIAG_DispatchRetry(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+
+  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+  ASSERT(cfg);
+
+  T_OUT_REG* reg = OUT_GETREGPTR(id);
+  ASSERT(reg);
+
+  // TODO This comparsion does not execute proper amount of times
+  if(reg->safety.errRetryCounter >= cfg->safety.errRetryThreshold)
   {
     // Last error handle 
-    if(cfg->safety.timerHandle != NULL)
+    if(reg->safety.timerHandle != NULL)
     {
-      osTimerStop(cfg->safety.timerHandle);
-      cfg->safety.timerHandle = NULL;
+      osTimerStop(reg->safety.timerHandle);
+      reg->safety.timerHandle = NULL;
     }
     // Disable timer and latch output channel
     OUT_SetState(id, OUT_STATE_ERR_LATCH);
-    cfg->safety.inError = TRUE;
+    reg->safety.inError = TRUE;
 
     return;
   }
-  else if( cfg->safety.timerHandle == NULL)
+  else if( reg->safety.timerHandle == NULL)
   {
     // Check if safety function callback does exist
     ASSERT(cfg->safety.safetyCallback);
 
-    cfg->safety.timerHandle = osTimerNew((osTimerFunc_t)cfg->safety.safetyCallback, osTimerOnce, NULL, NULL);
-    ASSERT(cfg->safety.timerHandle);
-
-    osTimerStart(cfg->safety.timerHandle, pdMS_TO_TICKS(cfg->safety.timerInterval));
-    cfg->safety.inError = TRUE;
+    // Create timer for retry execution routine
+    reg->safety.timerHandle = osTimerNew((osTimerFunc_t)cfg->safety.safetyCallback, osTimerOnce, NULL, NULL);
+    if(reg->safety.timerHandle)
+    {
+      osTimerStart(reg->safety.timerHandle, pdMS_TO_TICKS(cfg->safety.timerInterval));
+    }else
+    {
+      // If timer creation failed go straight to latch 
+      OUT_SetState(id, OUT_STATE_ERR_LATCH);
+    }
+    
+    reg->safety.inError = TRUE;
   }
 
-  cfg->safety.errRetryCounter++;
+  reg->safety.errRetryCounter++;
 }
 
-
+/// @brief Callback executed if switch turned to error, execute proper error handling routine
+/// @param id Output channel id [1..16] T_OUT_ID
 static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
 {
 
-  ASSERT( id < ARRAY_COUNT(outsCfg) );
-  const T_OUT_CFG* cfg = OUT_GETPTR(id);
+  OUT_ASSERT_IN_RANGE(id);
+  const T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+  ASSERT(cfg);
 
   switch (cfg->safety.aerrCfg.behavior)
   {
@@ -587,7 +824,9 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
 
   case OUT_ERR_BEH_TRY_RETRY:
     OUT_SetState(id, OUT_STATE_OFF);
-    OUT_DIAG_DispatchErr(id);
+    // TODO This does not work deterministically (executes more than should)
+    // TODO Shouldn't be based on osTimer, perform hardware timer implementation
+    OUT_DIAG_DispatchRetry(id);
     break;
 
   default:
@@ -595,60 +834,88 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
   }
 }
 
-
+/// @brief Perform all needed processing for output channel of BTS type
+/// @param id Output channel id [1..8] T_OUT_ID
 static void OUT_DIAG_SingleBts(T_OUT_ID id)
 {
-  ASSERT( id < ARRAY_COUNT(outsCfg) );
+  // TODO Perform major rework based on comments and notion document
+  OUT_ASSERT_IN_RANGE(id);
+  // TODO First fix state machine
   
-  T_OUT_CFG* cfg = OUT_GETPTR(id);
+  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+  ASSERT(cfg);
+
+  T_OUT_REG* reg = OUT_GETREGPTR(id);
+  ASSERT(reg);
+
   T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
 
   // BTS500 ONLY
+  // TODO There should be only one return do it elsewhere
   if( outsCfg[id].type != OUT_TYPE_BTS500)
   {
     return;
   }
 
-  cfg->currentMA = BSP_OUT_CalcCurrent(id);  
-  // For now this is done first
-  if(TRUE == cfg->safety.useOc)
+  /// SOFT OC BLOCK START
+  // TODO Access of current should be propably in critical section or some sync should be used, write to memory by DMA, when reading?
+  // Not a real concern in case of in ISR execution on ADC
+  // What if ADC readout is wrong or ADC is malfunctioning? Assure ADC safety
+  // We do soft overcurrent block but we don't now current switch state (maybe hard oc), should be changed
+  reg->currentMA = BSP_OUT_CalcCurrent(id);  
+
+  if(TRUE == cfg->safety.useSoc)
   {
-    if(cfg->currentMA > cfg->safety.ocThreshold)
+    if(reg->currentMA > cfg->safety.socThreshold)
     {
-      if(cfg->safety.ocTripCounter >= cfg->safety.ocTripThreshold)
+      if(reg->safety.ocTripCounter >= cfg->safety.socTripThreshold)
       {
         newStatus = OUT_STATUS_SOFT_OC;
-        cfg->safety.ocTripCounter = 0;
+        // TODO Make imidiate action on oc detection!!!
+        reg->safety.ocTripCounter = 0;
       }else
       {
-        if(cfg->state == OUT_STATE_ON)
+        if( OUT_STATE_ON == reg->state)
         {
-          cfg->safety.ocTripCounter += 4;
+          // TODO Shouldn't be increased by const implement some fusing current
+          reg->safety.ocTripCounter += 4;
         }
       }
     }
     else
     {
-      if(cfg->safety.ocTripCounter > 0)
+      if(reg->safety.ocTripCounter > 0)
       {
-        cfg->safety.ocTripCounter--;
+        reg->safety.ocTripCounter--;
       }
     }
   }
+  /// SOFT OC BLOCK END
+
+  // TODO Implement I2t and heat protection block
   
-  cfg->voltageMV = VMUX_GetValue(id);
+  /// STATE DETECTION BLOCK START
+  // TODO How is voltage synced with current adc readout???
+  // What in case of ADC error or VMUX malfunction
+  // Add better filtering
+  reg->voltageMV = VMUX_GetValue(id);
   //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
   uint32_t batteryVoltage = VMUX_GetBattValue();
+  // TODO This fault level should be changed 
+  // TODO If new zenner diodes installed it should be variable due to used dkilis and resistor
+  // TODO Change for better state detection
   uint32_t faultLevel = 12000;
+  // TODO Remove not needed call just to access const memory location (performance issue)
   uint32_t dkilis = BSP_OUT_GetDkilis(id);
-  uint32_t voltageHis = 1000; // 500 mV for now
+  // TODO Changed this value experimentally 
+  uint32_t voltageHis = 1000; // 1000 mV for now
 
   T_OUT_STATUS hwStatus = OUT_STATUS_NORMAL_OFF;
-  if(OUT_STATE_OFF == cfg->state)
+  if(OUT_STATE_OFF == reg->state)
   {
-      if(cfg->currentMA >= faultLevel)
+      if(reg->currentMA >= faultLevel)
       { 
-        if(abs((int32_t)(batteryVoltage - cfg->voltageMV) < voltageHis))
+        if(abs((int32_t)(batteryVoltage - reg->voltageMV) < voltageHis))
         {
           hwStatus = OUT_STATUS_SHORT_TO_VSS;
         }
@@ -661,42 +928,46 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
   else
   {
     // TODO Fix magic values
-      if(cfg->currentMA >= faultLevel)
+      if(reg->currentMA >= faultLevel)
       {
         // TODO WARN
         // No latch on HW
         //hwStatus = OUT_STATUS_HARD_OC_OR_OT;
       }
-      else if(((cfg->currentMA <= 0.0000143 * (float)dkilis) && (cfg->currentMA > 0.000001 * (float)dkilis)) 
-      || (cfg->currentMA <= 0.000001 * (float)dkilis))
+      else if(((reg->currentMA <= 0.0000143 * (float)dkilis) && (reg->currentMA > 0.000001 * (float)dkilis)) 
+      || (reg->currentMA <= 0.000001 * (float)dkilis))
       {
+        // TODO Fix status frequent change on lower current
         hwStatus = OUT_STATUS_OPEN_LOAD;
       }
       // 12000 = 12V
-      else if((cfg->voltageMV <= batteryVoltage) && (cfg->currentMA > 0.0000143 * (float)dkilis))
+      else if((reg->voltageMV <= batteryVoltage) && (reg->currentMA > 0.0000143 * (float)dkilis))
       {
         hwStatus = OUT_STATUS_NORMAL_ON;
       }
   }
+  /// STATE DETECTION BLOCK END
 
   vPortEnterCritical();
-  T_OUT_STATUS prevStatus = cfg->status;
+  // TODO Change this to proper state machine
+  // TODO Value such over current or over temperature (even software one) should be hold till restart
+  T_OUT_STATUS prevStatus = reg->status;
   if(newStatus == OUT_STATUS_SOFT_OC && hwStatus == OUT_STATUS_HARD_OC_OR_OT)
   {
-   cfg->status =  OUT_STATUS_HARD_OC_OR_OT;
+   reg->status =  OUT_STATUS_HARD_OC_OR_OT;
   }else if(newStatus == OUT_STATUS_SOFT_OC)
   {
-    cfg->status = newStatus;
+    reg->status = newStatus;
   }else
   {
-    cfg->status = hwStatus;
+    reg->status = hwStatus;
   }
 
-  if( cfg->status != prevStatus )
+  if( reg->status != prevStatus )
   {
-    if(cfg->status == OUT_STATUS_HARD_OC_OR_OT ||
-        cfg->status == OUT_STATUS_SOFT_OC ||
-        cfg->status == OUT_STATUS_S_AND_H_OC)
+    if(reg->status == OUT_STATUS_HARD_OC_OR_OT ||
+        reg->status == OUT_STATUS_SOFT_OC ||
+        reg->status == OUT_STATUS_S_AND_H_OC)
     {
       OUT_DIAG_OnErrorFallback(id);
     }
@@ -716,35 +987,42 @@ void OUT_DIAG_AllBts()
   //LOG_VAR(delta);
 }
 
-void OUT_DIAG_SingleSpoc(T_OUT_ID id)
+/// @brief Perform all needed processing for output channel of SPOC2 type
+/// @param id Output channel id [9..16] T_OUT_ID
+static void OUT_DIAG_SingleSpoc(T_OUT_ID id)
 {
-  ASSERT( id < ARRAY_COUNT(outsCfg) );
+  // TODO Requires major rework
+  OUT_ASSERT_IN_RANGE(id);
   
-  T_OUT_CFG* cfg = OUT_GETPTR(id);
-  //T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
+  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+  ASSERT(cfg);
+
+  T_OUT_REG* reg = OUT_GETREGPTR(id);
+  ASSERT(reg);
 
   // SPOC2 ONLY
   if( outsCfg[id].type != OUT_TYPE_SPOC2)
   {
     return;
   }
-    
-  cfg->voltageMV = VMUX_GetValue(id);
-  cfg->currentMA = BSP_OUT_CalcCurrent(id);
+  
+  // TODO VMUX_GetValue in two seperate sections? Here and in bts (does it make sense?)
+  reg->voltageMV = VMUX_GetValue(id);
+  reg->currentMA = BSP_OUT_CalcCurrent(id);
   //uint32_t batteryVoltage = VMUX_GetBattValue();
   //uint32_t dkilis = BSP_OUT_GetDkilis(id);
-
-  if(outsCfg[id].state == OUT_STATE_ON)
+  
+  if(reg->state == OUT_STATE_ON)
   {
-    outsCfg[id].status = OUT_STATUS_NORMAL_ON;
+    reg->status = OUT_STATUS_NORMAL_ON;
   }
-  else if(outsCfg[id].state == OUT_STATE_OFF)
+  else if(reg->state == OUT_STATE_OFF)
   {
-    outsCfg[id].status = OUT_STATUS_NORMAL_OFF;
+    reg->status = OUT_STATUS_NORMAL_OFF;
   }
-  else if(outsCfg[id].state == OUT_STATE_ERR_LATCH)
+  else if(reg->state == OUT_STATE_ERR_LATCH)
   {
-    outsCfg[id].status = OUT_STATE_ERR_LATCH;
+    reg->status = OUT_STATE_ERR_LATCH;
   }
 
   return;   
@@ -760,44 +1038,46 @@ void OUT_DIAG_AllSpoc()
 
 uint32_t OUT_DIAG_GetCurrent(T_OUT_ID id)
 {
-  ASSERT(id < OUT_ID_MAX);
-  return outsCfg[id].currentMA;
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->currentMA;
 }
 
 uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id)
 {
-  ASSERT(id < OUT_ID_MAX);
-  return outsCfg[id].currentMA / 10;
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->currentMA / 10;
 }
 
 uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id)
 {
-  ASSERT(id < OUT_ID_MAX);
-  return outsCfg[id].voltageMV;
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->voltageMV;
 }
 
 T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
 {
-  ASSERT(id < OUT_ID_MAX);
-  return outsCfg[id].status;
-}
-
-T_OUT_TYPE OUT_GetType(T_OUT_ID id)
-{
-  ASSERT(id < OUT_ID_MAX);
-  return outsCfg[id].type;
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->status;
 }
 
 T_OUT_STATE OUT_DIAG_GetState(T_OUT_ID id)
 {
-  ASSERT(id < OUT_ID_MAX);
-  return outsCfg[id].state;
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->state;
 }
 
-char* OUT_DIAG_GetName(T_OUT_ID id)
+#pragma endregion DIAG_SECTION
+
+T_OUT_TYPE OUT_GetType(T_OUT_ID id)
 {
- ASSERT(id < OUT_ID_MAX); 
- return outsCfg[id].name;
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETCFGPTR(id)->type;
+}
+
+char* OUT_GetName(T_OUT_ID id)
+{
+ OUT_ASSERT_IN_RANGE(id);
+ return OUT_GETCFGPTR(id)->name;
 }
 
 void testTaskEntry(void *argument)
@@ -807,7 +1087,7 @@ void testTaskEntry(void *argument)
     osDelay(10);
   }
   // /* TODO There is possibility to add UT here for setting output mode and setting output state */
-  // T_OUT_CFG* out = OUT_GetPtr( OUT_ID_1 );
+  // T_OUT_CFG* out = OUT_GetCfgPtr( OUT_ID_1 );
 
   // OUT_ChangeMode( out, OUT_MODE_STD ); 
   // //OUT_SetState( out, OUT_STATE_ON );
@@ -864,3 +1144,5 @@ void testTaskEntry(void *argument)
 /// Add signal filtering on current and voltage signals
 /// Handle PWM  signals
 /// Add safety detection as status or state
+/// Assure safety retry correct working
+/// Remove this 4x shit from OC trip

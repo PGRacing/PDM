@@ -34,6 +34,7 @@ typedef enum
     OUT_MODE_BATCH    = 0x03  // Batching two inputs works for std
 }T_OUT_MODE;
 
+// TODO Remove latch form here for non duplicacy
 typedef enum
 {
     OUT_STATE_OFF     = 0x00,
@@ -41,6 +42,7 @@ typedef enum
     OUT_STATE_ERR_LATCH   = 0x02
 }T_OUT_STATE;
 
+// TODO Change to not duplicate status
 typedef enum
 {
     OUT_STATUS_NORMAL_OFF    = 0,
@@ -50,7 +52,6 @@ typedef enum
     OUT_STATUS_SHORT_TO_VSS  = 4,
     OUT_STATUS_OPEN_LOAD     = 5,
     OUT_STATUS_S_AND_H_OC    = 6,
-    OUT_STATUS_ERR_LATCH     = 8
 }T_OUT_STATUS;
 
 // STD Pin control

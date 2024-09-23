@@ -54,7 +54,7 @@ static void TELEM_SendNamesByCan()
 {
     for(T_OUT_ID id = 0 ; id < OUT_ID_MAX; id++)
     {
-        char* name = OUT_DIAG_GetName(id);
+        char* name = OUT_GetName(id);
         size_t namelen = strlen(name);
         if( namelen != 0)
         {
