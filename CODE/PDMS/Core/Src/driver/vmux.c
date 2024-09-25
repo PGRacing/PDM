@@ -25,7 +25,7 @@
 
 #define VMUX_ADC_12BIT_MAX_VALUE 4096
 
-#define VMUX_GET_VOLTAGE_MV(X) (X * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
+#define VMUX_GET_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
 
 volatile uint32_t VMUX_BattVoltage = 13800;
 
@@ -50,7 +50,7 @@ static T_IO VMUX_SelectorConfig[VMUX_SELECTOR_COUNT] =
     }
 };
 
-void VMUX_Init()
+static void VMUX_Init(void)
 {
     // Set multiplexer selector pins to output mode
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -102,7 +102,7 @@ static void VMUX_SelectInput( uint8_t selector )
     LL_GPIO_ResetOutputPin(VMUX_SELECTOR_PORT, resetMask);
 }
 
-void VMUX_SelectMuxAdcChannel (void)
+static void VMUX_SelectMuxAdcChannel (void)
 {
 	ADC_ChannelConfTypeDef sConfig = {0};
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
@@ -119,7 +119,7 @@ void VMUX_SelectMuxAdcChannel (void)
     }
 }
 
-void  VMUX_SelectBatteryAdcChannel()
+static void  VMUX_SelectBatteryAdcChannel(void)
 {
     ADC_ChannelConfTypeDef sConfig = {0};
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
@@ -136,7 +136,7 @@ void  VMUX_SelectBatteryAdcChannel()
     }
 }
 
-void  VMUX_SelectLP1AdcChannel()
+static void  VMUX_SelectLP1AdcChannel(void)
 {
     ADC_ChannelConfTypeDef sConfig = {0};
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
@@ -153,7 +153,7 @@ void  VMUX_SelectLP1AdcChannel()
     }
 }
 
-void  VMUX_SelectLP2AdcChannel()
+static void  VMUX_SelectLP2AdcChannel(void)
 {
     ADC_ChannelConfTypeDef sConfig = {0};
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
@@ -170,7 +170,7 @@ void  VMUX_SelectLP2AdcChannel()
     }
 }
 
-static void VMUX_ReadBattVoltage()
+static void VMUX_ReadBattVoltage(void)
 {
     VMUX_SelectBatteryAdcChannel();
     HAL_ADC_Start(&hadc3);
@@ -186,7 +186,7 @@ static void VMUX_ReadBattVoltage()
     HAL_ADC_Stop(&hadc3);
 }
 
-static void VMUX_ReadLPChannel()
+static void VMUX_ReadLPChannel(void)
 {
     // LP1 Switch readout
     VMUX_SelectLP1AdcChannel();
@@ -221,7 +221,7 @@ static void VMUX_ReadLPChannel()
     OUT_DIAG_AllSpoc();
 }
 
-static void VMUX_GetAllPooling()
+static void VMUX_GetAllPooling(void)
 {
     VMUX_SelectMuxAdcChannel();
     HAL_ADC_Start(&hadc3);
@@ -256,7 +256,7 @@ uint32_t VMUX_GetValue(uint8_t index)
     return VMUX_Value[index];
 }
 
-uint32_t VMUX_GetBattValue()
+uint32_t VMUX_GetBattValue(void)
 {
     return VMUX_BattVoltage;
 }

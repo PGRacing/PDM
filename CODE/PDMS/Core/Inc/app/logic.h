@@ -65,6 +65,6 @@ typedef struct
 
 /// @brief Evaluate logic expressions controling all outputs
 /// @return Array of evaluated results
-bool* LOGIC_Evaluate();
+bool* LOGIC_Evaluate(void);
 
 #endif

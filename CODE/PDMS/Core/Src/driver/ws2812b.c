@@ -102,7 +102,7 @@ void WS2812B_Flush(void)
 }
 
 // Flush only if update needed
-void WS2812B_FlushIf(void)
+static void WS2812B_FlushIf(void)
 {
     if(memcmp(dpbuff, buff, sizeof(buff)) != 0)
     {
@@ -111,7 +111,7 @@ void WS2812B_FlushIf(void)
 }
 
 
-void WS2812B_SetSingle(uint16_t led_index, rgb_t color)
+static void WS2812B_SetSingle(uint16_t led_index, rgb_t color)
 {
     vPortEnterCritical();
     if (led_index < LED_NUM)
@@ -123,7 +123,7 @@ void WS2812B_SetSingle(uint16_t led_index, rgb_t color)
     vPortExitCritical();
 }
 
-void WS2812B_Clear(void)
+static void WS2812B_Clear(void)
 {
     for(uint8_t i =0; i < LED_NUM; i++)
     {
@@ -140,7 +140,7 @@ static rgb_t WS2812B_ChangeColorLumin(rgb_t color, uint8_t lumin)
     return color;
 }
 
-void WS2812B_StartupAction()
+void WS2812B_StartupAction(void)
 {
     WS2812B_Clear();
 
@@ -159,7 +159,7 @@ void WS2812B_StartupAction()
 
 #define WS2812B_STAT_LED1 17
 #define WS2812B_STAT_LED2 18
-void WS2812B_EvaluateLeds()
+static void WS2812B_EvaluateLeds(void)
 {
     // SETUP LEDS
 
@@ -265,7 +265,7 @@ void argbTaskStart(void *argument)
     /* USER CODE END telemTaskStart */
 }
 
-void WS2812_Test()
+static void WS2812_Test(void)
 {
     // for(int i = 0; i < 1000; i++)
     // {

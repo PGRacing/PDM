@@ -56,15 +56,15 @@ typedef struct _T_CAN_IO
 #define  ARM_CM_DWT_CYCCNT (*(uint32_t *)0xE0001004)
 
 
-#define DEBUG_ARM_DWT_INIT if (ARM_CM_DWT_CTRL != 0) {      \
+#define DEBUG_ARM_DWT_INIT do{ if (ARM_CM_DWT_CTRL != 0) {      \
         ARM_CM_DEMCR      |= 1 << 24;  \
         ARM_CM_DWT_CYCCNT  = 0; \
         ARM_CM_DWT_CTRL   |= 1 << 0;   \
-    }
+    }}while(0)
 
 #define DEBUG_ARM_GET_TIME ARM_CM_DWT_CYCCNT
                                         // CLOCK  // DIV
-#define DEBUG_ARM_CLOCKS_TO_US(X) ((X) * 12.5) / 1000
+#define DEBUG_ARM_CLOCKS_TO_US(X) (((X) * 12.5) / 1000)
 
 #else
 

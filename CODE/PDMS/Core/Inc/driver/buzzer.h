@@ -3,8 +3,8 @@
 
 #include "typedefs.h"
 
-void BUZZER_TurnOn();
+void BUZZER_TurnOn(void);
 
-void BUZZER_TurnOff();
+void BUZZER_TurnOff(void);
 
 #endif

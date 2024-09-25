@@ -17,7 +17,7 @@ typedef struct
 
 extern volatile T_PDM_ALL pdmAll;
 
-T_PDM_SYS_STATUS PDM_GetSysStatus();
-bool PDM_GetSafetyState();
+T_PDM_SYS_STATUS PDM_GetSysStatus(void);
+bool PDM_GetSafetyState(void);
 
 #endif

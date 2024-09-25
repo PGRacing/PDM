@@ -654,7 +654,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 
 volatile uint32_t isCurrent[ADC1_CHANNEL_COUNT];
 
-void ADC1_Start()
+static void ADC1_Start(void)
 { 
   // TODO Check if it's really 5ms and how it does affect OC trip and others
     /* Timer 8 configured to execute ADC conversion each 5ms */
@@ -673,7 +673,7 @@ void ADC1_Start()
     // hadc2.State = 0;
 }
 
-void ADC2_Start()
+static void ADC2_Start(void)
 {
     /* Timer 3 configured to execute ADC conversion each 5ms */
 

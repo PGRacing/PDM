@@ -15,9 +15,12 @@
 /// USER DEFINES
 // Safety related defines
 #define OUT_DIAG_READ_FREQ 200 // 200 Hz frequency of adc read
-#define OUT_DIAG_READ_PERIOD 1000 / OUT_DIAG_READ_FREQ
+#define OUT_DIAG_READ_PERIOD (1000 / OUT_DIAG_READ_FREQ)
 #define OUT_SAFETY_OC_OFF 0xFFFF
-#define OUT_DIAG_MS_TO_OC_TRIP(X) X / OUT_DIAG_READ_PERIOD
+#define OUT_DIAG_MS_TO_OC_TRIP(X) ((X) / OUT_DIAG_READ_PERIOD)
+#define OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD 100 // [mA] Under this value output channel current is considered open load
+#define OUT_DIAG_BTS_DETECT_OPEN_LOAD TRUE // Is open load detection enabled on BTS channels?
+#define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
 //#define OUT_DIAG_BTS500_ADC_VOLTAGE_TO_MA
 
 /// FUNCTION PROTOTYPES
@@ -25,49 +28,50 @@ static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
 static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
 
 /// MACRO FUNCTIONS
-#define OUT_ASSERT_IN_RANGE(id) ASSERT( id >= 0 && id < OUT_ID_MAX)
-#define OUT_ASSERT_IN_RANGE_CFG(id)  ASSERT( id >= 0 && id < ARRAY_COUNT(outsCfg))
-#define OUT_ASSERT_IN_RANGE_REG(id)  ASSERT( id >= 0 && id < ARRAY_COUNT(outsReg))
+#define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
+#define OUT_ASSERT_IN_RANGE_CFG(id)  (ASSERT( (id) >= 0 && (id) < ARRAY_COUNT(outsCfg)))
+#define OUT_ASSERT_IN_RANGE_REG(id)  (ASSERT( (id) >= 0 && (id) < ARRAY_COUNT(outsReg)))
 
 // Get current time in ms
-#define OUT_GET_TIME_MS pdTICKS_TO_MS( xTaskGetTickCount() )
+#define OUT_GET_TIME_MS (pdTICKS_TO_MS( xTaskGetTickCount() ))
 
-#define OUT_SAFETY_CALLBACK_BODY(id)   osTimerStop(OUT_GetRegPtr(id)->safety.timerHandle); \
-                                  OUT_GetRegPtr(id)->safety.timerHandle = NULL; \
-                                  OUT_SetState(id, OUT_STATE_ON); \
-                                  OUT_GetRegPtr(id)->safety.inError = FALSE;
+// do + while(0) here for correct macro evaluation
+#define OUT_SAFETY_CALLBACK_BODY(id)   do{osTimerStop(OUT_GetRegPtr((id))->safety.timerHandle); \
+                                  OUT_GetRegPtr((id))->safety.timerHandle = NULL; \
+                                  OUT_SetState((id), OUT_STATE_ON); \
+                                  OUT_GetRegPtr((id))->safety.inError = FALSE; }while(0)
 
 #pragma region SAFETY_CALLBACKS
 
-void OUT_CH1_SafetyCallback()
+void OUT_CH1_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_1);
 }
-void OUT_CH2_SafetyCallback()
+void OUT_CH2_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_2);
 }
-void OUT_CH3_SafetyCallback()
+void OUT_CH3_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_3);
 }
-void OUT_CH4_SafetyCallback()
+void OUT_CH4_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_4);
 }
-void OUT_CH5_SafetyCallback()
+void OUT_CH5_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_5);
 }
-void OUT_CH6_SafetyCallback()
+void OUT_CH6_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_6);
 }
-void OUT_CH7_SafetyCallback()
+void OUT_CH7_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_7);
 }
-void OUT_CH8_SafetyCallback()
+void OUT_CH8_SafetyCallback(void)
 {
   OUT_SAFETY_CALLBACK_BODY(OUT_ID_8);
 }
@@ -90,7 +94,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .socThreshold = 10000, // mA
               .socTripThreshold = 400, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerInterval = 1000,
+              .timerInterval = 1000, 
               .safetyCallback = &OUT_CH1_SafetyCallback,
             }
         },
@@ -281,7 +285,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_1] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -295,7 +299,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_2] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -309,7 +313,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_3] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -323,7 +327,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_4] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -337,7 +341,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_5] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -351,7 +355,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_6] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -365,7 +369,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_7] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -379,7 +383,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_8] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -393,7 +397,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_9] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -407,7 +411,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_10] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -421,7 +425,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_11] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -435,7 +439,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_12] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -449,7 +453,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_13] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -463,7 +467,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_14] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -477,7 +481,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_15] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -491,7 +495,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   [OUT_ID_16] = 
   {
     .state = OUT_STATE_OFF,
-    .status = OUT_STATUS_NORMAL_OFF,
+    .status = OUT_STATUS_OK,
     .safety = 
     {
       .ocTripCounter = 0,
@@ -505,7 +509,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
 };
 
 // Acquire config struct
-#define OUT_GETCFGPTR(id) (&(outsCfg[id]))
+#define OUT_GETCFGPTR(id) (&(outsCfg[(id)]))
 
 /// @brief Acquire configuration struct with range assert
 /// @param id Output channel id [1..16] T_OUT_ID
@@ -517,7 +521,7 @@ static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id )
 }
 
 /// Acquire status register of selected channel
-#define OUT_GETREGPTR(id) (&(outsReg[id]))
+#define OUT_GETREGPTR(id) (&(outsReg[(id)]))
 
 /// @brief Acquire status register of selected channel with range assert
 /// @param id Output channel id [1..16] T_OUT_ID
@@ -834,6 +838,66 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
   }
 }
 
+static T_OUT_STATUS OUT_DIAG_SingleBtsHardware(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+
+  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+  ASSERT(cfg);
+
+  T_OUT_REG* reg = OUT_GETREGPTR(id);
+  ASSERT(reg);
+
+  T_OUT_STATUS newStatus = OUT_STATUS_OK;
+
+  // Acquire needeed data
+  reg->voltageMV = VMUX_GetValue(id);   // TODO Consider ADC data coherenece
+  reg->currentMA = BSP_OUT_CalcCurrent(id);  
+  uint32_t diffChVbat = abs((int32_t)(VMUX_GetBattValue() - reg->voltageMV));
+  bool inFault = reg->currentMA > BSP_OUT_GetFaultLevel(id);
+  bool noLoad  = reg->currentMA < OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD;
+
+  if(OUT_STATE_ON == reg->state)
+  {
+    if(diffChVbat < OUT_DIAG_BTS_VBAT_HISTERESIS)
+    {
+      if(OUT_DIAG_BTS_DETECT_OPEN_LOAD && TRUE == noLoad)
+      {
+        newStatus = OUT_STATUS_OPEN_LOAD;
+      }
+      else
+      {
+        newStatus = OUT_STATUS_OK;
+      }
+     
+    }
+    else
+    {
+      if(TRUE == inFault)
+      {
+        newStatus = OUT_STATUS_HARD_OC_OR_OT; 
+      }
+      else
+      {
+        newStatus = OUT_STATUS_CONTROL_FAIL;
+      }
+    }
+  }
+  else if(OUT_STATE_OFF == reg->state)
+  {
+    if(diffChVbat < OUT_DIAG_BTS_VBAT_HISTERESIS)
+    {
+      newStatus = OUT_STATUS_SHORT_TO_VSS;
+    }
+    else
+    {
+      newStatus = OUT_STATUS_OK;
+    }
+  }
+
+  return newStatus;
+}
+
 /// @brief Perform all needed processing for output channel of BTS type
 /// @param id Output channel id [1..8] T_OUT_ID
 static void OUT_DIAG_SingleBts(T_OUT_ID id)
@@ -848,7 +912,7 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
   T_OUT_REG* reg = OUT_GETREGPTR(id);
   ASSERT(reg);
 
-  T_OUT_STATUS newStatus = OUT_STATUS_NORMAL_OFF;
+  T_OUT_STATUS newStatus = OUT_STATUS_OK;
 
   // BTS500 ONLY
   // TODO There should be only one return do it elsewhere
@@ -910,7 +974,7 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
   // TODO Changed this value experimentally 
   uint32_t voltageHis = 1000; // 1000 mV for now
 
-  T_OUT_STATUS hwStatus = OUT_STATUS_NORMAL_OFF;
+  T_OUT_STATUS hwStatus = OUT_STATUS_OK;
   if(OUT_STATE_OFF == reg->state)
   {
       if(reg->currentMA >= faultLevel)
@@ -921,7 +985,7 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
         }
         else
         {
-          hwStatus = OUT_STATUS_NORMAL_OFF;
+          hwStatus = OUT_STATUS_OK;
         }
       }
   }
@@ -934,6 +998,7 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
         // No latch on HW
         //hwStatus = OUT_STATUS_HARD_OC_OR_OT;
       }
+      // This is shit some in ampers some in mili amps
       else if(((reg->currentMA <= 0.0000143 * (float)dkilis) && (reg->currentMA > 0.000001 * (float)dkilis)) 
       || (reg->currentMA <= 0.000001 * (float)dkilis))
       {
@@ -943,7 +1008,7 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
       // 12000 = 12V
       else if((reg->voltageMV <= batteryVoltage) && (reg->currentMA > 0.0000143 * (float)dkilis))
       {
-        hwStatus = OUT_STATUS_NORMAL_ON;
+        hwStatus = OUT_STATUS_OK;
       }
   }
   /// STATE DETECTION BLOCK END
@@ -975,7 +1040,8 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
   vPortExitCritical();
 }
 
-void OUT_DIAG_AllBts()
+// FAST CONTROL LOOP BODY
+void OUT_DIAG_AllBts(void)
 {
   uint32_t t1 = DEBUG_ARM_GET_TIME;
   for(uint8_t id = 0; id < OUT_ID_BTS_MAX; id++)
@@ -984,7 +1050,7 @@ void OUT_DIAG_AllBts()
   }
   uint32_t t2 = DEBUG_ARM_GET_TIME;
   uint32_t delta = DEBUG_ARM_CLOCKS_TO_US(t2 - t1);
-  //LOG_VAR(delta);
+  LOG_VAR(delta);
 }
 
 /// @brief Perform all needed processing for output channel of SPOC2 type
@@ -1014,11 +1080,11 @@ static void OUT_DIAG_SingleSpoc(T_OUT_ID id)
   
   if(reg->state == OUT_STATE_ON)
   {
-    reg->status = OUT_STATUS_NORMAL_ON;
+    reg->status = OUT_STATUS_OK;
   }
   else if(reg->state == OUT_STATE_OFF)
   {
-    reg->status = OUT_STATUS_NORMAL_OFF;
+    reg->status = OUT_STATUS_OK;
   }
   else if(reg->state == OUT_STATE_ERR_LATCH)
   {
@@ -1028,7 +1094,7 @@ static void OUT_DIAG_SingleSpoc(T_OUT_ID id)
   return;   
 }
 
-void OUT_DIAG_AllSpoc()
+void OUT_DIAG_AllSpoc(void)
 {
   for(uint8_t id = OUT_ID_BTS_MAX; id < OUT_ID_MAX; id++)
   {
@@ -1146,3 +1212,6 @@ void testTaskEntry(void *argument)
 /// Add safety detection as status or state
 /// Assure safety retry correct working
 /// Remove this 4x shit from OC trip
+/// Sync current and voltage 
+/// Change RTOS tasks names (remove entry nomencalture)
+/// Read all and clean up defines

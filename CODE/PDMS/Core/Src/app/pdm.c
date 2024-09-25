@@ -18,7 +18,7 @@
 #include "telemetry.h"
 // Main PDM file
 
-T_PDM_SYS_STATUS PDM_GetSysStatus()
+T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 {
     // TODO Add status handlers CAN status etc...
     return PDM_SYS_STATUS_OK;
@@ -50,7 +50,7 @@ static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] =
     OUT_MODE_STD,
 };
 
-static void PDM_OutConfig()
+static void PDM_OutConfig(void)
 {
     for(uint8_t i = 0; i < OUT_ID_MAX; i++)
     {
@@ -58,7 +58,7 @@ static void PDM_OutConfig()
     }
 }
 
-static void PDM_Init()
+static void PDM_Init(void)
 {
     vPortEnterCritical();
     // SPOC2 External outputs init (all outputs disabled)
@@ -71,7 +71,7 @@ static void PDM_Init()
     
 }
 
-static void PDM_CheckSafety()
+static void PDM_CheckSafety(void)
 {
     if(HAL_GPIO_ReadPin(SAFETY_IN_GPIO_Port, SAFETY_IN_Pin) == GPIO_PIN_RESET)
     {
@@ -84,7 +84,7 @@ static void PDM_CheckSafety()
     }
 }
 
-bool PDM_GetSafetyState()
+bool PDM_GetSafetyState(void)
 {
     return pdmAll.safetyState;
 }

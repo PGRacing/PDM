@@ -8,7 +8,7 @@
 
 #define TELEM_OUT_NAME_PART 7
 
-static void TELEM_SendVoltageByCan()
+static void TELEM_SendVoltageByCan(void)
 {
     // All casting form uint32_t to uint16_t is intentional
     CANH_Send_TxVoltage1_4(   OUT_DIAG_GetVoltage(OUT_ID_1), OUT_DIAG_GetVoltage(OUT_ID_2), OUT_DIAG_GetVoltage(OUT_ID_3), OUT_DIAG_GetVoltage(OUT_ID_4));
@@ -17,7 +17,7 @@ static void TELEM_SendVoltageByCan()
     CANH_Send_TxVoltage13_16( OUT_DIAG_GetVoltage(OUT_ID_13), OUT_DIAG_GetVoltage(OUT_ID_14), OUT_DIAG_GetVoltage(OUT_ID_15), OUT_DIAG_GetVoltage(OUT_ID_16));
 }
 
-static void TELEM_SendCurrentByCan()
+static void TELEM_SendCurrentByCan(void)
 {
     CANH_Send_TxCurrent1_4(   OUT_DIAG_GetCurrent_pA(OUT_ID_1), OUT_DIAG_GetCurrent_pA(OUT_ID_2), OUT_DIAG_GetCurrent_pA(OUT_ID_3), OUT_DIAG_GetCurrent_pA(OUT_ID_4));
     CANH_Send_TxCurrent5_8(   OUT_DIAG_GetCurrent_pA(OUT_ID_5), OUT_DIAG_GetCurrent_pA(OUT_ID_6), OUT_DIAG_GetCurrent_pA(OUT_ID_7), OUT_DIAG_GetCurrent_pA(OUT_ID_8));
@@ -25,7 +25,7 @@ static void TELEM_SendCurrentByCan()
     CANH_Send_TxCurrent13_16( OUT_DIAG_GetCurrent_pA(OUT_ID_13), OUT_DIAG_GetCurrent_pA(OUT_ID_14), OUT_DIAG_GetCurrent_pA(OUT_ID_15), OUT_DIAG_GetCurrent_pA(OUT_ID_16));
 }
 
-static void TELEM_SendStatusByCan()
+static void TELEM_SendStatusByCan(void)
 {
     CANH_Send_TxStatus1_8((uint8_t)OUT_DIAG_GetStatus(OUT_ID_1), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_2), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_3), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_4),
         (uint8_t)OUT_DIAG_GetStatus(OUT_ID_5), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_6), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_7), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_8));
@@ -34,12 +34,12 @@ static void TELEM_SendStatusByCan()
         (uint8_t)OUT_DIAG_GetStatus(OUT_ID_13), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_14), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_15), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_16));
 }
 
-static void TELEM_SendSystemDataByCan()
+static void TELEM_SendSystemDataByCan(void)
 {
     CANH_Send_SysStatus((uint8_t)PDM_GetSysStatus(), (uint16_t)VMUX_GetBattValue(), (uint8_t)PDM_GetSafetyState());
 }
 
-static void TELEM_SendStateByCan()
+static void TELEM_SendStateByCan(void)
 {
     uint8_t dummyStateArr[OUT_ID_MAX] = {0x00};
     for(T_OUT_ID id = 0 ; id < OUT_ID_MAX; id++)
@@ -50,7 +50,7 @@ static void TELEM_SendStateByCan()
     CANH_Send_TxState1_16(dummyStateArr);
 }
 
-static void TELEM_SendNamesByCan()
+static void TELEM_SendNamesByCan(void)
 {
     for(T_OUT_ID id = 0 ; id < OUT_ID_MAX; id++)
     {

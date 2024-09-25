@@ -47,14 +47,14 @@ typedef struct _T_OUT_SAFETY_CFG
 /// @brief Output channel configuration struct
 typedef struct _T_OUT_CFG
 {
-    const T_OUT_ID   id;          // Id should reflect position in outsCfg
-    const T_OUT_TYPE type;        // Device type - can be BTS500 or BTS72220
-    T_OUT_MODE       mode;   // Output mode (TYP / PWM / BATCH / ...)
-    const T_SPOC2_ID spocId;      // If device is BTS72220 this holds sub device id
-    const T_SPOC2_CH_ID spocChId; // If device is BTS72220 this holds sub device respecitve channel id
-    char             name[OUT_DIAG_NAME_LEN];
-    T_OUT_ID         batch;       // Optional for OUT_MODE_BATCH (BTS500 only)
-    T_OUT_SAFETY_CFG safety;
+    const T_OUT_ID   id;                  // Id should reflect position in outsCfg
+    const T_OUT_TYPE type;                // Device type - can be BTS500 or BTS72220
+    T_OUT_MODE       mode;                // Output mode (TYP / PWM / BATCH / ...)
+    const T_SPOC2_ID spocId;              // If device is BTS72220 this holds sub device id
+    const T_SPOC2_CH_ID spocChId;         // If device is BTS72220 this holds sub device respecitve channel id
+    char             name[OUT_DIAG_NAME_LEN]; // Output channel pretty name
+    T_OUT_ID         batch;               // Optional for OUT_MODE_BATCH (BTS500 only)
+    T_OUT_SAFETY_CFG safety;              // Safety configuration
 
 }T_OUT_CFG;
 
@@ -63,8 +63,8 @@ typedef struct _T_OUT_SAFETY_REG
 {
     uint16_t           ocTripCounter;    // Counter of ms to trip of overcurrent
     uint16_t           errRetryCounter;  // Counter of performed retries
-    osTimerId_t        timerHandle;       // Safety osTimer used for timer handling
-    bool               inError;
+    osTimerId_t        timerHandle;      // Safety osTimer used for timer handling
+    bool               inError;          // Is output channel in error mode? 
 }T_OUT_SAFETY_REG;
 
 /// @brief Output channel state register
@@ -109,10 +109,12 @@ bool OUT_ToggleState(T_OUT_ID id);
 bool OUT_Batch(T_OUT_ID id, T_OUT_ID batchId);
 
 /// @brief Perform all needed processing for BTS type output channels
-void OUT_DIAG_AllBts();
+/// @note  Fast control loop body
+void OUT_DIAG_AllBts(void);
 
 /// @brief Perform all needed processing for SPOC2 type output channels
-void OUT_DIAG_AllSpoc();
+/// @note  Fast control loop body
+void OUT_DIAG_AllSpoc(void);
 
 /// @brief Get output channel current value in mA range
 /// @param id Output channel id [1..16] T_OUT_ID

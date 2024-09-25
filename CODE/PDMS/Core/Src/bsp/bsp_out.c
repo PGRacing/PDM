@@ -14,13 +14,13 @@
 #define BSP_OUT_CURRENT_CLK 80000000
 
 /* Prescaler value used for PWM channels */
-#define BSP_OUT_PWM_PRESCALER 800-1
+#define BSP_OUT_PWM_PRESCALER (800-1)
 
 /* Auto-reload value used for PWM channels */
-#define BSP_OUT_PWM_ARR 500-1
+#define BSP_OUT_PWM_ARR (500-1)
 
 /* TODO Change duty 0-100% to CCR register value */
-#define BSP_OUT_DutyToCompare(X) (X * BSP_OUT_PWM_ARR)/100
+#define BSP_OUT_DutyToCompare(X) ((X * BSP_OUT_PWM_ARR)/100)
 
 /* Value used when starting PWM channel */
 #define BSP_OUT_PWM_START_DUTY 0
@@ -32,9 +32,10 @@ typedef struct _T_BSP_OUT_CFG
     const uint32_t chmask;
     const uint32_t alt;
     const uint32_t clock;
-    const uint16_t* currentRawData;
+    const volatile uint16_t* currentRawData;
     const uint32_t dkilis;
     const uint32_t sensRValue;
+    const uint32_t faultLevel;  // Defined absolutly to remove non-needed calculations
 }T_BSP_OUT_CFG;
 
 static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] = 
@@ -50,7 +51,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         // TODO This should be later changed 
         .currentRawData = &(adc1RawData[0]),
         .dkilis = 38000,
-        .sensRValue = 7020
+        .sensRValue = 7020,
+        .faultLevel = 12000
     },
     [OUT_ID_2] = 
     {
@@ -62,7 +64,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
         .currentRawData = &(adc1RawData[1]),
         .dkilis = 38000,
-        .sensRValue = 6990
+        .sensRValue = 6990,
+        .faultLevel = 12000
     },
     [OUT_ID_3] = 
     {
@@ -74,7 +77,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
         .currentRawData = &(adc1RawData[2]),
         .dkilis = 38000,
-        .sensRValue = 7025
+        .sensRValue = 7025,
+        .faultLevel = 12000
     },
     [OUT_ID_4] = 
     {
@@ -86,7 +90,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
         .currentRawData = &(adc1RawData[3]),
         .dkilis = 38000,
-        .sensRValue = 2999
+        .sensRValue = 2999,
+        .faultLevel = 12000
     },
     [OUT_ID_5] = 
     {
@@ -98,7 +103,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[4]),
         .dkilis = 50000,
-        .sensRValue = 6940
+        .sensRValue = 6940,
+        .faultLevel = 12000
     },
     [OUT_ID_6] = 
     {
@@ -110,7 +116,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[5]),
         .dkilis = 50000,
-        .sensRValue = 6975
+        .sensRValue = 6975,
+        .faultLevel = 12000
     },
     [OUT_ID_7] = 
     {
@@ -122,7 +129,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[6]),
         .dkilis = 50000,
-        .sensRValue = 2334
+        .sensRValue = 2334,
+        .faultLevel = 12000
     },
     [OUT_ID_8] = 
     {
@@ -134,7 +142,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM4,
         .currentRawData = &(adc1RawData[7]),
         .dkilis = 50000,
-        .sensRValue = 6952
+        .sensRValue = 6952,
+        .faultLevel = 12000
     },
     [OUT_ID_9] = 
     {
@@ -186,6 +195,9 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
     }
 };
 
+/// @brief Get I/O descriptor
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return T_IO descriptor
 static inline T_IO BSP_OUT_GetIO(T_OUT_ID id)
 {
     return bspOutsCfg[id].io;
@@ -197,11 +209,17 @@ uint32_t BSP_OUT_GetDkilis(T_OUT_ID id)
     return bspOutsCfg[id].dkilis;
 }
 
+uint32_t BSP_OUT_GetFaultLevel(T_OUT_ID id)
+{
+    ASSERT( id < OUT_ID_MAX);
+    return bspOutsCfg[id].faultLevel;
+}
+
 uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id)
 {
     ASSERT( id < OUT_ID_MAX);
     uint32_t isVoltage = ((float)*(bspOutsCfg[id].currentRawData)/(float)4096)*(float)VDD_VALUE; 
-    return isVoltage *  bspOutsCfg[id].dkilis/bspOutsCfg[id].sensRValue;
+    return isVoltage *  (bspOutsCfg[id].dkilis)/(bspOutsCfg[id].sensRValue);
 }
 
 
@@ -330,7 +348,7 @@ bool BSP_OUT_IsBatchPossible(T_OUT_ID id, T_OUT_ID batchId)
     ASSERT( id < OUT_ID_MAX);
     ASSERT( batchId < OUT_ID_MAX);
     
-    return (BSP_OUT_GetIO(id).port == BSP_OUT_GetIO(batchId).port);
+    return ((BSP_OUT_GetIO(id).port) == (BSP_OUT_GetIO(batchId).port));
 }
 
 void BSP_OUT_SetMode(T_OUT_ID id, T_OUT_MODE mode)
@@ -384,7 +402,11 @@ uint32_t BSP_OUT_GetCurrentAdcValue(T_OUT_ID id)
     }  
 }
 
+// TODO Unused
 void BSP_OUT_Init(T_IO io)
 {
-
+    // Move initial GPIO init here
+    // Pull down low
 }
+
+// TODO [MAJOR REWORK] Check PWM capabilites, change PWM frequency 

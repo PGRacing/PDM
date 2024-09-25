@@ -362,7 +362,7 @@ bool logicResults[POWER_OUT_COUNT] = {FALSE};
 
 volatile bool expResult;
 
-bool* LOGIC_Evaluate()
+bool* LOGIC_Evaluate(void)
 {
   for( uint8_t i = 0; i < POWER_OUT_COUNT; i++)
   {

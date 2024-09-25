@@ -9,6 +9,7 @@
 #include "bsp_spoc2.h"
 #include "spi.h"
 
+/// @brief SPOC2 device configuration type
 typedef struct _T_BSP_SPOC2_CFG
 {
     SPI_HandleTypeDef* phspi;
@@ -31,6 +32,8 @@ static T_BSP_SPOC2_CFG bspSpoc2Cfg[SPOC2_NUM_OF_DEVICES] =
     },
 };
 
+/// @brief Pull SPI slave select low for SPOC2 device
+/// @param id SPOC2 device id
 static void BSP_SPOC2_SlaveSelect(T_SPOC2_ID id)
 {   
     ASSERT( id < SPOC2_ID_MAX);
@@ -38,6 +41,8 @@ static void BSP_SPOC2_SlaveSelect(T_SPOC2_ID id)
     LL_GPIO_ResetOutputPin(bspSpoc2Cfg[id].csnIo.port, bspSpoc2Cfg[id].csnIo.pin);
 }
 
+/// @brief Pull SPI slave select up for SPOC2 device
+/// @param id SPOC2 device id
 static void BSP_SPOC2_SlaveDeselect(T_SPOC2_ID id)
 {
     ASSERT( id < SPOC2_ID_MAX);

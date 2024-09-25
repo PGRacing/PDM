@@ -1561,12 +1561,13 @@ SPOC2_error_t SPOC2_devinit(SPOC2_deviceConfig_t* dev) {
     return result;
 }
 
-boolean SPOC2_SetState()
+boolean SPOC2_SetState(void)
 {
+    //TODO //????
     return false;
 }
 
-void SPOC2_Init()
+void SPOC2_Init(void)
 {
     // Initialize both devices
     SPOC2_devinit(&spoc2Cfg.devices[SPOC2_ID_1]);
