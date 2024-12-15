@@ -45,11 +45,30 @@
         "silk_text_upright": false,
         "zones": {
           "45_degree_only": false,
-          "min_clearance": 0.508
+          "min_clearance": 0.308
         }
       },
-      "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.0,
+          "via_gap": 0.0,
+          "width": 0.0
+        }
+      ],
+      "drc_exclusions": [
+        "clearance|109100000|105575500|38f9699d-f065-45ac-b987-9ea317225208|975478b0-0d67-4a9c-b34b-528079abff0d",
+        "clearance|109100000|105575500|f00a39e6-4506-4318-9971-4013820965c5|975478b0-0d67-4a9c-b34b-528079abff0d",
+        "clearance|109100000|106700000|012e5fb1-57f6-4425-9350-996962286223|acfcb1b7-9fb3-45d8-82d1-a895c38d15cf",
+        "clearance|109100000|106700000|de66f15b-86ba-4e7f-960d-28445322381e|acfcb1b7-9fb3-45d8-82d1-a895c38d15cf",
+        "clearance|109500000|105700001|40ccd03c-0607-4088-b1aa-be8d8e8de985|975478b0-0d67-4a9c-b34b-528079abff0d",
+        "clearance|109500000|105700001|6b75e9eb-a799-4508-b2de-e4801374e369|975478b0-0d67-4a9c-b34b-528079abff0d",
+        "clearance|109500000|106699999|5cf158b8-c383-47b6-ae60-31bb8a77a34c|acfcb1b7-9fb3-45d8-82d1-a895c38d15cf",
+        "clearance|110100000|105174999|4ed9dc8a-da0b-4f3f-82ed-145392e000f0|92e77bd9-89c8-47d4-8f3a-839d1585a1fe",
+        "clearance|110100000|107476400|692c50df-682f-4f84-81f7-f506bc4aef7d|7b86f491-7830-418e-a9c4-bf6768f09c33",
+        "clearance|110225000|105299999|29cbe145-0aa5-4058-8363-a9e80e1ad6ae|92e77bd9-89c8-47d4-8f3a-839d1585a1fe",
+        "clearance|110225000|107100001|1acfd89e-8e23-40ab-9f7b-386d1001084d|7b86f491-7830-418e-a9c4-bf6768f09c33",
+        "clearance|110225000|107351400|1d1c191a-4051-4262-b47d-bf888317d098|7b86f491-7830-418e-a9c4-bf6768f09c33"
+      ],
       "meta": {
         "version": 2
       },
@@ -112,8 +131,23 @@
         "solder_mask_min_width": 0.0,
         "use_height_for_length_calcs": true
       },
-      "track_widths": [],
-      "via_dimensions": [],
+      "track_widths": [
+        0.0
+      ],
+      "via_dimensions": [
+        {
+          "diameter": 0.0,
+          "drill": 0.0
+        },
+        {
+          "diameter": 0.6,
+          "drill": 0.3
+        },
+        {
+          "diameter": 0.8,
+          "drill": 0.4
+        }
+      ],
       "zones_allow_external_fillets": false,
       "zones_use_no_outline": true
     },
