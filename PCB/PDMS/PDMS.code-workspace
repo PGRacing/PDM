@@ -34,6 +34,26 @@
 			"out.h": "c",
 			"ws2812b.h": "c"
 		},
-		"cortex-debug.variableUseNaturalFormat": true
+		"cortex-debug.variableUseNaturalFormat": true,
+		"workbench.colorCustomizations": {
+			"activityBar.activeBackground": "#5f116b",
+			"activityBar.background": "#5f116b",
+			"activityBar.foreground": "#e7e7e7",
+			"activityBar.inactiveForeground": "#e7e7e799",
+			"activityBarBadge.background": "#8a7a16",
+			"activityBarBadge.foreground": "#e7e7e7",
+			"commandCenter.border": "#e7e7e799",
+			"sash.hoverBorder": "#5f116b",
+			"statusBar.background": "#380a3f",
+			"statusBar.foreground": "#e7e7e7",
+			"statusBarItem.hoverBackground": "#5f116b",
+			"statusBarItem.remoteBackground": "#380a3f",
+			"statusBarItem.remoteForeground": "#e7e7e7",
+			"titleBar.activeBackground": "#380a3f",
+			"titleBar.activeForeground": "#e7e7e7",
+			"titleBar.inactiveBackground": "#380a3f99",
+			"titleBar.inactiveForeground": "#e7e7e799"
+		},
+		"peacock.color": "#380a3f"
 	}
 }
