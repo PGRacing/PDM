@@ -2,7 +2,6 @@
 #include "stm32l496xx.h"
 #include "stm32l4xx_hal_def.h"
 #include "stm32l4xx_hal_gpio.h"
-#include "typedefs.h"
 #include "logger.h"
 #include "input.h"
 #include "FreeRTOS.h"

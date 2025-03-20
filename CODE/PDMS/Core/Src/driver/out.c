@@ -2,7 +2,6 @@
 #include "stm32l496xx.h"
 #include "stm32l4xx_hal_def.h"
 #include "stm32l4xx_hal_gpio.h"
-#include "typedefs.h"
 #include "logger.h"
 #include "out.h"
 #include "vmux.h"
@@ -18,7 +17,7 @@
 #define OUT_DIAG_READ_PERIOD (1000 / OUT_DIAG_READ_FREQ)
 #define OUT_SAFETY_OC_OFF 0xFFFF
 #define OUT_DIAG_MS_TO_OC_TRIP(X) ((X) / OUT_DIAG_READ_PERIOD)
-#define OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD 100 // [mA] Under this value output channel current is considered open load
+#define OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD 20 // [mA] Under this value output channel current is considered open load
 #define OUT_DIAG_BTS_DETECT_OPEN_LOAD TRUE // Is open load detection enabled on BTS channels?
 #define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
 //#define OUT_DIAG_BTS500_ADC_VOLTAGE_TO_MA
@@ -551,7 +550,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
-      // TODO Add handler
+      // TODO [LOW] Add handler
       //SPOC2_SetMode(id, targetMode);
     }
     cfg->mode = targetMode;
@@ -569,7 +568,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
-      // TODO Add handler
+      // TODO [LOW] Add handler
       // SPOC2_SetMode(id, targetMode);
     }
     OUT_SetState(cfg->id, OUT_STATE_OFF);
@@ -582,7 +581,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     {
       BSP_OUT_SetMode(id, targetMode);
       // Set PWM duty to 0%
-      BSP_OUT_SetDutyPWM(id, 0);
+      OUT_SetDutyPWM(id, 0);
       cfg->mode = targetMode;
     }
     break;
@@ -613,8 +612,34 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     break;
   }
 
-  // TODO Should it be like this if we change state before??
-  OUT_GetRegPtr(id)->state = OUT_STATE_OFF;
+  return;
+}
+
+bool OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
+{
+  bool res = TRUE;
+
+  OUT_ASSERT_IN_RANGE(id);
+
+  // Acquire output channel status reg
+  T_OUT_REG* reg = OUT_GETREGPTR(id);
+  ASSERT(reg);
+
+  if(OUT_GetMode(id) == OUT_MODE_PWM && reg->state == OUT_STATE_ON)
+  {
+    reg->prevPwmDuty = reg->pwmDuty;
+    reg->pwmDuty = duty;
+  
+    // Apply new PWM duty
+    BSP_OUT_SetDutyPWM(id, duty);
+  }
+  else
+  {
+    LOG_WARN("To set PWM duty channel must be enabled");
+    res = FALSE;
+  }
+
+  return res;
 }
 
 bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
@@ -652,65 +677,76 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
     return FALSE;
   }
 
-  switch (cfg->mode)
+  // If state changed - apply new state if possible
+  if(reqState != reg->state)
   {
-  case OUT_MODE_UNUSED:
-  {
-    LOG_WARN("Unable to set state on unused output config");
-    res = FALSE;
-    break;
-  }
-  case OUT_MODE_STD:
-  {
-    if(cfg->type == OUT_TYPE_BTS500)
+    switch (cfg->mode)
     {
-      // TODO This executes each time logic is evaluted change it!!!
-      BSP_OUT_SetStdState(id, reqState);
-    }
-    else if(cfg->type == OUT_TYPE_SPOC2)
-    {
-      // If new state is applied
-      if(reqState != reg->state)
+      case OUT_MODE_UNUSED:
       {
-        SPOC2_SetStdState(cfg->spocId, cfg->spocChId, reqState);
+        LOG_WARN("Unable to set state on unused output config");
+        res = FALSE;
       }
+      break;
+
+      case OUT_MODE_STD:
+      {
+        if(cfg->type == OUT_TYPE_BTS500)
+        {
+          BSP_OUT_SetStdState(id, reqState);
+        }
+        else if(cfg->type == OUT_TYPE_SPOC2)
+        {
+          SPOC2_SetStdState(cfg->spocId, cfg->spocChId, reqState);
+        }
+        reg->state = reqState;
+        res = TRUE;
+      }
+      break;
+
+      case OUT_MODE_PWM:
+      { 
+          if(reqState == OUT_STATE_OFF)
+          {
+            // Disable channel with storing previous value
+            OUT_SetDutyPWM(id, 0);
+          }
+          else if(reqState == OUT_STATE_ON)
+          {
+            // Restore previous PWM duty
+            reg->pwmDuty = reg->prevPwmDuty;
+            BSP_OUT_SetDutyPWM(id, reg->prevPwmDuty);
+          }
+          reg->state = reqState;
+          res = TRUE;
+      }
+      break;
+
+      case OUT_MODE_BATCH:
+      {
+        if(cfg->type == OUT_TYPE_BTS500)
+        {
+          ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
+
+          T_OUT_REG* batchReg = OUT_GETREGPTR(cfg->batch);
+
+          // Use this function to change GPIO register simultaniously for both switches
+          BSP_OUT_SetBatchState(id, cfg->batch, reqState);
+
+          reg->state = reqState;
+          batchReg->state = reqState;
+          res = TRUE;
+        }
+        else
+        {
+          res = FALSE;
+        }
+      }
+      break;
+
+      default:
+        break;
     }
-    
-    reg->state = reqState;
-    res = TRUE;
-    break;
-  }
-  case OUT_MODE_PWM:
-  { 
-    // TODO Allow on/off also on PWM channels
-    LOG_WARN("Trying to set steady state on PWM output");
-    res = FALSE;
-    break;
-  }
-  case OUT_MODE_BATCH:
-  {
-    if(cfg->type == OUT_TYPE_BTS500)
-    {
-      ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
-
-      T_OUT_REG* batchReg = OUT_GETREGPTR(cfg->batch);
-
-      // Use this function to change GPIO register simultaniously for both switches
-      BSP_OUT_SetBatchState(id, cfg->batch, reqState);
-
-      reg->state = reqState;
-      batchReg->state = reqState;
-      res = TRUE;
-    }
-    else
-    {
-      res = FALSE;
-    }
-
-    break;
-  }
-  default:
-    break;
   }
 
   return res;
@@ -718,7 +754,7 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
 
 bool OUT_Batch(T_OUT_ID id, T_OUT_ID batchId)
 {
-  /// TODO Add handling of SPOC2 internal batch function
+  /// TODO [LOW] Add handling of SPOC2 internal batch function
   T_OUT_CFG* cfg = OUT_GetCfgPtr(id);
   T_OUT_CFG* batchCfg = OUT_GetCfgPtr(batchId);
   ASSERT(cfg);
@@ -838,30 +874,38 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
   }
 }
 
-static T_OUT_STATUS OUT_DIAG_SingleBtsHardware(T_OUT_ID id)
+
+// TODO Second stage state machine
+static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentMA)
 {
-  OUT_ASSERT_IN_RANGE(id);
+  // 1. Channel set on
+  // 2. Check if inrush function is enabled (enableInrush)
+  //     2.1. Set Ith = Iinr
+  //     2.2. During Tallinr wait till I >= In - wait for first current peak during allowed time (Tallinr)
+  //     2.3. Start timer counting down from Tinr to 0
+  //     2.4  During this time check if I >= Iinr, if yes disable channel ASAP if no do nothing
+  // 3. Set Ith = In
+  // 4. If I >= Ith disable channel asap, otherwise allow normal work
+}
 
-  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
-  ASSERT(cfg);
 
-  T_OUT_REG* reg = OUT_GETREGPTR(id);
-  ASSERT(reg);
-
+// TODO Is it new code for detection?  First stage state machine
+static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, uint32_t voltageMV, uint32_t currentMA)
+{
   T_OUT_STATUS newStatus = OUT_STATUS_OK;
 
-  // Acquire needeed data
-  reg->voltageMV = VMUX_GetValue(id);   // TODO Consider ADC data coherenece
-  reg->currentMA = BSP_OUT_CalcCurrent(id);  
-  uint32_t diffChVbat = abs((int32_t)(VMUX_GetBattValue() - reg->voltageMV));
-  bool inFault = reg->currentMA > BSP_OUT_GetFaultLevel(id);
-  bool noLoad  = reg->currentMA < OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD;
+  uint32_t diffChVbat = abs((int32_t)(VMUX_GetBattValue() - voltageMV));
+  bool inFault = currentMA > BSP_OUT_GetFaultLevel(id);
+  bool noLoad  = currentMA < OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD;
 
-  if(OUT_STATE_ON == reg->state)
+  // Check conditions in on state
+  if(OUT_STATE_ON == state) 
   {
+    // Check if channel output voltage is around battery voltage
     if(diffChVbat < OUT_DIAG_BTS_VBAT_HISTERESIS)
     {
-      if(OUT_DIAG_BTS_DETECT_OPEN_LOAD && TRUE == noLoad)
+      // Check if open-load detection is enabled and no load condition is met
+      if(OUT_DIAG_BTS_DETECT_OPEN_LOAD && (TRUE == noLoad))
       {
         newStatus = OUT_STATUS_OPEN_LOAD;
       }
@@ -869,10 +913,11 @@ static T_OUT_STATUS OUT_DIAG_SingleBtsHardware(T_OUT_ID id)
       {
         newStatus = OUT_STATUS_OK;
       }
-     
     }
+    // Channel was disabled or pulled down to ground
     else
     {
+      // Check fault condition
       if(TRUE == inFault)
       {
         newStatus = OUT_STATUS_HARD_OC_OR_OT; 
@@ -883,8 +928,10 @@ static T_OUT_STATUS OUT_DIAG_SingleBtsHardware(T_OUT_ID id)
       }
     }
   }
-  else if(OUT_STATE_OFF == reg->state)
+  // `nosis in off state
+  else if(OUT_STATE_OFF == state)
   {
+    // Check if channnel is shorted to ground
     if(diffChVbat < OUT_DIAG_BTS_VBAT_HISTERESIS)
     {
       newStatus = OUT_STATUS_SHORT_TO_VSS;
@@ -898,6 +945,44 @@ static T_OUT_STATUS OUT_DIAG_SingleBtsHardware(T_OUT_ID id)
   return newStatus;
 }
 
+static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  
+  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+  ASSERT(cfg);
+
+  T_OUT_REG* reg = OUT_GETREGPTR(id);
+  ASSERT(reg);
+
+  T_OUT_STATUS newStatus = OUT_STATUS_OK;
+
+  // Get into critical section for PHY parameters readout
+  vPortEnterCritical();
+  
+  // Calculate current from ADC raw data
+  reg->currentMA = BSP_OUT_CalcCurrent(id);
+  
+  // Get channel voltage from voltage multiplexer ADC data (already calculated)
+  reg->voltageMV = VMUX_GetValue(id);
+  
+  // Exit critical section after parameters readout
+  vPortExitCritical();
+
+  // Check for hardware issues and state changes
+  T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA);
+
+
+  // New status calculation
+  newStatus = hwStatus;
+
+  /* ... */
+
+  // Set new channel status
+  reg->status = newStatus;
+}
+
+// TODO Change it to modular (this should be protection entry)
 /// @brief Perform all needed processing for output channel of BTS type
 /// @param id Output channel id [1..8] T_OUT_ID
 static void OUT_DIAG_SingleBts(T_OUT_ID id)
@@ -915,130 +1000,130 @@ static void OUT_DIAG_SingleBts(T_OUT_ID id)
   T_OUT_STATUS newStatus = OUT_STATUS_OK;
 
   // BTS500 ONLY
-  // TODO There should be only one return do it elsewhere
-  if( outsCfg[id].type != OUT_TYPE_BTS500)
+  if( outsCfg[id].type == OUT_TYPE_BTS500)
   {
-    return;
-  }
 
-  /// SOFT OC BLOCK START
-  // TODO Access of current should be propably in critical section or some sync should be used, write to memory by DMA, when reading?
-  // Not a real concern in case of in ISR execution on ADC
-  // What if ADC readout is wrong or ADC is malfunctioning? Assure ADC safety
-  // We do soft overcurrent block but we don't now current switch state (maybe hard oc), should be changed
-  reg->currentMA = BSP_OUT_CalcCurrent(id);  
+    /// SOFT OC BLOCK START
+    // TODO Access of current should be propably in critical section or some sync should be used, write to memory by DMA, when reading?
+    // Not a real concern in case of in ISR execution on ADC
+    // What if ADC readout is wrong or ADC is malfunctioning? Assure ADC safety
+    // We do soft overcurrent block but we don't now current switch state (maybe hard oc), should be changed
+    reg->currentMA = BSP_OUT_CalcCurrent(id);  
 
-  if(TRUE == cfg->safety.useSoc)
-  {
-    if(reg->currentMA > cfg->safety.socThreshold)
+    if(TRUE == cfg->safety.useSoc)
     {
-      if(reg->safety.ocTripCounter >= cfg->safety.socTripThreshold)
+      if(reg->currentMA > cfg->safety.socThreshold)
       {
-        newStatus = OUT_STATUS_SOFT_OC;
-        // TODO Make imidiate action on oc detection!!!
-        reg->safety.ocTripCounter = 0;
-      }else
-      {
-        if( OUT_STATE_ON == reg->state)
+        if(reg->safety.ocTripCounter >= cfg->safety.socTripThreshold)
         {
-          // TODO Shouldn't be increased by const implement some fusing current
-          reg->safety.ocTripCounter += 4;
+          newStatus = OUT_STATUS_SOFT_OC;
+          // TODO Make imidiate action on oc detection!!!
+          reg->safety.ocTripCounter = 0;
+        }else
+        {
+          if( OUT_STATE_ON == reg->state)
+          {
+            // TODO Shouldn't be increased by const implement some fusing current
+            reg->safety.ocTripCounter += 4;
+          }
         }
       }
+      else
+      {
+        if(reg->safety.ocTripCounter > 0)
+        {
+          reg->safety.ocTripCounter--;
+        }
+      }
+    }
+    /// SOFT OC BLOCK END
+
+    // TODO Implement I2t and heat protection block
+    
+    /// STATE DETECTION BLOCK START
+    // TODO How is voltage synced with current adc readout???
+    // What in case of ADC error or VMUX malfunction
+    // Add better filtering
+    reg->voltageMV = VMUX_GetValue(id);
+    //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
+    uint32_t batteryVoltage = VMUX_GetBattValue();
+    // TODO This fault level should be changed 
+    // TODO If new zenner diodes installed it should be variable due to used dkilis and resistor
+    // TODO Change for better state detection
+    uint32_t faultLevel = 12000;
+    // TODO Remove not needed call just to access const memory location (performance issue)
+    uint32_t dkilis = BSP_OUT_GetDkilis(id);
+    // TODO Changed this value experimentally 
+    uint32_t voltageHis = 1000; // 1000 mV for now
+
+    T_OUT_STATUS hwStatus = OUT_STATUS_OK;
+    if(OUT_STATE_OFF == reg->state)
+    {
+        if(reg->currentMA >= faultLevel)
+        { 
+          if(abs((int32_t)(batteryVoltage - reg->voltageMV) < voltageHis))
+          {
+            hwStatus = OUT_STATUS_SHORT_TO_VSS;
+          }
+          else
+          {
+            hwStatus = OUT_STATUS_OK;
+          }
+        }
     }
     else
     {
-      if(reg->safety.ocTripCounter > 0)
-      {
-        reg->safety.ocTripCounter--;
-      }
-    }
-  }
-  /// SOFT OC BLOCK END
-
-  // TODO Implement I2t and heat protection block
-  
-  /// STATE DETECTION BLOCK START
-  // TODO How is voltage synced with current adc readout???
-  // What in case of ADC error or VMUX malfunction
-  // Add better filtering
-  reg->voltageMV = VMUX_GetValue(id);
-  //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
-  uint32_t batteryVoltage = VMUX_GetBattValue();
-  // TODO This fault level should be changed 
-  // TODO If new zenner diodes installed it should be variable due to used dkilis and resistor
-  // TODO Change for better state detection
-  uint32_t faultLevel = 12000;
-  // TODO Remove not needed call just to access const memory location (performance issue)
-  uint32_t dkilis = BSP_OUT_GetDkilis(id);
-  // TODO Changed this value experimentally 
-  uint32_t voltageHis = 1000; // 1000 mV for now
-
-  T_OUT_STATUS hwStatus = OUT_STATUS_OK;
-  if(OUT_STATE_OFF == reg->state)
-  {
-      if(reg->currentMA >= faultLevel)
-      { 
-        if(abs((int32_t)(batteryVoltage - reg->voltageMV) < voltageHis))
+      // TODO Fix magic values
+        if(reg->currentMA >= faultLevel)
         {
-          hwStatus = OUT_STATUS_SHORT_TO_VSS;
+          // TODO WARN
+          // No latch on HW
+          //hwStatus = OUT_STATUS_HARD_OC_OR_OT;
         }
-        else
+        // This is shit some in ampers some in mili amps
+        else if(((reg->currentMA <= 0.0000143 * (float)dkilis) && (reg->currentMA > 0.000001 * (float)dkilis)) 
+        || (reg->currentMA <= 0.000001 * (float)dkilis))
+        {
+          // TODO Fix status frequent change on lower current
+          hwStatus = OUT_STATUS_OPEN_LOAD;
+        }
+        // 12000 = 12V
+        else if((reg->voltageMV <= batteryVoltage) && (reg->currentMA > 0.0000143 * (float)dkilis))
         {
           hwStatus = OUT_STATUS_OK;
         }
-      }
-  }
-  else
-  {
-    // TODO Fix magic values
-      if(reg->currentMA >= faultLevel)
-      {
-        // TODO WARN
-        // No latch on HW
-        //hwStatus = OUT_STATUS_HARD_OC_OR_OT;
-      }
-      // This is shit some in ampers some in mili amps
-      else if(((reg->currentMA <= 0.0000143 * (float)dkilis) && (reg->currentMA > 0.000001 * (float)dkilis)) 
-      || (reg->currentMA <= 0.000001 * (float)dkilis))
-      {
-        // TODO Fix status frequent change on lower current
-        hwStatus = OUT_STATUS_OPEN_LOAD;
-      }
-      // 12000 = 12V
-      else if((reg->voltageMV <= batteryVoltage) && (reg->currentMA > 0.0000143 * (float)dkilis))
-      {
-        hwStatus = OUT_STATUS_OK;
-      }
-  }
-  /// STATE DETECTION BLOCK END
-
-  vPortEnterCritical();
-  // TODO Change this to proper state machine
-  // TODO Value such over current or over temperature (even software one) should be hold till restart
-  T_OUT_STATUS prevStatus = reg->status;
-  if(newStatus == OUT_STATUS_SOFT_OC && hwStatus == OUT_STATUS_HARD_OC_OR_OT)
-  {
-   reg->status =  OUT_STATUS_HARD_OC_OR_OT;
-  }else if(newStatus == OUT_STATUS_SOFT_OC)
-  {
-    reg->status = newStatus;
-  }else
-  {
-    reg->status = hwStatus;
-  }
-
-  if( reg->status != prevStatus )
-  {
-    if(reg->status == OUT_STATUS_HARD_OC_OR_OT ||
-        reg->status == OUT_STATUS_SOFT_OC ||
-        reg->status == OUT_STATUS_S_AND_H_OC)
-    {
-      OUT_DIAG_OnErrorFallback(id);
     }
+    /// STATE DETECTION BLOCK END
+
+    vPortEnterCritical();
+    // TODO Change this to proper state machine
+    // TODO Value such over current or over temperature (even software one) should be hold till restart
+    T_OUT_STATUS prevStatus = reg->status;
+    if(newStatus == OUT_STATUS_SOFT_OC && hwStatus == OUT_STATUS_HARD_OC_OR_OT)
+    {
+    reg->status =  OUT_STATUS_HARD_OC_OR_OT;
+    }else if(newStatus == OUT_STATUS_SOFT_OC)
+    {
+      reg->status = newStatus;
+    }else
+    {
+      reg->status = hwStatus;
+    }
+
+    if( reg->status != prevStatus )
+    {
+      if(reg->status == OUT_STATUS_HARD_OC_OR_OT ||
+          reg->status == OUT_STATUS_SOFT_OC ||
+          reg->status == OUT_STATUS_S_AND_H_OC)
+      {
+        OUT_DIAG_OnErrorFallback(id);
+      }
+    }
+    vPortExitCritical();
   }
-  vPortExitCritical();
 }
+
+volatile uint32_t fastLoopDelta = 0;
 
 // FAST CONTROL LOOP BODY
 void OUT_DIAG_AllBts(void)
@@ -1046,11 +1131,11 @@ void OUT_DIAG_AllBts(void)
   uint32_t t1 = DEBUG_ARM_GET_TIME;
   for(uint8_t id = 0; id < OUT_ID_BTS_MAX; id++)
   {
-    OUT_DIAG_SingleBts(id);
+    OUT_DIAG_SingleBtsNew(id);
   }
   uint32_t t2 = DEBUG_ARM_GET_TIME;
-  uint32_t delta = DEBUG_ARM_CLOCKS_TO_US(t2 - t1);
-  LOG_VAR(delta);
+  fastLoopDelta = DEBUG_ARM_CLOCKS_TO_US(t2 - t1);
+//   LOG_VAR(delta);
 }
 
 /// @brief Perform all needed processing for output channel of SPOC2 type
@@ -1146,6 +1231,13 @@ char* OUT_GetName(T_OUT_ID id)
  return OUT_GETCFGPTR(id)->name;
 }
 
+T_OUT_MODE OUT_GetMode(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETCFGPTR(id)->mode;
+}
+
+
 void testTaskEntry(void *argument)
 {
   for(;;)
@@ -1208,9 +1300,9 @@ void testTaskEntry(void *argument)
 /// safety on seperate core or assure that it is safe to run always (on hardware timer as critical section), 
 /// Status and state calculations should be done more properly
 /// Add signal filtering on current and voltage signals
-/// Handle PWM  signals
-/// Add safety detection as status or state
-/// Assure safety retry correct working
+/// Handle PWM  signals [WORK IN PROGRESS]
+/// [IMPORTANT ]Add safety detection as status or state
+/// Assure safety retry correct working - does safety affect diagnosis? 
 /// Remove this 4x shit from OC trip
 /// Sync current and voltage 
 /// Change RTOS tasks names (remove entry nomencalture)

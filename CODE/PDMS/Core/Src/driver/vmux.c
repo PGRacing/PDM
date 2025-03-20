@@ -8,9 +8,13 @@
 #include "FreeRTOS.h"
 #include "tim.h"
 #include "adc.h"
-#include "bsp_out.h"
+#include "out.h"
 #include "cmsis_os2.h"
 #include "spoc2.h"
+#include "pdm.h"
+
+// Platform initialization semaphore
+extern SemaphoreHandle_t platformInitSemaphore;
 
 #define VMUX_SELECTOR_COUNT 4       // Number of selector pins
 #define VMUX_INPUT_COUNT 16         // Number of inputs in multiplexer
@@ -27,7 +31,8 @@
 
 #define VMUX_GET_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
 
-volatile uint32_t VMUX_BattVoltage = 13800;
+// Battery voltage 1V at beggining
+volatile uint32_t VMUX_BattVoltage = 1000;
 
 volatile uint16_t VMUX_LP1Voltage[4] = {0};
 
@@ -50,7 +55,7 @@ static T_IO VMUX_SelectorConfig[VMUX_SELECTOR_COUNT] =
     }
 };
 
-static void VMUX_Init(void)
+void VMUX_Init(void)
 {
     // Set multiplexer selector pins to output mode
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -170,18 +175,20 @@ static void  VMUX_SelectLP2AdcChannel(void)
     }
 }
 
-static void VMUX_ReadBattVoltage(void)
+void VMUX_ReadBattVoltage(void)
 {
     VMUX_SelectBatteryAdcChannel();
     HAL_ADC_Start(&hadc3);
     HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
     if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
     {   
+        vPortEnterCritical();
         #ifdef VMUX_STORE_VOLTAGE
             VMUX_BattVoltage = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
         #else
             VMUX_BattVoltage = HAL_ADC_GetValue(&hadc3);
         #endif
+        vPortExitCritical();
     }       
     HAL_ADC_Stop(&hadc3);
 }
@@ -239,11 +246,15 @@ static void VMUX_GetAllPooling(void)
         }
         if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
         {   
+            // Enter critical section for ADC data filling
+            vPortEnterCritical();
             #ifdef VMUX_STORE_VOLTAGE
+               
                 VMUX_Value[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
             #else
                 VMUX_Value[sel] = HAL_ADC_GetValue(&hadc3);
             #endif
+            vPortExitCritical();
         }       
     }
 
@@ -264,14 +275,14 @@ uint32_t VMUX_GetBattValue(void)
 void vmuxTaskStart(void *argument)
 {
     /* USER CODE BEGIN vmuxTaskStart */
-    VMUX_Init();
-   
+    LOG_INFO("VMUX:: Task start");
     /* Infinite loop */
     for(;;)
     {
         VMUX_ReadBattVoltage();
         VMUX_GetAllPooling();
         VMUX_ReadLPChannel();
+        // TODO Do it faster if possible
         osDelay(pdMS_TO_TICKS(10));
     }
     /* USER CODE END vmuxTaskStart */

@@ -20,7 +20,7 @@
         "USE_FULL_LL_DRIVER",
         "USE_HAL_DRIVER"
       ],
-      "compilerPath": "C:\\USERS\\KAROL\\APPDATA\\ROAMING\\CODE\\USER\\GLOBALSTORAGE\\BMD.STM32-FOR-VSCODE\\@XPACK-DEV-TOOLS\\ARM-NONE-EABI-GCC\\12.3.1-1.2.1\\.CONTENT\\BIN\\ARM-NONE-EABI-GCC.EXE"
+      "compilerPath": "c:\\Users\\Karol\\AppData\\Roaming\\Code\\User\\globalStorage\\bmd.stm32-for-vscode\\@xpack-dev-tools\\arm-none-eabi-gcc\\12.3.1-1.2.1\\.content\\bin\\arm-none-eabi-gcc.EXE"
     }
   ],
   "version": 4

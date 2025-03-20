@@ -28,6 +28,7 @@
 #include "tim.h"
 #include "semphr.h"
 #include "stm32l4xx_hal_adc.h"
+#include "pdm.h"
 
 
 xTaskHandle adcTaskHandleLocal;
@@ -693,6 +694,7 @@ static void ADC2_Start(void)
 
 void adc1TaskStart(void *argument)
 {
+    LOG_INFO("ADC1:: Task start");
     /* USER CODE BEGIN adcTaskStart */
     adc1ConvReadySemaphore = xSemaphoreCreateBinary();
 
@@ -721,6 +723,7 @@ void adc1TaskStart(void *argument)
 
 void adc2TaskStart(void *argument)
 {
+    LOG_INFO("ADC2:: Task start");
     /* USER CODE BEGIN adcTaskStart */
     adc2ConvReadySemaphore = xSemaphoreCreateBinary();
     

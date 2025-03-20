@@ -41,7 +41,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "typedefs.h"
+#include "features.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

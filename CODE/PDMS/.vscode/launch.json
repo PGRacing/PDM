@@ -33,7 +33,7 @@
         {
             "showDevDebugOutput": "parsed",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/PDMS.elf",
+            "executable": "./build/debug/PDMS.elf",
             "name": "Debug STM32 with Live Expressions",
             "request": "launch",
             "type": "cortex-debug",

@@ -5,6 +5,7 @@
 #include "vmux.h"
 #include "string.h"
 #include "cmsis_os2.h"
+#include "semphr.h"
 
 #define TELEM_OUT_NAME_PART 7
 
@@ -69,7 +70,7 @@ static void TELEM_SendNamesByCan(void)
 
 void telemTaskStart(void *argument)
 {
-    /* USER CODE BEGIN telemTaskStart */
+    LOG_INFO("TELEM:: Task start");
     uint8_t iOffsetCounter = 0;
     const uint8_t iOffset = 5;
     /* Infinite loop */

@@ -31,6 +31,18 @@ typedef struct _T_OUT_SAFETY_AERR_CFG
 #define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
 #define OUT_DIAG_NAME_LEN 32
 
+typedef struct _T_OUT_SAFETY_SOC_PROT_CFG
+{
+    bool               useSoc;             // Should software over current function be used
+    uint32_t           currentTreshold;    // Currently applicable current treshold - can be changed dynamically (Ith) [mA]
+    const uint32_t     nominalTreshold;    // Allowed maximal current during nominal operation [mA]
+    // Inrush current capability
+    bool               allowInrush;        // Should inrush current be allowed during SOC operation
+    const uint32_t     inrushTimeWindow;   // Time window after channel turn-on in which inrush current is allowed
+    const uint32_t     inrushTreshold;     // Allowed maximal current during inrush operation [mA]
+    const uint32_t     inrushTimeTreshold; // For how long inrush current can be present after first peak [ms] 
+}T_OUT_SAFETY_SOC_PROT_CFG;
+
 /// @brief Output channel safety configuration struct
 typedef struct _T_OUT_SAFETY_CFG
 {
@@ -70,12 +82,15 @@ typedef struct _T_OUT_SAFETY_REG
 /// @brief Output channel state register
 typedef struct _T_OUT_REG
 {
-    T_OUT_STATE      state;  // Output state (ON / OFF)
-    T_OUT_STATUS     status; // Output status 
-    T_OUT_SAFETY_REG safety; // Safety state register
+    T_OUT_STATE      state;       // Output state (ON / OFF)
+    T_OUT_STATUS     status;      // Output status 
+    T_OUT_SAFETY_REG safety;      // Safety state register
     // Acquired from board
-    uint32_t         currentMA; // Here for ease of debug and code simplification
+    uint32_t         currentMA;   // Here for ease of debug and code simplification
     uint32_t         voltageMV; 
+    // PWM mode
+    uint_fast8_t     pwmDuty;      // PWM duty
+    uint_fast8_t     prevPwmDuty; // Previous pwm duty (before last update)
 }T_OUT_REG;
 
 // Main outputs config
@@ -100,6 +115,12 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState);
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @return FALSE if error occured, TRUE if ok
 bool OUT_ToggleState(T_OUT_ID id);
+
+/// @brief Set PWM duty in percentage
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @param duty PWM signal duty 0 - 100%
+/// @return FALSE if error occured, TRUE if ok
+bool OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty);
 
 /// @brief Batch output channels to work simultaneously
 /// @param id Output channel id [1..16] T_OUT_ID
@@ -150,5 +171,16 @@ T_OUT_TYPE OUT_GetType(T_OUT_ID id);
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @return Output channel name
 char* OUT_GetName(T_OUT_ID id);
+
+/// @brief Get output channel mode
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Output channel mode
+T_OUT_MODE OUT_GetMode(T_OUT_ID id);
+
+/// @brief Perform output handling of all SPOC type elements
+void OUT_DIAG_AllSpoc(void);
+
+
+
 
 #endif

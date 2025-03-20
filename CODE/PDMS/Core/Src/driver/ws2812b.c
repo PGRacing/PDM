@@ -5,9 +5,10 @@
 #include "cmsis_os2.h"
 #include "tim.h"
 #include "out.h"
-#include "typedefs.h"
 #include "FreeRTOS.h"
 #include "pdm.h"
+#include "semphr.h"
+
 
 /* This values work when full cycle of timer is set for 1.25us
  * For eg. internal clock = 16Mhz  prescaler = 0 counter_period = 20-1
@@ -26,6 +27,9 @@ rgb_t green = {0x00, 0x3F, 0x00};
 rgb_t blue = {0x00, 0x00, 0x3F};
 rgb_t clear = {0x00, 0x00, 0x00};
 rgb_t rcpergol = {219, 82, 15};
+
+#define WS2812B_STAT_LED1 17
+#define WS2812B_STAT_LED2 18
 
 const uint8_t gamma8[] =
 {
@@ -156,9 +160,12 @@ void WS2812B_StartupAction(void)
     WS2812B_Flush();
 }
 
+void WS2812B_DisableAll(void)
+{
+    WS2812B_Clear();
+    WS2812B_Flush();
+}
 
-#define WS2812B_STAT_LED1 17
-#define WS2812B_STAT_LED2 18
 static void WS2812B_EvaluateLeds(void)
 {
     // SETUP LEDS
@@ -240,8 +247,10 @@ static void WS2812B_EvaluateLeds(void)
         WS2812B_SetSingle(WS2812B_STAT_LED1, green);
         break;
     case PDM_SYS_STATUS_ERROR: 
-        WS2812B_SetSingle(WS2812B_STAT_LED1, blue);
+    case PDM_SYS_STATUS_UVLO:
+        WS2812B_SetSingle(WS2812B_STAT_LED1, red);
         break;
+        
     default:
         break;
     }
@@ -251,6 +260,7 @@ static void WS2812B_EvaluateLeds(void)
 void argbTaskStart(void *argument)
 {
     /* USER CODE BEGIN telemTaskStart */
+    LOG_INFO("ARGB:: Task start");
     // Initialize ARGB'S
     WS2812B_Init(&htim2, TIM_CHANNEL_4);
     // Do a startup led action
@@ -265,24 +275,20 @@ void argbTaskStart(void *argument)
     /* USER CODE END telemTaskStart */
 }
 
-static void WS2812_Test(void)
-{
-    // for(int i = 0; i < 1000; i++)
-    // {
-    //     float r = 50 * (1.0f + sin(i / 100.0f));
-    //     float g = 50 * (1.0f + sin(1.5f * i / 100.0f));
-    //     float b = 50 * (1.0f + sin(2.0f * i / 100.0f));
-    //     rgb_t constructed_rgb = {r, g, b};
+// static void WS2812_Test(void)
+// {
+//     for(int i = 0; i < 1000; i++)
+//     {
+//         float r = 50 * (1.0f + sin(i / 100.0f));
+//         float g = 50 * (1.0f + sin(1.5f * i / 100.0f));
+//         float b = 50 * (1.0f + sin(2.0f * i / 100.0f));
+//         rgb_t constructed_rgb = {r, g, b};
 
-    //     for(uint8_t j = 0; j < LED_NUM; j++)
-    //     {
-    //         WS2812B_SetSingle(j,constructed_rgb);
-    //     }
-    //     osDelay(10);
-    //     WS2812B_Flush();
-    // }
-}
-
-///
-/// TODO [MAJOR REWORK] Change timing of signals to have more of head-room between limits, and add signal level shifter
-///
+//         for(uint8_t j = 0; j < LED_NUM; j++)
+//         {
+//             WS2812B_SetSingle(j,constructed_rgb);
+//         }
+//         osDelay(10);
+//         WS2812B_Flush();
+//     }
+// }

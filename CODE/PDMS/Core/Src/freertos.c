@@ -27,6 +27,9 @@
 /* USER CODE BEGIN Includes */
 #include "iwdg.h"
 #include "tim.h"
+#include "typedefs.h"
+#include "pdm.h"
+#include "buzzer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,7 +39,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -46,7 +48,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -168,7 +169,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_MUTEX */
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
+
+  // Create semaphore that will indicate platform initalization
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -181,6 +183,12 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
+
+  /* creation of pdmTask */
+  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
+
+  // First initialize default and peripheral task, then start main (PDM) task
+  // IWDG task
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of statusTask */
@@ -195,23 +203,21 @@ void MX_FREERTOS_Init(void) {
   /* creation of adc1Task */
   adc1TaskHandle = osThreadNew(adc1TaskStart, NULL, &adc1Task_attributes);
 
+  /* creation of adc2Task */
+  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
+
   /* creation of testTask */
-  testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
+  // Disabloe test task
+  //testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
 
   /* creation of vmuxTask */
   vmuxTaskHandle = osThreadNew(vmuxTaskStart, NULL, &vmuxTask_attributes);
-
-  /* creation of pdmTask */
-  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
 
   /* creation of spoc2CurrTask */
   spoc2CurrTaskHandle = osThreadNew(spoc2CurrTaskStart, NULL, &spoc2CurrTask_attributes);
 
   /* creation of telemTask */
   telemTaskHandle = osThreadNew(telemTaskStart, NULL, &telemTask_attributes);
-
-  /* creation of adc2Task */
-  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
 
   /* creation of argbTask */
   argbTaskHandle = osThreadNew(argbTaskStart, NULL, &argbTask_attributes);
@@ -236,9 +242,8 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
-    BUZZER_TurnOn();
-    osDelay(300);
-    BUZZER_TurnOff();
+  LOG_INFO("DEFAULT:: Task start");
+
   /* Infinite loop */
   for(;;)
   {
@@ -258,6 +263,11 @@ void StartDefaultTask(void *argument)
 void statusTaskStart(void *argument)
 {
   /* USER CODE BEGIN statusTaskStart */
+  LOG_INFO("STATUS:: Task start");
+
+  BUZZER_TurnOn();
+  osDelay(300);
+  BUZZER_TurnOff();
   /* Infinite loop */
     for(;;)
     {
@@ -269,6 +279,20 @@ void statusTaskStart(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+void RTOS_SoftLimpHomeMode(void)
+{
+  vTaskSuspend(spoc2CurrTaskHandle);
+  vTaskSuspend(vmuxTaskHandle);
+  vTaskSuspend(argbTaskHandle);
+  vTaskSuspend(adc1TaskHandle);
+  vTaskSuspend(adc2TaskHandle);
+  vTaskSuspend(pdmTaskHandle);
+  vTaskSuspend(statusTaskHandle);
+}
 
+void RTOS_HardLimpHomeMode(void)
+{
+  vTaskSuspendAll();
+}
 /* USER CODE END Application */
 

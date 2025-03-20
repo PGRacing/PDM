@@ -3,6 +3,8 @@
 #include "typedefs.h"
 #include "logger.h"
 #include "string.h"
+#include "semphr.h"
+
 
 xQueueHandle can1QueueHandle;
 xQueueHandle can2QueueHandle;
@@ -435,6 +437,8 @@ void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg)
 
 void can1TaskStart(void *argument)
 {
+    LOG_INFO("CAN1:: Task start");
+
     #ifdef CANH_DEFAULT_TERM1_ENABLED
         CANH_SwitchTerminator1(true);
     #else
@@ -473,6 +477,8 @@ void can1TaskStart(void *argument)
 
 void can2TaskStart(void *argument)
 {
+    LOG_INFO("CAN2:: Task start");
+
     #ifdef CANH_DEFAULT_TERM2_ENABLED
         CANH_SwitchTerminator2(true);
     #else

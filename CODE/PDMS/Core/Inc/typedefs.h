@@ -14,7 +14,6 @@
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
 /// CONFIG
-#define DISABLE_BUZZER 1
 #define POWER_OUT_COUNT 16
 #define USE_PDM_ASSERT 1
 

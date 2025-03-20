@@ -1,6 +1,7 @@
 #include "spoc2.h"
 #include "FreeRTOS.h"
-#include "typedefs.h"
+#include "pdm.h"
+#include "semphr.h"
 
 SPOC2_config_t spoc2Cfg = 
 {
@@ -1642,7 +1643,7 @@ void SPOC2_SelectSenseMux(T_SPOC2_ID id, T_SPOC2_CH_ID ch)
 
 void spoc2CurrTaskStart(void *argument)
 {
-
+    LOG_INFO("SPOC2:: Task start");
     for(;;)
     {
         for(uint8_t i = 0; i < 4; i++)

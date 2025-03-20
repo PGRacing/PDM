@@ -3,7 +3,6 @@
 #include "stm32l4xx_hal_def.h"
 #include "stm32l4xx_hal_gpio.h"
 #include "stm32l4xx_ll_tim.h"
-#include "typedefs.h"
 #include "logger.h"
 #include "vmux.h"
 #include "bsp_out.h"
@@ -11,15 +10,19 @@
 
 //#define LL_TIM_OC_SetCompare(TIM, CNUM, CMP) LL_TIM_OC_SetCompareCH##CNUM(TIM, CMP)
 
-#define BSP_OUT_CURRENT_CLK 80000000
+/* Current MCU main clock @80Mhz */
+#define BSP_OUT_MAIN_CLK 80000000
+
+/* PWM output frequency */
+#define BSP_OUT_PWM_TARGET_FREQ 175
 
 /* Prescaler value used for PWM channels */
 #define BSP_OUT_PWM_PRESCALER (800-1)
 
 /* Auto-reload value used for PWM channels */
-#define BSP_OUT_PWM_ARR (500-1)
+#define BSP_OUT_PWM_ARR (BSP_OUT_MAIN_CLK / (BSP_OUT_PWM_PRESCALER * BSP_OUT_PWM_TARGET_FREQ))
 
-/* TODO Change duty 0-100% to CCR register value */
+/* Change duty 0-100% to CCR register value */
 #define BSP_OUT_DutyToCompare(X) ((X * BSP_OUT_PWM_ARR)/100)
 
 /* Value used when starting PWM channel */
@@ -302,7 +305,7 @@ void BSP_OUT_DeInitPWM(T_OUT_ID id)
     LL_TIM_OC_SetMode(bspOutsCfg[id].tim, bspOutsCfg[id].chmask, LL_TIM_OCMODE_FORCED_INACTIVE);
 }
 
- void BSP_OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
+void BSP_OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
 {
     ASSERT( id < OUT_ID_MAX );
     BSP_OUT_SetTimerCompare(bspOutsCfg[id].tim, bspOutsCfg[id].ch, BSP_OUT_DutyToCompare(duty));
@@ -408,5 +411,3 @@ void BSP_OUT_Init(T_IO io)
     // Move initial GPIO init here
     // Pull down low
 }
-
-// TODO [MAJOR REWORK] Check PWM capabilites, change PWM frequency 

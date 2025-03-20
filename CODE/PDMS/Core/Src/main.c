@@ -29,7 +29,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "pdm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -110,9 +110,11 @@ int main(void)
   MX_ADC3_Init();
   MX_SPI2_Init();
   MX_TIM2_Init();
-  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
-
+ 
+  // Platform start
+  PDM_Init();
+  
   /* USER CODE END 2 */
 
   /* Init scheduler */
