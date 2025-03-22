@@ -5,7 +5,7 @@
 			"label": "Build STM - PDMS",
 			"type": "process",
 			"command": "make",
-			"args" : ["-j 20"],
+			"args" : ["-j", "20"],
 			"options": {
 				"cwd": "${workspaceRoot}"
 			},
