@@ -8,12 +8,12 @@
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "preLaunchTask": "Build STM",
+            "preLaunchTask": "Build STM - PDMS",
             "device": "stm32l496",
             "configFiles": [
                 "openocd.cfg"
             ],
-            "svdFile": "STM32L4R9.svd"
+            "svdFile": "STM32L4x6.svd"
         },
         {
             "showDevDebugOutput": "parsed",
@@ -23,22 +23,22 @@
             "request": "attach",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "preLaunchTask": "Build STM",
+            "preLaunchTask": "Build STM - PDMS",
             "device": "stm32l496",
             "configFiles": [
                 "openocd.cfg"
             ],
-            "svdFile": "STM32L4R9.svd"
+            "svdFile": "STM32L4x6.svd"
         },
         {
             "showDevDebugOutput": "parsed",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/debug/PDMS.elf",
+            "executable": "./build/PDMS.elf",
             "name": "Debug STM32 with Live Expressions",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "preLaunchTask": "Build STM",
+            "preLaunchTask": "Build STM - PDMS",
             "device": "stm32l496",
             "swoConfig":
             {
@@ -52,7 +52,7 @@
                     "type": "console",
                     "port": 0,
                     "showOnStartup": true,
-                    "logfile": "./fan_log.txt",
+                    "logfile": "./itm_log.txt",
                     "encoding": "ascii"
                 }
                 ]

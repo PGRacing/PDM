@@ -85,15 +85,17 @@ static T_LOGIC_VAR_TYPE LOGIC_GetInputModeAsLogicVarType( T_LOGIC_INPUT_TYPE  in
   switch (inType)
   {
   case LOGIC_INPUT_TYPE_SENSOR:
-    T_IN_MODE mode = IN_GetMode(id);
-    if( mode == IN_MODE_ANALOG)
     {
-      result = LOGIC_VAR_TYPE_ANALOG;
+      T_IN_MODE mode = IN_GetMode(id);
+      if( mode == IN_MODE_ANALOG)
+      {
+        result = LOGIC_VAR_TYPE_ANALOG;
+      }
+      else if(mode == IN_MODE_SCHMITT)
+      {
+        result = LOGIC_VAR_TYPE_SCHMITT;
+      } 
     }
-    else if(mode == IN_MODE_SCHMITT)
-    {
-      result = LOGIC_VAR_TYPE_SCHMITT;
-    } 
     break;
     
   case LOGIC_INPUT_TYPE_CONST_SCHMITT:

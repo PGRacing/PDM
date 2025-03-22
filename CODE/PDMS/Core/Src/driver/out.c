@@ -886,6 +886,8 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
   //     2.4  During this time check if I >= Iinr, if yes disable channel ASAP if no do nothing
   // 3. Set Ith = In
   // 4. If I >= Ith disable channel asap, otherwise allow normal work
+
+  return OUT_STATUS_OK;
 }
 
 

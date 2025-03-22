@@ -24,7 +24,7 @@ typedef struct __packed
 typedef struct __packed
 {
     uint32_t      minBattVolage; // minimal battery voltage that the platform will start [mV]
-    uint32_t      onInitBattCheckMaxTries; // maximal number that battery voltage will 
+    uint32_t      onInitBattCheckMaxTries; // maximal number that battery voltage will be checked on startup
     uint32_t      uvloVoltageLoThreshold; // UVLO protection minimal voltage threshold, should always be higher than minBattVoltage [mV]
     uint32_t      uvloVoltageHiThreshold; // UVLO protection minimal voltage threshold, should always be higher than uvloVoltageLoThreshold [mV]
     uint32_t      uvloTimeThreshold; // UVLO protection time threshold in full 100's [ms]

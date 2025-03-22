@@ -20,6 +20,7 @@
 #include "vmux.h"
 #include "telemetry.h"
 #include "buzzer.h"
+#include "ws2812b.h"
 #include "pdm.h"
 // Main PDM file
 
@@ -35,7 +36,7 @@ T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 
 volatile T_PDM_CFG pdmCfg =
 {
-    .onInitBattCheckMaxTries = 10,
+    .onInitBattCheckMaxTries = 50,
     .uvloVoltageHiThreshold = 10000, // 10V
     .uvloVoltageLoThreshold = 8000,  // 8V
     .uvloTimeThreshold = 10000, // 10s

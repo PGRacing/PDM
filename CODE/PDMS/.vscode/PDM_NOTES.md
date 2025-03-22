@@ -75,3 +75,5 @@ Ith - allowed current threshold to not turn of channel
 
 
 // Sample PWM during high state
+
+// Remeber that both voltage and current must be intact to make sure that all readings are correct

@@ -297,7 +297,7 @@ void MX_ADC3_Init(void)
 
   /* USER CODE END ADC3_Init 0 */
 
-  ADC_ChannelConfTypeDef sConfig = {0};
+  //ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC3_Init 1 */
 

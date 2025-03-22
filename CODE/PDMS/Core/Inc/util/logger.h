@@ -7,9 +7,9 @@
 #define LOG_ENABLED 
 
 #ifdef LOG_ENABLED 
-#define LOGF(...) printf(__VA_ARGS__)
+#define LOGF(...) (printf(__VA_ARGS__))
 #else
-#define LOGF(...)
+#define LOGF(...) {}
 #endif
 
 #define STRINGIZE(x) STRINGIZE2(x)
@@ -29,13 +29,14 @@
 
 #define LOG_VAR(X) {vPortEnterCritical(); _Generic((X), \
                     default  : LOGF("VAR:: unhandled type\n") , \
-                    uint8_t  : LOGF("VAR:: (uint8_t)  %s = %u\n", #X, X ), \
-                    uint16_t : LOGF("VAR:: (uint16_t) %s = %u\n", #X, X ), \
-                    uint32_t : LOGF("VAR:: (uint32_t) %s = %d\n", #X, X ), \
-                    int8_t   : LOGF("VAR:: (int8_t)   %s = %d\n", #X, X ), \
-                    int16_t  : LOGF("VAR:: (int16_t)  %s = %d\n", #X, X ), \
-                    int32_t  : LOGF("VAR:: (int32_t)  %s = %d\n", #X, X ), \
-                    float    : LOGF("VAR:: (float)    %s = %.3f\n", #X, X ), \
-                    char     : LOGF("VAR:: (char)     %s = %c\n", #X, X ) ); vPortExitCritical();}
+                    uint8_t  : LOGF("VAR:: (uint8_t)  %s = %u\n",   #X, ((uint8_t)X)  ), \
+                    uint16_t : LOGF("VAR:: (uint16_t) %s = %u\n",   #X, ((uint16_t)X) ), \
+                    uint32_t : LOGF("VAR:: (uint32_t) %s = %lu\n",  #X, ((uint32_t)X) ), \
+                    int8_t   : LOGF("VAR:: (int8_t)   %s = %d\n",   #X, ((int8_t)X)  ), \
+                    int16_t  : LOGF("VAR:: (int16_t)  %s = %d\n",   #X, ((int16_t)X)  ), \
+                    int32_t  : LOGF("VAR:: (int32_t)  %s = %ld\n",  #X, ((int32_t)X)  ), \
+                    float    : LOGF("VAR:: (float)    %s = %.3f\n", #X, ((float)X)    ), \
+                    char     : LOGF("VAR:: (char)     %s = %c\n",   #X, ((char)X)     ));\
+                    vPortExitCritical(); }
 
 #endif
