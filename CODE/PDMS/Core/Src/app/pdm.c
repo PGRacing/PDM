@@ -39,6 +39,7 @@ T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 volatile T_PDM_CFG pdmCfg =
 {
     .onInitBattCheckMaxTries = 50,
+    .isUvloEnabled = true,
     .uvloVoltageHiThreshold = 10000, // 10V
     .uvloVoltageLoThreshold = 8000,  // 8V
     .uvloTimeThreshold = 10000, // 10s
@@ -296,7 +297,9 @@ void pdmTaskStart(void *argument)
         PDM_CheckSafety();
 
         // Check undervoltage if no ongoing assesment
-        if(pdmReg.uvloAssessment == false && pdmReg.status == PDM_SYS_STATUS_OK)
+        if(pdmCfg.isUvloEnabled == true &&
+            pdmReg.uvloAssessment == false &&
+            pdmReg.status == PDM_SYS_STATUS_OK)
         {
             PDM_CheckUVLO();
         }
