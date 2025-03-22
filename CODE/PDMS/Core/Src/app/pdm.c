@@ -38,7 +38,7 @@ T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 
 volatile T_PDM_CFG pdmCfg =
 {
-    .onInitBattCheckMaxTries = 50,
+    .onInitBattCheckMaxTries = UINT32_MAX,
     .isUvloEnabled = true,
     .uvloVoltageHiThreshold = 10000, // 10V
     .uvloVoltageLoThreshold = 8000,  // 8V
@@ -152,6 +152,9 @@ void PDM_Init(void)
     // Initialize voltage measurement multiplexer
     VMUX_Init();
 
+    // Initialize ARGB'S
+    WS2812B_Init();
+
     /* ===== MODULES INITALIZATION ===== */
     // Initialize output module (set correct mode and state)
     PDM_OutConfig();
@@ -173,10 +176,12 @@ void PDM_Init(void)
 
     // Verify that voltage is sufficent for normal operation (repetetive turn-on protection)
     VMUX_ReadBattVoltage();
-    uint32_t lastBattVoltage = VMUX_GetBattValue();
+    uint32_t lastBattVoltage = 0;
     
     for(uint32_t i = 0; i < pdmCfg.onInitBattCheckMaxTries; i++)
     {
+        VMUX_ReadBattVoltage();
+        lastBattVoltage = VMUX_GetBattValue();
         if(lastBattVoltage <= pdmCfg.minBattVolage)
         {
             backoffDelay = 10000000; 

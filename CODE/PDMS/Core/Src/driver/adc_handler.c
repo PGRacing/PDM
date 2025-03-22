@@ -7,19 +7,13 @@
 #include "cmsis_os2.h"
 #include "semphr.h"
 
-xTaskHandle adcTaskHandleLocal;
+xTaskHandle adc1TaskHandleLocal;
+xTaskHandle adc2TaskHandleLocal;
 SemaphoreHandle_t adc1ConvReadySemaphore = NULL;
 SemaphoreHandle_t adc2ConvReadySemaphore = NULL;
 
 void ADCH_Init(void)
 {
-    ADC1_Init();
-    ADC2_Init();
-}
-
-void adc1TaskStart(void *argument)
-{
-    LOG_INFO("ADC1:: Task start");
     adc1ConvReadySemaphore = xSemaphoreCreateBinary();
 
     if(adc1ConvReadySemaphore == NULL)
@@ -28,8 +22,23 @@ void adc1TaskStart(void *argument)
         ASSERT(NULL);
     }
 
-    adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
     ADC1_Init();
+
+    adc2ConvReadySemaphore = xSemaphoreCreateBinary();
+    
+    if(adc2ConvReadySemaphore == NULL)
+    {
+        /* Error creating semaphore -> heap too small [?] */
+        ASSERT(NULL);
+    }
+    
+    ADC2_Init();
+}
+
+void adc1TaskStart(void *argument)
+{
+    adc1TaskHandleLocal = xTaskGetCurrentTaskHandle();
+    LOG_INFO("ADC1:: Task start");
    
     for(;;)
     {
@@ -46,17 +55,8 @@ void adc1TaskStart(void *argument)
 
 void adc2TaskStart(void *argument)
 {
+    adc2TaskHandleLocal = xTaskGetCurrentTaskHandle();
     LOG_INFO("ADC2:: Task start");
-    adc2ConvReadySemaphore = xSemaphoreCreateBinary();
-    
-    if(adc2ConvReadySemaphore == NULL)
-    {
-        /* Error creating semaphore -> heap too small [?] */
-        ASSERT(NULL);
-    }
-      
-    adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
-    ADC2_Init();
 
     for(;;)
     {

@@ -79,7 +79,7 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 }
 
 
-void WS2812B_Init(TIM_HandleTypeDef* htim, uint32_t Channel)
+static void WS2812B_InitInternal(TIM_HandleTypeDef* htim, uint32_t Channel)
 {
     ws2812b_conf.htim = htim;
     ws2812b_conf.pwm_channel = Channel;
@@ -95,6 +95,12 @@ void WS2812B_Init(TIM_HandleTypeDef* htim, uint32_t Channel)
     buff[ARRAY_COUNT(buff) - 1] = 100;
 
     HAL_TIM_Base_Start(htim);
+}
+
+void WS2812B_Init(void)
+{
+    // Initialize ARGB'S
+    WS2812B_InitInternal(&htim2, TIM_CHANNEL_4);
 }
 
 void WS2812B_Flush(void)
@@ -259,10 +265,7 @@ static void WS2812B_EvaluateLeds(void)
 // TODO Move to another module
 void argbTaskStart(void *argument)
 {
-    /* USER CODE BEGIN telemTaskStart */
     LOG_INFO("ARGB:: Task start");
-    // Initialize ARGB'S
-    WS2812B_Init(&htim2, TIM_CHANNEL_4);
     // Do a startup led action
     WS2812B_StartupAction();
     /* Infinite loop */
@@ -272,7 +275,6 @@ void argbTaskStart(void *argument)
         WS2812B_EvaluateLeds();
         WS2812B_FlushIf();
     }
-    /* USER CODE END telemTaskStart */
 }
 
 // static void WS2812_Test(void)
