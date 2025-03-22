@@ -18,6 +18,8 @@
 #include "logic.h"
 #include "out.h"
 #include "vmux.h"
+#include "adc_handler.h"
+#include "can_handler.h"
 #include "telemetry.h"
 #include "buzzer.h"
 #include "ws2812b.h"
@@ -133,15 +135,27 @@ static void PDM_SoftLimpHomeMode(T_PDM_SYS_STATUS status)
 void PDM_Init(void)
 {    
     vPortEnterCritical();
-    // Await platform initialization 
+    
+    /* ===== CONFIG LOAD ===== */
+    // TODO Load settings from flash to respective flash structs(rn mockup)
+    // TODO Add status return function for all initializers;
+
     /* ===== PERIPHERAL INIT ===== */
+
+    // Initialize ADC acquisition handler
+    ADCH_Init();
+
+    // Initialize CAN communication handling 
+    CANH_Init();
+
+    // Initialize voltage measurement multiplexer
     VMUX_Init();
 
     /* ===== MODULES INITALIZATION ===== */
     // Initialize output module (set correct mode and state)
     PDM_OutConfig();
 
-    // SPOC2 External outputs init (all outputs disabled)
+    // Iniitialize SPOC2 External outputs (all outputs disabled)
     SPOC2_Init();
 
     // Enable debug DWT clock
@@ -185,11 +199,6 @@ void PDM_Init(void)
             break;
         }
     }
-
-    /* ===== CONFIG LOAD ===== */
-    // TODO Load settings from flash to respective flash structs(rn mockup)
-    
-    // TODO Start tasks from here
 
     LOG_INFO("PDM:: Board initialized successfully");
     LOG_VAR(lastBattVoltage);

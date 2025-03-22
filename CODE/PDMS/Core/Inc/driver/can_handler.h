@@ -1,3 +1,6 @@
+#ifndef __CAN_HANDLER_H_
+#define __CAN_HANDLER_H_
+
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "can.h"
@@ -59,9 +62,12 @@ typedef struct T_CANH_TX_PACKAGE
     T_CANH_DATA data;
 }T_CANH_TX_PACKAGE;
 
-/* Can tasks */
+/* CAN tasks */
 void can1TaskStart(void *argument);
 void can2TaskStart(void *argument);
+
+/* CAN Init */
+void CANH_Init(void);
 
 void CANH_PushToQueue1(T_CANH_TX_PACKAGE pkg);
 void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg);
@@ -88,3 +94,5 @@ void CANH_Send_TxState1_16(uint8_t s[16]);
 void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyLineStatus);
 
 void CANH_Send_Names(uint8_t id, uint8_t part, char str[7]);
+
+#endif

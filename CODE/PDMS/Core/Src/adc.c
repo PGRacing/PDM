@@ -30,10 +30,8 @@
 #include "stm32l4xx_hal_adc.h"
 #include "pdm.h"
 
-
-xTaskHandle adcTaskHandleLocal;
-SemaphoreHandle_t adc1ConvReadySemaphore = NULL;
-SemaphoreHandle_t adc2ConvReadySemaphore = NULL;
+extern SemaphoreHandle_t adc1ConvReadySemaphore;
+extern SemaphoreHandle_t adc2ConvReadySemaphore;
 
 #define ADC_12BIT_MAX_VALUE 4096
 /* USER CODE END 0 */
@@ -616,10 +614,10 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
 uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
- #pragma GCC push_options 
- #pragma GCC optimize ("-O0")
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
+    ASSERT(adc1ConvReadySemaphore);
+    ASSERT(adc2ConvReadySemaphore);
     if(hadc == &hadc1)
     {
       /* Can be possibly changed to semaphore */
@@ -651,15 +649,13 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 {
   __NOP();
 }
-#pragma GCC pop_options
 
-volatile uint32_t isCurrent[ADC1_CHANNEL_COUNT];
 
-static void ADC1_Start(void)
+void ADC1_Init(void)
 { 
   // TODO Check if it's really 5ms and how it does affect OC trip and others
-    /* Timer 8 configured to execute ADC conversion each 5ms */
 
+    /* Timer 8 configured to execute ADC conversion each 5ms */
     HAL_TIM_Base_Start(&htim8);
 
     /* Start ADC in DMA mode */
@@ -674,9 +670,9 @@ static void ADC1_Start(void)
     // hadc2.State = 0;
 }
 
-static void ADC2_Start(void)
+void ADC2_Init(void)
 {
-    /* Timer 3 configured to execute ADC conversion each 5ms */
+    /* Right now ADC2 also executed from TIM8*/
 
     /* Start ADC in DMA mode */
     // ADC2 - BSP inputs
@@ -690,62 +686,5 @@ static void ADC2_Start(void)
     // hadc2.State = 0;
 }
 
-#include "out.h"
-
-void adc1TaskStart(void *argument)
-{
-    LOG_INFO("ADC1:: Task start");
-    /* USER CODE BEGIN adcTaskStart */
-    adc1ConvReadySemaphore = xSemaphoreCreateBinary();
-
-    if(adc1ConvReadySemaphore == NULL)
-    {
-        /* Error creating semaphore -> heap too small [?] */
-        __NOP();
-    }
-
-    adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
-    ADC1_Start();
-   
-    /* Infinite loop */
-    for(;;)
-    {
-        /* Do something with data */
-        if(xSemaphoreTake( adc1ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
-        {
-          xSemaphoreGive(adc1ConvReadySemaphore);
-          // Start channel diagnostics
-          OUT_DIAG_AllBts();
-        }
-    }
-    /* USER CODE END adcTaskStart */
-}
-
-void adc2TaskStart(void *argument)
-{
-    LOG_INFO("ADC2:: Task start");
-    /* USER CODE BEGIN adcTaskStart */
-    adc2ConvReadySemaphore = xSemaphoreCreateBinary();
-    
-    if(adc2ConvReadySemaphore == NULL)
-    {
-        /* Error creating semaphore -> heap too small [?] */
-        __NOP();
-    }
-      
-    adcTaskHandleLocal = xTaskGetCurrentTaskHandle();
-    ADC2_Start();
-    /* Infinite loop */
-    for(;;)
-    {
-        /* Do something with data */
-        if(xSemaphoreTake( adc2ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
-        {
-          xSemaphoreGive(adc2ConvReadySemaphore);
-          // Start channel diagnostics
-        }
-    }
-    /* USER CODE END adcTaskStart */
-}
 
 /* USER CODE END 1 */

@@ -54,6 +54,7 @@ Core/Src/driver/spoc2.c \
 Core/Src/driver/tmp126.c \
 Core/Src/driver/vmux.c \
 Core/Src/driver/ws2812b.c \
+Core/Src/driver/adc_handler.c \
 Core/Src/freertos.c \
 Core/Src/gpio.c \
 Core/Src/iwdg.c \

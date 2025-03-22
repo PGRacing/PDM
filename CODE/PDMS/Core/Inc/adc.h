@@ -50,6 +50,10 @@ void MX_ADC3_Init(void);
 /* USER CODE BEGIN Prototypes */
 extern uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
 extern uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
+
+void ADC1_Init(void);
+void ADC2_Init(void);
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "string.h"
 #include "semphr.h"
+#include "tim.h"
 
 
 xQueueHandle can1QueueHandle;
@@ -383,7 +384,7 @@ void CANH_Send_Names(uint8_t id, uint8_t part, char str[7])
     CANH_PushToQueue2(CANH_TxNames);
 }
 
-void CANH_SwitchTerminator1(bool state)
+static void CANH_SwitchTerminator1(bool state)
 {   
     if(true == state)
     {
@@ -395,7 +396,7 @@ void CANH_SwitchTerminator1(bool state)
     }
 }
 
-void CANH_SwitchTerminator2(bool state)
+static void CANH_SwitchTerminator2(bool state)
 {   
     if(true == state)
     {
@@ -435,10 +436,8 @@ void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg)
     };
 }
 
-void can1TaskStart(void *argument)
+static void CANH_InitModule1()
 {
-    LOG_INFO("CAN1:: Task start");
-
     #ifdef CANH_DEFAULT_TERM1_ENABLED
         CANH_SwitchTerminator1(true);
     #else
@@ -448,25 +447,75 @@ void can1TaskStart(void *argument)
     can1QueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
 
     if(can1QueueHandle == NULL)
+    {
         /* Error creating xQueue -> heap too small [?] */
         __NOP();
+    }
+}
 
-    /* Start CAN1 */
+static void CANH_InitModule2()
+{
+    #ifdef CANH_DEFAULT_TERM2_ENABLED
+        CANH_SwitchTerminator2(true);
+    #else
+        CANH_SwitchTerminator2(false);
+    #endif
+
+    /* Create queue for CAN2 data */
+    can2QueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
+
+    if(can2QueueHandle == NULL)
+    {
+        /* Error creating xQueue -> heap too small [?] */
+        __NOP();
+    }
+}
+
+static void CANH_SayHello1(void)
+{
+    /* Send CAN1 hello message */
+    HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can1TxMailbox);
+}
+
+static void CANH_SayHello2(void)
+{
+    /* Send CAN2 hello message */
+    HAL_CAN_AddTxMessage(&hcan2, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can2TxMailbox);
+}
+
+void CANH_Init(void)
+{
+    CANH_InitModule1();
+    CANH_InitModule2();
+}
+
+void can1TaskStart(void *argument)
+{
+    LOG_INFO("CAN1:: Task start");
+    /* Start CAN1 -  CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens */
     HAL_CAN_Start(&hcan1);
 
-    /* Send CAN hello message */
-    osDelay(pdMS_TO_TICKS(100));
-    HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can1TxMailbox);
+    osTimerId_t can1HelloTimer = osTimerNew((osTimerFunc_t)CANH_SayHello1, osTimerOnce, NULL, NULL);
+    if(can1HelloTimer)
+    {
+        osTimerStart(can1HelloTimer, pdMS_TO_TICKS(100));
+    }
+    else
+    {
+        LOG_ERR("CANH:: Unable to create CAN1 hello timer!");
+    }
 
-    /* Incoming package */
+    /* Incoming package form queue */
     T_CANH_TX_PACKAGE canPackage;
 
     for(;;)
     {
         /* Ongoing error on CAN1 */
         if(hcan1.State == HAL_CAN_STATE_ERROR)
+        {
             __NOP();
-
+        }
+        
         if(can1QueueHandle != NULL && xQueueReceive(can1QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
         {
             HAL_CAN_AddTxMessage(&hcan1, &(canPackage.header), canPackage.data.raw, can1TxMailbox);
@@ -478,36 +527,30 @@ void can1TaskStart(void *argument)
 void can2TaskStart(void *argument)
 {
     LOG_INFO("CAN2:: Task start");
-
-    #ifdef CANH_DEFAULT_TERM2_ENABLED
-        CANH_SwitchTerminator2(true);
-    #else
-        CANH_SwitchTerminator2(false);
-    #endif
-
-    /* Create queue for CAN2 data */
-    can2QueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
-
-    if(can2QueueHandle == NULL)
-        /* Error creating xQueue -> heap too small [?] */
-        __NOP();
-
-    /* Start CAN2 */
+    /* Start CAN2  - CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens*/
     HAL_CAN_Start(&hcan2);
 
-    /* Send CAN hello message */
-    osDelay(pdMS_TO_TICKS(100));
-    HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can1TxMailbox);
+    osTimerId_t can2HelloTimer = osTimerNew((osTimerFunc_t)CANH_SayHello2, osTimerOnce, NULL, NULL);
+    if(can2HelloTimer)
+    {
+        osTimerStart(can2HelloTimer, pdMS_TO_TICKS(100));
+    }
+    else
+    {
+        LOG_ERR("CANH:: Unable to create CAN1 hello timer!");
+    }
 
-    /* Incoming package */
+    /* Incoming package from queue */
     T_CANH_TX_PACKAGE canPackage;
 
     for(;;)
     {
         /* Ongoing error on CAN2 */
         if(hcan2.State == HAL_CAN_STATE_ERROR)
+        {
             __NOP();
-
+        }
+        
         if(can2QueueHandle != NULL && xQueueReceive(can2QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
         {
             HAL_CAN_AddTxMessage(&hcan2, &(canPackage.header), canPackage.data.raw, can2TxMailbox);
