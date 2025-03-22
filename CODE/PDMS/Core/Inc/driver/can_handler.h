@@ -53,7 +53,7 @@ typedef union __packed
     T_CANH_TX_CURRENT_4CH current_4ch;
 }T_CANH_DATA;
 
-typedef struct __packed T_CANH_TX_PACKAGE 
+typedef struct T_CANH_TX_PACKAGE 
 {
     const CAN_TxHeaderTypeDef header;
     T_CANH_DATA data;
