@@ -14,32 +14,31 @@ This repository contains code that is targeted for PDM - Power distribution modu
 1. Install Visual Studio code as it is used as IDE for this project:
 `> choco install vscode`
 
-2. Install following extensions for VS Code: 
-    - [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
-    - [Cortex-Debug](https://marketplace.visualstudio.com/items?itemName=marus25.cortex-debug)
-    - [Makefile Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools)
-
-
-
-3. Check if cygwin is installed if not type: 
+2. Check if cygwin is installed if install it via: 
 `> choco install cygwin` 
 
-4. Check if you have ARM embedded toolchain installed, version at least 10.3.1 required. In project directory type: 
+3. Check if you have ARM embedded toolchain installed, version at least 10.3.1 required. In terminal in project directory type: 
 `> arm-none-eabi-gcc --version `
 
-5. If no toolchain present install it by:
+4. If no toolchain present install it by:
 `> choco install gcc-arm-embedded `
 or by installing binary from: [ARM GNU Toolchain](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
 
-6. Install GNU make: 
+5. Install GNU make: 
 `> choco install make `
 
-7. Verify that all tools installed are added to `$PATH` and available in projects directory. 
+6. Verify that all tools installed are added to `$PATH` and available in projects directory. 
 ``` 
     > arm-none-eabi-gcc --version
     > make --version
     > cygwin
 ```
+
+7. Install following extensions for VS Code: 
+    - [C/C++](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
+    - [Cortex-Debug](https://marketplace.visualstudio.com/items?itemName=marus25.cortex-debug)
+    - [Makefile Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools)
+  
 ### BUILD
 
 Project is based on makefile system based on one root makefile [Makefile](https://github.com/PGRacing/PDM/blob/main/CODE/PDMS/Makefile)
