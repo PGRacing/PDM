@@ -9,12 +9,6 @@
 // CAN2.0B max paylaod size
 #define CANH_MAX_DLC 8
 
-/* CAN1 TxMailbox */
-extern uint32_t can1TxMailbox[4];
-
-/* CAN2 TxMailbox */
-extern uint32_t can2TxMailbox[4];
-
 /////////////////////////
 //////// CAN TX /////////
 /////////////////////////
@@ -71,9 +65,6 @@ void CANH_Init(void);
 
 void CANH_PushToQueue1(T_CANH_TX_PACKAGE pkg);
 void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg);
-
-extern xQueueHandle can1QueueHandle;
-extern xQueueHandle can2QueueHandle;
 
 /* TX MESSAGES */
 void CANH_Send_TxVoltage1_4(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);

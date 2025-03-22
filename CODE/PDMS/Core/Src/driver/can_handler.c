@@ -6,15 +6,17 @@
 #include "semphr.h"
 #include "tim.h"
 
+static xQueueHandle can1QueueHandle;
+static xQueueHandle can2QueueHandle;
 
-xQueueHandle can1QueueHandle;
-xQueueHandle can2QueueHandle;
+static volatile bool can1ReadyForTx = false;
+static volatile bool can2ReadyForTx = false;
 
 /* CAN1 TxMailbox */
-uint32_t can1TxMailbox[4];
+static uint32_t can1TxMailbox[4];
 
 /* CAN2 TxMailbox */
-uint32_t can2TxMailbox[4];
+static uint32_t can2TxMailbox[4];
 
 //#define CANH_DEFAULT_TERM1_ENABLED 1
 #define CANH_DEFAULT_TERM2_ENABLED 1
@@ -410,7 +412,9 @@ static void CANH_SwitchTerminator2(bool state)
 
 void CANH_PushToQueue1(T_CANH_TX_PACKAGE pkg)
 {
-    if(can1QueueHandle != NULL && xQueueSend(can1QueueHandle, &pkg, portMAX_DELAY) != pdPASS)
+    if(can1ReadyForTx == true &&
+        can1QueueHandle != NULL &&
+        xQueueSend(can1QueueHandle, &pkg, portMAX_DELAY) != pdPASS)
     {
         /* Problem with pushing data to queue */
         __NOP();
@@ -424,7 +428,9 @@ void CANH_PushToQueue1(T_CANH_TX_PACKAGE pkg)
 
 void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg)
 {
-    if(can2QueueHandle != NULL && xQueueSend(can2QueueHandle, &pkg, portMAX_DELAY) != pdPASS)
+    if(can2ReadyForTx == true &&
+        can2QueueHandle != NULL &&
+        xQueueSend(can2QueueHandle, &pkg, portMAX_DELAY) != pdPASS)
     {
         /* Problem with pushing data to queue */
         __NOP();
@@ -471,16 +477,18 @@ static void CANH_InitModule2()
     }
 }
 
-static void CANH_SayHello1(void)
+static void CANH_AllowTxCallback1(void)
 {
     /* Send CAN1 hello message */
     HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can1TxMailbox);
+    can1ReadyForTx = true;
 }
 
-static void CANH_SayHello2(void)
+static void CANH_AllowTxCallback2(void)
 {
     /* Send CAN2 hello message */
     HAL_CAN_AddTxMessage(&hcan2, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can2TxMailbox);
+    can2ReadyForTx = true;
 }
 
 void CANH_Init(void)
@@ -495,14 +503,14 @@ void can1TaskStart(void *argument)
     /* Start CAN1 -  CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens */
     HAL_CAN_Start(&hcan1);
 
-    osTimerId_t can1HelloTimer = osTimerNew((osTimerFunc_t)CANH_SayHello1, osTimerOnce, NULL, NULL);
-    if(can1HelloTimer)
+    osTimerId_t can1TxStartTimer = osTimerNew((osTimerFunc_t)CANH_AllowTxCallback1, osTimerOnce, NULL, NULL);
+    if(can1TxStartTimer)
     {
-        osTimerStart(can1HelloTimer, pdMS_TO_TICKS(100));
+        osTimerStart(can1TxStartTimer, pdMS_TO_TICKS(100));
     }
     else
     {
-        LOG_ERR("CANH:: Unable to create CAN1 hello timer!");
+        LOG_ERR("CANH:: Unable to create CAN1 tx start timer!");
     }
 
     /* Incoming package form queue */
@@ -516,7 +524,7 @@ void can1TaskStart(void *argument)
             __NOP();
         }
         
-        if(can1QueueHandle != NULL && xQueueReceive(can1QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
+        if(can1ReadyForTx == true && can1QueueHandle != NULL && xQueueReceive(can1QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
         {
             HAL_CAN_AddTxMessage(&hcan1, &(canPackage.header), canPackage.data.raw, can1TxMailbox);
         }
@@ -530,14 +538,14 @@ void can2TaskStart(void *argument)
     /* Start CAN2  - CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens*/
     HAL_CAN_Start(&hcan2);
 
-    osTimerId_t can2HelloTimer = osTimerNew((osTimerFunc_t)CANH_SayHello2, osTimerOnce, NULL, NULL);
-    if(can2HelloTimer)
+    osTimerId_t can2TxStartTimer = osTimerNew((osTimerFunc_t)CANH_AllowTxCallback2, osTimerOnce, NULL, NULL);
+    if(can2TxStartTimer)
     {
-        osTimerStart(can2HelloTimer, pdMS_TO_TICKS(100));
+        osTimerStart(can2TxStartTimer, pdMS_TO_TICKS(100));
     }
     else
     {
-        LOG_ERR("CANH:: Unable to create CAN1 hello timer!");
+        LOG_ERR("CANH:: Unable to create CAN1 TX start timer!");
     }
 
     /* Incoming package from queue */
@@ -551,7 +559,7 @@ void can2TaskStart(void *argument)
             __NOP();
         }
         
-        if(can2QueueHandle != NULL && xQueueReceive(can2QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
+        if(can2ReadyForTx == true && can2QueueHandle != NULL && xQueueReceive(can2QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
         {
             HAL_CAN_AddTxMessage(&hcan2, &(canPackage.header), canPackage.data.raw, can2TxMailbox);
         }
@@ -562,4 +570,4 @@ void can2TaskStart(void *argument)
 
 ///
 /// TODO [MAJOR REWORK] Add CAN inputs handling
-/// 
+/// TODO [MAJOR REWORK] Move variables to canCfg and canReg;
