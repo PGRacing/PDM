@@ -32,7 +32,10 @@
 			"can_handler.h": "c",
 			"pdm.h": "c",
 			"out.h": "c",
-			"ws2812b.h": "c"
+			"ws2812b.h": "c",
+			"main.h": "c",
+			"features.h": "c",
+			"iwdg.h": "c"
 		},
 		"cortex-debug.variableUseNaturalFormat": true,
 		"workbench.colorCustomizations": {

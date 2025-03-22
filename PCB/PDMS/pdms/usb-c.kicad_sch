@@ -4,6 +4,13 @@
 
   (paper "A5")
 
+  (title_block
+    (title "USB-C Interface + SWD")
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "Device:R_Small" (pin_numbers hide) (pin_names (offset 0.254) hide) (in_bom yes) (on_board yes)
       (property "Reference" "R" (id 0) (at 0.762 0.508 0)

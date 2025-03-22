@@ -4,6 +4,13 @@
 
   (paper "A4")
 
+  (title_block
+    (title "ARGB - notification LED's")
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "Device:C_Small" (pin_numbers hide) (pin_names (offset 0.254) hide) (in_bom yes) (on_board yes)
       (property "Reference" "C" (id 0) (at 0.254 1.778 0)
@@ -1009,11 +1016,6 @@
   (wire (pts (xy 240.538 101.6) (xy 278.638 101.6))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid fea917c7-c258-4d20-b6bc-70c8658d07d4)
-  )
-
-  (text "ARGB - informing LED's" (at 187.071 191.008 0)
-    (effects (font (size 2 2) italic) (justify left bottom))
-    (uuid 7d517935-eed9-4f09-b995-b5d131237072)
   )
 
   (hierarchical_label "LED_DATA_IN" (shape input) (at 29.718 60.198 180)

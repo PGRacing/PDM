@@ -4,6 +4,13 @@
 
   (paper "A5")
 
+  (title_block
+    (title "BTS50010/05-1LUA High side switch ")
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "BTS500101LUAAUMA1:BTS500101LUAAUMA1" (in_bom yes) (on_board yes)
       (property "Reference" "" (id 0) (at 0 0 0)
@@ -631,6 +638,11 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 269232f5-ea15-45f3-97e0-6f72f078ea4b)
   )
+  (polyline (pts (xy 178.054 40.005) (xy 178.054 51.816))
+    (stroke (width 0) (type default) (color 255 0 0 1))
+    (uuid 2f7daccf-c332-487c-8c61-58733a50bf57)
+  )
+
   (wire (pts (xy 42.799 51.943) (xy 42.799 53.213))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 31ea1a01-24f0-4a6a-839f-3cb731b0adfc)
@@ -656,6 +668,11 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 429e683e-4de7-465a-a721-1e6f821bbbaa)
   )
+  (polyline (pts (xy 145.542 40.005) (xy 178.054 40.005))
+    (stroke (width 0) (type default) (color 255 0 0 1))
+    (uuid 4adbf956-a77a-4cb1-9bf4-b32ba9705288)
+  )
+
   (wire (pts (xy 108.712 83.058) (xy 110.236 83.058))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 4fe56a5b-7381-48a8-883e-de3a32d7f607)
@@ -702,6 +719,11 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 7c9b989d-b646-413d-9079-6db2b1cc3927)
   )
+  (polyline (pts (xy 145.542 40.005) (xy 145.542 51.816))
+    (stroke (width 0) (type default) (color 255 0 0 1))
+    (uuid 819bf78d-21b8-4f26-b88d-6531ce018314)
+  )
+
   (wire (pts (xy 135.763 62.738) (xy 137.668 62.738))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 81f5fa01-4aa6-4768-9e96-f35cdcfdcfc7)
@@ -781,6 +803,11 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid d9e17b43-c641-41ba-adbb-8f7222c65c79)
   )
+  (polyline (pts (xy 178.054 51.816) (xy 145.542 51.816))
+    (stroke (width 0) (type default) (color 255 0 0 1))
+    (uuid dc73560d-7679-4d1e-b029-f35ccfa37599)
+  )
+
   (wire (pts (xy 98.298 51.943) (xy 98.298 53.213))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid dd8628ee-b6ed-4f7c-ac0f-3e7a8ac0b812)
@@ -811,6 +838,11 @@
     (effects (font (size 0.6 0.6)) (justify left bottom))
     (uuid 29316f6b-0e96-48e4-b4ab-e11ba291d802)
   )
+  (text "For sake of accuracy \nof current sense \nBTS50010 should be used"
+    (at 145.796 49.53 0)
+    (effects (font (size 1.5 1.5) bold italic) (justify left bottom))
+    (uuid 86650132-ae48-42dc-a037-96b723f47f45)
+  )
   (text "SZMM5Z3V3T1G " (at 64.389 59.182 90)
     (effects (font (size 0.6 0.6)) (justify left bottom))
     (uuid 902e6952-9f97-44e5-ae61-345a7f952eba)
@@ -822,10 +854,6 @@
   (text "Ris_prot -> value should be checked properly" (at 80.518 58.166 90)
     (effects (font (size 0.6 0.6)) (justify left bottom))
     (uuid a5133727-44c3-4e57-9382-04291a0b1d88)
-  )
-  (text "BTS50010/05-1LUA High side switch " (at 100.33 128.27 0)
-    (effects (font (size 1.27 1.27)) (justify left bottom))
-    (uuid d30687c8-c5ee-4ce5-9ffa-e15a1be90d6f)
   )
   (text "Sense resistor\naccuracy important!" (at 95.758 44.323 0)
     (effects (font (size 0.6 0.6)) (justify left bottom))

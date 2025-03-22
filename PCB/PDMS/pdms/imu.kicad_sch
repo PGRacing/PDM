@@ -4,6 +4,13 @@
 
   (paper "A5")
 
+  (title_block
+    (title "ASM330 - SAFETY IMU")
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "Device:C_Small" (pin_numbers hide) (pin_names (offset 0.254) hide) (in_bom yes) (on_board yes)
       (property "Reference" "C" (id 0) (at 0.254 1.778 0)
@@ -426,11 +433,6 @@
   (wire (pts (xy 130.175 68.58) (xy 130.175 69.85))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid fa5cfa86-c0b8-48d2-a09f-625bc3e355c5)
-  )
-
-  (text "ASM330 - SAFETY IMU" (at 99.695 128.905 0)
-    (effects (font (size 2 2)) (justify left bottom))
-    (uuid f0e56f66-999a-445f-ab58-496c86317738)
   )
 
   (hierarchical_label "IMU_MODE_SEL" (shape input) (at 103.505 38.1 90)

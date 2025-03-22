@@ -4,6 +4,13 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Low current - power channels - BTS72220")
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "Device:Fuse_Small" (pin_numbers hide) (pin_names (offset 0.254) hide) (in_bom yes) (on_board yes)
       (property "Reference" "F" (id 0) (at 0 -1.524 0)
@@ -329,11 +336,6 @@
   (bus (pts (xy 142.748 87.376) (xy 145.288 87.376))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid fd25c7d8-6a3b-466c-bc88-17cddbcbf6c1)
-  )
-
-  (text "Low current - power channels - BTS72220" (at 186.944 191.008 0)
-    (effects (font (size 2 2) italic) (justify left bottom))
-    (uuid 0dd6cfda-9cd5-4801-a76e-c9913bd2d9fa)
   )
 
   (label "SPI2_SCK" (at 142.748 84.074 90)

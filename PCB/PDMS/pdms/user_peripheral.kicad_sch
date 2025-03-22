@@ -4,6 +4,12 @@
 
   (paper "A5")
 
+  (title_block
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "BSPD-07:RJU002N06FRAT106" (pin_names (offset 0.762)) (in_bom yes) (on_board yes)
       (property "Reference" "Q" (id 0) (at 11.43 3.81 0)

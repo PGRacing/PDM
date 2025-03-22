@@ -4,6 +4,13 @@
 
   (paper "A5")
 
+  (title_block
+    (title "Output channel voltage measurement mux")
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "Device:C_Small" (pin_numbers hide) (pin_names (offset 0.254) hide) (in_bom yes) (on_board yes)
       (property "Reference" "C" (id 0) (at 0.254 1.778 0)
@@ -1148,10 +1155,6 @@
     (uuid ff6ef033-8916-4352-bcc8-9b0f474d3b44)
   )
 
-  (text "Output channel voltage measurement mux" (at 99.187 129.159 0)
-    (effects (font (size 2 2) italic) (justify left bottom))
-    (uuid 56a3ef0e-ac55-4462-af09-477ba313d688)
-  )
   (text "This values were verified! 2.32k and 10k is ok\n2.32kOhm instead of 2.3k is used due to availabillity"
     (at 51.562 98.171 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))

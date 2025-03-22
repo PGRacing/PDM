@@ -4,6 +4,13 @@
 
   (paper "A4")
 
+  (title_block
+    (title "MCU I/O's protection")
+    (rev "V4.2")
+    (company "PGRacing Team")
+    (comment 1 "Karol Pergoł")
+  )
+
   (lib_symbols
     (symbol "Device:R_Small" (pin_numbers hide) (pin_names (offset 0.254) hide) (in_bom yes) (on_board yes)
       (property "Reference" "R" (id 0) (at 0.762 0.508 0)
@@ -1104,11 +1111,6 @@
   (bus (pts (xy 104.013 41.148) (xy 104.013 50.546))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid fedd70a2-cd54-4493-a4ad-0b1c4a5a3df3)
-  )
-
-  (text "MCU I/O's protection" (at 186.182 191.008 0)
-    (effects (font (size 2 2) italic) (justify left bottom))
-    (uuid 080418af-e682-49c9-bc7f-b2537c3fd6d4)
   )
 
   (label "ADC_IN7" (at 106.553 129.794 0)
