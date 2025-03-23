@@ -275,7 +275,7 @@ static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 }
 
 // LOGIC Array struct
-T_LOGIC logicCfg[POWER_OUT_COUNT] = 
+T_LOGIC_CFG logicCfg[POWER_OUT_COUNT] = 
 {
   [0] = {
     .isUsed = TRUE,

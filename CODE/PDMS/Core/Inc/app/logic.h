@@ -59,7 +59,10 @@ typedef struct
 {
   bool isUsed;
   T_LOGIC_EXPRESSION exp;
-} T_LOGIC;
+} T_LOGIC_CFG;
+
+/// @brief Logic module configuration
+extern T_LOGIC_CFG logicCfg[POWER_OUT_COUNT];
 
 
 /// @brief Evaluate logic expressions controling all outputs

@@ -10,21 +10,11 @@
 
 /* HAL, MX includes */
 #include "iwdg.h"
-
-/* Modules includes */
-#include "typedefs.h"
-#include "features.h"
-#include "logger.h"
-#include "logic.h"
-#include "out.h"
-#include "vmux.h"
-#include "adc_handler.h"
-#include "can_handler.h"
-#include "telemetry.h"
-#include "buzzer.h"
-#include "ws2812b.h"
 #include "pdm.h"
-// Main PDM file
+
+/////////////////////////
+///////// PDM ///////////
+/////////////////////////
 
 #define UVLO_TIMER_PERIOD 50
 
@@ -47,10 +37,16 @@ volatile T_PDM_CFG pdmCfg =
     .uvloRetainDivider = 10, 
     .minBattVolage = 6000, // In BT50010LUA TDS 5.8V minimal voltage declared
 
+    // Others
     .useBuzzer = TRUE,
-    .ledMode = 1
-};
+    .ledMode = 1,
 
+    // Pointers to modules configuration
+    .outsCfg = outsCfg,
+    .logicCfg = logicCfg,
+    .telemCfg = &telemCfg,
+    .cansCfg = cansCfg
+};
 
 volatile T_PDM_REG pdmReg =
 {
@@ -289,6 +285,7 @@ void pdmTaskStart(void *argument)
     LOG_INFO("PDM:: Task start");
     for(;;)
     {
+        // TODO LOGIC should be evaluated on ADC2 slow loop, now no sync between
         bool* logicReg = LOGIC_Evaluate();
         for(uint8_t i = 0; i < OUT_ID_MAX; i++)
         {

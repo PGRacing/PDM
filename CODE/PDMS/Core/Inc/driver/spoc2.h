@@ -200,10 +200,11 @@ typedef struct {
     uint8 spiChipSelect;
 } SPOC2_chain_t;
 
-typedef struct 
+// Coding standard borken here intentionally because this struct is used externally also
+typedef struct _SPOC2_CONFIG_T
 {
     SPOC2_deviceConfig_t devices[SPOC2_NUM_OF_DEVICES];
-}SPOC2_config_t;
+}SPOC2_CONFIG_T;
 
 /// @}
 

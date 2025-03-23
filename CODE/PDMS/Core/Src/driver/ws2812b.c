@@ -22,11 +22,11 @@
 #define OFF_STATE_BIT 5
 #define DATA_SIZE 24
 
-rgb_t red = {0x3F, 0x00, 0x00};
-rgb_t green = {0x00, 0x3F, 0x00};
-rgb_t blue = {0x00, 0x00, 0x3F};
-rgb_t clear = {0x00, 0x00, 0x00};
-rgb_t rcpergol = {219, 82, 15};
+WS2812B_COLOR_T red = {0x3F, 0x00, 0x00};
+WS2812B_COLOR_T green = {0x00, 0x3F, 0x00};
+WS2812B_COLOR_T blue = {0x00, 0x00, 0x3F};
+WS2812B_COLOR_T clear = {0x00, 0x00, 0x00};
+WS2812B_COLOR_T rcpergol = {219, 82, 15};
 
 #define WS2812B_STAT_LED1 17
 #define WS2812B_STAT_LED2 18
@@ -121,7 +121,7 @@ static void WS2812B_FlushIf(void)
 }
 
 
-static void WS2812B_SetSingle(uint16_t led_index, rgb_t color)
+static void WS2812B_SetSingle(uint16_t led_index, WS2812B_COLOR_T color)
 {
     vPortEnterCritical();
     if (led_index < LED_NUM)
@@ -141,7 +141,7 @@ static void WS2812B_Clear(void)
     }
 }
 
-static rgb_t WS2812B_ChangeColorLumin(rgb_t color, uint8_t lumin)
+static WS2812B_COLOR_T WS2812B_ChangeColorLumin(WS2812B_COLOR_T color, uint8_t lumin)
 {
     // lumin value from 0 - 100 of color luminosity
     color.g = (uint16_t)color.g * lumin / 100;
@@ -284,7 +284,7 @@ void argbTaskStart(void *argument)
 //         float r = 50 * (1.0f + sin(i / 100.0f));
 //         float g = 50 * (1.0f + sin(1.5f * i / 100.0f));
 //         float b = 50 * (1.0f + sin(2.0f * i / 100.0f));
-//         rgb_t constructed_rgb = {r, g, b};
+//         WS2812B_COLOR_T constructed_rgb = {r, g, b};
 
 //         for(uint8_t j = 0; j < LED_NUM; j++)
 //         {

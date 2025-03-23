@@ -143,7 +143,8 @@ bool IN_GetValueSchmitt(T_INPUT_ID id)
     return FALSE;
   }
 
-  // Now using adc values -- add debouncing
+  // TODO Now using adc values -- add debouncing
+  // Debouncing should be performed on physical inputs only on data change from ADC2
   if( *(in->rawData) > IN_SCHMITT_HIGH_THRESHOLD )
   {
     in->schmittState = TRUE;
@@ -210,5 +211,5 @@ T_IN_MODE IN_GetMode(T_INPUT_ID id)
 }
 
 ///
-/// TODO [MAJOR REWORK] Add handling of can inputs 
+/// TODO [MAJOR REWORK] Add handling of can inputs
 ///

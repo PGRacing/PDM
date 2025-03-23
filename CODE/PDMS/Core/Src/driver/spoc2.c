@@ -3,7 +3,7 @@
 #include "pdm.h"
 #include "semphr.h"
 
-SPOC2_config_t spoc2Cfg = 
+SPOC2_CONFIG_T spoc2Cfg = 
 {
   .devices = 
   {

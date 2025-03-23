@@ -51,7 +51,6 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .chmask = LL_TIM_CHANNEL_CH4,
         .alt = LL_GPIO_AF_2,
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
-        // TODO This should be later changed 
         .currentRawData = &(adc1RawData[0]),
         .dkilis = 38000,
         .sensRValue = 7020,
@@ -273,7 +272,8 @@ void BSP_OUT_InitPWM(T_OUT_ID id)
         LL_TIM_SetClockSource(bspOutsCfg[id].tim, LL_TIM_CLOCKSOURCE_INTERNAL);
         LL_TIM_SetCounterMode(bspOutsCfg[id].tim, LL_TIM_COUNTERMODE_UP);
 
-        // TODO Change prescaler and arr 
+        // Current solution aims 175 Hz
+        // Modify BSP_OUT_PWM_TARGET_FREQ if needed
         LL_TIM_SetPrescaler(bspOutsCfg[id].tim, BSP_OUT_PWM_PRESCALER);
         LL_TIM_SetAutoReload(bspOutsCfg[id].tim, BSP_OUT_PWM_ARR);
 
@@ -405,7 +405,6 @@ uint32_t BSP_OUT_GetCurrentAdcValue(T_OUT_ID id)
     }  
 }
 
-// TODO Unused
 void BSP_OUT_Init(T_IO io)
 {
     // Move initial GPIO init here

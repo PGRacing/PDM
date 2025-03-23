@@ -17,6 +17,9 @@ typedef struct _T_TELEM_CFG
     bool              sendNames;         // Flag to send names
 } T_TELEM_CFG; 
 
+/// @brief Telemetry module configuration
+extern T_TELEM_CFG telemCfg;
+
 void telemTaskStart(void *argument);
 
 #endif

@@ -79,11 +79,15 @@ typedef struct T_CANH_TX_PACKAGE
     T_CANH_DATA data;
 }T_CANH_TX_PACKAGE;
 
+
+/// @brief Main CAN configuration
+extern T_CANH_CFG cansCfg[CANH_INSTANCE_MAX];
+
 /* CAN tasks */
 void can1TaskStart(void *argument);
 void can2TaskStart(void *argument);
 
-/* CAN Init */
+/// @brief CAN bus module initialization
 void CANH_Init(void);
 
 void CANH_PushToQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg);

@@ -97,3 +97,8 @@ BSP
 
 CAN HANDLER
 - cansCfg
+
+
+VMUX????
+
+Trzeba zweryfikować czy inputy działają
