@@ -643,492 +643,492 @@ SPOC2_error_t SPOC2_Config_clearSelectedChannelRestartCounter(SPOC2_deviceConfig
     return SPOC2_ERROR_OK;
 }
 
-/// @brief Write values to the specified register for a whole chain of devices
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @param reg The device register to write the data into
-/// @param txBuffer Pointer to a byte buffer containing enough data to write a register to the whole chain
-/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
-/// @details This function is provided to cover use-cases where \ref SPOC2_Chain_applyDeviceConfigs is inappropriate.
-/// Care must be taken to ensure that the data written to the selected register is valid, otherwise the devices may
-/// behave in unexpected ways. This function will perform 1 byte of communication per device in the chain when writing
-/// to registers in bank 0 (DCR.SWR == 0), and 3 bytes per device in the chain for registers in bank 1 (DCR.SWR == 1).
-/// ```c
-/// uint8 txBuffer[16];
-/// for (int i = 0; i < 16; i++) {
-///     // enable channels 0-4
-///     txBuffer[i] = SPOC2_WRITE_OUT_HEADER | 0b00001111u;
-/// }
-/// // `chain` is 16 devices long
-/// SPOC2_error_t result = SPOC2_Chain_writeRegister(&chain, SPOC2_REGISTER_OUT, txBuffer);
-/// ASSERT(result == SPOC2_ERROR_OK);
-/// ```
-/// @note The driver functions operate under the assumption that DCR.SWR is 0 when they are called. Care should be taken
-/// to correctly reset DCR.SWR if \ref SPOC2_Chain_writeRegister is used with the DCR register.
-// Implements: SPOC2_Chain_writeRegister
-// Implements: S2DD-VD1_IPVSR-2
-SPOC2_error_t SPOC2_Chain_writeRegister(SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* txBuffer) {
-    uint8 i;
-    uint32 numDevices = chain->numDevices; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
-                                           // pointer must be verified by the API user"
-    uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
-    boolean register_bank_1 = (reg == SPOC2_REGISTER_RCD) || (reg == SPOC2_REGISTER_PCS) || (reg == SPOC2_REGISTER_ICS);
-    SPOC2_error_t result = SPOC2_ERROR_OK;
+// /// @brief Write values to the specified register for a whole chain of devices
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @param reg The device register to write the data into
+// /// @param txBuffer Pointer to a byte buffer containing enough data to write a register to the whole chain
+// /// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+// /// @details This function is provided to cover use-cases where \ref SPOC2_Chain_applyDeviceConfigs is inappropriate.
+// /// Care must be taken to ensure that the data written to the selected register is valid, otherwise the devices may
+// /// behave in unexpected ways. This function will perform 1 byte of communication per device in the chain when writing
+// /// to registers in bank 0 (DCR.SWR == 0), and 3 bytes per device in the chain for registers in bank 1 (DCR.SWR == 1).
+// /// ```c
+// /// uint8 txBuffer[16];
+// /// for (int i = 0; i < 16; i++) {
+// ///     // enable channels 0-4
+// ///     txBuffer[i] = SPOC2_WRITE_OUT_HEADER | 0b00001111u;
+// /// }
+// /// // `chain` is 16 devices long
+// /// SPOC2_error_t result = SPOC2_Chain_writeRegister(&chain, SPOC2_REGISTER_OUT, txBuffer);
+// /// ASSERT(result == SPOC2_ERROR_OK);
+// /// ```
+// /// @note The driver functions operate under the assumption that DCR.SWR is 0 when they are called. Care should be taken
+// /// to correctly reset DCR.SWR if \ref SPOC2_Chain_writeRegister is used with the DCR register.
+// // Implements: SPOC2_Chain_writeRegister
+// // Implements: S2DD-VD1_IPVSR-2
+// SPOC2_error_t SPOC2_Chain_writeRegister(SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* txBuffer) {
+//     uint8 i;
+//     uint32 numDevices = chain->numDevices; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
+//                                            // pointer must be verified by the API user"
+//     uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
+//     boolean register_bank_1 = (reg == SPOC2_REGISTER_RCD) || (reg == SPOC2_REGISTER_PCS) || (reg == SPOC2_REGISTER_ICS);
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
 
-    if (numDevices == 0) {
-        result = SPOC2_ERROR_BAD_PARAMETER;
-    }
+//     if (numDevices == 0) {
+//         result = SPOC2_ERROR_BAD_PARAMETER;
+//     }
 
-    if (result == SPOC2_ERROR_OK) {
-        // write the value into the shadow registers
-        for (i = 0; i < numDevices; i++) {
-            chain->devices[i].registers[reg] = txBuffer[i]; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of
-                                                            // the pointer must be verified by the API user"
-            // prepare to switch register banks if necessary
-            if (register_bank_1) {
-                txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER | SPOC2_DCR_SWR_MASK;
-            }
-        }
-    }
+//     if (result == SPOC2_ERROR_OK) {
+//         // write the value into the shadow registers
+//         for (i = 0; i < numDevices; i++) {
+//             chain->devices[i].registers[reg] = txBuffer[i]; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of
+//                                                             // the pointer must be verified by the API user"
+//             // prepare to switch register banks if necessary
+//             if (register_bank_1) {
+//                 txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER | SPOC2_DCR_SWR_MASK;
+//             }
+//         }
+//     }
 
-    // select register bank 1 if necessary
-    if ((result == SPOC2_ERROR_OK) && register_bank_1) {
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
-    }
-    // write the register to the chain
-    if (result == SPOC2_ERROR_OK) {
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer, NULL, numDevices);
-    }
-    // reset register bank to 0 if necessary
-    if ((result == SPOC2_ERROR_OK) && register_bank_1) {
-        for (i = 0; i < numDevices; i++) {
-            txBufferDCR[i] = chain->devices[i].registers[SPOC2_REGISTER_DCR];
-        }
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
-    }
-    return result;
-}
+//     // select register bank 1 if necessary
+//     if ((result == SPOC2_ERROR_OK) && register_bank_1) {
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
+//     }
+//     // write the register to the chain
+//     if (result == SPOC2_ERROR_OK) {
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer, NULL, numDevices);
+//     }
+//     // reset register bank to 0 if necessary
+//     if ((result == SPOC2_ERROR_OK) && register_bank_1) {
+//         for (i = 0; i < numDevices; i++) {
+//             txBufferDCR[i] = chain->devices[i].registers[SPOC2_REGISTER_DCR];
+//         }
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
+//     }
+//     return result;
+// }
 
-/// @brief Reads values from the specified register for a whole chain of devices
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @param reg The device register to read the data from
-/// @param rxBuffer Pointer to a byte buffer large enough to read a register from the whole chain
-/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
-/// @details This function is provided to cover use-cases where the other provided API functions are inappropriate. This
-/// function will perform 2 bytes of SPI communication per device in the chain.
-/// ```c
-/// uint8 rxBuffer[16];
-/// // `chain` is 16 devices long
-/// ASSERT(SPOC2_Chain_readRegister(&chain, SPOC2_REGISTER_HWCR, rxBuffer) == SPOC2_ERROR_OK);
-/// ```
-// Implements: SPOC2_Chain_readRegister
-// Implements: S2DD-VD1_IPVSR-1
-SPOC2_error_t SPOC2_Chain_readRegister(const SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* rxBuffer) {
-    uint8 txBuffer[SPOC2_CHAIN_MAX_LEN];
-    uint8 dummyBuffer[SPOC2_CHAIN_MAX_LEN] = {
-        0}; // all zeros represents a command to read the OUT register which is harmless
-    uint8 i;
-    uint8 readCommand;
-    SPOC2_error_t result = SPOC2_ERROR_OK;
+// /// @brief Reads values from the specified register for a whole chain of devices
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @param reg The device register to read the data from
+// /// @param rxBuffer Pointer to a byte buffer large enough to read a register from the whole chain
+// /// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+// /// @details This function is provided to cover use-cases where the other provided API functions are inappropriate. This
+// /// function will perform 2 bytes of SPI communication per device in the chain.
+// /// ```c
+// /// uint8 rxBuffer[16];
+// /// // `chain` is 16 devices long
+// /// ASSERT(SPOC2_Chain_readRegister(&chain, SPOC2_REGISTER_HWCR, rxBuffer) == SPOC2_ERROR_OK);
+// /// ```
+// // Implements: SPOC2_Chain_readRegister
+// // Implements: S2DD-VD1_IPVSR-1
+// SPOC2_error_t SPOC2_Chain_readRegister(const SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* rxBuffer) {
+//     uint8 txBuffer[SPOC2_CHAIN_MAX_LEN];
+//     uint8 dummyBuffer[SPOC2_CHAIN_MAX_LEN] = {
+//         0}; // all zeros represents a command to read the OUT register which is harmless
+//     uint8 i;
+//     uint8 readCommand;
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
 
-    if (chain->numDevices == 0) { // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
-                                  // pointer must be verified by the API user"
-        result = SPOC2_ERROR_BAD_PARAMETER;
-    }
-    switch (reg) {
-    case SPOC2_REGISTER_OUT:
-        readCommand = SPOC2_READ_OUT;
-        break;
-    case SPOC2_REGISTER_RCS:
-        readCommand = SPOC2_READ_RCS;
-        break;
-    case SPOC2_REGISTER_SRC:
-        readCommand = SPOC2_READ_SRC;
-        break;
-    case SPOC2_REGISTER_OCR:
-        readCommand = SPOC2_READ_OCR;
-        break;
-    case SPOC2_REGISTER_RCD:
-        readCommand = SPOC2_READ_RCD;
-        break;
-    case SPOC2_REGISTER_KRC:
-        readCommand = SPOC2_READ_KRC;
-        break;
-    case SPOC2_REGISTER_PCS:
-        readCommand = SPOC2_READ_PCS;
-        break;
-    case SPOC2_REGISTER_HWCR:
-        readCommand = SPOC2_READ_KRC;
-        break;
-    case SPOC2_REGISTER_ICS:
-        readCommand = SPOC2_READ_ICS;
-        break;
-    case SPOC2_REGISTER_DCR:
-        readCommand = SPOC2_READ_DCR;
-        break;
-    default:
-        result = SPOC2_ERROR_BAD_PARAMETER;
-        break;
-    }
+//     if (chain->numDevices == 0) { // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
+//                                   // pointer must be verified by the API user"
+//         result = SPOC2_ERROR_BAD_PARAMETER;
+//     }
+//     switch (reg) {
+//     case SPOC2_REGISTER_OUT:
+//         readCommand = SPOC2_READ_OUT;
+//         break;
+//     case SPOC2_REGISTER_RCS:
+//         readCommand = SPOC2_READ_RCS;
+//         break;
+//     case SPOC2_REGISTER_SRC:
+//         readCommand = SPOC2_READ_SRC;
+//         break;
+//     case SPOC2_REGISTER_OCR:
+//         readCommand = SPOC2_READ_OCR;
+//         break;
+//     case SPOC2_REGISTER_RCD:
+//         readCommand = SPOC2_READ_RCD;
+//         break;
+//     case SPOC2_REGISTER_KRC:
+//         readCommand = SPOC2_READ_KRC;
+//         break;
+//     case SPOC2_REGISTER_PCS:
+//         readCommand = SPOC2_READ_PCS;
+//         break;
+//     case SPOC2_REGISTER_HWCR:
+//         readCommand = SPOC2_READ_KRC;
+//         break;
+//     case SPOC2_REGISTER_ICS:
+//         readCommand = SPOC2_READ_ICS;
+//         break;
+//     case SPOC2_REGISTER_DCR:
+//         readCommand = SPOC2_READ_DCR;
+//         break;
+//     default:
+//         result = SPOC2_ERROR_BAD_PARAMETER;
+//         break;
+//     }
 
-    if (result == SPOC2_ERROR_OK) {
-        for (i = 0; i < chain->numDevices; i++) {
-            txBuffer[i] = readCommand;
-        }
+//     if (result == SPOC2_ERROR_OK) {
+//         for (i = 0; i < chain->numDevices; i++) {
+//             txBuffer[i] = readCommand;
+//         }
 
-        // Write the read command out to the devices
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer, NULL, chain->numDevices);
+//         // Write the read command out to the devices
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer, NULL, chain->numDevices);
 
-        // Read the responses back from the devices into the user buffer
-        if (result == SPOC2_ERROR_OK) {
-            result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, dummyBuffer, rxBuffer,
-                                                chain->numDevices);
-        }
-    }
-    return result;
-}
+//         // Read the responses back from the devices into the user buffer
+//         if (result == SPOC2_ERROR_OK) {
+//             result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, dummyBuffer, rxBuffer,
+//                                                 chain->numDevices);
+//         }
+//     }
+//     return result;
+// }
 
-/// @brief Read the states of the input pins for a whole chain of devices
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @param rxBuffer Pointer to a byte buffer large enough to read a register from the whole chain
-/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
-/// @details This funtion internally calls \ref SPOC2_Chain_readRegister and so will perform 2 bytes of SPI
-/// communication per device in the chain
-// Implements: SPOC2_Chain_readInputStates
-SPOC2_error_t SPOC2_Chain_readInputStates(const SPOC2_chain_t* chain, uint8* rxBuffer) {
-    SPOC2_error_t result = SPOC2_ERROR_OK;
-    uint8 i;
+// /// @brief Read the states of the input pins for a whole chain of devices
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @param rxBuffer Pointer to a byte buffer large enough to read a register from the whole chain
+// /// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+// /// @details This funtion internally calls \ref SPOC2_Chain_readRegister and so will perform 2 bytes of SPI
+// /// communication per device in the chain
+// // Implements: SPOC2_Chain_readInputStates
+// SPOC2_error_t SPOC2_Chain_readInputStates(const SPOC2_chain_t* chain, uint8* rxBuffer) {
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
+//     uint8 i;
 
-    result = SPOC2_Chain_readRegister(chain, SPOC2_REGISTER_ICS, rxBuffer);
-    if (result == SPOC2_ERROR_OK) {
-        for (i = 0; i < chain->numDevices; i++) { // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
-                                                  // pointer must be verified by the API user"
-            rxBuffer[i] &= SPOC2_ICS_INSTn_MASK;  // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
-                                                  // pointer must be verified by the API user"
-        }
-    }
+//     result = SPOC2_Chain_readRegister(chain, SPOC2_REGISTER_ICS, rxBuffer);
+//     if (result == SPOC2_ERROR_OK) {
+//         for (i = 0; i < chain->numDevices; i++) { // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
+//                                                   // pointer must be verified by the API user"
+//             rxBuffer[i] &= SPOC2_ICS_INSTn_MASK;  // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
+//                                                   // pointer must be verified by the API user"
+//         }
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-/// @brief Read the diagnostic registers from a whole chain of devices
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @param stdDiagBuffer STDDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
-/// chain
-/// @param wrnDiagBuffer WRNDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
-/// chain
-/// @param errDiagBuffer ERRDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
-/// chain
-/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
-/// @details The diagnostic registers contain flags which indicate various events that can occur during operation.
-/// Please refer to the device datasheet for details on the layout of these registers. This function will perform 4
-/// bytes of SPI communication per device in the chain.
-// Implements: SPOC2_Chain_readDiagnostics
-SPOC2_error_t SPOC2_Chain_readDiagnostics(const SPOC2_chain_t* chain, uint8* stdDiagBuffer, uint8* wrnDiagBuffer,
-                                          uint8* errDiagBuffer) {
-    uint8 txBuffer1[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBuffer2[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBuffer3[SPOC2_CHAIN_MAX_LEN];
-    uint8 i;
-    uint32 numDevices = chain->numDevices; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
-                                           // pointer must be verified by the API user"
+// /// @brief Read the diagnostic registers from a whole chain of devices
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @param stdDiagBuffer STDDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
+// /// chain
+// /// @param wrnDiagBuffer WRNDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
+// /// chain
+// /// @param errDiagBuffer ERRDIAG output buffer, pointer to a byte buffer large enough to read a register from the whole
+// /// chain
+// /// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+// /// @details The diagnostic registers contain flags which indicate various events that can occur during operation.
+// /// Please refer to the device datasheet for details on the layout of these registers. This function will perform 4
+// /// bytes of SPI communication per device in the chain.
+// // Implements: SPOC2_Chain_readDiagnostics
+// SPOC2_error_t SPOC2_Chain_readDiagnostics(const SPOC2_chain_t* chain, uint8* stdDiagBuffer, uint8* wrnDiagBuffer,
+//                                           uint8* errDiagBuffer) {
+//     uint8 txBuffer1[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBuffer2[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBuffer3[SPOC2_CHAIN_MAX_LEN];
+//     uint8 i;
+//     uint32 numDevices = chain->numDevices; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
+//                                            // pointer must be verified by the API user"
 
-    SPOC2_error_t result = SPOC2_ERROR_OK;
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
 
-    for (i = 0; i < numDevices; i++) {
-        txBuffer1[i] = SPOC2_READ_STDDIAG;
-        txBuffer2[i] = SPOC2_READ_WRNDIAG;
-        txBuffer3[i] = SPOC2_READ_ERRDIAG;
-    }
+//     for (i = 0; i < numDevices; i++) {
+//         txBuffer1[i] = SPOC2_READ_STDDIAG;
+//         txBuffer2[i] = SPOC2_READ_WRNDIAG;
+//         txBuffer3[i] = SPOC2_READ_ERRDIAG;
+//     }
 
-    // send STDDIAG read command, discard previous response
-    result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer1, NULL, numDevices);
+//     // send STDDIAG read command, discard previous response
+//     result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer1, NULL, numDevices);
 
-    // send WRNDIAG read command, read STDDIAG response
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer2, stdDiagBuffer, numDevices);
-    } else {
-    }
-    // send ERRDIAG read command, read WRNDIAG response
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer3, wrnDiagBuffer, numDevices);
-    } else {
-    }
-    // send duplicate ERRDIAG read command, read ERRDIAG response
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer3, errDiagBuffer, numDevices);
-    } else {
-    }
+//     // send WRNDIAG read command, read STDDIAG response
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer2, stdDiagBuffer, numDevices);
+//     } else {
+//     }
+//     // send ERRDIAG read command, read WRNDIAG response
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer3, wrnDiagBuffer, numDevices);
+//     } else {
+//     }
+//     // send duplicate ERRDIAG read command, read ERRDIAG response
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBuffer3, errDiagBuffer, numDevices);
+//     } else {
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-/// @brief Apply the current shadow configurations to a whole chain of devices
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
-/// @details This function should be called after all desired configuration changes are made to minimize unnecessary SPI
-/// communication. This function performs 9 bytes of SPI communication per device in the chain.
-// Implements: SPOC2_Chain_applyDeviceConfigs
-// Implements: S2DD-VD1_IPVSR-3
-SPOC2_error_t SPOC2_Chain_applyDeviceConfigs(SPOC2_chain_t* chain) {
-    uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBufferR1[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBufferR2[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBufferR3[SPOC2_CHAIN_MAX_LEN];
-    uint8 i;
-    uint8 rcdDataMask;
-    uint8 pcsDataMask;
-    uint8 ocrDataMask;
-    uint8 krcDataMask;
-    SPOC2_error_t result = SPOC2_ERROR_OK;
+// /// @brief Apply the current shadow configurations to a whole chain of devices
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+// /// @details This function should be called after all desired configuration changes are made to minimize unnecessary SPI
+// /// communication. This function performs 9 bytes of SPI communication per device in the chain.
+// // Implements: SPOC2_Chain_applyDeviceConfigs
+// // Implements: S2DD-VD1_IPVSR-3
+// SPOC2_error_t SPOC2_Chain_applyDeviceConfigs(SPOC2_chain_t* chain) {
+//     uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBufferR1[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBufferR2[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBufferR3[SPOC2_CHAIN_MAX_LEN];
+//     uint8 i;
+//     uint8 rcdDataMask;
+//     uint8 pcsDataMask;
+//     uint8 ocrDataMask;
+//     uint8 krcDataMask;
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
 
-    if (chain->numDevices == 0) { // polyspace MISRA-C3:D4.14 [Justified:Low] ""
-        result = SPOC2_ERROR_BAD_PARAMETER;
-    }
+//     if (chain->numDevices == 0) { // polyspace MISRA-C3:D4.14 [Justified:Low] ""
+//         result = SPOC2_ERROR_BAD_PARAMETER;
+//     }
 
-    // write registers in bank 0
-    for (i = 0; i < chain->numDevices; i++) {
-        // clear the DCR.SWR bit to choose register bank 0
-        // ignore the user-selected current sense channel, as this may put the device into sleep mode
-        txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER;
+//     // write registers in bank 0
+//     for (i = 0; i < chain->numDevices; i++) {
+//         // clear the DCR.SWR bit to choose register bank 0
+//         // ignore the user-selected current sense channel, as this may put the device into sleep mode
+//         txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER;
 
-        // prepare data for HWCR register write
-        txBufferR1[i] = SPOC2_WRITE_HWCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_HWCR] &
-                                                   (SPOC2_HWCR_COL_MASK | SPOC2_HWCR_RST_MASK | SPOC2_HWCR_CLC_MASK));
-        // clear the RST and CLC bits in the shadow HWCR register to prevent multiple resets
-        chain->devices[i].registers[SPOC2_REGISTER_HWCR] &= ~(SPOC2_HWCR_RST_MASK | SPOC2_HWCR_CLC_MASK);
+//         // prepare data for HWCR register write
+//         txBufferR1[i] = SPOC2_WRITE_HWCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_HWCR] &
+//                                                    (SPOC2_HWCR_COL_MASK | SPOC2_HWCR_RST_MASK | SPOC2_HWCR_CLC_MASK));
+//         // clear the RST and CLC bits in the shadow HWCR register to prevent multiple resets
+//         chain->devices[i].registers[SPOC2_REGISTER_HWCR] &= ~(SPOC2_HWCR_RST_MASK | SPOC2_HWCR_CLC_MASK);
 
-        // prepare data for OCR register write
-        ocrDataMask =
-            SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_OCR_OCTn_MASK : SPOC2_4CHANNEL_OCR_OCTn_MASK;
-        txBufferR2[i] = SPOC2_WRITE_OCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_OCR] & ocrDataMask);
+//         // prepare data for OCR register write
+//         ocrDataMask =
+//             SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_OCR_OCTn_MASK : SPOC2_4CHANNEL_OCR_OCTn_MASK;
+//         txBufferR2[i] = SPOC2_WRITE_OCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_OCR] & ocrDataMask);
 
-        // prepare data for KRC register write
-        krcDataMask =
-            SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_KRC_KRCn_MASK : SPOC2_4CHANNEL_KRC_KRCn_MASK;
-        txBufferR3[i] = SPOC2_WRITE_KRC_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_KRC] & krcDataMask);
-    }
-    // write to DCR to select register bank 0
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
-    }
-    // write to all device HWCR registers (this can trigger a device reset, so make sure it is done first)
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR1[0], NULL, chain->numDevices);
-    }
+//         // prepare data for KRC register write
+//         krcDataMask =
+//             SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_KRC_KRCn_MASK : SPOC2_4CHANNEL_KRC_KRCn_MASK;
+//         txBufferR3[i] = SPOC2_WRITE_KRC_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_KRC] & krcDataMask);
+//     }
+//     // write to DCR to select register bank 0
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
+//     }
+//     // write to all device HWCR registers (this can trigger a device reset, so make sure it is done first)
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR1[0], NULL, chain->numDevices);
+//     }
 
-    // write to all device OCR registers
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR2[0], NULL, chain->numDevices);
-    }
-    // write to all device KRC registers
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR3[0], NULL, chain->numDevices);
-    }
-    // write to registers in bank 1
-    for (i = 0; i < chain->numDevices; i++) {
-        // set the SWR bit to choose register bank 1
-        // make sure the user's current sense channel is selected for PCS config
-        txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER | SPOC2_DCR_SWR_MASK |
-                         (chain->devices[i].registers[SPOC2_REGISTER_DCR] & SPOC2_DCR_MUX_MASK);
+//     // write to all device OCR registers
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR2[0], NULL, chain->numDevices);
+//     }
+//     // write to all device KRC registers
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR3[0], NULL, chain->numDevices);
+//     }
+//     // write to registers in bank 1
+//     for (i = 0; i < chain->numDevices; i++) {
+//         // set the SWR bit to choose register bank 1
+//         // make sure the user's current sense channel is selected for PCS config
+//         txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER | SPOC2_DCR_SWR_MASK |
+//                          (chain->devices[i].registers[SPOC2_REGISTER_DCR] & SPOC2_DCR_MUX_MASK);
 
-        // prepare data for RCD register write
-        rcdDataMask =
-            SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_RCD_RCDn_MASK : SPOC2_4CHANNEL_RCD_RCDn_MASK;
-        txBufferR1[i] = SPOC2_WRITE_RCD_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_RCD] & rcdDataMask);
+//         // prepare data for RCD register write
+//         rcdDataMask =
+//             SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_RCD_RCDn_MASK : SPOC2_4CHANNEL_RCD_RCDn_MASK;
+//         txBufferR1[i] = SPOC2_WRITE_RCD_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_RCD] & rcdDataMask);
 
-        // prepare data for PCS register write
-        pcsDataMask =
-            SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_PCS_PCCn_MASK : SPOC2_4CHANNEL_PCS_PCCn_MASK;
-        txBufferR2[i] = SPOC2_WRITE_PCS_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_PCS] &
-                                                  (pcsDataMask | SPOC2_PCS_CLCS_MASK | SPOC2_PCS_SRCS_MASK));
-        // clear the CLCS bit in the shadow PCS register to prevent multiple resets
-        chain->devices[i].registers[SPOC2_REGISTER_PCS] &= ~(SPOC2_PCS_CLCS_MASK);
+//         // prepare data for PCS register write
+//         pcsDataMask =
+//             SPOC2_deviceIs6Channel(chain->devices[i]) ? SPOC2_6CHANNEL_PCS_PCCn_MASK : SPOC2_4CHANNEL_PCS_PCCn_MASK;
+//         txBufferR2[i] = SPOC2_WRITE_PCS_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_PCS] &
+//                                                   (pcsDataMask | SPOC2_PCS_CLCS_MASK | SPOC2_PCS_SRCS_MASK));
+//         // clear the CLCS bit in the shadow PCS register to prevent multiple resets
+//         chain->devices[i].registers[SPOC2_REGISTER_PCS] &= ~(SPOC2_PCS_CLCS_MASK);
 
-        // prepare buffer for OUT register write
-        txBufferR3[i] = SPOC2_WRITE_OUT_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_OUT]);
-    }
+//         // prepare buffer for OUT register write
+//         txBufferR3[i] = SPOC2_WRITE_OUT_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_OUT]);
+//     }
 
-    // write to DCR to select register bank 1
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
-    }
-    // write to all device RCD registers
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR1[0], NULL, chain->numDevices);
-    }
-    // write to all device PCS registers
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR2[0], NULL, chain->numDevices);
-    }
-    // write to the DCR register (selected current sense channel or sleep mode)
-    // and the OUT register to switch the user-selected channels
-    for (i = 0; i < chain->numDevices; i++) {
-        // set DCR.SWR to 0 for consistency
-        txBufferDCR[i] = (SPOC2_WRITE_DCR_HEADER & ~SPOC2_DCR_SWR_MASK) |
-                         (chain->devices[i].registers[SPOC2_REGISTER_DCR] & SPOC2_DCR_MUX_MASK);
-    }
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
-    }
-    // write to all device OUT registers
-    if (result == SPOC2_ERROR_OK) {
-        result =
-            SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR3[0], NULL, chain->numDevices);
-    }
+//     // write to DCR to select register bank 1
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
+//     }
+//     // write to all device RCD registers
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR1[0], NULL, chain->numDevices);
+//     }
+//     // write to all device PCS registers
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR2[0], NULL, chain->numDevices);
+//     }
+//     // write to the DCR register (selected current sense channel or sleep mode)
+//     // and the OUT register to switch the user-selected channels
+//     for (i = 0; i < chain->numDevices; i++) {
+//         // set DCR.SWR to 0 for consistency
+//         txBufferDCR[i] = (SPOC2_WRITE_DCR_HEADER & ~SPOC2_DCR_SWR_MASK) |
+//                          (chain->devices[i].registers[SPOC2_REGISTER_DCR] & SPOC2_DCR_MUX_MASK);
+//     }
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
+//     }
+//     // write to all device OUT registers
+//     if (result == SPOC2_ERROR_OK) {
+//         result =
+//             SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferR3[0], NULL, chain->numDevices);
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-/// @brief Sends a reset signal to all devices in a chain and resets their shadow configurations
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
-/// @details Unlike \ref SPOC2_Config_resetDevice, this function will perform SPI communication to immediately reset
-/// devices in the chain, and can be used when a fault occurs, leaving the devices configured in an unknown state that
-/// may not match the shadow configuration. This function performs 2 bytes of SPI communication per device in the chain.
-// Implements: SPOC2_Chain_resetAllDevices
-SPOC2_error_t SPOC2_Chain_resetAllDevices(SPOC2_chain_t* chain) {
-    uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBufferHWCR[SPOC2_CHAIN_MAX_LEN];
-    uint8 i;
-    SPOC2_error_t result = SPOC2_ERROR_OK;
+// /// @brief Sends a reset signal to all devices in a chain and resets their shadow configurations
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @return \ref SPOC2_ERROR_OK if successful, or an error value if failed
+// /// @details Unlike \ref SPOC2_Config_resetDevice, this function will perform SPI communication to immediately reset
+// /// devices in the chain, and can be used when a fault occurs, leaving the devices configured in an unknown state that
+// /// may not match the shadow configuration. This function performs 2 bytes of SPI communication per device in the chain.
+// // Implements: SPOC2_Chain_resetAllDevices
+// SPOC2_error_t SPOC2_Chain_resetAllDevices(SPOC2_chain_t* chain) {
+//     uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBufferHWCR[SPOC2_CHAIN_MAX_LEN];
+//     uint8 i;
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
 
-    for (i = 0; i < chain->numDevices; i++) {
-        (void)SPOC2_Config_resetDevice(&chain->devices[i]);
+//     for (i = 0; i < chain->numDevices; i++) {
+//         (void)SPOC2_Config_resetDevice(&chain->devices[i]);
 
-        // ensure DCR.SWR is set to 0 to allow writes to HWCR
-        txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER;
+//         // ensure DCR.SWR is set to 0 to allow writes to HWCR
+//         txBufferDCR[i] = SPOC2_WRITE_DCR_HEADER;
 
-        // write to the reset bit in the HWCR register
-        txBufferHWCR[i] = SPOC2_WRITE_HWCR_HEADER | SPOC2_HWCR_RST_MASK;
-    }
+//         // write to the reset bit in the HWCR register
+//         txBufferHWCR[i] = SPOC2_WRITE_HWCR_HEADER | SPOC2_HWCR_RST_MASK;
+//     }
 
-    result =
-        SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
-    if (result == SPOC2_ERROR_OK) {
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferHWCR[0], NULL,
-                                            chain->numDevices);
-    } else {
-    }
+//     result =
+//         SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferDCR[0], NULL, chain->numDevices);
+//     if (result == SPOC2_ERROR_OK) {
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, &txBufferHWCR[0], NULL,
+//                                             chain->numDevices);
+//     } else {
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-/// @brief Perform checksum verification of all device configurations in a chain
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @return \ref SPOC2_ERROR_OK if successful, \ref SPOC2_ERROR_CHECKSUM_FAILURE if a checksum does not match, or
-/// another error value if failed
-/// @details The SPOC™ +2 family of devices can perform a simple checksum on a subset of the configured values to verify a
-/// match with expected values. This function will calculate the checksum and perform 4 bytes of SPI communication per
-/// device in the chain to verify that the shadow configuration registers match the device registers.
-// Implements: SPOC2_Chain_verifyDeviceConfigs
-// Implements: S2DD-VD1_IPVSR-13
-SPOC2_error_t SPOC2_Chain_verifyDeviceConfigs(const SPOC2_chain_t* chain) {
-    uint8 checksums[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
-    uint8 txBufferSDG[SPOC2_CHAIN_MAX_LEN];
-    uint8 rxBuffer[SPOC2_CHAIN_MAX_LEN];
-    uint8 data;
-    uint32 i;
-    uint32 numDevices = chain->numDevices; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
-                                           // pointer must be verified by the API user"
-    SPOC2_error_t result = SPOC2_ERROR_OK;
-    SPOC2_error_t checksumResult = SPOC2_ERROR_OK;
+// /// @brief Perform checksum verification of all device configurations in a chain
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @return \ref SPOC2_ERROR_OK if successful, \ref SPOC2_ERROR_CHECKSUM_FAILURE if a checksum does not match, or
+// /// another error value if failed
+// /// @details The SPOC™ +2 family of devices can perform a simple checksum on a subset of the configured values to verify a
+// /// match with expected values. This function will calculate the checksum and perform 4 bytes of SPI communication per
+// /// device in the chain to verify that the shadow configuration registers match the device registers.
+// // Implements: SPOC2_Chain_verifyDeviceConfigs
+// // Implements: S2DD-VD1_IPVSR-13
+// SPOC2_error_t SPOC2_Chain_verifyDeviceConfigs(const SPOC2_chain_t* chain) {
+//     uint8 checksums[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBufferDCR[SPOC2_CHAIN_MAX_LEN];
+//     uint8 txBufferSDG[SPOC2_CHAIN_MAX_LEN];
+//     uint8 rxBuffer[SPOC2_CHAIN_MAX_LEN];
+//     uint8 data;
+//     uint32 i;
+//     uint32 numDevices = chain->numDevices; // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity of the
+//                                            // pointer must be verified by the API user"
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
+//     SPOC2_error_t checksumResult = SPOC2_ERROR_OK;
 
-    // Calculate checksums from shadow configs
-    for (i = 0; i < numDevices; i++) {
-        // set DCR.SWR to 1 to write to ICS
-        txBufferDCR[i] =
-            SPOC2_WRITE_DCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_DCR] | SPOC2_DCR_SWR_MASK);
-        // read STDDIAG to see possible checksum failures
-        txBufferSDG[i] = SPOC2_READ_STDDIAG;
+//     // Calculate checksums from shadow configs
+//     for (i = 0; i < numDevices; i++) {
+//         // set DCR.SWR to 1 to write to ICS
+//         txBufferDCR[i] =
+//             SPOC2_WRITE_DCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_DCR] | SPOC2_DCR_SWR_MASK);
+//         // read STDDIAG to see possible checksum failures
+//         txBufferSDG[i] = SPOC2_READ_STDDIAG;
 
-        data = 0;
-        if (SPOC2_deviceIs6Channel(chain->devices[i])) {
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_OCR] & SPOC2_6CHANNEL_OCR_OCTn_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_RCD] & SPOC2_6CHANNEL_RCD_RCDn_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_KRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK);
+//         data = 0;
+//         if (SPOC2_deviceIs6Channel(chain->devices[i])) {
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_OCR] & SPOC2_6CHANNEL_OCR_OCTn_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_RCD] & SPOC2_6CHANNEL_RCD_RCDn_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_KRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK);
 
-            // the top 2 bits of SRCn need to be XOR-ed into the bottom data bit
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK) & 0b00001111u;
-            data ^=
-                ((chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK) >> 4) & 0b00001111u;
-            data ^=
-                ((chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK) >> 5) & 0b00001111u;
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_HWCR] & SPOC2_HWCR_COL_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_PCS] & SPOC2_6CHANNEL_PCS_PCCn_MASK) >> 2;
+//             // the top 2 bits of SRCn need to be XOR-ed into the bottom data bit
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK) & 0b00001111u;
+//             data ^=
+//                 ((chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK) >> 4) & 0b00001111u;
+//             data ^=
+//                 ((chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_6CHANNEL_KRC_KRCn_MASK) >> 5) & 0b00001111u;
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_HWCR] & SPOC2_HWCR_COL_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_PCS] & SPOC2_6CHANNEL_PCS_PCCn_MASK) >> 2;
 
-            // the checksum is the nibble required to reach even-odd-even-odd parity in the nibble
-            checksums[i] = SPOC2_WRITE_ICS_HEADER | ((data ^ 0b00000101u) & 0b00001111u);
-        } else {
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_OCR] & SPOC2_4CHANNEL_OCR_OCTn_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_RCD] & SPOC2_4CHANNEL_RCD_RCDn_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_KRC] & SPOC2_4CHANNEL_KRC_KRCn_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_4CHANNEL_SRC_SRCn_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_HWCR] & SPOC2_HWCR_COL_MASK);
-            data ^= (chain->devices[i].registers[SPOC2_REGISTER_PCS] & SPOC2_4CHANNEL_PCS_PCCn_MASK) >> 2;
+//             // the checksum is the nibble required to reach even-odd-even-odd parity in the nibble
+//             checksums[i] = SPOC2_WRITE_ICS_HEADER | ((data ^ 0b00000101u) & 0b00001111u);
+//         } else {
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_OCR] & SPOC2_4CHANNEL_OCR_OCTn_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_RCD] & SPOC2_4CHANNEL_RCD_RCDn_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_KRC] & SPOC2_4CHANNEL_KRC_KRCn_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_SRC] & SPOC2_4CHANNEL_SRC_SRCn_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_HWCR] & SPOC2_HWCR_COL_MASK);
+//             data ^= (chain->devices[i].registers[SPOC2_REGISTER_PCS] & SPOC2_4CHANNEL_PCS_PCCn_MASK) >> 2;
 
-            // the checksum is the nibble required to reach even-odd-even-odd parity in the nibble
-            checksums[i] = SPOC2_WRITE_ICS_HEADER | ((data ^ 0b00000101u) & 0b00001111u);
-        }
-    }
+//             // the checksum is the nibble required to reach even-odd-even-odd parity in the nibble
+//             checksums[i] = SPOC2_WRITE_ICS_HEADER | ((data ^ 0b00000101u) & 0b00001111u);
+//         }
+//     }
 
-    // Write to DCR.SWR
-    result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
-    // Write to ICS to begin the checksum calculation
-    if (result == SPOC2_ERROR_OK) {
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, checksums, NULL, numDevices);
-    } else {
-    }
-    // Read the next response
-    if (result == SPOC2_ERROR_OK) {
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferSDG, rxBuffer, numDevices);
-    } else {
-    }
-    // Check the next response for errors in STDDIAG frames if there is no transmission error
-    if (result == SPOC2_ERROR_OK) {
-        for (i = 0; i < numDevices; i++) {
-            if (((rxBuffer[i] & 0b11000000u) == 0) && ((rxBuffer[i] & 0b00010000u) != 0)) {
-                // Checksum verification error
-                checksumResult = SPOC2_ERROR_CHECKSUM_FAILURE;
-            }
-        }
-    }
+//     // Write to DCR.SWR
+//     result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
+//     // Write to ICS to begin the checksum calculation
+//     if (result == SPOC2_ERROR_OK) {
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, checksums, NULL, numDevices);
+//     } else {
+//     }
+//     // Read the next response
+//     if (result == SPOC2_ERROR_OK) {
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferSDG, rxBuffer, numDevices);
+//     } else {
+//     }
+//     // Check the next response for errors in STDDIAG frames if there is no transmission error
+//     if (result == SPOC2_ERROR_OK) {
+//         for (i = 0; i < numDevices; i++) {
+//             if (((rxBuffer[i] & 0b11000000u) == 0) && ((rxBuffer[i] & 0b00010000u) != 0)) {
+//                 // Checksum verification error
+//                 checksumResult = SPOC2_ERROR_CHECKSUM_FAILURE;
+//             }
+//         }
+//     }
 
-    // Read another response for the STDDIAG frames of the devices that sent WRNDIAG last time
-    if (result == SPOC2_ERROR_OK) {
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferSDG, rxBuffer, numDevices);
-    }
-    // Check the next response for errors in STDDIAG frames if there is no transmission error
-    if (result == SPOC2_ERROR_OK) {
-        for (i = 0; i < numDevices; i++) {
-            if (((rxBuffer[i] & 0b11000000u) == 0) && ((rxBuffer[i] & 0b00010000u) != 0)) {
-                // Checksum verification error
-                checksumResult = SPOC2_ERROR_CHECKSUM_FAILURE;
-            }
-        }
-    }
+//     // Read another response for the STDDIAG frames of the devices that sent WRNDIAG last time
+//     if (result == SPOC2_ERROR_OK) {
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferSDG, rxBuffer, numDevices);
+//     }
+//     // Check the next response for errors in STDDIAG frames if there is no transmission error
+//     if (result == SPOC2_ERROR_OK) {
+//         for (i = 0; i < numDevices; i++) {
+//             if (((rxBuffer[i] & 0b11000000u) == 0) && ((rxBuffer[i] & 0b00010000u) != 0)) {
+//                 // Checksum verification error
+//                 checksumResult = SPOC2_ERROR_CHECKSUM_FAILURE;
+//             }
+//         }
+//     }
 
-    // Set DCR.SWR to 0 for consistency
-    for (i = 0; i < numDevices; i++) {
-        txBufferDCR[i] =
-            SPOC2_WRITE_DCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_DCR] & ~SPOC2_DCR_SWR_MASK);
-    }
-    if (result == SPOC2_ERROR_OK) {
-        result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
-    }
-    return (result != SPOC2_ERROR_OK) ? result : checksumResult;
-}
+//     // Set DCR.SWR to 0 for consistency
+//     for (i = 0; i < numDevices; i++) {
+//         txBufferDCR[i] =
+//             SPOC2_WRITE_DCR_HEADER | (chain->devices[i].registers[SPOC2_REGISTER_DCR] & ~SPOC2_DCR_SWR_MASK);
+//     }
+//     if (result == SPOC2_ERROR_OK) {
+//         result = SPOC2_SPI_transferBlocking(chain->spiBusId, chain->spiChipSelect, txBufferDCR, NULL, numDevices);
+//     }
+//     return (result != SPOC2_ERROR_OK) ? result : checksumResult;
+// }
 
 /// @brief Read the current Millivolt value of the selected device's current sense pin
 /// @param cfg Pointer to the SPOC™ +2 device configuration structure
@@ -1200,29 +1200,29 @@ SPOC2_error_t SPOC2_verifyCurrentSense(const SPOC2_chain_t* chain, uint8 deviceI
     return result;
 }
 
-/// @brief Initialize a chain of SPOC™ +2 devices
-/// @param chain Pointer to the SPOC™ +2 chain structure
-/// @return \ref SPOC2_ERROR_OK if successful, \ref SPOC2_ERROR_BAD_PARAMETER if the chain is configured with too many
-/// devices, or another error value if failed
-/// @details This function must be called on the chain before attempting to apply any configuration, and will reset the
-/// devices and the shadow registers into a known state.
-// Implements: SPOC2_Chain_init
-// Implements: S2DD-VD1_IPVSR-4
-SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain) {
-    SPOC2_error_t result = SPOC2_ERROR_OK;
+// /// @brief Initialize a chain of SPOC™ +2 devices
+// /// @param chain Pointer to the SPOC™ +2 chain structure
+// /// @return \ref SPOC2_ERROR_OK if successful, \ref SPOC2_ERROR_BAD_PARAMETER if the chain is configured with too many
+// /// devices, or another error value if failed
+// /// @details This function must be called on the chain before attempting to apply any configuration, and will reset the
+// /// devices and the shadow registers into a known state.
+// // Implements: SPOC2_Chain_init
+// // Implements: S2DD-VD1_IPVSR-4
+// SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain) {
+//     SPOC2_error_t result = SPOC2_ERROR_OK;
 
-    if (chain->numDevices > SPOC2_CHAIN_MAX_LEN) { // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity
-                                                   // of the pointer must be verified by the API user"
-        result = SPOC2_ERROR_BAD_PARAMETER;
-    }
+//     if (chain->numDevices > SPOC2_CHAIN_MAX_LEN) { // polyspace MISRA-C3:D4.14 [Justified:Low] "The validity
+//                                                    // of the pointer must be verified by the API user"
+//         result = SPOC2_ERROR_BAD_PARAMETER;
+//     }
 
-    // send a reset signal to the whole chain to clear any old configuration and diagnostics
-    if (result == SPOC2_ERROR_OK) {
-        result = SPOC2_Chain_resetAllDevices(chain);
-    }
+//     // send a reset signal to the whole chain to clear any old configuration and diagnostics
+//     if (result == SPOC2_ERROR_OK) {
+//         result = SPOC2_Chain_resetAllDevices(chain);
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
 /// @brief Write values to the specified register for a single device
 /// @param dev Pointer to the SPOC™ +2 device configuration
@@ -1562,12 +1562,6 @@ SPOC2_error_t SPOC2_devinit(SPOC2_deviceConfig_t* dev) {
     return result;
 }
 
-boolean SPOC2_SetState(void)
-{
-    //TODO //????
-    return false;
-}
-
 void SPOC2_Init(void)
 {
     // Initialize both devices
@@ -1620,7 +1614,7 @@ void SPOC2_SetStdState(T_SPOC2_ID id, T_SPOC2_CH_ID ch, bool state)
     ASSERT( id < SPOC2_ID_MAX );
     ASSERT( ch < SPOC2_CH_ID_MAX );
 
-    if(state == true)
+    if(state == TRUE)
     {
         SPOC2_Config_enableOutputChannel(&spoc2Cfg.devices[id], (uint8_t)ch);
     }

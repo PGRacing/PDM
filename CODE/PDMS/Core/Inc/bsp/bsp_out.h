@@ -47,6 +47,7 @@ typedef enum
 }T_OUT_STATE;
 
 // TODO Consider changing names is S_AND_H_OC used
+// Change to bit mask here
 /// @brief Output channel status
 typedef enum
 {

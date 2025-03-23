@@ -75,9 +75,6 @@ const static T_LOGIC_OPERATOR_RELATION operatorsConfig[] =
             
 };
 
-#pragma GCC push_options
-#pragma GCC optimize ("-O0")
-
 static T_LOGIC_VAR_TYPE LOGIC_GetInputModeAsLogicVarType( T_LOGIC_INPUT_TYPE  inType, T_INPUT_ID id)
 {
   T_LOGIC_VAR_TYPE result = LOGIC_VAR_TYPE_NONE;
@@ -117,7 +114,6 @@ static T_LOGIC_VAR_TYPE LOGIC_GetInputModeAsLogicVarType( T_LOGIC_INPUT_TYPE  in
   return result;
 }
 
-/* TODO Check if this function works */
 static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
 {
   ASSERT( exp.opr >= 0 );
@@ -158,8 +154,6 @@ static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
   
   return res;
 }
-
-#pragma GCC pop_options
 
 static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 {
@@ -281,7 +275,7 @@ static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 }
 
 // LOGIC Array struct
-T_LOGIC logics[POWER_OUT_COUNT] = 
+T_LOGIC logicCfg[POWER_OUT_COUNT] = 
 {
   [0] = {
     .isUsed = TRUE,
@@ -360,25 +354,23 @@ T_LOGIC logics[POWER_OUT_COUNT] =
   }
 };
 
-bool logicResults[POWER_OUT_COUNT] = {FALSE};
-
-volatile bool expResult;
+bool logicReg[POWER_OUT_COUNT] = {FALSE};
 
 bool* LOGIC_Evaluate(void)
 {
   for( uint8_t i = 0; i < POWER_OUT_COUNT; i++)
   {
-    if( logics[i].isUsed )
+    if( logicCfg[i].isUsed )
     {
-      logicResults[i] = LOGIC_EvaluateExpression(logics[i].exp);
+      logicReg[i] = LOGIC_EvaluateExpression(logicCfg[i].exp);
     }
     else
     {
-      logicResults[i] = FALSE;
+      logicReg[i] = FALSE;
     }
   }
   
-  return logicResults;
+  return logicReg;
 }
 
 // void testTaskEntry(void *argument)

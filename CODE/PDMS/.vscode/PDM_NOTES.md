@@ -77,3 +77,23 @@ Ith - allowed current threshold to not turn of channel
 // Sample PWM during high state
 
 // Remeber that both voltage and current must be intact to make sure that all readings are correct
+
+// Adding config and regs to pdm file
+// Configurations
+
+OUT
+- outsCfg
+- outsReg
+
+LOGIC 
+- logicCfg
+- logicReg
+
+TELEMETRY
+- telemetryCfg
+
+BSP
+- no configuration will be used
+
+CAN HANDLER
+- cansCfg

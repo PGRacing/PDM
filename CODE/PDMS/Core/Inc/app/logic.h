@@ -61,7 +61,6 @@ typedef struct
   T_LOGIC_EXPRESSION exp;
 } T_LOGIC;
 
-//extern bool logicResults[POWER_OUT_COUNT];
 
 /// @brief Evaluate logic expressions controling all outputs
 /// @return Array of evaluated results

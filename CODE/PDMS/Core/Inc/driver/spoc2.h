@@ -326,30 +326,48 @@ SPOC2_error_t SPOC2_Config_setParallelChannels(SPOC2_deviceConfig_t* cfg, SPOC2_
 SPOC2_error_t SPOC2_Config_clearAllRestartCounters(SPOC2_deviceConfig_t* cfg);
 SPOC2_error_t SPOC2_Config_clearSelectedChannelRestartCounter(SPOC2_deviceConfig_t* cfg);
 
-// FIXME This chain functions won't be used     
-SPOC2_error_t SPOC2_Chain_writeRegister(SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* txBuffer);
-SPOC2_error_t SPOC2_Chain_readRegister(const SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* rxBuffer);
-SPOC2_error_t SPOC2_Chain_readInputStates(const SPOC2_chain_t* chain, uint8* rxBuffer);
-SPOC2_error_t SPOC2_Chain_readDiagnostics(const SPOC2_chain_t* chain, uint8* stdDiagBuffer, uint8* wrnDiagBuffer,
-                                          uint8* errDiagBuffer);
-
-                               
-SPOC2_error_t SPOC2_Chain_applyDeviceConfigs(SPOC2_chain_t* chain);
-SPOC2_error_t SPOC2_Chain_resetAllDevices(SPOC2_chain_t* chain);
-SPOC2_error_t SPOC2_Chain_verifyDeviceConfigs(const SPOC2_chain_t* chain);
+// This functions are dedicated for daisy chaining functionality, on current board revision each SPOC2 device have dedicated CSN pin
+// SPOC2_error_t SPOC2_Chain_writeRegister(SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* txBuffer);
+// SPOC2_error_t SPOC2_Chain_readRegister(const SPOC2_chain_t* chain, SPOC2_register_t reg, uint8* rxBuffer);
+// SPOC2_error_t SPOC2_Chain_readInputStates(const SPOC2_chain_t* chain, uint8* rxBuffer);
+// SPOC2_error_t SPOC2_Chain_readDiagnostics(const SPOC2_chain_t* chain, uint8* stdDiagBuffer, uint8* wrnDiagBuffer, uint8* errDiagBuffer);                              
+// SPOC2_error_t SPOC2_Chain_applyDeviceConfigs(SPOC2_chain_t* chain);
+// SPOC2_error_t SPOC2_Chain_resetAllDevices(SPOC2_chain_t* chain);
+// SPOC2_error_t SPOC2_Chain_verifyDeviceConfigs(const SPOC2_chain_t* chain);
+// SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain);
 
 uint32 SPOC2_readCurrentSense(const SPOC2_deviceConfig_t* cfg);
 SPOC2_error_t SPOC2_verifyCurrentSense(const SPOC2_chain_t* chain, uint8 deviceIndex, uint32 expectedMv);
-SPOC2_error_t SPOC2_Chain_init(SPOC2_chain_t* chain);
 
-// FIXME New functions
+/// @brief Initalize the SPOC™ +2 single device
+/// @param dev SPOC2 configuration
+/// @return Success or failure of the operation
 SPOC2_error_t SPOC2_devinit(SPOC2_deviceConfig_t* dev);
+
+/// @brief Apply configuration to the SPOC™ +2 device
+/// @param dev SPOC2 configuration
+/// @return Success or failure of the operation
 SPOC2_error_t SPOC2_applyDeviceConfig(SPOC2_deviceConfig_t* dev);
 
-// Whole module configuration
+/* 
+============================================================
+This functions are used in calls from outside of the driver
+============================================================
+*/
+
+/// @brief Initialize the SPOC™ +2 driver and the connected SPOC2 devices
+/// @param 
 void SPOC2_Init(void);
 
+/// @brief Set channel output standard state
+/// @param id Device ID that the channel belongs to
+/// @param ch Channel ID
+/// @param state Requested channel output state
 void SPOC2_SetStdState(T_SPOC2_ID id, T_SPOC2_CH_ID ch, bool state);
+
+/// @brief Select the sense mux for the current sense pin
+/// @param id Device ID that the channel belongs to
+/// @param ch Channel ID
 void SPOC2_SelectSenseMux(T_SPOC2_ID id, T_SPOC2_CH_ID ch);
 
 #endif // SPOC2_H_

@@ -6,20 +6,41 @@
 #include "semphr.h"
 #include "tim.h"
 
-static xQueueHandle can1QueueHandle;
-static xQueueHandle can2QueueHandle;
+T_CANH_CFG cansCfg[CANH_INSTANCE_MAX] = 
+{
+    [CANH_INSTANCE_1] = 
+    {
+        .enabled = TRUE,
+        .baud = 1000000,  // Not evalueted now
+        .terminator = FALSE, 
+        .baseId = 0x400
+    },
+    [CANH_INSTANCE_2] = 
+    {
+        .enabled = TRUE,
+        .baud = 1000000, // Not evalueted now
+        .terminator = TRUE,
+        .baseId = 0x400
+    },
+};
 
-static volatile bool can1ReadyForTx = false;
-static volatile bool can2ReadyForTx = false;
-
-/* CAN1 TxMailbox */
-static uint32_t can1TxMailbox[4];
-
-/* CAN2 TxMailbox */
-static uint32_t can2TxMailbox[4];
-
-//#define CANH_DEFAULT_TERM1_ENABLED 1
-#define CANH_DEFAULT_TERM2_ENABLED 1
+T_CANH_REG cansReg[CANH_INSTANCE_MAX] = 
+{
+    [CANH_INSTANCE_1] = 
+    {
+        .hcan = &hcan1,
+        .txQueueHandle = NULL,
+        .readyForTx = FALSE,
+        .txMailbox = {0}
+    },
+    [CANH_INSTANCE_2] = 
+    {
+        .hcan = &hcan2,
+        .txQueueHandle = NULL,
+        .readyForTx = FALSE,
+        .txMailbox = {0}
+    },
+};
 
 /////////////////////////
 //////// CAN TX /////////
@@ -31,20 +52,20 @@ static uint32_t can2TxMailbox[4];
 /// @brief All used CAN bus ID's
 typedef enum
 {
-    CANH_ID_PNP           = 0x400, // Header sent on device power-up
-    CANH_ID_SYS_STATUS    = 0x401, // System status
-    CANH_ID_STATUS_1_8    = 0x402, // Status of channels 1-8 (default value)
-    CANH_ID_STATUS_9_16   = 0x403, // Status of channels 9-16 (default value)
-    CANH_ID_STATE_1_16    = 0x404, // State of channels 1-16 (default value)
-    CANH_ID_VOLTAGE_1_4   = 0x405, // Voltage of channels 1-4 (default value)
-    CANH_ID_VOLTAGE_5_8   = 0x406, // Voltage of channels 5-8 (default value)
-    CANH_ID_VOLTAGE_9_12  = 0x407, // Voltage of channels 9-12 (default value)
-    CANH_ID_VOLTAGE_13_16 = 0x408, // Voltage of channels 13-16 (default value)
-    CANH_ID_CURRENT_1_4   = 0x409, // Current of channels 1-4 (default value)
-    CANH_ID_CURRENT_5_8   = 0x40A, // Current of channels 5-8 (default value)
-    CANH_ID_CURRENT_9_12  = 0x40B, // Current of channels 9-12 (default value)
-    CANH_ID_CURRENT_13_16 = 0x40C, // Current of channels 13-16 (default value)
-    CANH_ID_NAMES         = 0x40D, // Channel of current name
+    CANH_ID_PNP           = 0x000, // Header sent on device power-up
+    CANH_ID_SYS_STATUS    = 0x001, // System status
+    CANH_ID_STATUS_1_8    = 0x002, // Status of channels 1-8 (default value)
+    CANH_ID_STATUS_9_16   = 0x003, // Status of channels 9-16 (default value)
+    CANH_ID_STATE_1_16    = 0x004, // State of channels 1-16 (default value)
+    CANH_ID_VOLTAGE_1_4   = 0x005, // Voltage of channels 1-4 (default value)
+    CANH_ID_VOLTAGE_5_8   = 0x006, // Voltage of channels 5-8 (default value)
+    CANH_ID_VOLTAGE_9_12  = 0x007, // Voltage of channels 9-12 (default value)
+    CANH_ID_VOLTAGE_13_16 = 0x008, // Voltage of channels 13-16 (default value)
+    CANH_ID_CURRENT_1_4   = 0x009, // Current of channels 1-4 (default value)
+    CANH_ID_CURRENT_5_8   = 0x00A, // Current of channels 5-8 (default value)
+    CANH_ID_CURRENT_9_12  = 0x00B, // Current of channels 9-12 (default value)
+    CANH_ID_CURRENT_13_16 = 0x00C, // Current of channels 13-16 (default value)
+    CANH_ID_NAMES         = 0x00D, // Channel of current name
 }T_CANH_ID;
 
 /// @brief [pnpTxMsg] Message sent on device power-up
@@ -245,7 +266,7 @@ T_CANH_TX_PACKAGE CANH_TxNames =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
-void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
+void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
     CANH_TxStatus1_8.data.status_8ch.status[0] = s1;
     CANH_TxStatus1_8.data.status_8ch.status[1] = s2;
@@ -256,10 +277,10 @@ void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8
     CANH_TxStatus1_8.data.status_8ch.status[6] = s7;
     CANH_TxStatus1_8.data.status_8ch.status[7] = s8;
 
-    CANH_PushToQueue2(CANH_TxStatus1_8);
+    CANH_PushToQueue(instance, CANH_TxStatus1_8);
 }
 
-void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
+void CANH_Send_TxStatus9_16(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
     CANH_TxStatus9_16.data.status_8ch.status[0] = s1;
     CANH_TxStatus9_16.data.status_8ch.status[1] = s2;
@@ -270,10 +291,10 @@ void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint
     CANH_TxStatus9_16.data.status_8ch.status[6] = s7;
     CANH_TxStatus9_16.data.status_8ch.status[7] = s8;
 
-    CANH_PushToQueue2(CANH_TxStatus9_16);
+    CANH_PushToQueue(instance, CANH_TxStatus9_16);
 }
 
-void CANH_Send_TxState1_16(uint8_t s[16])
+void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16])
 {
     for(uint8_t i = 0; i < 8; i++)
     {
@@ -286,193 +307,165 @@ void CANH_Send_TxState1_16(uint8_t s[16])
         CANH_TxState1_16.data.state_16ch.state[i / 2] |= s[i] << (i % 2 ? 0 : 4);
     }
 
-    CANH_PushToQueue2(CANH_TxState1_16);
+    CANH_PushToQueue(instance, CANH_TxState1_16);
 }
                             
-void CANH_Send_TxVoltage1_4(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
+void CANH_Send_TxVoltage1_4(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
 {
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[0] = v1;
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[1] = v2;
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue2(CANH_TxVoltage1_4);
+    CANH_PushToQueue(instance, CANH_TxVoltage1_4);
 }
 
-void CANH_Send_TxVoltage5_8(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
+void CANH_Send_TxVoltage5_8(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
 {
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[0] = v1;
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[1] = v2;
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue2(CANH_TxVoltage5_8);
+    CANH_PushToQueue(instance, CANH_TxVoltage5_8);
 }
 
-void CANH_Send_TxVoltage9_12(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
+void CANH_Send_TxVoltage9_12(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
 {
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[0] = v1;
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[1] = v2;
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue2(CANH_TxVoltage9_12);
+    CANH_PushToQueue(instance, CANH_TxVoltage9_12);
 }
 
-void CANH_Send_TxVoltage13_16(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
+void CANH_Send_TxVoltage13_16(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
 {
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[0] = v1;
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[1] = v2;
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue2(CANH_TxVoltage13_16);
+    CANH_PushToQueue(instance, CANH_TxVoltage13_16);
 }
 
-void CANH_Send_TxCurrent1_4(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
+void CANH_Send_TxCurrent1_4(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
 {
     CANH_TxCurrent1_4.data.current_4ch.current[0] = c1;
     CANH_TxCurrent1_4.data.current_4ch.current[1] = c2;
     CANH_TxCurrent1_4.data.current_4ch.current[2] = c3;
     CANH_TxCurrent1_4.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue2(CANH_TxCurrent1_4);
+    CANH_PushToQueue(instance, CANH_TxCurrent1_4);
 }
 
-void CANH_Send_TxCurrent5_8(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
+void CANH_Send_TxCurrent5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
 {
     CANH_TxCurrent5_8.data.current_4ch.current[0] = c1;
     CANH_TxCurrent5_8.data.current_4ch.current[1] = c2;
     CANH_TxCurrent5_8.data.current_4ch.current[2] = c3;
     CANH_TxCurrent5_8.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue2(CANH_TxCurrent5_8);
+    CANH_PushToQueue(instance, CANH_TxCurrent5_8);
 }
 
-void CANH_Send_TxCurrent9_12(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
+void CANH_Send_TxCurrent9_12(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
 {
     CANH_TxCurrent9_12.data.current_4ch.current[0] = c1;
     CANH_TxCurrent9_12.data.current_4ch.current[1] = c2;
     CANH_TxCurrent9_12.data.current_4ch.current[2] = c3;
     CANH_TxCurrent9_12.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue2(CANH_TxCurrent9_12);
+    CANH_PushToQueue(instance, CANH_TxCurrent9_12);
 }
 
-void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
+void CANH_Send_TxCurrent13_16(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
 {
     CANH_TxCurrent13_16.data.current_4ch.current[0] = c1;
     CANH_TxCurrent13_16.data.current_4ch.current[1] = c2;
     CANH_TxCurrent13_16.data.current_4ch.current[2] = c3;
     CANH_TxCurrent13_16.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue2(CANH_TxCurrent13_16);
+    CANH_PushToQueue(instance, CANH_TxCurrent13_16);
 }
 
-void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyState)
+void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyState)
 {
     CANH_TxSysStatus.data.system_status.status = sysStatus;
     CANH_TxSysStatus.data.system_status.battVoltage = battVoltage;
     CANH_TxSysStatus.data.system_status.safetyLineState = safetyState;
 
-    CANH_PushToQueue2(CANH_TxSysStatus);
+    CANH_PushToQueue(instance, CANH_TxSysStatus);
 }
 
-void CANH_Send_Names(uint8_t id, uint8_t part, char str[7])
+void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7])
 {
     CANH_TxNames.data.raw[0] = (part << 4) + (id & 0x0F); 
     memcpy(&(CANH_TxNames.data.raw[1]), str, 7);
 
-    CANH_PushToQueue2(CANH_TxNames);
+    CANH_PushToQueue(instance, CANH_TxNames);
 }
 
-static void CANH_SwitchTerminator1(bool state)
+static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)
 {   
-    if(true == state)
+    if(instance == CANH_INSTANCE_1)
     {
-        LL_GPIO_SetOutputPin(CAN_TERM1_GPIO_Port, CAN_TERM1_Pin);
+        if(TRUE == state)
+        {
+            LL_GPIO_SetOutputPin(CAN_TERM1_GPIO_Port, CAN_TERM1_Pin);
+        }
+        else
+        {
+            LL_GPIO_ResetOutputPin(CAN_TERM1_GPIO_Port, CAN_TERM1_Pin);
+        }
     }
-    else
+    else if(instance == CANH_INSTANCE_2)
     {
-        LL_GPIO_ResetOutputPin(CAN_TERM1_GPIO_Port, CAN_TERM1_Pin);
+        if(TRUE == state)
+        {
+            LL_GPIO_SetOutputPin(CAN_TERM2_GPIO_Port, CAN_TERM2_Pin);
+        }
+        else
+        {
+            LL_GPIO_ResetOutputPin(CAN_TERM2_GPIO_Port, CAN_TERM2_Pin);
+        }
     }
 }
 
-static void CANH_SwitchTerminator2(bool state)
-{   
-    if(true == state)
-    {
-        LL_GPIO_SetOutputPin(CAN_TERM2_GPIO_Port, CAN_TERM2_Pin);
-    }
-    else
-    {
-        LL_GPIO_ResetOutputPin(CAN_TERM2_GPIO_Port, CAN_TERM2_Pin);
-    }
-}
-
-void CANH_PushToQueue1(T_CANH_TX_PACKAGE pkg)
+void CANH_PushToQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg)
 {
-    if(can1ReadyForTx == true &&
-        can1QueueHandle != NULL &&
-        xQueueSend(can1QueueHandle, &pkg, portMAX_DELAY) != pdPASS)
+    if (cansCfg[instance].enabled == TRUE)
     {
-        /* Problem with pushing data to queue */
-        __NOP();
+        if (cansReg[instance].readyForTx == TRUE &&
+            cansReg[instance].txQueueHandle != NULL &&
+            xQueueSend(cansReg[instance].txQueueHandle, &pkg, portMAX_DELAY) != pdPASS)
+        {
+            /* Problem with pushing data to queue */
+            LOG_WARN("CANH:: Unable to push can data to queue, queue full?");
+            __NOP();
+        }
+        else if (cansReg[instance].txQueueHandle == NULL)
+        {
+            /* Queue handle does not exist yet */
+            LOG_ERR("CANH:: CAN queue does not exist");
+            __NOP();
+        };
     }
-    else if(can1QueueHandle == NULL)
-    {
-        /* Queue handle does not exist yet */
-        __NOP();
-    };
 }
 
-void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg)
+static void CANH_InitModule(T_CANH_INSTANCE instance)
 {
-    if(can2ReadyForTx == true &&
-        can2QueueHandle != NULL &&
-        xQueueSend(can2QueueHandle, &pkg, portMAX_DELAY) != pdPASS)
-    {
-        /* Problem with pushing data to queue */
-        __NOP();
-    }
-    else if(can2QueueHandle == NULL)
-    {
-        /* Queue handle does not exist yet */
-        __NOP();
-    };
-}
+    // Set or unset can terminator analog switch based on configuration
+    CANH_SwitchTerminator(instance, cansCfg[instance].terminator);
 
-static void CANH_InitModule1()
-{
-    #ifdef CANH_DEFAULT_TERM1_ENABLED
-        CANH_SwitchTerminator1(true);
-    #else
-        CANH_SwitchTerminator1(false);
-    #endif
-    /* Create queue for CAN1 data*/
-    can1QueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
+    /* Create queue for CAN TX data*/
+    cansReg[instance].txQueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
 
-    if(can1QueueHandle == NULL)
+    if(cansReg[instance].txQueueHandle == NULL)
     {
         /* Error creating xQueue -> heap too small [?] */
-        __NOP();
-    }
-}
-
-static void CANH_InitModule2()
-{
-    #ifdef CANH_DEFAULT_TERM2_ENABLED
-        CANH_SwitchTerminator2(true);
-    #else
-        CANH_SwitchTerminator2(false);
-    #endif
-
-    /* Create queue for CAN2 data */
-    can2QueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
-
-    if(can2QueueHandle == NULL)
-    {
-        /* Error creating xQueue -> heap too small [?] */
+        LOG_ERR("Unable to create CAN TX queue");
         __NOP();
     }
 }
@@ -480,21 +473,29 @@ static void CANH_InitModule2()
 static void CANH_AllowTxCallback1(void)
 {
     /* Send CAN1 hello message */
-    HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can1TxMailbox);
-    can1ReadyForTx = true;
+    HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, cansReg[CANH_INSTANCE_1].txMailbox);
+    cansReg[CANH_INSTANCE_1].readyForTx = TRUE;
 }
 
 static void CANH_AllowTxCallback2(void)
 {
     /* Send CAN2 hello message */
-    HAL_CAN_AddTxMessage(&hcan2, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, can2TxMailbox);
-    can2ReadyForTx = true;
+    HAL_CAN_AddTxMessage(&hcan2, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, cansReg[CANH_INSTANCE_2].txMailbox);
+    cansReg[CANH_INSTANCE_2].readyForTx = TRUE;
 }
 
 void CANH_Init(void)
 {
-    CANH_InitModule1();
-    CANH_InitModule2();
+    // Intialize CAN instances and TX queue
+    if(TRUE == cansCfg[CANH_INSTANCE_1].enabled)
+    {
+        CANH_InitModule(CANH_INSTANCE_1);
+    }
+
+    if(TRUE == cansCfg[CANH_INSTANCE_2].enabled)
+    {
+        CANH_InitModule(CANH_INSTANCE_2);
+    }
 }
 
 void can1TaskStart(void *argument)
@@ -524,14 +525,18 @@ void can1TaskStart(void *argument)
             __NOP();
         }
         
-        if(can1ReadyForTx == true && can1QueueHandle != NULL && xQueueReceive(can1QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
+        if(cansReg[CANH_INSTANCE_1].readyForTx == TRUE && cansReg[CANH_INSTANCE_1].txQueueHandle != NULL 
+            && xQueueReceive(cansReg[CANH_INSTANCE_1].txQueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
         {
-            HAL_CAN_AddTxMessage(&hcan1, &(canPackage.header), canPackage.data.raw, can1TxMailbox);
+            CAN_TxHeaderTypeDef header = canPackage.header;
+            header.StdId = canPackage.header.StdId + cansCfg[CANH_INSTANCE_1].baseId;
+            HAL_CAN_AddTxMessage(&hcan1, &header, canPackage.data.raw, cansReg[CANH_INSTANCE_1].txMailbox);
         }
         osDelay(1);
     }
 }
 
+/// TODO Something is wrong here
 void can2TaskStart(void *argument)
 {
     LOG_INFO("CAN2:: Task start");
@@ -545,7 +550,7 @@ void can2TaskStart(void *argument)
     }
     else
     {
-        LOG_ERR("CANH:: Unable to create CAN1 TX start timer!");
+        LOG_ERR("CANH:: Unable to create CAN2 TX start timer!");
     }
 
     /* Incoming package from queue */
@@ -559,9 +564,12 @@ void can2TaskStart(void *argument)
             __NOP();
         }
         
-        if(can2ReadyForTx == true && can2QueueHandle != NULL && xQueueReceive(can2QueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
+        if(cansReg[CANH_INSTANCE_2].readyForTx == TRUE && cansReg[CANH_INSTANCE_2].txQueueHandle != NULL 
+            && xQueueReceive(cansReg[CANH_INSTANCE_2].txQueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
         {
-            HAL_CAN_AddTxMessage(&hcan2, &(canPackage.header), canPackage.data.raw, can2TxMailbox);
+            CAN_TxHeaderTypeDef header = canPackage.header;
+            header.StdId = canPackage.header.StdId + cansCfg[CANH_INSTANCE_2].baseId;
+            HAL_CAN_AddTxMessage(&hcan2, &header, canPackage.data.raw, cansReg[CANH_INSTANCE_2].txMailbox);
         }
 
         osDelay(1);
@@ -570,4 +578,3 @@ void can2TaskStart(void *argument)
 
 ///
 /// TODO [MAJOR REWORK] Add CAN inputs handling
-/// TODO [MAJOR REWORK] Move variables to canCfg and canReg;

@@ -38,20 +38,15 @@ T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 
 volatile T_PDM_CFG pdmCfg =
 {
+    // Platform protections
     .onInitBattCheckMaxTries = UINT32_MAX,
-    .isUvloEnabled = true,
+    .isUvloEnabled = TRUE,
     .uvloVoltageHiThreshold = 10000, // 10V
     .uvloVoltageLoThreshold = 8000,  // 8V
     .uvloTimeThreshold = 10000, // 10s
     .uvloRetainDivider = 10, 
     .minBattVolage = 6000, // In BT50010LUA TDS 5.8V minimal voltage declared
-    .canCfg = 
-    {
-        .can1Baud = 1000000,
-        .can2Baud = 1000000,
-        .can1Terminator = FALSE,
-        .can2Terminator = TRUE,
-    },
+
     .useBuzzer = TRUE,
     .ledMode = 1
 };
@@ -60,7 +55,7 @@ volatile T_PDM_CFG pdmCfg =
 volatile T_PDM_REG pdmReg =
 {
     .status = PDM_SYS_STATUS_OK,
-    .safetyState = true,
+    .safetyState = TRUE,
     .uvloAssessment = false,
     .uvloLoCounter = 0,
     .uvloHiCounter = 0,
@@ -224,7 +219,7 @@ static void PDM_CheckSafety(void)
     }
     else
     {
-        pdmReg.safetyState = true;
+        pdmReg.safetyState = TRUE;
     }
 }
 
@@ -269,7 +264,7 @@ static void PDM_CheckUVLO(void)
     if(VMUX_GetBattValue() < pdmCfg.uvloVoltageLoThreshold)
     {
         LOG_WARN("PDM:: First UVLO trigger detected");
-        pdmReg.uvloAssessment = true;
+        pdmReg.uvloAssessment = TRUE;
         // Create timer for retry execution routine
         pdmReg.uvloTimer = osTimerNew((osTimerFunc_t)PDM_UVLOCallback, osTimerPeriodic, NULL, NULL);
         if(pdmReg.uvloTimer)
@@ -294,15 +289,15 @@ void pdmTaskStart(void *argument)
     LOG_INFO("PDM:: Task start");
     for(;;)
     {
-        bool* logicResults = LOGIC_Evaluate();
+        bool* logicReg = LOGIC_Evaluate();
         for(uint8_t i = 0; i < OUT_ID_MAX; i++)
         {
-            OUT_SetState(i, logicResults[i]);
+            OUT_SetState(i, logicReg[i]);
         }
         PDM_CheckSafety();
 
         // Check undervoltage if no ongoing assesment
-        if(pdmCfg.isUvloEnabled == true &&
+        if(pdmCfg.isUvloEnabled == TRUE &&
             pdmReg.uvloAssessment == false &&
             pdmReg.status == PDM_SYS_STATUS_OK)
         {

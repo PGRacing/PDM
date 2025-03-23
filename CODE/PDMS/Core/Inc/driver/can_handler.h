@@ -9,6 +9,29 @@
 // CAN2.0B max paylaod size
 #define CANH_MAX_DLC 8
 
+typedef enum
+{
+    CANH_INSTANCE_1    = 0x00, // First CAN BUS instance 
+    CANH_INSTANCE_2    = 0x01, // Second CAN BUS instance
+    CANH_INSTANCE_MAX  = 0x02, // Max number of CAN BUS instances
+}T_CANH_INSTANCE;
+
+typedef struct __packed
+{
+    bool     enabled; // Is can bus instance enabled>
+    uint32_t baud; // Reserved fixed on 1Mbit/s right now
+    bool     terminator; // CANBus terminator enabled?
+    uint32_t baseId; // Base ID for this CAN instance (all frame ID will start from here)
+}T_CANH_CFG;
+
+typedef struct
+{
+    CAN_HandleTypeDef *hcan;
+    QueueHandle_t txQueueHandle;
+    bool readyForTx;
+    uint32_t txMailbox[4];
+}T_CANH_REG;
+
 /////////////////////////
 //////// CAN TX /////////
 /////////////////////////
@@ -52,7 +75,7 @@ typedef union __packed
 
 typedef struct T_CANH_TX_PACKAGE 
 {
-    const CAN_TxHeaderTypeDef header;
+    CAN_TxHeaderTypeDef header;
     T_CANH_DATA data;
 }T_CANH_TX_PACKAGE;
 
@@ -63,27 +86,26 @@ void can2TaskStart(void *argument);
 /* CAN Init */
 void CANH_Init(void);
 
-void CANH_PushToQueue1(T_CANH_TX_PACKAGE pkg);
-void CANH_PushToQueue2(T_CANH_TX_PACKAGE pkg);
+void CANH_PushToQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg);
 
 /* TX MESSAGES */
-void CANH_Send_TxVoltage1_4(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
-void CANH_Send_TxVoltage5_8(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
-void CANH_Send_TxVoltage9_12(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
-void CANH_Send_TxVoltage13_16(uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+void CANH_Send_TxVoltage1_4(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+void CANH_Send_TxVoltage5_8(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+void CANH_Send_TxVoltage9_12(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
+void CANH_Send_TxVoltage13_16(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);
 
-void CANH_Send_TxCurrent1_4(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
-void CANH_Send_TxCurrent5_8(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
-void CANH_Send_TxCurrent9_12(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
-void CANH_Send_TxCurrent13_16(uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrent1_4(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrent5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrent9_12(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrent13_16(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
 
-void CANH_Send_TxStatus1_8(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
-void CANH_Send_TxStatus9_16(uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
+void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
+void CANH_Send_TxStatus9_16(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
 
-void CANH_Send_TxState1_16(uint8_t s[16]);
+void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16]);
 
-void CANH_Send_SysStatus(uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyLineStatus);
+void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyLineStatus);
 
-void CANH_Send_Names(uint8_t id, uint8_t part, char str[7]);
+void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7]);
 
 #endif

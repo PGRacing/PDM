@@ -15,14 +15,6 @@ typedef enum
 
 typedef struct __packed
 {
-    uint32_t can1Baud; // Reserved fixed on 1Mbit/s right now
-    uint32_t can2Baud; // Reserved fixed on 1Mbit/s right now
-    bool     can1Terminator; // CANBUS1 1 terminator enabled?
-    bool     can2Terminator; // CANBUS2 terminator enabled?
-}T_PDM_CAN_CFG;
-
-typedef struct __packed
-{
     uint32_t      minBattVolage; // minimal battery voltage that the platform will start [mV]
     uint32_t      onInitBattCheckMaxTries; // maximal number that battery voltage will be checked on startup
     bool          isUvloEnabled;  // UVLO if this field is set for true, uvlo protection is enabled
@@ -32,8 +24,6 @@ typedef struct __packed
     uint8_t       uvloRetainDivider; // UVLO time threshold is divided by this value, this gives time in [ms] where voltage above uvloVoltageHiThreshold allows to retain to normal operation
     bool          useBuzzer; // use buzzer on device
     uint8_t       ledMode;   // Selected led mode
-    T_PDM_CAN_CFG canCfg;    // CANBUS 1 and 2 config   
-
     // TODO Reference to out, logic itd..? 
 }T_PDM_CFG;
 

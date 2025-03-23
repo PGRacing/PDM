@@ -75,5 +75,5 @@ bool BSP_SPOC2_TransferBlocking(T_SPOC2_ID id, uint8* txBuffer, uint8* rxBuffer,
         return false;
     }
 
-    return true;
+    return TRUE;
 }
