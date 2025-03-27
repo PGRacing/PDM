@@ -42,10 +42,10 @@ volatile T_PDM_CFG pdmCfg =
     .ledMode = 1,
 
     // Pointers to modules configuration
-    .outsCfg = outsCfg,
-    .logicCfg = logicCfg,
-    .telemCfg = &telemCfg,
-    .cansCfg = cansCfg
+    .pOutsCfg  = &outsCfg,
+    .pLogicCfg = &logicCfg,
+    .pTelemCfg = &telemCfg,
+    .pCansCfg  = &cansCfg
 };
 
 volatile T_PDM_REG pdmReg =

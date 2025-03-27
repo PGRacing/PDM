@@ -41,11 +41,11 @@ typedef struct __packed
     uint8_t       ledMode;   // Selected led mode
     
     // Pointers to modules configuration
-    T_OUT_CFG*    outsCfg[OUT_ID_MAX];       // Output channels configuration
+    T_OUT_CFG    (*pOutsCfg)[OUT_ID_MAX];       // Output channels configuration
     // TODO Refactor and add inputsCfg here
-    T_LOGIC_CFG*  logicCfg[POWER_OUT_COUNT]; // Logic configuration
-    T_TELEM_CFG*  telemCfg;                  // Telemetry configuration
-    T_CANH_CFG*   cansCfg[CANH_INSTANCE_MAX]; // CAN configuration
+    T_LOGIC_CFG  (*pLogicCfg)[POWER_OUT_COUNT]; // Logic configuration
+    T_TELEM_CFG*  pTelemCfg;                  // Telemetry configuration
+    T_CANH_CFG   (*pCansCfg)[CANH_INSTANCE_MAX]; // CAN configuration
 
 }T_PDM_CFG;
 
