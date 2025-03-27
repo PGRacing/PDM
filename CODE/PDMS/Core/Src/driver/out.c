@@ -892,12 +892,11 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
 
 
 // TODO Is it new code for detection?  First stage state machine
-static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, uint32_t voltageMV, uint32_t currentMA)
+static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, uint32_t voltageMV, uint32_t currentMA, uint32_t inFault)
 {
   T_OUT_STATUS newStatus = OUT_STATUS_OK;
 
   uint32_t diffChVbat = abs((int32_t)(VMUX_GetBattValue() - voltageMV));
-  bool inFault = currentMA > BSP_OUT_GetFaultLevel(id);
   bool noLoad  = currentMA < OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD;
 
   // Check conditions in on state
@@ -964,6 +963,7 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   
   // Calculate current from ADC raw data
   reg->currentMA = BSP_OUT_CalcCurrent(id);
+  bool inFault = BSP_OUT_IsCurrentFault(id);
   
   // Get channel voltage from voltage multiplexer ADC data (already calculated)
   reg->voltageMV = VMUX_GetValue(id);
@@ -972,8 +972,7 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   vPortExitCritical();
 
   // Check for hardware issues and state changes
-  T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA);
-
+  T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA, inFault);
 
   // New status calculation
   newStatus = hwStatus;

@@ -127,4 +127,9 @@ uint32_t BSP_OUT_GetFaultLevel(T_OUT_ID id);
 /// @return Output current in [mA]
 uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id);
 
+/// @brief Check if voltage on Is pin is above fault level
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return TRUE if fault, FALSE if ok
+bool BSP_OUT_IsCurrentFault(T_OUT_ID id);
+
 #endif

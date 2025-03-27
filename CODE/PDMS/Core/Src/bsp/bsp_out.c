@@ -9,6 +9,7 @@
 #include "adc.h"
 
 //#define LL_TIM_OC_SetCompare(TIM, CNUM, CMP) LL_TIM_OC_SetCompareCH##CNUM(TIM, CMP)
+#define BSP_OUT_FAULT_ADC_LEVEL 4000
 
 /* Current MCU main clock @80Mhz */
 #define BSP_OUT_MAIN_CLK 80000000
@@ -222,6 +223,12 @@ uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id)
     ASSERT( id < OUT_ID_MAX);
     uint32_t isVoltage = ((float)*(bspOutsCfg[id].currentRawData)/(float)4096)*(float)VDD_VALUE; 
     return isVoltage *  (bspOutsCfg[id].dkilis)/(bspOutsCfg[id].sensRValue);
+}
+
+bool BSP_OUT_IsCurrentFault(T_OUT_ID id)
+{
+    ASSERT( id < OUT_ID_MAX);
+    return (*(bspOutsCfg[id].currentRawData) >= BSP_OUT_FAULT_ADC_LEVEL);
 }
 
 
