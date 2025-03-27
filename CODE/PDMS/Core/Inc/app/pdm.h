@@ -10,6 +10,7 @@
 #include "typedefs.h"
 #include "features.h"
 #include "logger.h"
+#include "input.h"
 #include "logic.h"
 #include "out.h"
 #include "vmux.h"
@@ -41,10 +42,10 @@ typedef struct __packed
     uint8_t       ledMode;   // Selected led mode
     
     // Pointers to modules configuration
-    T_OUT_CFG    (*pOutsCfg)[OUT_ID_MAX];       // Output channels configuration
-    // TODO Refactor and add inputsCfg here
-    T_LOGIC_CFG  (*pLogicCfg)[POWER_OUT_COUNT]; // Logic configuration
-    T_TELEM_CFG*  pTelemCfg;                  // Telemetry configuration
+    T_OUT_CFG    (*pOutsCfg)[OUT_ID_MAX];        // Output channels configuration
+    T_IN_CFG     (*pInsCfg)[];                   // Input channels configuration
+    T_LOGIC_CFG  (*pLogicCfg)[POWER_OUT_COUNT];  // Logic configuration
+    T_TELEM_CFG*  pTelemCfg;                     // Telemetry configuration
     T_CANH_CFG   (*pCansCfg)[CANH_INSTANCE_MAX]; // CAN configuration
 
 }T_PDM_CFG;
@@ -53,7 +54,7 @@ typedef struct
 {
     T_PDM_SYS_STATUS status;
     bool             safetyState;
-    bool             uvloAssessment; // Is UVLO assesment in progress?
+    bool             uvloAssessment;  // Is UVLO assesment in progress?
     uint32_t         uvloLoCounter;   // Undervoltage LO protection counter
     uint32_t         uvloHiCounter;   // Undervoltage HI protection counter
     osTimerId_t      uvloTimer;       // Undervoltage protection timer

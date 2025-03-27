@@ -43,6 +43,7 @@ volatile T_PDM_CFG pdmCfg =
 
     // Pointers to modules configuration
     .pOutsCfg  = &outsCfg,
+    .pInsCfg  = &inputsCfg,
     .pLogicCfg = &logicCfg,
     .pTelemCfg = &telemCfg,
     .pCansCfg  = &cansCfg
@@ -285,7 +286,6 @@ void pdmTaskStart(void *argument)
     LOG_INFO("PDM:: Task start");
     for(;;)
     {
-        // TODO LOGIC should be evaluated on ADC2 slow loop, now no sync between
         bool* logicReg = LOGIC_Evaluate();
         for(uint8_t i = 0; i < OUT_ID_MAX; i++)
         {

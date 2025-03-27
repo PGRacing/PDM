@@ -5,6 +5,7 @@
 #include "typedefs.h"
 #include "FreeRTOS.h"
 #include "cmsis_os2.h"
+#include "bsp_input.h"
 #include "semphr.h"
 
 xTaskHandle adc1TaskHandleLocal;
@@ -45,10 +46,11 @@ void adc1TaskStart(void *argument)
         /* Do something with data */
         if(xSemaphoreTake( adc1ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
         {
-          xSemaphoreGive(adc1ConvReadySemaphore);
-          // Start channel diagnostics
-          /* TODO This call is making protections FreeRTOS dependent it would be better to execute in ISR*/
-          OUT_DIAG_AllBts();
+            OUT_DIAG_AllBts();
+            xSemaphoreGive(adc1ConvReadySemaphore);
+            // Start channel diagnostics
+            /* TODO [LOW] This call is making protections FreeRTOS dependent it would be better to execute directly in ISR (if possible)*/
+          
         }
     }
 }
@@ -63,9 +65,11 @@ void adc2TaskStart(void *argument)
         /* Do something with data */
         if(xSemaphoreTake( adc2ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
         {
-          xSemaphoreGive(adc2ConvReadySemaphore);
-          // TODO [MAJOR REWORK] Add synchronization using readout in input.c
-          // Input value should be evaluted after execution here
+            // Perform physical inputs assesment
+            BSP_IN_EvaluateValues();
+            xSemaphoreGive(adc2ConvReadySemaphore);
+            // TODO [MAJOR REWORK] Add synchronization using readout in input.c
+            // Input value should be evaluted after execution here
         }
     }
 }

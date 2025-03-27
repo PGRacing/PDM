@@ -44,6 +44,7 @@ Core/Src/app/pdm.c \
 Core/Src/app/telemetry.c \
 Core/Src/bsp/bsp_out.c \
 Core/Src/bsp/bsp_spoc2.c \
+Core/Src/bsp/bsp_input.c \
 Core/Src/can.c \
 Core/Src/dma.c \
 Core/Src/driver/buzzer.c \

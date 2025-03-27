@@ -375,7 +375,6 @@ bool* LOGIC_Evaluate(void)
 
 // void testTaskEntry(void *argument)
 // {
-//   /* TODO There is possibility to add UT here for setting output mode and setting output state */
 
 //   T_LOGIC_EXPRESSION exp2 = 
 //   {

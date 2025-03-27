@@ -632,7 +632,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     {
       static portBASE_TYPE xHigherPriorityTaskWoken;
       xHigherPriorityTaskWoken = pdFALSE;
-
+      
       if(adc2ConvReadySemaphore != NULL)
       {
         xSemaphoreGiveFromISR(adc2ConvReadySemaphore, &xHigherPriorityTaskWoken);

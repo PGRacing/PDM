@@ -1,19 +1,7 @@
 #ifndef __INPUT_H_
 #define __INPUT_H_
 
-#include "typedefs.h"
-typedef enum
-{
-    IN_PHY_ID_1 = 0x00,
-    IN_PHY_ID_2 = 0x01,
-    IN_PHY_ID_3 = 0x02,
-    IN_PHY_ID_4 = 0x03,
-    IN_PHY_ID_5 = 0x04,
-    IN_PHY_ID_6 = 0x05,
-    IN_PHY_ID_7 = 0x06,
-    IN_PHY_ID_8 = 0x07,
-    IN_PHY_MAX
-}T_IN_PHY_ID;
+#include "bsp_input.h"
 
 typedef enum
 {
@@ -25,18 +13,16 @@ typedef enum
 
 typedef enum
 {
-    IN_TYPE_PHY    = 0x00, // When input is pure physical
-    IN_TYPE_CAN    = 0x01, // When input data transmitted over can
+    IN_TYPE_PHY      = 0x00, // When input is pure physical
+    IN_TYPE_CAN      = 0x01, // When input data transmitted over can
+    IN_TYPE_INVALID  = 0xFF, // Invalid input type
 }T_IN_TYPE;
 
 typedef struct _T_IN_CFG
 {
     const T_INPUT_ID  id;      // id should reflect position in inputsCfg
-    const T_IO        io;
-    uint16_t * const  rawData; // pointer to rawData from input
     T_IN_TYPE         type;
     T_IN_MODE         mode;
-    bool              schmittState;
 }T_IN_CFG;
 
 

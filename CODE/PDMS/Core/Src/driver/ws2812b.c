@@ -262,7 +262,7 @@ static void WS2812B_EvaluateLeds(void)
     }
 }
 
-// TODO Move to another module
+// TODO Move to another module (app)
 void argbTaskStart(void *argument)
 {
     LOG_INFO("ARGB:: Task start");

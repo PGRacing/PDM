@@ -536,7 +536,6 @@ void can1TaskStart(void *argument)
     }
 }
 
-/// TODO Something is wrong here
 void can2TaskStart(void *argument)
 {
     LOG_INFO("CAN2:: Task start");
