@@ -53,7 +53,7 @@ volatile T_PDM_REG pdmReg =
 {
     .status = PDM_SYS_STATUS_OK,
     .safetyState = TRUE,
-    .uvloAssessment = false,
+    .uvloAssessment = FALSE,
     .uvloLoCounter = 0,
     .uvloHiCounter = 0,
     .uvloTimer = NULL
@@ -212,7 +212,7 @@ static void PDM_CheckSafety(void)
     if(HAL_GPIO_ReadPin(SAFETY_IN_GPIO_Port, SAFETY_IN_Pin) == GPIO_PIN_RESET)
     {
 
-        pdmReg.safetyState = false;
+        pdmReg.safetyState = FALSE;
     }
     else
     {
@@ -229,10 +229,11 @@ static void PDM_UVLOCallback()
         {
             osTimerStop(pdmReg.uvloTimer);
             pdmReg.uvloTimer = NULL;
-            pdmReg.uvloAssessment = false;
+            pdmReg.uvloAssessment = FALSE;
             pdmReg.uvloHiCounter = 0;
             pdmReg.uvloLoCounter = 0;
             LOG_INFO("PDM:: UVLO Battery voltage retained, returing to normal operation");
+            osTimerDelete(pdmReg.uvloTimer);
             return;
         }
     }
@@ -243,7 +244,7 @@ static void PDM_UVLOCallback()
         {
             osTimerStop(pdmReg.uvloTimer);
             pdmReg.uvloTimer = NULL;
-            pdmReg.uvloAssessment = false;
+            pdmReg.uvloAssessment = FALSE;
             pdmReg.uvloHiCounter = 0;
             pdmReg.uvloLoCounter = 0;
             LOG_ERR("PDM:: UVLO detected turning off!");
@@ -295,7 +296,7 @@ void pdmTaskStart(void *argument)
 
         // Check undervoltage if no ongoing assesment
         if(pdmCfg.isUvloEnabled == TRUE &&
-            pdmReg.uvloAssessment == false &&
+            pdmReg.uvloAssessment == FALSE &&
             pdmReg.status == PDM_SYS_STATUS_OK)
         {
             PDM_CheckUVLO();
