@@ -7,30 +7,8 @@ UV detection
 1. NVM_Load()
 2. Load to struct
 3. Make use of configuration on all levels
-4. Start tasks
-5. PLAT Init
-
-Storage files
-
-CANBUS
--> Speed
--> Terminators
--> Base
-
-INPUT
--> Input mode cfg
--> Input name
--> CAN inputs
-
-OUTPUT
--> Outputs cfg
-
-LOGIC 
--> Logic storage
-
-PDM
--> Buzzer
--> LED;s
+4. PLAT Init
+5. Start tasks
 
 ---------------------------------
 TASKS:
@@ -44,15 +22,6 @@ CAN BUS QUEUE HANDLER
 TELEMETRY DATA
 
 PDM SLOW LOOP
-
-
-// Na dzisiaj 12.10
-Inicjalizacja 
-UV detection
-    -> Configurable timeout a
-    -> Disable outputs
-    -> Beep signal
-
 
 ///// Inrush OC settings
 
@@ -75,9 +44,7 @@ Ith - allowed current threshold to not turn of channel
 
 
 // Sample PWM during high state
-
 // Remeber that both voltage and current must be intact to make sure that all readings are correct
-
 // Adding config and regs to pdm file
 // Configurations
 
@@ -102,3 +69,4 @@ CAN HANDLER
 VMUX????
 
 Trzeba zweryfikować czy inputy działają
+Dodać filtr antyalisingowy na dobre wartości

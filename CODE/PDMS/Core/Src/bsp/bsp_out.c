@@ -54,7 +54,7 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .clock = LL_APB1_GRP1_PERIPH_TIM3,
         .currentRawData = &(adc1RawData[0]),
         .dkilis = 38000,
-        .sensRValue = 7020,
+        .sensRValue = 8200,
         .faultLevel = 12000
     },
     [OUT_ID_2] = 

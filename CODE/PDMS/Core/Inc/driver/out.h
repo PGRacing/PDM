@@ -7,6 +7,8 @@
 #include "spoc2_definitions.h"
 #include "cmsis_os2.h"
 
+#define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
+#define OUT_DIAG_NAME_LEN 32
 typedef enum
 {
     OUT_TYPE_BTS500   = 0x00, // Simple high current switch Infineon BTS500 type
@@ -21,6 +23,15 @@ typedef enum
     OUT_ERR_BEH_TRY_RETRY  = 0x04,  // In case of error output there are few retries before latch
 }T_OUT_ERR_BEHAVIOR;
 
+typedef enum
+{
+    OUT_SAFETY_SOC_PRE_INRUSH       = 0x00,
+    OUT_SAFETY_SOC_INRUSH_WINDOW    = 0x01,
+    OUT_SAFETY_SOC_NORMAL_OPERATION = 0x02,
+    OUT_SAFETY_SOC_TRIGGERED        = 0x03,
+}
+T_OUT_SAFETY_SOC_STATUS;
+
 // After error configuration
 typedef struct _T_OUT_SAFETY_AERR_CFG
 {
@@ -28,20 +39,16 @@ typedef struct _T_OUT_SAFETY_AERR_CFG
     uint32_t latchTime;          // Time for /ref OUT_ERR_BEH_TIME_LATCH in ms
 }T_OUT_SAFETY_AERR_CFG;
 
-#define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
-#define OUT_DIAG_NAME_LEN 32
-
-typedef struct _T_OUT_SAFETY_SOC_PROT_CFG
+typedef struct _T_OUT_SAFETY_SOC_CFG
 {
-    bool               useSoc;             // Should software over current function be used
-    uint32_t           currentTreshold;    // Currently applicable current treshold - can be changed dynamically (Ith) [mA]
-    const uint32_t     nominalTreshold;    // Allowed maximal current during nominal operation [mA]
+    bool               useSoc;                  // Should software over current function be used
+    const uint32_t     nominalTreshold;         // Allowed maximal current during nominal operation [mA]
     // Inrush current capability
-    bool               allowInrush;        // Should inrush current be allowed during SOC operation
-    const uint32_t     inrushTimeWindow;   // Time window after channel turn-on in which inrush current is allowed
-    const uint32_t     inrushTreshold;     // Allowed maximal current during inrush operation [mA]
-    const uint32_t     inrushTimeTreshold; // For how long inrush current can be present after first peak [ms] 
-}T_OUT_SAFETY_SOC_PROT_CFG;
+    bool               allowInrush;             // Should inrush current be allowed during SOC operation
+    const uint32_t     inrushWindowFromStart;   // Time window after channel turn-on in which inrush current is allowed
+    const uint32_t     inrushTreshold;          // Allowed maximal current during inrush operation [mA]
+    const uint32_t     inrushTimeTreshold;      // For how long inrush current can be present after first peak [ms] 
+}T_OUT_SAFETY_SOC_CFG;
 
 /// @brief Output channel safety configuration struct
 typedef struct _T_OUT_SAFETY_CFG
@@ -54,7 +61,9 @@ typedef struct _T_OUT_SAFETY_CFG
     const uint16_t     errRetryThreshold; // Number of performed retries
     uint32_t           timerInterval;     // Retry interval
     void               (*safetyCallback)(void); // Safety callback
+    T_OUT_SAFETY_SOC_CFG socCfg;
 }T_OUT_SAFETY_CFG; 
+
 
 /// @brief Output channel configuration struct
 typedef struct _T_OUT_CFG
@@ -67,16 +76,25 @@ typedef struct _T_OUT_CFG
     char             name[OUT_DIAG_NAME_LEN]; // Output channel pretty name
     T_OUT_ID         batch;               // Optional for OUT_MODE_BATCH (BTS500 only)
     T_OUT_SAFETY_CFG safety;              // Safety configuration
-
 }T_OUT_CFG;
+
+typedef struct _T_OUT_SAFETY_SOC_REG
+{
+    T_OUT_SAFETY_SOC_STATUS status;            // Software over-current system status
+    uint32_t                currentTreshold;   // Currently applicable current treshold - can be changed dynamically (Ith) [mA]
+    uint32_t                tripCounter;       // Counter incremented when current is over treshold
+    uint32_t                timeInPreInrush;   // Couter used to measure time from channel start
+}
+T_OUT_SAFETY_SOC_REG;
 
 /// @brief Output channel safety state register
 typedef struct _T_OUT_SAFETY_REG
 {
-    uint16_t           ocTripCounter;    // Counter of ms to trip of overcurrent
-    uint16_t           errRetryCounter;  // Counter of performed retries
-    osTimerId_t        timerHandle;      // Safety osTimer used for timer handling
-    bool               inError;          // Is output channel in error mode? 
+    uint16_t                  ocTripCounter;    // Counter of ms to trip of overcurrent
+    uint16_t                  errRetryCounter;  // Counter of performed retries
+    osTimerId_t               timerHandle;      // Safety osTimer used for timer handling
+    bool                      inError;          // Is output channel in error mode?
+    T_OUT_SAFETY_SOC_REG      socReg;           // software over current status register
 }T_OUT_SAFETY_REG;
 
 /// @brief Output channel state register

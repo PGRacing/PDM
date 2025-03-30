@@ -25,6 +25,7 @@
 /// FUNCTION PROTOTYPES
 static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
 static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
+static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
@@ -95,6 +96,15 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .errRetryThreshold = 3, // 
               .timerInterval = 1000, 
               .safetyCallback = &OUT_CH1_SafetyCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalTreshold = 2000,
+                .allowInrush = TRUE,
+                .inrushWindowFromStart = 1000,
+                .inrushTimeTreshold = 1000,
+                .inrushTreshold = 4000
+              }
             }
         },
         [OUT_ID_2] = {
@@ -693,6 +703,8 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
       {
         if(cfg->type == OUT_TYPE_BTS500)
         {
+          // ARM software over current protection
+          OUT_DIAG_ArmSocProtection(id);
           BSP_OUT_SetStdState(id, reqState);
         }
         else if(cfg->type == OUT_TYPE_SPOC2)
@@ -713,6 +725,8 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
           }
           else if(reqState == OUT_STATE_ON)
           {
+            // ARM software over current protection
+            OUT_DIAG_ArmSocProtection(id);
             // Restore previous PWM duty
             reg->pwmDuty = reg->prevPwmDuty;
             BSP_OUT_SetDutyPWM(id, reg->prevPwmDuty);
@@ -874,11 +888,80 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
   }
 }
 
+/// @brief Arm software over current protection system
+/// @param id 
+/// @note Should be performed when changing output state to ON 
+static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id)
+{
+  // Set status as pre inrush
+  outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_PRE_INRUSH;
+  
+  // Set timer counters to 0
+  outsReg[id].safety.socReg.tripCounter = 0;
+  outsReg[id].safety.socReg.timeInPreInrush = 0;
+
+  if(outsCfg[id].safety.socCfg.allowInrush == true)
+  {
+    outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.inrushTreshold;
+  }
+  else
+  {
+    outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.nominalTreshold;
+    outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
+  }
+  
+}
 
 // TODO Second stage state machine
 static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentMA)
 {
+
+  T_OUT_STATUS status = OUT_STATUS_OK;
   // 1. Channel set on
+  if(OUT_STATE_ON == state)
+  {
+    // 1.1 Check if no void of thresholds
+    if(currentMA >= outsReg[id].safety.socReg.currentTreshold)
+    {
+      OUT_DIAG_OnErrorFallback(id);
+      outsReg[id].safety.socReg.status == OUT_SAFETY_SOC_TRIGGERED;
+      status = OUT_STATUS_SOFT_OC;
+    }
+    // 1.2 If in inrush mode check for first current peak   
+    else if(outsCfg[id].safety.socCfg.allowInrush == true 
+      && outsReg[id].safety.socReg.status == OUT_SAFETY_SOC_PRE_INRUSH)
+    {
+      // Await for first peak
+      if(currentMA >= outsCfg[id].safety.socCfg.nominalTreshold)
+      {
+        // Set off timer
+        outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_INRUSH_WINDOW;
+        outsReg[id].safety.socReg.tripCounter++;
+      }
+      // If no peak current increment time from counter
+      outsReg[id].safety.socReg.timeInPreInrush++;
+
+      if(outsReg[id].safety.socReg.timeInPreInrush >= outsCfg[id].safety.socCfg.inrushWindowFromStart)
+      {
+        outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.nominalTreshold;
+        outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
+      }
+    }
+    // 1.3 If during inrush window increment timer counter
+    else if(outsCfg[id].safety.socCfg.allowInrush == true 
+      && outsReg[id].safety.socReg.status == OUT_SAFETY_SOC_INRUSH_WINDOW)
+    {
+      outsReg[id].safety.socReg.tripCounter++;
+
+      if(outsReg[id].safety.socReg.tripCounter >= outsCfg[id].safety.socCfg.inrushTimeTreshold )
+      {
+        outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.nominalTreshold;
+        outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
+      }
+    }
+  }
+
+  // 1. Channel set ON
   // 2. Check if inrush function is enabled (enableInrush)
   //     2.1. Set Ith = Iinr
   //     2.2. During Tallinr wait till I >= In - wait for first current peak during allowed time (Tallinr)
@@ -886,8 +969,7 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
   //     2.4  During this time check if I >= Iinr, if yes disable channel ASAP if no do nothing
   // 3. Set Ith = In
   // 4. If I >= Ith disable channel asap, otherwise allow normal work
-
-  return OUT_STATUS_OK;
+  return status;
 }
 
 
@@ -929,7 +1011,7 @@ static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, 
       }
     }
   }
-  // `nosis in off state
+  // Diagnosis in off state
   else if(OUT_STATE_OFF == state)
   {
     // Check if channnel is shorted to ground
@@ -976,6 +1058,10 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
 
   // New status calculation
   newStatus = hwStatus;
+
+  T_OUT_STATUS swStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
+
+  newStatus = swStatus;
 
   /* ... */
 
