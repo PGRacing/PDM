@@ -38,7 +38,7 @@
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "preLaunchTask": "Build STM - PDMS",
+            "preLaunchTask": "Set USB permissions",
             "device": "stm32l496",
             "swoConfig":
             {

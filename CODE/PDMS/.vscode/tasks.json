@@ -95,5 +95,11 @@
 		// 		"$gcc"
 		// 	]
 		// }
+		{
+			"type": "shell",
+			"label": "Set USB permissions",
+			"dependsOn": "Build STM - PDMS",
+			"command": "sudo chmod 777 -R /dev/bus/usb"
+		}
 	]
 }

@@ -22,4 +22,18 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     gcc-arm-none-eabi \
     libnewlib-arm-none-eabi \
     gcc \ 
-    libcmocka-dev 
+    libcmocka-dev  \
+    openocd \
+    gdb-multiarch \
+    binutils-multiarch \
+    cppcheck \
+    usbutils \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    
+RUN ln -s /usr/bin/nm /usr/bin/nm-multiarch  \
+    && ln -s /usr/bin/objcopy /usr/bin/objcopy-multiarch \
+    && ln -s /usr/bin/objdump /usr/bin/objdump-multiarch \
+    && ln -s /usr/bin/ranlib /usr/bin/ranlib-multiarch \
+    && ln -s /usr/bin/readelf /usr/bin/readelf-multiarch \
+    && ln -s /usr/bin/strip /usr/bin/strip-multiarch
+
