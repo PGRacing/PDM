@@ -99,10 +99,10 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .socCfg =
               {
                 .useSoc = TRUE,
-                .nominalTreshold = 2000,
+                .nominalThreshold = 2000,
                 .allowInrush = TRUE,
                 .inrushWindowFromStart = 1000,
-                .inrushTimeTreshold = 1000,
+                .inrushTimeThreshold = 1000,
                 .inrushTreshold = 4000
               }
             }
@@ -902,78 +902,97 @@ static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id)
 
   if(outsCfg[id].safety.socCfg.allowInrush == true)
   {
-    outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.inrushTreshold;
+    outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.inrushTreshold;
   }
   else
   {
-    outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.nominalTreshold;
+    outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.nominalThreshold;
     outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
   }
   
 }
 
-// TODO Second stage state machine
+/// @brief Software over current protection processing executed in fast loop
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @param state Output channel state [ON/OFF]
+/// @param voltageMV Output voltage [mV]
+/// @param currentMA Output current [mA]
+/// @return New status of the channel
+/// @note Mode of operation:
+///
+/// 1. Channel is set ON - ARM software over current protection
+/// 2. Check if inrush function is enabled (enableInrush)
+///     2.1. Set Ith = Iinr
+///     2.2. During Tallinr wait till I >= In - wait for first current peak during allowed time (Tallinr)
+///     2.3. Start timer counting down from Tinr to 0
+///     2.4  During this time check if I >= Iinr, if yes disable channel ASAP if no do nothing
+/// 3. Set Ith = In
+/// 4. If I >= Ith disable channel asap, otherwise allow normal work
 static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentMA)
 {
 
   T_OUT_STATUS status = OUT_STATUS_OK;
-  // 1. Channel set on
-  if(OUT_STATE_ON == state)
+  // 1. Channel set ON
+  if (OUT_STATE_ON == state)
   {
-    // 1.1 Check if no void of thresholds
-    if(currentMA >= outsReg[id].safety.socReg.currentTreshold)
+    // 1.1 Check if current exceeds threshold
+    if (currentMA >= outsReg[id].safety.socReg.currentThreshold)
     {
-      OUT_DIAG_OnErrorFallback(id);
-      outsReg[id].safety.socReg.status == OUT_SAFETY_SOC_TRIGGERED;
+      outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_TRIGGERED;
       status = OUT_STATUS_SOFT_OC;
+      // This brakes the rules of coding style, but is used to act as fast as possible
+      return status;
     }
-    // 1.2 If in inrush mode check for first current peak   
-    else if(outsCfg[id].safety.socCfg.allowInrush == true 
-      && outsReg[id].safety.socReg.status == OUT_SAFETY_SOC_PRE_INRUSH)
+    // 1.2 If in inrush mode, check for first current peak
+    else if (outsCfg[id].safety.socCfg.allowInrush == true)
     {
-      // Await for first peak
-      if(currentMA >= outsCfg[id].safety.socCfg.nominalTreshold)
+      if (OUT_SAFETY_SOC_PRE_INRUSH == outsReg[id].safety.socReg.status)
       {
-        // Set off timer
-        outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_INRUSH_WINDOW;
+        // 1.2.1 Await for first peak
+        if (currentMA >= outsCfg[id].safety.socCfg.nominalThreshold)
+        {
+          // Set off timer
+          outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_INRUSH_WINDOW;
+          outsReg[id].safety.socReg.tripCounter++;
+        }
+        else
+        {
+          // 1.2.2 If no peak current, increment time counter
+          outsReg[id].safety.socReg.timeInPreInrush++;
+          
+          // 1.2.3 If counter passes threshold, go into normal operation with lower threshold
+          if (outsReg[id].safety.socReg.timeInPreInrush >= outsCfg[id].safety.socCfg.inrushWindowFromStart)
+          {
+            outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.nominalThreshold;
+            outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
+          }
+        }
+      }
+      else if (OUT_SAFETY_SOC_INRUSH_WINDOW == outsReg[id].safety.socReg.status)
+      {
+        // 1.3 If during inrush window, increment timer counter
         outsReg[id].safety.socReg.tripCounter++;
-      }
-      // If no peak current increment time from counter
-      outsReg[id].safety.socReg.timeInPreInrush++;
 
-      if(outsReg[id].safety.socReg.timeInPreInrush >= outsCfg[id].safety.socCfg.inrushWindowFromStart)
-      {
-        outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.nominalTreshold;
-        outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
-      }
-    }
-    // 1.3 If during inrush window increment timer counter
-    else if(outsCfg[id].safety.socCfg.allowInrush == true 
-      && outsReg[id].safety.socReg.status == OUT_SAFETY_SOC_INRUSH_WINDOW)
-    {
-      outsReg[id].safety.socReg.tripCounter++;
-
-      if(outsReg[id].safety.socReg.tripCounter >= outsCfg[id].safety.socCfg.inrushTimeTreshold )
-      {
-        outsReg[id].safety.socReg.currentTreshold = outsCfg[id].safety.socCfg.nominalTreshold;
-        outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
+        // 1.3.1 If counter passes threshold, go into normal operation with lower threshold
+        if (outsReg[id].safety.socReg.tripCounter >= outsCfg[id].safety.socCfg.inrushTimeThreshold)
+        {
+          outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.nominalThreshold;
+          outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
+        }
       }
     }
   }
-
-  // 1. Channel set ON
-  // 2. Check if inrush function is enabled (enableInrush)
-  //     2.1. Set Ith = Iinr
-  //     2.2. During Tallinr wait till I >= In - wait for first current peak during allowed time (Tallinr)
-  //     2.3. Start timer counting down from Tinr to 0
-  //     2.4  During this time check if I >= Iinr, if yes disable channel ASAP if no do nothing
-  // 3. Set Ith = In
-  // 4. If I >= Ith disable channel asap, otherwise allow normal work
   return status;
 }
 
-
-// TODO Is it new code for detection?  First stage state machine
+/// @brief Hardware assessment of BTS500 output channel
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @param state Output channel state [ON/OFF]
+/// @param voltageMV Output voltage [mV]
+/// @param currentMA Output current [mA]
+/// @param inFault Check if channel is in fault state
+/// @return New status of the channel
+/// @note This funciton is used with BTS500 type of output channels
 static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, uint32_t voltageMV, uint32_t currentMA, uint32_t inFault)
 {
   T_OUT_STATUS newStatus = OUT_STATUS_OK;
@@ -1056,12 +1075,10 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   // Check for hardware issues and state changes
   T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA, inFault);
 
-  // New status calculation
-  newStatus = hwStatus;
-
   T_OUT_STATUS swStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
 
   newStatus = swStatus;
+
 
   /* ... */
 

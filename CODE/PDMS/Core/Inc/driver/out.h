@@ -9,12 +9,15 @@
 
 #define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
 #define OUT_DIAG_NAME_LEN 32
+
+/// @brief Output channel type
 typedef enum
 {
     OUT_TYPE_BTS500   = 0x00, // Simple high current switch Infineon BTS500 type
     OUT_TYPE_SPOC2    = 0x01, // Complex SPI based switch Infineon BTS72220-4ESA
 }T_OUT_TYPE;
 
+/// @brief Output channel when error behavior
 typedef enum
 {
     OUT_ERR_BEH_NO         = 0x00,  // In case of error nothing happens
@@ -23,6 +26,7 @@ typedef enum
     OUT_ERR_BEH_TRY_RETRY  = 0x04,  // In case of error output there are few retries before latch
 }T_OUT_ERR_BEHAVIOR;
 
+/// @brief Output channel software over current status
 typedef enum
 {
     OUT_SAFETY_SOC_PRE_INRUSH       = 0x00,
@@ -32,22 +36,23 @@ typedef enum
 }
 T_OUT_SAFETY_SOC_STATUS;
 
-// After error configuration
+/// @brief Output chhannel after error configuration
 typedef struct _T_OUT_SAFETY_AERR_CFG
 {
     T_OUT_ERR_BEHAVIOR behavior; // After error routine selection
     uint32_t latchTime;          // Time for /ref OUT_ERR_BEH_TIME_LATCH in ms
 }T_OUT_SAFETY_AERR_CFG;
 
+/// @brief Output channel software overcurrent configuration
 typedef struct _T_OUT_SAFETY_SOC_CFG
 {
     bool               useSoc;                  // Should software over current function be used
-    const uint32_t     nominalTreshold;         // Allowed maximal current during nominal operation [mA]
+    const uint32_t     nominalThreshold;         // Allowed maximal current during nominal operation [mA]
     // Inrush current capability
     bool               allowInrush;             // Should inrush current be allowed during SOC operation
     const uint32_t     inrushWindowFromStart;   // Time window after channel turn-on in which inrush current is allowed
     const uint32_t     inrushTreshold;          // Allowed maximal current during inrush operation [mA]
-    const uint32_t     inrushTimeTreshold;      // For how long inrush current can be present after first peak [ms] 
+    const uint32_t     inrushTimeThreshold;      // For how long inrush current can be present after first peak [ms] 
 }T_OUT_SAFETY_SOC_CFG;
 
 /// @brief Output channel safety configuration struct
@@ -78,10 +83,11 @@ typedef struct _T_OUT_CFG
     T_OUT_SAFETY_CFG safety;              // Safety configuration
 }T_OUT_CFG;
 
+/// @brief Output channel software overcurrent status register
 typedef struct _T_OUT_SAFETY_SOC_REG
 {
     T_OUT_SAFETY_SOC_STATUS status;            // Software over-current system status
-    uint32_t                currentTreshold;   // Currently applicable current treshold - can be changed dynamically (Ith) [mA]
+    uint32_t                currentThreshold;   // Currently applicable current treshold - can be changed dynamically (Ith) [mA]
     uint32_t                tripCounter;       // Counter incremented when current is over treshold
     uint32_t                timeInPreInrush;   // Couter used to measure time from channel start
 }
