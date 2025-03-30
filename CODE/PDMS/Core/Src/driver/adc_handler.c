@@ -46,11 +46,9 @@ void adc1TaskStart(void *argument)
         /* Do something with data */
         if(xSemaphoreTake( adc1ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
         {
-            OUT_DIAG_AllBts();
-            xSemaphoreGive(adc1ConvReadySemaphore);
             // Start channel diagnostics
+            OUT_DIAG_AllBts();
             /* TODO [LOW] This call is making protections FreeRTOS dependent it would be better to execute directly in ISR (if possible)*/
-          
         }
     }
 }
@@ -67,7 +65,6 @@ void adc2TaskStart(void *argument)
         {
             // Perform physical inputs assesment
             BSP_IN_EvaluateValues();
-            xSemaphoreGive(adc2ConvReadySemaphore);
             // TODO [MAJOR REWORK] Add synchronization using readout in input.c
             // Input value should be evaluted after execution here
         }
