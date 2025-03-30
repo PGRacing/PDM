@@ -20,17 +20,18 @@
 #define OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD 20 // [mA] Under this value output channel current is considered open load
 #define OUT_DIAG_BTS_DETECT_OPEN_LOAD TRUE // Is open load detection enabled on BTS channels?
 #define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
-//#define OUT_DIAG_BTS500_ADC_VOLTAGE_TO_MA
-
-/// FUNCTION PROTOTYPES
-static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
-static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
-static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
 #define OUT_ASSERT_IN_RANGE_CFG(id)  (ASSERT( (id) >= 0 && (id) < ARRAY_COUNT(outsCfg)))
 #define OUT_ASSERT_IN_RANGE_REG(id)  (ASSERT( (id) >= 0 && (id) < ARRAY_COUNT(outsReg)))
+
+#define OUT_STATUS_GET_HIGHER_PRIORITY(prioa, priob) (prioa > priob ?  prioa : priob)
+
+/// FUNCTION PROTOTYPES
+static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
+static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
+static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
 
 // Get current time in ms
 #define OUT_GET_TIME_MS (pdTICKS_TO_MS( xTaskGetTickCount() ))
@@ -78,6 +79,7 @@ void OUT_CH8_SafetyCallback(void)
 
 #pragma endregion
 
+#pragma region OUTPUT_CONFIG
 /// @brief Main output channels config [1..16]
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
 {
@@ -90,9 +92,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             {
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
-              .useSoc = TRUE,
-              .socThreshold = 10000, // mA
-              .socTripThreshold = 400, // 4 x ms
+              // .useSoc = TRUE,
+              // .socThreshold = 10000, // mA
+              // .socTripThreshold = 400, // 4 x ms
               .errRetryThreshold = 3, // 
               .timerInterval = 1000, 
               .safetyCallback = &OUT_CH1_SafetyCallback,
@@ -114,9 +116,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .safety = 
             {
-              .useSoc = TRUE,
-              .socThreshold = 2000, // 2000mA Threshold
-              .socTripThreshold = 0,
+              // .useSoc = TRUE,
+              // .socThreshold = 2000, // 2000mA Threshold
+              // .socTripThreshold = 0,
               .safetyCallback = &OUT_CH2_SafetyCallback,
             }
         },
@@ -129,9 +131,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             {
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
-              .useSoc = TRUE,
-              .socThreshold = 8000, // mA
-              .socTripThreshold = 1200, // 4 x ms
+              // .useSoc = TRUE,
+              // .socThreshold = 8000, // mA
+              // .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 3, // 
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH3_SafetyCallback,
@@ -146,9 +148,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useSoc = TRUE,
-              .socThreshold = 20000, // mA
-              .socTripThreshold = 1200, // 4 x ms
+              // .useSoc = TRUE,
+              // .socThreshold = 20000, // mA
+              // .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 3, // 
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH4_SafetyCallback,
@@ -163,9 +165,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useSoc = TRUE,
-              .socThreshold = 12000, // mA
-              .socTripThreshold = 4000, // 4 x ms
+              // .useSoc = TRUE,
+              // .socThreshold = 12000, // mA
+              // .socTripThreshold = 4000, // 4 x ms
               .errRetryThreshold = 6, // 
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH5_SafetyCallback,
@@ -180,9 +182,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useSoc = TRUE,
-              .socThreshold = 10000, // mA
-              .socTripThreshold = 2600, // 4 x ms
+              // .useSoc = TRUE,
+              // .socThreshold = 10000, // mA
+              // .socTripThreshold = 2600, // 4 x ms
               .errRetryThreshold = 6, // 
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH6_SafetyCallback,
@@ -197,9 +199,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             {
               .aerrCfg = OUT_ERR_BEH_LATCH,
               .actOnSafety = FALSE,
-              .useSoc = TRUE,
-              .socThreshold = 20000, // mA
-              .socTripThreshold = 1600, // 4 x ms
+              // .useSoc = TRUE,
+              // .socThreshold = 20000, // mA
+              // .socTripThreshold = 1600, // 4 x ms
               .errRetryThreshold = 3, // 
               .timerInterval = 1000,
               .safetyCallback = &OUT_CH7_SafetyCallback,
@@ -213,9 +215,9 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .safety = {
               .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
               .actOnSafety = FALSE,
-              .useSoc = TRUE,
-              .socThreshold = 5000, // mA
-              .socTripThreshold = 1200, // 4 x ms
+              // .useSoc = TRUE,
+              // .socThreshold = 5000, // mA
+              // .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 6, // 
               .timerInterval = 2000,
               .safetyCallback = &OUT_CH8_SafetyCallback,
@@ -288,6 +290,10 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 
 };
 
+#pragma endregion
+
+#pragma region OUTPUT_REGISTER_INIT
+
 /// @brief Main output channel status register
 T_OUT_REG outsReg[OUT_ID_MAX] =
 {
@@ -297,10 +303,9 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
+      .inError = FALSE,
       .errRetryCounter = 0,
       .timerHandle = NULL,
-      .inError = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -311,7 +316,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -325,7 +329,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -339,7 +342,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -353,7 +355,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -367,7 +368,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -381,7 +381,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -395,7 +394,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -409,7 +407,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -423,7 +420,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -437,7 +433,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -451,7 +446,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -465,7 +459,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -479,7 +472,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -493,7 +485,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -507,7 +498,6 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .ocTripCounter = 0,
       .errRetryCounter = 0,
       .timerHandle = NULL,
       .inError = FALSE,
@@ -516,6 +506,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .voltageMV = 0
   }
 };
+
+#pragma endregion
 
 // Acquire config struct
 #define OUT_GETCFGPTR(id) (&(outsCfg[(id)]))
@@ -939,7 +931,7 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
     if (currentMA >= outsReg[id].safety.socReg.currentThreshold)
     {
       outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_TRIGGERED;
-      status = OUT_STATUS_SOFT_OC;
+      status = OUT_STATUS_SOC_FAULT;
       // This brakes the rules of coding style, but is used to act as fast as possible
       return status;
     }
@@ -985,6 +977,16 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
   return status;
 }
 
+static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentMA)
+{
+  /*
+  1. If current over target add to sum 2 * current
+  2. If current under threshold sub sum 2 * current
+  3. Determine threshold as I*2 * t
+  */
+ return OUT_STATUS_OK;
+}
+
 /// @brief Hardware assessment of BTS500 output channel
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @param state Output channel state [ON/OFF]
@@ -1022,7 +1024,7 @@ static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, 
       // Check fault condition
       if(TRUE == inFault)
       {
-        newStatus = OUT_STATUS_HARD_OC_OR_OT; 
+        newStatus = OUT_STATUS_HARD_FAULT; 
       }
       else
       {
@@ -1075,157 +1077,160 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   // Check for hardware issues and state changes
   T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA, inFault);
 
+  // Check for software overcurrent
   T_OUT_STATUS swStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
 
-  newStatus = swStatus;
+  newStatus = OUT_STATUS_GET_HIGHER_PRIORITY(hwStatus, swStatus);
 
-
-  /* ... */
+  // If any error
+  if(newStatus >= OUT_STATUS_PRIORITY_DIV)
+  {
+    OUT_DIAG_OnErrorFallback(id);
+  }
 
   // Set new channel status
   reg->status = newStatus;
 }
 
-// TODO Change it to modular (this should be protection entry)
-/// @brief Perform all needed processing for output channel of BTS type
-/// @param id Output channel id [1..8] T_OUT_ID
-static void OUT_DIAG_SingleBts(T_OUT_ID id)
-{
-  // TODO Perform major rework based on comments and notion document
-  OUT_ASSERT_IN_RANGE(id);
-  // TODO First fix state machine
+// // TOD_OLD Change it to modular (this should be protection entry)
+// /// @brief Perform all needed processing for output channel of BTS type
+// /// @param id Output channel id [1..8] T_OUT_ID
+// static void OUT_DIAG_SingleBts(T_OUT_ID id)
+// {
+//   // TOD_OLD Perform major rework based on comments and notion document
+//   OUT_ASSERT_IN_RANGE(id);
+//   // TOD_OLD First fix state machine
   
-  T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
-  ASSERT(cfg);
+//   T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+//   ASSERT(cfg);
 
-  T_OUT_REG* reg = OUT_GETREGPTR(id);
-  ASSERT(reg);
+//   T_OUT_REG* reg = OUT_GETREGPTR(id);
+//   ASSERT(reg);
 
-  T_OUT_STATUS newStatus = OUT_STATUS_OK;
+//   T_OUT_STATUS newStatus = OUT_STATUS_OK;
 
-  // BTS500 ONLY
-  if( outsCfg[id].type == OUT_TYPE_BTS500)
-  {
+//   // BTS500 ONLY
+//   if( outsCfg[id].type == OUT_TYPE_BTS500)
+//   {
 
-    /// SOFT OC BLOCK START
-    // TODO Access of current should be propably in critical section or some sync should be used, write to memory by DMA, when reading?
-    // Not a real concern in case of in ISR execution on ADC
-    // What if ADC readout is wrong or ADC is malfunctioning? Assure ADC safety
-    // We do soft overcurrent block but we don't now current switch state (maybe hard oc), should be changed
-    reg->currentMA = BSP_OUT_CalcCurrent(id);  
+//     /// SOFT OC BLOCK START
+//     // TOD_OLD Access of current should be propably in critical section or some sync should be used, write to memory by DMA, when reading?
+//     // Not a real concern in case of in ISR execution on ADC
+//     // What if ADC readout is wrong or ADC is malfunctioning? Assure ADC safety
+//     // We do soft overcurrent block but we don't now current switch state (maybe hard oc), should be changed
+//     reg->currentMA = BSP_OUT_CalcCurrent(id);  
 
-    if(TRUE == cfg->safety.useSoc)
-    {
-      if(reg->currentMA > cfg->safety.socThreshold)
-      {
-        if(reg->safety.ocTripCounter >= cfg->safety.socTripThreshold)
-        {
-          newStatus = OUT_STATUS_SOFT_OC;
-          // TODO Make imidiate action on oc detection!!!
-          reg->safety.ocTripCounter = 0;
-        }else
-        {
-          if( OUT_STATE_ON == reg->state)
-          {
-            // TODO Shouldn't be increased by const implement some fusing current
-            reg->safety.ocTripCounter += 4;
-          }
-        }
-      }
-      else
-      {
-        if(reg->safety.ocTripCounter > 0)
-        {
-          reg->safety.ocTripCounter--;
-        }
-      }
-    }
-    /// SOFT OC BLOCK END
+//     if(TRUE == cfg->safety.useSoc)
+//     {
+//       if(reg->currentMA > cfg->safety.socThreshold)
+//       {
+//         if(reg->safety.ocTripCounter >= cfg->safety.socTripThreshold)
+//         {
+//           newStatus = OUT_STATUS_SOC_FAULT;
+//           // TOD_OLD Make imidiate action on oc detection!!!
+//           reg->safety.ocTripCounter = 0;
+//         }else
+//         {
+//           if( OUT_STATE_ON == reg->state)
+//           {
+//             // TODO Shouldn't be increased by const implement some fusing current
+//             reg->safety.ocTripCounter += 4;
+//           }
+//         }
+//       }
+//       else
+//       {
+//         if(reg->safety.ocTripCounter > 0)
+//         {
+//           reg->safety.ocTripCounter--;
+//         }
+//       }
+//     }
+//     /// SOFT OC BLOCK END
 
-    // TODO Implement I2t and heat protection block
+//     // TODO Implement I2t and heat protection block
     
-    /// STATE DETECTION BLOCK START
-    // TODO How is voltage synced with current adc readout???
-    // What in case of ADC error or VMUX malfunction
-    // Add better filtering
-    reg->voltageMV = VMUX_GetValue(id);
-    //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
-    uint32_t batteryVoltage = VMUX_GetBattValue();
-    // TODO This fault level should be changed 
-    // TODO If new zenner diodes installed it should be variable due to used dkilis and resistor
-    // TODO Change for better state detection
-    uint32_t faultLevel = 12000;
-    // TODO Remove not needed call just to access const memory location (performance issue)
-    uint32_t dkilis = BSP_OUT_GetDkilis(id);
-    // TODO Changed this value experimentally 
-    uint32_t voltageHis = 1000; // 1000 mV for now
+//     /// STATE DETECTION BLOCK START
+//     // TODO How is voltage synced with current adc readout???
+//     // What in case of ADC error or VMUX malfunction
+//     // Add better filtering
+//     reg->voltageMV = VMUX_GetValue(id);
+//     //uint32_t fault_level = BSP_OUT_GetDkilis(id) * 4;
+//     uint32_t batteryVoltage = VMUX_GetBattValue();
+//     // TOD_OLD This fault level should be changed 
+//     // TOD_OLD If new zenner diodes installed it should be variable due to used dkilis and resistor
+//     // TOD_OLD Change for better state detection
+//     uint32_t faultLevel = 12000;
+//     // TOD_OLD Remove not needed call just to access const memory location (performance issue)
+//     uint32_t dkilis = BSP_OUT_GetDkilis(id);
+//     // TOD_OLD Changed this value experimentally 
+//     uint32_t voltageHis = 1000; // 1000 mV for now
 
-    T_OUT_STATUS hwStatus = OUT_STATUS_OK;
-    if(OUT_STATE_OFF == reg->state)
-    {
-        if(reg->currentMA >= faultLevel)
-        { 
-          if(abs((int32_t)(batteryVoltage - reg->voltageMV) < voltageHis))
-          {
-            hwStatus = OUT_STATUS_SHORT_TO_VSS;
-          }
-          else
-          {
-            hwStatus = OUT_STATUS_OK;
-          }
-        }
-    }
-    else
-    {
-      // TODO Fix magic values
-        if(reg->currentMA >= faultLevel)
-        {
-          // TODO WARN
-          // No latch on HW
-          //hwStatus = OUT_STATUS_HARD_OC_OR_OT;
-        }
-        // This is shit some in ampers some in mili amps
-        else if(((reg->currentMA <= 0.0000143 * (float)dkilis) && (reg->currentMA > 0.000001 * (float)dkilis)) 
-        || (reg->currentMA <= 0.000001 * (float)dkilis))
-        {
-          // TODO Fix status frequent change on lower current
-          hwStatus = OUT_STATUS_OPEN_LOAD;
-        }
-        // 12000 = 12V
-        else if((reg->voltageMV <= batteryVoltage) && (reg->currentMA > 0.0000143 * (float)dkilis))
-        {
-          hwStatus = OUT_STATUS_OK;
-        }
-    }
-    /// STATE DETECTION BLOCK END
+//     T_OUT_STATUS hwStatus = OUT_STATUS_OK;
+//     if(OUT_STATE_OFF == reg->state)
+//     {
+//         if(reg->currentMA >= faultLevel)
+//         { 
+//           if(abs((int32_t)(batteryVoltage - reg->voltageMV) < voltageHis))
+//           {
+//             hwStatus = OUT_STATUS_SHORT_TO_VSS;
+//           }
+//           else
+//           {
+//             hwStatus = OUT_STATUS_OK;
+//           }
+//         }
+//     }
+//     else
+//     {
+//       // TOD_OLD Fix magic values
+//         if(reg->currentMA >= faultLevel)
+//         {
+//           // TOD_OLD WARN
+//           // No latch on HW
+//           //hwStatus = OUT_STATUS_HARD_OC_OR_OT;
+//         }
+//         // This is shit some in ampers some in mili amps
+//         else if(((reg->currentMA <= 0.0000143 * (float)dkilis) && (reg->currentMA > 0.000001 * (float)dkilis)) 
+//         || (reg->currentMA <= 0.000001 * (float)dkilis))
+//         {
+//           // TOD_OLD Fix status frequent change on lower current
+//           hwStatus = OUT_STATUS_OPEN_LOAD;
+//         }
+//         // 12000 = 12V
+//         else if((reg->voltageMV <= batteryVoltage) && (reg->currentMA > 0.0000143 * (float)dkilis))
+//         {
+//           hwStatus = OUT_STATUS_OK;
+//         }
+//     }
+//     /// STATE DETECTION BLOCK END
 
-    vPortEnterCritical();
-    // TODO Change this to proper state machine
-    // TODO Value such over current or over temperature (even software one) should be hold till restart
-    T_OUT_STATUS prevStatus = reg->status;
-    if(newStatus == OUT_STATUS_SOFT_OC && hwStatus == OUT_STATUS_HARD_OC_OR_OT)
-    {
-    reg->status =  OUT_STATUS_HARD_OC_OR_OT;
-    }else if(newStatus == OUT_STATUS_SOFT_OC)
-    {
-      reg->status = newStatus;
-    }else
-    {
-      reg->status = hwStatus;
-    }
+//     vPortEnterCritical();
+//     // TOD_OLD Change this to proper state machine
+//     // TODO Value such over current or over temperature (even software one) should be hold till restart
+//     T_OUT_STATUS prevStatus = reg->status;
+//     if(newStatus == OUT_STATUS_SOC_FAULT && hwStatus == OUT_STATUS_HARD_FAULT)
+//     {
+//     reg->status =  OUT_STATUS_HARD_FAULT;
+//     }else if(newStatus == OUT_STATUS_SOC_FAULT)
+//     {
+//       reg->status = newStatus;
+//     }else
+//     {
+//       reg->status = hwStatus;
+//     }
 
-    if( reg->status != prevStatus )
-    {
-      if(reg->status == OUT_STATUS_HARD_OC_OR_OT ||
-          reg->status == OUT_STATUS_SOFT_OC ||
-          reg->status == OUT_STATUS_S_AND_H_OC)
-      {
-        OUT_DIAG_OnErrorFallback(id);
-      }
-    }
-    vPortExitCritical();
-  }
-}
+//     if( reg->status != prevStatus )
+//     {
+//       if(reg->status == OUT_STATUS_HARD_FAULT ||
+//           reg->status == OUT_STATUS_SOC_FAULT)
+//       {
+//         OUT_DIAG_OnErrorFallback(id);
+//       }
+//     }
+//     vPortExitCritical();
+//   }
+// }
 
 volatile uint32_t fastLoopDelta = 0;
 

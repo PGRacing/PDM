@@ -17,6 +17,24 @@ typedef enum
     OUT_TYPE_SPOC2    = 0x01, // Complex SPI based switch Infineon BTS72220-4ESA
 }T_OUT_TYPE;
 
+/// @brief Output channel status
+/// @note Sorted by priority
+typedef enum
+{
+    OUT_STATUS_OK            = 0,
+    OUT_STATUS_OPEN_LOAD     = 1,
+
+    OUT_STATUS_PRIORITY_DIV  = 9,
+    // Software protection position
+    OUT_STATUS_SOC_FAULT     = 10,
+    OUT_STATUS_I2T_FAULT     = 11,
+
+    // Hardware protection (always higher priority)
+    OUT_STATUS_SHORT_TO_VSS  = 20,
+    OUT_STATUS_CONTROL_FAIL  = 21,
+    OUT_STATUS_HARD_FAULT    = 22,
+}T_OUT_STATUS;
+
 /// @brief Output channel when error behavior
 typedef enum
 {
@@ -60,10 +78,7 @@ typedef struct _T_OUT_SAFETY_CFG
 {
     T_OUT_SAFETY_AERR_CFG aerrCfg;        // Type beahavior if error occurs
     bool               actOnSafety;       // This specifies if this channel should be turned of when "safety line" is opened
-    bool               useSoc;            // Use software over current function?
-    uint32_t           socThreshold;      // Over-current treshold in mili-ampers
-    const uint16_t     socTripThreshold;  // Number of ms to trip of overcurrent
-    const uint16_t     errRetryThreshold; // Number of performed retries
+    const uint16_t     errRetryThreshold; // Number of retries to be performed
     uint32_t           timerInterval;     // Retry interval
     void               (*safetyCallback)(void); // Safety callback
     T_OUT_SAFETY_SOC_CFG socCfg;
@@ -96,10 +111,9 @@ T_OUT_SAFETY_SOC_REG;
 /// @brief Output channel safety state register
 typedef struct _T_OUT_SAFETY_REG
 {
-    uint16_t                  ocTripCounter;    // Counter of ms to trip of overcurrent
-    uint16_t                  errRetryCounter;  // Counter of performed retries
-    osTimerId_t               timerHandle;      // Safety osTimer used for timer handling
     bool                      inError;          // Is output channel in error mode?
+    uint16_t                  errRetryCounter;  // Counter of performed retries
+    osTimerId_t               timerHandle;      // Safety osTimer used for retry handling
     T_OUT_SAFETY_SOC_REG      socReg;           // software over current status register
 }T_OUT_SAFETY_REG;
 
@@ -108,7 +122,7 @@ typedef struct _T_OUT_REG
 {
     T_OUT_STATE      state;       // Output state (ON / OFF)
     T_OUT_STATUS     status;      // Output status 
-    T_OUT_SAFETY_REG safety;      // Safety state register
+    T_OUT_SAFETY_REG safety;      // Safety status register
     // Acquired from board
     uint32_t         currentMA;   // Here for ease of debug and code simplification
     uint32_t         voltageMV; 

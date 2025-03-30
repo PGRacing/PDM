@@ -46,20 +46,6 @@ typedef enum
     OUT_STATE_ERR_LATCH   = 0x02
 }T_OUT_STATE;
 
-// TODO Consider changing names is S_AND_H_OC used
-// Change to bit mask here
-/// @brief Output channel status
-typedef enum
-{
-    OUT_STATUS_OK            = 0,
-    OUT_STATUS_SOFT_OC       = 1,
-    OUT_STATUS_HARD_OC_OR_OT = 2,
-    OUT_STATUS_SHORT_TO_VSS  = 3,
-    OUT_STATUS_OPEN_LOAD     = 4,
-    OUT_STATUS_S_AND_H_OC    = 5,
-    OUT_STATUS_CONTROL_FAIL  = 6,
-}T_OUT_STATUS;
-
 // STD PIN CONTROL
 
 /// @brief Initialize output channel control pin used mode

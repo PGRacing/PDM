@@ -216,9 +216,9 @@ static void WS2812B_EvaluateLeds(void)
         //         WS2812B_SetSingle(id, red);
         //         break;
         //     case OUT_STATUS_OPEN_LOAD:
-        //     case OUT_STATUS_HARD_OC_OR_OT:
+        //     case OUT_STATUS_HARD_FAULT:
         //     case OUT_STATUS_S_AND_H_OC:
-        //     case OUT_STATUS_SOFT_OC:
+        //     case OUT_STATUS_SOC_FAULT:
         //     case OUT_STATUS_SHORT_TO_VSS:
         //         WS2812B_SetSingle(id, rcpergol);
         //         break;
