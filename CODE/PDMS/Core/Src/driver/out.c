@@ -9,7 +9,7 @@
 #include "tim.h"
 #include "stdlib.h"
 #include "cmsis_os2.h"
-#include "ws2812b.h"
+#include "ws2812b.h"Soc
 
 /// USER DEFINES
 // Safety related defines
@@ -26,7 +26,7 @@
 #define OUT_ASSERT_IN_RANGE_CFG(id)  (ASSERT( (id) >= 0 && (id) < ARRAY_COUNT(outsCfg)))
 #define OUT_ASSERT_IN_RANGE_REG(id)  (ASSERT( (id) >= 0 && (id) < ARRAY_COUNT(outsReg)))
 
-#define OUT_STATUS_GET_HIGHER_PRIORITY(prioa, priob) (prioa > priob ?  prioa : priob)
+#define OUT_STATUS_GET_HIGHER_PRIORITY(prioa, priob) ((prioa > priob) ?  prioa : priob)
 
 /// FUNCTION PROTOTYPES
 static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
@@ -37,44 +37,42 @@ static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
 #define OUT_GET_TIME_MS (pdTICKS_TO_MS( xTaskGetTickCount() ))
 
 // do + while(0) here for correct macro evaluation
-#define OUT_SAFETY_CALLBACK_BODY(id)   do{osTimerStop(OUT_GetRegPtr((id))->safety.timerHandle); \
-                                  OUT_GetRegPtr((id))->safety.timerHandle = NULL; \
-                                  OUT_SetState((id), OUT_STATE_ON); \
-                                  OUT_GetRegPtr((id))->safety.inError = FALSE; }while(0)
+#define OUT_RETRY_CALLBACK_BODY(id)   do{ OUT_SetState((id), OUT_STATE_ON); \
+                                          OUT_GetRegPtr((id))->safety.inRetrySequence = FALSE; }while(0)
 
-#pragma region SAFETY_CALLBACKS
+#pragma region RETRY_CALLBACKS
 
-void OUT_CH1_SafetyCallback(void)
+void OUT_CH1_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_1);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_1);
 }
-void OUT_CH2_SafetyCallback(void)
+void OUT_CH2_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_2);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_2);
 }
-void OUT_CH3_SafetyCallback(void)
+void OUT_CH3_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_3);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_3);
 }
-void OUT_CH4_SafetyCallback(void)
+void OUT_CH4_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_4);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_4);
 }
-void OUT_CH5_SafetyCallback(void)
+void OUT_CH5_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_5);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_5);
 }
-void OUT_CH6_SafetyCallback(void)
+void OUT_CH6_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_6);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_6);
 }
-void OUT_CH7_SafetyCallback(void)
+void OUT_CH7_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_7);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_7);
 }
-void OUT_CH8_SafetyCallback(void)
+void OUT_CH8_RetryCallback(void)
 {
-  OUT_SAFETY_CALLBACK_BODY(OUT_ID_8);
+  OUT_RETRY_CALLBACK_BODY(OUT_ID_8);
 }
 
 #pragma endregion
@@ -90,22 +88,27 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .safety = 
             {
-              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_LATCH 
+              },
+              //.afterErrorCfg = OUT_ERR_BEH_RETRY,
               .actOnSafety = FALSE,
               // .useSoc = TRUE,
               // .socThreshold = 10000, // mA
               // .socTripThreshold = 400, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerInterval = 1000, 
-              .safetyCallback = &OUT_CH1_SafetyCallback,
+           // .retryTimerInterval = 1000, 
+              .retryTimerInterval = 3000,
+              .retryCallback = &OUT_CH1_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
-                .nominalThreshold = 2000,
+                .nominalThreshold = 2500,
                 .allowInrush = TRUE,
-                .inrushWindowFromStart = 1000,
-                .inrushTimeThreshold = 1000,
-                .inrushTreshold = 4000
+                .inrushWindowFromStart = UINT32_MAX,
+                .inrushTimeThreshold = 500,
+                .inrushThreshold = 4000
               }
             }
         },
@@ -119,7 +122,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               // .useSoc = TRUE,
               // .socThreshold = 2000, // 2000mA Threshold
               // .socTripThreshold = 0,
-              .safetyCallback = &OUT_CH2_SafetyCallback,
+              .retryCallback = &OUT_CH2_RetryCallback,
             }
         },
         [OUT_ID_3] = {
@@ -129,14 +132,17 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .safety = 
             {
-              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_RETRY
+              },
               .actOnSafety = FALSE,
               // .useSoc = TRUE,
               // .socThreshold = 8000, // mA
               // .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerInterval = 1000,
-              .safetyCallback = &OUT_CH3_SafetyCallback,
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH3_RetryCallback,
             }
         },
         [OUT_ID_4] = {
@@ -146,14 +152,17 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .safety = 
             {
-              .aerrCfg = OUT_ERR_BEH_LATCH,
+              .afterErrorCfg = 
+              {
+                .behavior = OUT_ERR_BEH_LATCH
+              },
               .actOnSafety = FALSE,
               // .useSoc = TRUE,
               // .socThreshold = 20000, // mA
               // .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerInterval = 1000,
-              .safetyCallback = &OUT_CH4_SafetyCallback,
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH4_RetryCallback,
             }
         },
         [OUT_ID_5] = {
@@ -163,14 +172,17 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .safety = 
             {
-              .aerrCfg = OUT_ERR_BEH_LATCH,
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_LATCH
+              },
               .actOnSafety = FALSE,
               // .useSoc = TRUE,
               // .socThreshold = 12000, // mA
               // .socTripThreshold = 4000, // 4 x ms
               .errRetryThreshold = 6, // 
-              .timerInterval = 1000,
-              .safetyCallback = &OUT_CH5_SafetyCallback,
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH5_RetryCallback,
             }
         },
         [OUT_ID_6] = {
@@ -180,14 +192,17 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .safety = 
             {
-              .aerrCfg = OUT_ERR_BEH_LATCH,
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_LATCH
+              },
               .actOnSafety = FALSE,
               // .useSoc = TRUE,
               // .socThreshold = 10000, // mA
               // .socTripThreshold = 2600, // 4 x ms
               .errRetryThreshold = 6, // 
-              .timerInterval = 1000,
-              .safetyCallback = &OUT_CH6_SafetyCallback,
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH6_RetryCallback,
             }
         },
         [OUT_ID_7] = {
@@ -197,14 +212,17 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .mode = OUT_MODE_UNUSED,
             .safety = 
             {
-              .aerrCfg = OUT_ERR_BEH_LATCH,
+              .afterErrorCfg = 
+              {
+                .behavior = OUT_ERR_BEH_LATCH
+              },
               .actOnSafety = FALSE,
               // .useSoc = TRUE,
               // .socThreshold = 20000, // mA
               // .socTripThreshold = 1600, // 4 x ms
               .errRetryThreshold = 3, // 
-              .timerInterval = 1000,
-              .safetyCallback = &OUT_CH7_SafetyCallback,
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH7_RetryCallback,
             }
         },
         [OUT_ID_8] = {
@@ -213,14 +231,17 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .safety = {
-              .aerrCfg = OUT_ERR_BEH_TRY_RETRY,
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_RETRY
+              },
               .actOnSafety = FALSE,
               // .useSoc = TRUE,
               // .socThreshold = 5000, // mA
               // .socTripThreshold = 1200, // 4 x ms
               .errRetryThreshold = 6, // 
-              .timerInterval = 2000,
-              .safetyCallback = &OUT_CH8_SafetyCallback,
+              .retryTimerInterval = 2000,
+              .retryCallback = &OUT_CH8_RetryCallback,
             }
         },
         [OUT_ID_9] = {
@@ -303,9 +324,9 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .status = OUT_STATUS_OK,
     .safety = 
     {
-      .inError = FALSE,
       .errRetryCounter = 0,
-      .timerHandle = NULL,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -317,8 +338,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -330,8 +351,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -343,8 +364,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -356,8 +377,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -369,8 +390,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -382,8 +403,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -395,8 +416,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -408,8 +429,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -421,8 +442,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -434,8 +455,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -447,8 +468,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -460,8 +481,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -473,8 +494,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -486,8 +507,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -499,8 +520,8 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .safety = 
     {
       .errRetryCounter = 0,
-      .timerHandle = NULL,
-      .inError = FALSE,
+      .retryTimerCounter = 0,
+      .inRetrySequence = FALSE,
     },
     .currentMA = 0,
     .voltageMV = 0
@@ -664,8 +685,8 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
     return FALSE;
   }
 
-  // If channel in error handler it cannot be turned on
-  if(reg->safety.inError == TRUE 
+  // If channel in error handler it cannot be turned on manually
+  if(reg->safety.inRetrySequence == TRUE 
     && reqState == OUT_STATE_ON)
   {
     return FALSE;
@@ -696,7 +717,10 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
         if(cfg->type == OUT_TYPE_BTS500)
         {
           // ARM software over current protection
-          OUT_DIAG_ArmSocProtection(id);
+          if(OUT_STATE_ON == reqState)
+          {
+            OUT_DIAG_ArmSocProtection(id);
+          }
           BSP_OUT_SetStdState(id, reqState);
         }
         else if(cfg->type == OUT_TYPE_SPOC2)
@@ -710,12 +734,12 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
 
       case OUT_MODE_PWM:
       { 
-          if(reqState == OUT_STATE_OFF)
+          if(OUT_STATE_OFF == reqState)
           {
             // Disable channel with storing previous value
             OUT_SetDutyPWM(id, 0);
           }
-          else if(reqState == OUT_STATE_ON)
+          else if(OUT_STATE_ON == reqState)
           {
             // ARM software over current protection
             OUT_DIAG_ArmSocProtection(id);
@@ -813,40 +837,25 @@ static void OUT_DIAG_DispatchRetry(T_OUT_ID id)
   ASSERT(reg);
 
   // TODO This comparsion does not execute proper amount of times
-  if(reg->safety.errRetryCounter >= cfg->safety.errRetryThreshold)
+  if (reg->safety.errRetryCounter >= cfg->safety.errRetryThreshold)
   {
-    // Last error handle 
-    if(reg->safety.timerHandle != NULL)
-    {
-      osTimerStop(reg->safety.timerHandle);
-      reg->safety.timerHandle = NULL;
-    }
     // Disable timer and latch output channel
     OUT_SetState(id, OUT_STATE_ERR_LATCH);
-    reg->safety.inError = TRUE;
-
-    return;
   }
-  else if( reg->safety.timerHandle == NULL)
+  else if (FALSE == reg->safety.inRetrySequence)
   {
     // Check if safety function callback does exist
-    ASSERT(cfg->safety.safetyCallback);
+    ASSERT(cfg->safety.retryCallback);
 
-    // Create timer for retry execution routine
-    reg->safety.timerHandle = osTimerNew((osTimerFunc_t)cfg->safety.safetyCallback, osTimerOnce, NULL, NULL);
-    if(reg->safety.timerHandle)
-    {
-      osTimerStart(reg->safety.timerHandle, pdMS_TO_TICKS(cfg->safety.timerInterval));
-    }else
-    {
-      // If timer creation failed go straight to latch 
-      OUT_SetState(id, OUT_STATE_ERR_LATCH);
-    }
-    
-    reg->safety.inError = TRUE;
+    // Reset timer counter for retry execution routine
+    reg->safety.retryTimerCounter = 0;
+
+    // Set-off retry sequence counter 
+    reg->safety.inRetrySequence = TRUE;
   }
 
   reg->safety.errRetryCounter++;
+  return;
 }
 
 /// @brief Callback executed if switch turned to error, execute proper error handling routine
@@ -858,7 +867,7 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
   const T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
   ASSERT(cfg);
 
-  switch (cfg->safety.aerrCfg.behavior)
+  switch (cfg->safety.afterErrorCfg.behavior)
   {
   case OUT_ERR_BEH_NO:
     break;
@@ -868,10 +877,8 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
     OUT_SetState(id, OUT_STATE_ERR_LATCH);
     break; 
 
-  case OUT_ERR_BEH_TRY_RETRY:
+  case OUT_ERR_BEH_RETRY:
     OUT_SetState(id, OUT_STATE_OFF);
-    // TODO This does not work deterministically (executes more than should)
-    // TODO Shouldn't be based on osTimer, perform hardware timer implementation
     OUT_DIAG_DispatchRetry(id);
     break;
 
@@ -889,12 +896,12 @@ static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id)
   outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_PRE_INRUSH;
   
   // Set timer counters to 0
-  outsReg[id].safety.socReg.tripCounter = 0;
+  outsReg[id].safety.socReg.inrushTripCounter = 0;
   outsReg[id].safety.socReg.timeInPreInrush = 0;
 
   if(outsCfg[id].safety.socCfg.allowInrush == true)
   {
-    outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.inrushTreshold;
+    outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.inrushThreshold;
   }
   else
   {
@@ -945,7 +952,7 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
         {
           // Set off timer
           outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_INRUSH_WINDOW;
-          outsReg[id].safety.socReg.tripCounter++;
+          outsReg[id].safety.socReg.inrushTripCounter++;
         }
         else
         {
@@ -963,10 +970,10 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
       else if (OUT_SAFETY_SOC_INRUSH_WINDOW == outsReg[id].safety.socReg.status)
       {
         // 1.3 If during inrush window, increment timer counter
-        outsReg[id].safety.socReg.tripCounter++;
+        outsReg[id].safety.socReg.inrushTripCounter++;
 
         // 1.3.1 If counter passes threshold, go into normal operation with lower threshold
-        if (outsReg[id].safety.socReg.tripCounter >= outsCfg[id].safety.socCfg.inrushTimeThreshold)
+        if (outsReg[id].safety.socReg.inrushTripCounter >= outsCfg[id].safety.socCfg.inrushTimeThreshold)
         {
           outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.nominalThreshold;
           outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
@@ -984,6 +991,7 @@ static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state
   2. If current under threshold sub sum 2 * current
   3. Determine threshold as I*2 * t
   */
+ 
  return OUT_STATUS_OK;
 }
 
@@ -1026,9 +1034,13 @@ static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, 
       {
         newStatus = OUT_STATUS_HARD_FAULT; 
       }
+      // If output is not in fault and disabled something is wrong
+      // MCU is not able to control output channel
       else
       {
-        newStatus = OUT_STATUS_CONTROL_FAIL;
+        // TODO Some control error occurs due to not sufficent data from VMUX currently won't be used
+        //newStatus = OUT_STATUS_CONTROL_FAIL;
+        newStatus = OUT_STATUS_OK;
       }
     }
   }
@@ -1070,9 +1082,6 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   
   // Get channel voltage from voltage multiplexer ADC data (already calculated)
   reg->voltageMV = VMUX_GetValue(id);
-  
-  // Exit critical section after parameters readout
-  vPortExitCritical();
 
   // Check for hardware issues and state changes
   T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA, inFault);
@@ -1082,14 +1091,29 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
 
   newStatus = OUT_STATUS_GET_HIGHER_PRIORITY(hwStatus, swStatus);
 
-  // If any error
+  // If any error act as selected in configuration
   if(newStatus >= OUT_STATUS_PRIORITY_DIV)
   {
     OUT_DIAG_OnErrorFallback(id);
   }
 
+  // Perform retry procedure
+  if( TRUE == reg->safety.inRetrySequence)
+  {
+    reg->safety.retryTimerCounter++;
+
+    // If timer counter exceeded threshold call retry callback
+    if(reg->safety.retryTimerCounter >= cfg->safety.retryTimerInterval)
+    {
+      cfg->safety.retryCallback();
+    }
+  }
+
   // Set new channel status
   reg->status = newStatus;
+
+  // Exit critical section
+  vPortExitCritical();
 }
 
 // // TOD_OLD Change it to modular (this should be protection entry)
@@ -1232,19 +1256,23 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
 //   }
 // }
 
+
+// Performance watches
 volatile uint32_t fastLoopDelta = 0;
+volatile uint32_t fastLoopPeriod = 0;
+uint32_t t1, t2 = 0;
 
 // FAST CONTROL LOOP BODY
 void OUT_DIAG_AllBts(void)
 {
-  uint32_t t1 = DEBUG_ARM_GET_TIME;
+  t1 = DEBUG_ARM_GET_TIME;
+  fastLoopPeriod = DEBUG_ARM_CLOCKS_TO_US(t1 - t2);
   for(uint8_t id = 0; id < OUT_ID_BTS_MAX; id++)
   {
     OUT_DIAG_SingleBtsNew(id);
   }
-  uint32_t t2 = DEBUG_ARM_GET_TIME;
+  t2 = DEBUG_ARM_GET_TIME;
   fastLoopDelta = DEBUG_ARM_CLOCKS_TO_US(t2 - t1);
-//   LOG_VAR(delta);
 }
 
 /// @brief Perform all needed processing for output channel of SPOC2 type

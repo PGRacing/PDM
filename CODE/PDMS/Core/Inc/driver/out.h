@@ -41,7 +41,7 @@ typedef enum
     OUT_ERR_BEH_NO         = 0x00,  // In case of error nothing happens
     OUT_ERR_BEH_LATCH      = 0x01,  // In case of error output is latched till channel reset
     OUT_ERR_BEH_TIME_LATCH = 0x03,  // In case of error output is latched for give amount of time
-    OUT_ERR_BEH_TRY_RETRY  = 0x04,  // In case of error output there are few retries before latch
+    OUT_ERR_BEH_RETRY  = 0x04,  // In case of error output there are few retries before latch
 }T_OUT_ERR_BEHAVIOR;
 
 /// @brief Output channel software over current status
@@ -69,19 +69,19 @@ typedef struct _T_OUT_SAFETY_SOC_CFG
     // Inrush current capability
     bool               allowInrush;             // Should inrush current be allowed during SOC operation
     const uint32_t     inrushWindowFromStart;   // Time window after channel turn-on in which inrush current is allowed
-    const uint32_t     inrushTreshold;          // Allowed maximal current during inrush operation [mA]
+    const uint32_t     inrushThreshold;          // Allowed maximal current during inrush operation [mA]
     const uint32_t     inrushTimeThreshold;      // For how long inrush current can be present after first peak [ms] 
 }T_OUT_SAFETY_SOC_CFG;
 
 /// @brief Output channel safety configuration struct
 typedef struct _T_OUT_SAFETY_CFG
 {
-    T_OUT_SAFETY_AERR_CFG aerrCfg;        // Type beahavior if error occurs
-    bool               actOnSafety;       // This specifies if this channel should be turned of when "safety line" is opened
-    const uint16_t     errRetryThreshold; // Number of retries to be performed
-    uint32_t           timerInterval;     // Retry interval
-    void               (*safetyCallback)(void); // Safety callback
-    T_OUT_SAFETY_SOC_CFG socCfg;
+    T_OUT_SAFETY_AERR_CFG afterErrorCfg;                // Type beahavior if error occurs
+    bool                  actOnSafety;            // This specifies if this channel should be turned of when "safety line" is opened
+    const uint16_t        errRetryThreshold;      // Number of retries to be performed
+    uint32_t              retryTimerInterval;     // Retry interval
+    void                  (*retryCallback)(void); // Safety callback
+    T_OUT_SAFETY_SOC_CFG  socCfg;
 }T_OUT_SAFETY_CFG; 
 
 
@@ -102,8 +102,8 @@ typedef struct _T_OUT_CFG
 typedef struct _T_OUT_SAFETY_SOC_REG
 {
     T_OUT_SAFETY_SOC_STATUS status;            // Software over-current system status
-    uint32_t                currentThreshold;   // Currently applicable current treshold - can be changed dynamically (Ith) [mA]
-    uint32_t                tripCounter;       // Counter incremented when current is over treshold
+    uint32_t                currentThreshold;  // Currently applicable current threshold - can be changed dynamically (Ith) [mA]
+    uint32_t                inrushTripCounter; // Counter incremented when current is over threshold in inrush
     uint32_t                timeInPreInrush;   // Couter used to measure time from channel start
 }
 T_OUT_SAFETY_SOC_REG;
@@ -111,10 +111,10 @@ T_OUT_SAFETY_SOC_REG;
 /// @brief Output channel safety state register
 typedef struct _T_OUT_SAFETY_REG
 {
-    bool                      inError;          // Is output channel in error mode?
-    uint16_t                  errRetryCounter;  // Counter of performed retries
-    osTimerId_t               timerHandle;      // Safety osTimer used for retry handling
-    T_OUT_SAFETY_SOC_REG      socReg;           // software over current status register
+    bool                      inRetrySequence;   // Is output channel in error mode?
+    uint16_t                  errRetryCounter;   // Counter of performed retries
+    uint32_t                  retryTimerCounter; // Timer counting between retries
+    T_OUT_SAFETY_SOC_REG      socReg;            // software over current status register
 }T_OUT_SAFETY_REG;
 
 /// @brief Output channel state register
