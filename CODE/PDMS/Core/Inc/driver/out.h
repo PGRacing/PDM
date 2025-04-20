@@ -73,29 +73,40 @@ typedef struct _T_OUT_SAFETY_SOC_CFG
     const uint32_t     inrushTimeThreshold;      // For how long inrush current can be present after first peak [ms] 
 }T_OUT_SAFETY_SOC_CFG;
 
+/// @brief Output channel I2t configuration
+typedef struct _T_OUT_SAFETY_I2T_CFG
+{
+    bool               useI2t;                  // Should software I2t function be used
+    const uint32_t     nominalCurrent;          // I2t nominal current [mA/10] eg. 12A = 1200 ; 3.3A = 330 0.1A = 10 (max value 40A)
+    const uint32_t     nominalCurrentSq;        // I2t nominal current squared (fill in via nominal current)
+    const uint32_t     timeThreshold;           // I2t time value
+    const uint32_t     i2tThreshold;            // I2t threshold (nominalCurrentSq * timeThreshold)
+}T_OUT_SAFETY_I2T_CFG;
+
 /// @brief Output channel safety configuration struct
 typedef struct _T_OUT_SAFETY_CFG
 {
-    T_OUT_SAFETY_AERR_CFG afterErrorCfg;                // Type beahavior if error occurs
+    T_OUT_SAFETY_AERR_CFG afterErrorCfg;          // Configuration of after error / fault behavior
     bool                  actOnSafety;            // This specifies if this channel should be turned of when "safety line" is opened
     const uint16_t        errRetryThreshold;      // Number of retries to be performed
     uint32_t              retryTimerInterval;     // Retry interval
     void                  (*retryCallback)(void); // Safety callback
-    T_OUT_SAFETY_SOC_CFG  socCfg;
+    T_OUT_SAFETY_SOC_CFG  socCfg;                 // Software over current configuration
+    T_OUT_SAFETY_I2T_CFG  i2tCfg;                 // I2t configuration
 }T_OUT_SAFETY_CFG; 
 
 
 /// @brief Output channel configuration struct
 typedef struct _T_OUT_CFG
 {
-    const T_OUT_ID   id;                  // Id should reflect position in outsCfg
-    const T_OUT_TYPE type;                // Device type - can be BTS500 or BTS72220
-    T_OUT_MODE       mode;                // Output mode (TYP / PWM / BATCH / ...)
-    const T_SPOC2_ID spocId;              // If device is BTS72220 this holds sub device id
-    const T_SPOC2_CH_ID spocChId;         // If device is BTS72220 this holds sub device respecitve channel id
+    const T_OUT_ID   id;                      // Id should reflect position in outsCfg
+    const T_OUT_TYPE type;                    // Device type - can be BTS500 or BTS72220
+    T_OUT_MODE       mode;                    // Output mode (TYP / PWM / BATCH / ...)
+    const T_SPOC2_ID spocId;                  // If device is BTS72220 this holds sub device id
+    const T_SPOC2_CH_ID spocChId;             // If device is BTS72220 this holds sub device respecitve channel id
     char             name[OUT_DIAG_NAME_LEN]; // Output channel pretty name
-    T_OUT_ID         batch;               // Optional for OUT_MODE_BATCH (BTS500 only)
-    T_OUT_SAFETY_CFG safety;              // Safety configuration
+    T_OUT_ID         batch;                   // Optional for OUT_MODE_BATCH (BTS500 only)
+    T_OUT_SAFETY_CFG safety;                  // Safety configuration
 }T_OUT_CFG;
 
 /// @brief Output channel software overcurrent status register
@@ -108,13 +119,22 @@ typedef struct _T_OUT_SAFETY_SOC_REG
 }
 T_OUT_SAFETY_SOC_REG;
 
+
+/// @brief Output channel I2t status register
+typedef struct _T_OUT_SAFETY_I2T_REG
+{
+    int_fast64_t i2tSum;
+}
+T_OUT_SAFETY_I2T_REG;
+
 /// @brief Output channel safety state register
 typedef struct _T_OUT_SAFETY_REG
 {
     bool                      inRetrySequence;   // Is output channel in error mode?
-    uint16_t                  errRetryCounter;   // Counter of performed retries
+    uint_fast16_t             errRetryCounter;   // Counter of performed retries
     uint32_t                  retryTimerCounter; // Timer counting between retries
-    T_OUT_SAFETY_SOC_REG      socReg;            // software over current status register
+    T_OUT_SAFETY_SOC_REG      socReg;            // Software over current status register
+    T_OUT_SAFETY_I2T_REG      i2tReg;            // I2t status register
 }T_OUT_SAFETY_REG;
 
 /// @brief Output channel state register

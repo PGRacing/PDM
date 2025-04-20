@@ -987,12 +987,28 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
 static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentMA)
 {
   /*
-  1. If current over target add to sum 2 * current
-  2. If current under threshold sub sum 2 * current
+  1. If current over target add to sum current * current
+  2. If current under threshold sub sum current * current
   3. Determine threshold as I*2 * t
   */
- 
- return OUT_STATUS_OK;
+
+  T_OUT_STATUS status = OUT_STATUS_OK;
+
+  // We need to scale down the resolution to fit in int32  
+  int32_t iPart = (currentMA / 10) * (currentMA / 10) - (outsCfg[id].safety.i2tCfg.nominalCurrentSq);
+  // TODO Convert to float and ceil(iPart);
+  
+  if(outsReg[id].safety.i2tReg.i2tSum > 0)
+  {
+    outsReg[id].safety.i2tReg.i2tSum += iPart;
+  }
+  
+  if(outsReg[id].safety.i2tReg.i2tSum >= outsCfg[id].safety.i2tCfg.i2tThreshold)
+  {
+    status = OUT_STATUS_I2T_FAULT;
+  }
+  
+ return status;
 }
 
 /// @brief Hardware assessment of BTS500 output channel
@@ -1444,3 +1460,5 @@ void testTaskEntry(void *argument)
 /// Sync current and voltage 
 /// Change RTOS tasks names (remove entry nomencalture)
 /// Read all and clean up defines
+/// Unify calls to cfg and reg
+/// Change time quanta to 1ms
