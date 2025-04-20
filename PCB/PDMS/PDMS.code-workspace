@@ -35,7 +35,9 @@
 			"ws2812b.h": "c",
 			"main.h": "c",
 			"features.h": "c",
-			"iwdg.h": "c"
+			"iwdg.h": "c",
+			"bsp_input.h": "c",
+			"input.h": "c"
 		},
 		"cortex-debug.variableUseNaturalFormat": true,
 		"workbench.colorCustomizations": {
@@ -57,6 +59,7 @@
 			"titleBar.inactiveBackground": "#380a3f99",
 			"titleBar.inactiveForeground": "#e7e7e799"
 		},
-		"peacock.color": "#380a3f"
+		"peacock.color": "#380a3f",
+		"makefile.configureOnOpen": true
 	}
 }

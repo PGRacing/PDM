@@ -1578,11 +1578,11 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 1c92bec8-845e-4b45-a16e-8f4bff4d4cfa)
   )
-  (polyline (pts (xy 72.898 119.507) (xy 96.266 119.507))
+  (polyline (pts (xy 72.898 119.507) (xy 98.044 119.507))
     (stroke (width 0) (type default) (color 255 0 0 1))
     (uuid 1eb168bc-5ef2-4fb8-af00-621bd51ca562)
   )
-  (polyline (pts (xy 72.898 102.235) (xy 96.266 102.235))
+  (polyline (pts (xy 72.898 102.235) (xy 98.044 102.235))
     (stroke (width 0) (type default) (color 255 0 0 1))
     (uuid 1eb22c53-e07d-466a-8725-1318027dd3f8)
   )
@@ -1629,7 +1629,7 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 2f2f23e4-a69d-4ea3-9f0d-bb291bb32dbb)
   )
-  (polyline (pts (xy 96.266 119.507) (xy 96.266 102.235))
+  (polyline (pts (xy 98.044 119.507) (xy 98.044 102.235))
     (stroke (width 0) (type default) (color 255 0 0 1))
     (uuid 30f086e1-0e6a-4512-b92f-358c5b3efece)
   )
@@ -2434,7 +2434,7 @@
     (effects (font (size 1.8 1.8)) (justify left bottom))
     (uuid cd8c10b9-b68c-4410-8742-c2e4a756c2b6)
   )
-  (text "This needs to \nbe changed to \nAO3404 due to \ntoo low Vgss"
+  (text "This needs to \nbe changed to \nSi2319CDS due to \ntoo low Vgss"
     (at 72.517 149.098 0)
     (effects (font (size 1 1)) (justify left bottom))
     (uuid dd3bc327-336a-4255-9d45-039b35fd2116)
@@ -2451,7 +2451,7 @@
     (effects (font (size 1 1)) (justify left bottom))
     (uuid eabda497-0537-4b3e-9551-b2020dd66541)
   )
-  (text "This needs to \nbe changed to \nAO3404 due to \ntoo low Vgss\n\nADD FUSE!"
+  (text "This needs to \nbe changed to \nSi2319CDS due to \ntoo low Vgss\n\nADD FUSE!"
     (at 83.312 116.713 0)
     (effects (font (size 1 1)) (justify left bottom))
     (uuid ec71ab37-dbf6-4b2a-a17f-eff42f0d5662)
