@@ -1,1996 +1,6058 @@
-(kicad_sch (version 20211123) (generator eeschema)
-
-  (uuid 0b5db7ee-449c-4b99-a9b6-e917219b4548)
-
-  (paper "A4")
-
-  (title_block
-    (title "ARGB - notification LED's")
-    (rev "V4.2")
-    (company "PGRacing Team")
-    (comment 1 "Karol Pergoł")
-  )
-
-  (lib_symbols
-    (symbol "Device:C_Small" (pin_numbers hide) (pin_names (offset 0.254) hide) (in_bom yes) (on_board yes)
-      (property "Reference" "C" (id 0) (at 0.254 1.778 0)
-        (effects (font (size 1.27 1.27)) (justify left))
-      )
-      (property "Value" "C_Small" (id 1) (at 0.254 -2.032 0)
-        (effects (font (size 1.27 1.27)) (justify left))
-      )
-      (property "Footprint" "" (id 2) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "~" (id 3) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_keywords" "capacitor cap" (id 4) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_description" "Unpolarized capacitor, small symbol" (id 5) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_fp_filters" "C_*" (id 6) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "C_Small_0_1"
-        (polyline
-          (pts
-            (xy -1.524 -0.508)
-            (xy 1.524 -0.508)
-          )
-          (stroke (width 0.3302) (type default) (color 0 0 0 0))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy -1.524 0.508)
-            (xy 1.524 0.508)
-          )
-          (stroke (width 0.3048) (type default) (color 0 0 0 0))
-          (fill (type none))
-        )
-      )
-      (symbol "C_Small_1_1"
-        (pin passive line (at 0 2.54 270) (length 2.032)
-          (name "~" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-        (pin passive line (at 0 -2.54 90) (length 2.032)
-          (name "~" (effects (font (size 1.27 1.27))))
-          (number "2" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
-    (symbol "pdms_additional:WS2812B-2020" (in_bom yes) (on_board yes)
-      (property "Reference" "" (id 0) (at 0 0 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Value" "WS2812B-2020" (id 1) (at 1.27 4.445 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (id 2) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (id 3) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Reference_1" "LED" (id 4) (at 21.59 7.62 0)
-        (effects (font (size 1.27 1.27)) (justify left top))
-      )
-      (property "Value_1" "WS2812B-2020" (id 5) (at 21.59 5.08 0)
-        (effects (font (size 1.27 1.27)) (justify left top))
-      )
-      (property "Footprint_1" "WS2812B2020" (id 6) (at 21.59 -94.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 21.59 -194.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Height" "0.84" (id 8) (at 21.59 -394.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Manufacturer_Name" "Worldsemi" (id 9) (at 21.59 -494.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 21.59 -594.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Mouser Part Number" "" (id 11) (at 21.59 -694.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Mouser Price/Stock" "" (id 12) (at 21.59 -794.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Arrow Part Number" "" (id 13) (at 21.59 -894.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "Arrow Price/Stock" "" (id 14) (at 21.59 -994.92 0)
-        (effects (font (size 1.27 1.27)) (justify left top) hide)
-      )
-      (property "ki_description" "LED; SMD; 2020; RGB; 2x2x0.84mm; 3.75.3V; Lens: transparent; 2kHz" (id 15) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "WS2812B-2020_1_1"
-        (rectangle (start 5.08 2.54) (end 20.32 -5.08)
-          (stroke (width 0.254) (type default) (color 0 0 0 0))
-          (fill (type background))
-        )
-        (pin passive line (at 25.4 -2.54 180) (length 5.08)
-          (name "DO" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-        (pin passive line (at 25.4 0 180) (length 5.08)
-          (name "GND" (effects (font (size 1.27 1.27))))
-          (number "2" (effects (font (size 1.27 1.27))))
-        )
-        (pin passive line (at 0 0 0) (length 5.08)
-          (name "DI" (effects (font (size 1.27 1.27))))
-          (number "3" (effects (font (size 1.27 1.27))))
-        )
-        (pin passive line (at 0 -2.54 0) (length 5.08)
-          (name "VDD" (effects (font (size 1.27 1.27))))
-          (number "4" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
-    (symbol "power:+5V" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
-      (property "Reference" "#PWR" (id 0) (at 0 -3.81 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Value" "+5V" (id 1) (at 0 3.556 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (id 2) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (id 3) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_keywords" "power-flag" (id 4) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_description" "Power symbol creates a global label with name \"+5V\"" (id 5) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "+5V_0_1"
-        (polyline
-          (pts
-            (xy -0.762 1.27)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default) (color 0 0 0 0))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 0)
-            (xy 0 2.54)
-          )
-          (stroke (width 0) (type default) (color 0 0 0 0))
-          (fill (type none))
-        )
-        (polyline
-          (pts
-            (xy 0 2.54)
-            (xy 0.762 1.27)
-          )
-          (stroke (width 0) (type default) (color 0 0 0 0))
-          (fill (type none))
-        )
-      )
-      (symbol "+5V_1_1"
-        (pin power_in line (at 0 0 90) (length 0) hide
-          (name "+5V" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
-    (symbol "power:GND" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
-      (property "Reference" "#PWR" (id 0) (at 0 -6.35 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Value" "GND" (id 1) (at 0 -3.81 0)
-        (effects (font (size 1.27 1.27)))
-      )
-      (property "Footprint" "" (id 2) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "Datasheet" "" (id 3) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_keywords" "power-flag" (id 4) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (property "ki_description" "Power symbol creates a global label with name \"GND\" , ground" (id 5) (at 0 0 0)
-        (effects (font (size 1.27 1.27)) hide)
-      )
-      (symbol "GND_0_1"
-        (polyline
-          (pts
-            (xy 0 0)
-            (xy 0 -1.27)
-            (xy 1.27 -1.27)
-            (xy 0 -2.54)
-            (xy -1.27 -1.27)
-            (xy 0 -1.27)
-          )
-          (stroke (width 0) (type default) (color 0 0 0 0))
-          (fill (type none))
-        )
-      )
-      (symbol "GND_1_1"
-        (pin power_in line (at 0 0 270) (length 0) hide
-          (name "GND" (effects (font (size 1.27 1.27))))
-          (number "1" (effects (font (size 1.27 1.27))))
-        )
-      )
-    )
-  )
-
-  (junction (at 84.582 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid 03f63278-91d1-4346-b538-cd667d39f464)
-  )
-  (junction (at 240.538 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid 0ed8a883-0a9e-427f-927d-5d5a845aff6d)
-  )
-  (junction (at 118.618 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid 128208b5-dab0-4f08-a769-3d203d324f90)
-  )
-  (junction (at 148.59 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid 13e85ca8-4ee2-468b-b524-fba625876d27)
-  )
-  (junction (at 120.65 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid 276032e1-3d8b-4d5a-b470-898524cdf1a1)
-  )
-  (junction (at 146.05 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid 34f94b21-aff4-4f85-8a08-6d3f0e343992)
-  )
-  (junction (at 212.09 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid 384ba920-1376-4efd-b1b3-c7ddec8d847b)
-  )
-  (junction (at 115.316 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid 38545877-06af-4224-a919-bb7860f1efe3)
-  )
-  (junction (at 239.522 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid 39a775a1-d26b-493d-9b89-d9f38ac95252)
-  )
-  (junction (at 237.236 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid 3a299563-e33a-4751-a91f-f77804f86fc6)
-  )
-  (junction (at 179.07 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid 3b297ea6-9b20-40f8-b822-d15c18dac58f)
-  )
-  (junction (at 86.868 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid 4052d465-bed2-47a6-a6e7-87003f0bae1e)
-  )
-  (junction (at 28.702 75.184) (diameter 0) (color 0 0 0 0)
-    (uuid 46f829c0-2f1b-46aa-8934-f58eb3e1ed83)
-  )
-  (junction (at 267.97 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid 5292e745-ff99-4ed0-a4b8-9f1754d9533a)
-  )
-  (junction (at 59.436 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid 59b3d7e3-c0e1-4019-b72f-bb1caccacd8c)
-  )
-  (junction (at 270.002 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid 6a924489-55b5-4680-b5df-211e89f4026d)
-  )
-  (junction (at 87.884 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid 6f63d556-74c2-4640-8406-46fd37f3a4f2)
-  )
-  (junction (at 208.788 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid 773970f0-e845-4176-8de8-35b892455584)
-  )
-  (junction (at 57.15 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid 831bbb02-d70f-4eb5-b3d9-d2df2904ce13)
-  )
-  (junction (at 117.602 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid 86571468-fae3-4f6b-8ec2-51bb8fd29f1a)
-  )
-  (junction (at 54.102 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid 98c6161d-8b15-46ee-99ae-42026485f2ad)
-  )
-  (junction (at 176.022 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid 9fd5af97-0bd5-4593-b443-2a8028770e32)
-  )
-  (junction (at 29.972 123.444) (diameter 0) (color 0 0 0 0)
-    (uuid 9fe33489-bea3-449a-a022-61f62cc5a6cf)
-  )
-  (junction (at 181.356 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid a7784fe0-1985-493b-be5e-672c1e01436e)
-  )
-  (junction (at 150.622 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid acd22b72-f05a-46e7-bfbb-9bfa2ddcf256)
-  )
-  (junction (at 57.404 107.696) (diameter 0) (color 0 0 0 0)
-    (uuid aeed08d7-829e-4694-96cb-673602a21a53)
-  )
-  (junction (at 206.502 85.852) (diameter 0) (color 0 0 0 0)
-    (uuid bfc37a40-d801-4aa4-b87a-10fdaedadafe)
-  )
-  (junction (at 209.804 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid c26469f9-b43e-485b-8445-6e669c936a01)
-  )
-  (junction (at 56.134 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid d378dc6b-75fe-4e62-a628-1a08fb46e67d)
-  )
-  (junction (at 26.67 101.6) (diameter 0) (color 0 0 0 0)
-    (uuid d63c3c4e-562f-4fd2-8e96-947cd3db4dbe)
-  )
-  (junction (at 90.17 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid f00eeac9-bd02-4d79-8568-6a29b430e307)
-  )
-  (junction (at 28.702 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid f69818ab-dde0-423b-bd13-5b3d7b81a7d3)
-  )
-  (junction (at 178.054 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid f9bc5345-c17f-4764-bdc8-0413930bdd88)
-  )
-  (junction (at 242.57 69.342) (diameter 0) (color 0 0 0 0)
-    (uuid fb804524-8638-4bf5-bbb1-81229a08500e)
-  )
-  (junction (at 148.082 53.594) (diameter 0) (color 0 0 0 0)
-    (uuid fbafd9cb-b95e-4271-9886-7283763c5c6d)
-  )
-
-  (no_connect (at 86.868 116.84) (uuid 2e6b5352-69f2-4947-be71-f70ec55a22a2))
-
-  (wire (pts (xy 177.546 92.456) (xy 177.546 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 03ef1b05-4ce0-4a7a-9cf9-3910d374e7f8)
-  )
-  (wire (pts (xy 58.166 92.456) (xy 55.626 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 03f652dd-f8c4-46ea-901b-42a6fb4da730)
-  )
-  (wire (pts (xy 146.05 85.852) (xy 115.316 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 0436e0e8-1fb4-41b5-95d8-0706a3377d2c)
-  )
-  (wire (pts (xy 149.606 60.198) (xy 151.638 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 04eafa35-2375-4856-96e1-ce3efee12ab0)
-  )
-  (wire (pts (xy 208.788 53.594) (xy 239.522 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 066ba956-e226-4585-a93f-e403b5a7b61f)
-  )
-  (wire (pts (xy 87.884 114.3) (xy 87.884 107.696))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 0b04962b-15c8-4703-b752-0694a39c5eb9)
-  )
-  (wire (pts (xy 90.17 69.342) (xy 120.65 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 0f12f324-9251-4724-8143-148c8ad1e595)
-  )
-  (wire (pts (xy 21.082 114.3) (xy 30.988 114.3))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 0f31edff-219a-453d-a192-36b89fe62c16)
-  )
-  (wire (pts (xy 207.772 60.198) (xy 208.788 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 10512204-8585-453f-b4cd-b91eb3ef1e8b)
-  )
-  (wire (pts (xy 208.788 60.198) (xy 208.788 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 1084e6aa-5cc3-4ac3-81d2-7615bc83d82d)
-  )
-  (wire (pts (xy 267.97 85.852) (xy 237.236 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 12e64c11-9bd2-405f-b996-6c131fc04458)
-  )
-  (wire (pts (xy 54.102 85.852) (xy 16.764 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 16780133-06d3-485a-8ee7-346a19d58383)
-  )
-  (wire (pts (xy 209.804 94.996) (xy 209.804 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 16cbc359-e29e-4f4c-941f-4c56bad4a4a4)
-  )
-  (wire (pts (xy 176.022 85.852) (xy 146.05 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 16e5889c-910b-45cc-b1f5-b810af7a90f8)
-  )
-  (wire (pts (xy 236.22 92.456) (xy 237.236 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 171d2a69-bac1-4cbd-8ebf-a7242ad8fa52)
-  )
-  (wire (pts (xy 16.764 85.852) (xy 16.764 123.444))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 18704b64-b144-4da9-a10a-cb1ecc095f07)
-  )
-  (wire (pts (xy 208.026 94.996) (xy 205.486 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 19581110-b4a7-4ce2-9283-2b8eb1ac35ad)
-  )
-  (wire (pts (xy 241.554 94.996) (xy 240.538 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 196ee9d9-555f-4c77-bbc6-015590565a7c)
-  )
-  (wire (pts (xy 239.522 60.198) (xy 239.522 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 19ece9b4-696c-4fc0-8191-09f298c3c36e)
-  )
-  (wire (pts (xy 237.236 92.456) (xy 237.236 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 1a56d2b5-62f1-483e-8db0-14c15b11cbd9)
-  )
-  (wire (pts (xy 116.586 60.198) (xy 117.602 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 1b9a94a1-f393-4589-902c-df788079ab6a)
-  )
-  (wire (pts (xy 61.468 116.84) (xy 60.452 116.84))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 1c169bd7-8360-4965-b721-9733dd8a0a6a)
-  )
-  (wire (pts (xy 241.046 62.738) (xy 241.046 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 1cc0b095-f605-4752-96d0-4834e5c0b685)
-  )
-  (wire (pts (xy 206.502 92.456) (xy 206.502 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 221beea8-a349-4595-b335-edf14f042335)
-  )
-  (wire (pts (xy 270.256 85.852) (xy 267.97 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 24ebe09b-294b-4fef-a59b-3dd2435e250b)
-  )
-  (wire (pts (xy 238.506 60.198) (xy 239.522 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 24eda8b3-19bd-4e24-9066-be460a7943ca)
-  )
-  (wire (pts (xy 54.102 92.456) (xy 54.102 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 284ea3e4-e589-4a47-b544-3c775d958ed7)
-  )
-  (wire (pts (xy 116.84 94.996) (xy 114.3 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 2a27ec61-2ebd-41ad-8bbf-c1a172b79cea)
-  )
-  (wire (pts (xy 88.646 60.198) (xy 91.186 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 2b39cd68-0f10-4c92-95d8-82be58e13349)
-  )
-  (wire (pts (xy 176.022 92.456) (xy 176.022 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 2b4ad36e-5b9b-4d6b-8e78-3c149a354acd)
-  )
-  (wire (pts (xy 242.57 69.342) (xy 270.256 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 2cc1fc96-c471-4274-9f02-15402d17728b)
-  )
-  (wire (pts (xy 237.236 85.852) (xy 206.502 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 2d46be1c-9d3e-4977-96bf-bbc7e23f31f5)
-  )
-  (wire (pts (xy 86.868 114.3) (xy 87.884 114.3))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 2d9689d6-e3ed-48b6-81fc-744ecf2d8000)
-  )
-  (wire (pts (xy 57.404 107.696) (xy 87.884 107.696))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 315d427c-fb0b-4423-9f83-ee1cd139b948)
-  )
-  (wire (pts (xy 55.626 92.456) (xy 55.626 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 319d3f50-cf5b-4ee7-be74-c2a0ad35ad79)
-  )
-  (wire (pts (xy 240.538 101.6) (xy 209.804 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 329b528b-2db7-4dfa-9f97-3414a37bf531)
-  )
-  (wire (pts (xy 116.586 62.738) (xy 119.126 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 35408ab7-1f44-484f-be40-fab04c9fcdb5)
-  )
-  (wire (pts (xy 85.852 62.738) (xy 88.646 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 37e32a2e-104a-4447-9595-13861a71607b)
-  )
-  (wire (pts (xy 243.586 62.738) (xy 242.57 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 3abfe823-2e9f-4e35-9756-088f4d5ce467)
-  )
-  (wire (pts (xy 88.9 94.996) (xy 87.884 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 3cbb7ae9-17a6-4c81-af00-558f1f9d5933)
-  )
-  (wire (pts (xy 179.832 60.198) (xy 182.372 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 3de5b8b8-7bd8-4e35-84a9-f4ecfa80d44b)
-  )
-  (wire (pts (xy 60.452 116.84) (xy 60.452 123.444))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 43995e33-f5e7-4204-b48a-a07ef02a800b)
-  )
-  (wire (pts (xy 148.082 60.198) (xy 148.082 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 4617cf52-63e2-4ae4-81cf-646b42efec20)
-  )
-  (wire (pts (xy 56.134 53.594) (xy 86.868 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 478ed501-45e2-42ca-b681-980c16c1732a)
-  )
-  (wire (pts (xy 180.086 92.456) (xy 177.546 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 48e0b2b4-eb0e-416f-9fbe-ef07d43fce05)
-  )
-  (wire (pts (xy 27.686 75.184) (xy 28.702 75.184))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 4b71a936-ce93-47e1-9455-165cee1edb26)
-  )
-  (wire (pts (xy 241.554 92.456) (xy 239.014 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5042fa58-1fb2-4bd5-9ff5-5ac03effb455)
-  )
-  (wire (pts (xy 87.884 94.996) (xy 87.884 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5197906c-eb4e-4b3d-882c-e3bce9d916c4)
-  )
-  (wire (pts (xy 26.67 94.996) (xy 26.67 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 54b10596-4f25-41bf-b14d-7fd13b567f30)
-  )
-  (wire (pts (xy 86.106 94.996) (xy 83.566 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5529cda5-58e9-414c-b777-e1da4d6df691)
-  )
-  (wire (pts (xy 210.566 60.198) (xy 213.106 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 58292db4-b46c-4997-8de1-a54e6c299ef9)
-  )
-  (wire (pts (xy 86.868 60.198) (xy 86.868 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 59a11048-a9aa-43e4-af8d-21ee01486050)
-  )
-  (wire (pts (xy 84.582 92.456) (xy 84.582 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5ad6ed7e-1053-4bef-9ec8-37e9ce325f7d)
-  )
-  (wire (pts (xy 59.436 69.342) (xy 90.17 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5bcfceb7-6859-4801-86e2-935e14f45b50)
-  )
-  (wire (pts (xy 56.134 60.198) (xy 56.134 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5e6e33fe-eb4e-439f-b93d-5360b4318a0a)
-  )
-  (wire (pts (xy 28.702 53.594) (xy 56.134 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 5e8a83eb-41e8-49e8-a68e-d5d1c125d4b8)
-  )
-  (wire (pts (xy 30.988 116.84) (xy 29.972 116.84))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 61f08c23-58cf-4647-bb05-308eb725fdfb)
-  )
-  (wire (pts (xy 86.868 53.594) (xy 117.602 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6252d18e-ce12-4a86-85ad-33c5fc3ace3f)
-  )
-  (wire (pts (xy 22.098 75.184) (xy 22.606 75.184))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 633c6e49-b5a5-48f4-9915-9b390211f822)
-  )
-  (wire (pts (xy 16.764 123.444) (xy 29.972 123.444))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 64d3c1c5-50a4-4bee-b268-f9380ae54a5b)
-  )
-  (wire (pts (xy 177.038 60.198) (xy 178.054 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 64f26f56-fb22-4439-9402-8a68810be3aa)
-  )
-  (wire (pts (xy 120.65 62.738) (xy 120.65 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 664c4600-2086-4025-a481-8e9f255af39d)
-  )
-  (wire (pts (xy 57.15 101.6) (xy 26.67 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 66901c84-815e-46b3-967d-ec4347eded4f)
-  )
-  (wire (pts (xy 59.436 62.738) (xy 59.436 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 67cf6428-39cc-4230-8cc2-e51165a97402)
-  )
-  (wire (pts (xy 115.316 85.852) (xy 84.582 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 69fd55e9-ab06-4de2-8242-c8b532df5657)
-  )
-  (wire (pts (xy 205.486 92.456) (xy 206.502 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6bb75c8f-e063-443c-a51f-bced9cabc7d2)
-  )
-  (wire (pts (xy 24.638 101.6) (xy 24.638 107.696))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6c3c6c53-a844-49f9-a52c-4eceea63a353)
-  )
-  (wire (pts (xy 149.606 62.738) (xy 149.606 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6c7423a0-e509-4f2c-abb4-c847a3d5608a)
-  )
-  (wire (pts (xy 268.986 60.198) (xy 270.002 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6d431135-da00-494f-8c91-29194c4632de)
-  )
-  (wire (pts (xy 90.17 62.738) (xy 90.17 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6e7a6873-8726-44a1-be97-e78c9fd78983)
-  )
-  (wire (pts (xy 58.928 114.3) (xy 61.468 114.3))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6f2e9ccc-33ea-4087-bcad-ce73e9c39365)
-  )
-  (wire (pts (xy 239.014 92.456) (xy 239.014 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 6f6075d9-b005-45b3-8356-3cb754c7de10)
-  )
-  (wire (pts (xy 28.702 69.342) (xy 59.436 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 7164366c-d569-4b57-9a8d-9450948b5b85)
-  )
-  (wire (pts (xy 212.09 69.342) (xy 242.57 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 72693ca4-bf9a-4d76-a089-d77b16820445)
-  )
-  (wire (pts (xy 26.67 101.6) (xy 24.638 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 74ef6fc2-e344-4c1c-b51c-7dd556cdc142)
-  )
-  (wire (pts (xy 177.038 62.738) (xy 179.832 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 76049b26-7e74-4143-bc1b-e0c0f138a43f)
-  )
-  (wire (pts (xy 57.658 60.198) (xy 60.452 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 795186e6-c511-42a7-88aa-10e334bfd8a2)
-  )
-  (wire (pts (xy 148.59 101.6) (xy 118.618 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 7b6620df-7255-44a0-b1e7-a927f06460df)
-  )
-  (wire (pts (xy 27.686 94.996) (xy 26.67 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 7bc34bf9-ac94-406a-9cd8-8360e328c680)
-  )
-  (wire (pts (xy 116.84 92.456) (xy 116.84 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 7c2f4de1-28a0-4c2b-9d98-ecd5909b7dcb)
-  )
-  (wire (pts (xy 149.606 92.456) (xy 147.066 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 7eae69ef-a3cf-49de-ba7e-76d648e0800e)
-  )
-  (wire (pts (xy 179.832 62.738) (xy 179.832 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 8055d5ff-3cf3-48eb-9bba-64f2062a17f3)
-  )
-  (wire (pts (xy 54.102 85.852) (xy 84.582 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 806a954d-00fe-4a2c-bcb2-bc012e8b3709)
-  )
-  (wire (pts (xy 270.002 60.198) (xy 270.002 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 83e7b7e2-b3bf-4353-8303-711c2b6a8f21)
-  )
-  (wire (pts (xy 58.928 116.84) (xy 58.928 114.3))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 8554f2d7-a1fd-40de-8d18-e9a06ac78524)
-  )
-  (wire (pts (xy 267.97 92.456) (xy 267.97 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 85648ea7-ad60-4b7a-91de-193e650764e0)
-  )
-  (wire (pts (xy 266.954 92.456) (xy 267.97 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 86cdb487-2af4-4fb4-8173-17fdc409870c)
-  )
-  (wire (pts (xy 148.59 94.996) (xy 148.59 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 88a6bb3a-5c45-4f29-a413-1a4ab41de6fe)
-  )
-  (wire (pts (xy 114.3 92.456) (xy 115.316 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 88bfb3af-e210-4f70-ad09-fce33a233c6b)
-  )
-  (wire (pts (xy 56.388 114.3) (xy 57.404 114.3))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 88cf9b35-9cb9-4a69-b9b4-f9aadf797548)
-  )
-  (wire (pts (xy 181.356 69.342) (xy 212.09 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 89d5c5ea-8e91-44ea-b32f-09840a34d716)
-  )
-  (wire (pts (xy 179.07 101.6) (xy 148.59 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 8c15ff0c-dc66-4658-bfe8-eaa8fcff0d65)
-  )
-  (wire (pts (xy 55.626 94.996) (xy 53.086 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 8c904242-3bfe-45ce-b496-fe2c5a4ad0d0)
-  )
-  (wire (pts (xy 150.622 62.738) (xy 150.622 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 8e080fbb-f061-48ef-9974-b4d2bc1e5c95)
-  )
-  (wire (pts (xy 242.57 62.738) (xy 242.57 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 8e5844d8-a462-47df-81cb-a81530b92819)
-  )
-  (wire (pts (xy 118.618 94.996) (xy 118.618 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 9033abf1-7720-4db8-bcb0-3d4c53888765)
-  )
-  (wire (pts (xy 145.034 92.456) (xy 146.05 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 922f9e32-8c94-4243-974d-93c52c26f76e)
-  )
-  (wire (pts (xy 213.106 62.738) (xy 212.09 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 927cf8a3-0c85-4342-9840-1f8502eb506d)
-  )
-  (wire (pts (xy 178.054 53.594) (xy 208.788 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 9399aeba-5e04-4122-ab9a-c4ae186428ab)
-  )
-  (wire (pts (xy 28.702 75.184) (xy 28.702 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 953c36f1-09f4-4cdb-a5f8-5f5fa7d18cc9)
-  )
-  (wire (pts (xy 117.602 60.198) (xy 117.602 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 95cbd4b7-30be-418c-8e96-143e84fa5a5d)
-  )
-  (wire (pts (xy 149.606 94.996) (xy 148.59 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 95f70cfb-9a0e-4af6-adfd-a07d74392a26)
-  )
-  (wire (pts (xy 28.702 62.738) (xy 28.702 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 9944ccc9-7328-4c79-b165-5bc64fa0d216)
-  )
-  (wire (pts (xy 239.522 53.594) (xy 270.002 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 9aaf0fb6-ac05-4a51-a416-608d3012cc8f)
-  )
-  (wire (pts (xy 121.666 62.738) (xy 120.65 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 9ca2e341-819c-48c5-ba88-fa02be23e232)
-  )
-  (wire (pts (xy 27.686 92.456) (xy 21.082 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 9cb491c5-239a-4426-a090-8a6da902cc8f)
-  )
-  (wire (pts (xy 181.356 62.738) (xy 181.356 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid 9dce7208-e2ac-427c-8930-0a08824b2368)
-  )
-  (wire (pts (xy 278.638 101.6) (xy 278.638 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a021d34e-922d-469c-a0a2-24e8af75b9a6)
-  )
-  (wire (pts (xy 212.09 62.738) (xy 212.09 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a2d152b3-cd6b-49f6-a0ba-aa3b2884d1ad)
-  )
-  (wire (pts (xy 60.452 62.738) (xy 59.436 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a31bd15f-3788-4029-8fa5-aeddcb7f8db9)
-  )
-  (wire (pts (xy 120.65 69.342) (xy 150.622 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a4c1256a-a610-40d1-809e-58632925feb6)
-  )
-  (wire (pts (xy 210.82 94.996) (xy 209.804 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a4ff2c87-cd02-4dd0-8155-fe0ec27148b8)
-  )
-  (wire (pts (xy 178.054 60.198) (xy 178.054 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a6f564fc-3dc2-4647-b488-1360a0e11d87)
-  )
-  (wire (pts (xy 270.256 69.342) (xy 270.256 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a731c9ad-c28d-4847-9fa7-35d6eddb8b8b)
-  )
-  (wire (pts (xy 115.316 92.456) (xy 115.316 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid a9fd8e29-ac57-46e7-94c8-3a3d4e70bf38)
-  )
-  (wire (pts (xy 85.852 60.198) (xy 86.868 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid ad4d1f31-4988-43a1-84f7-c3a4ca9e7efc)
-  )
-  (wire (pts (xy 210.82 92.456) (xy 208.026 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid af08428c-becf-4643-9ab1-7b27afc07906)
-  )
-  (wire (pts (xy 177.546 94.996) (xy 175.006 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid af43f332-bf0b-452d-8840-afd1abd45f2a)
-  )
-  (wire (pts (xy 147.066 62.738) (xy 149.606 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid b2fae5fc-aca1-4668-beaf-44980c37000e)
-  )
-  (wire (pts (xy 29.972 116.84) (xy 29.972 123.444))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid b4136bc7-fcc0-4efa-92dd-766b385234d5)
-  )
-  (wire (pts (xy 88.9 92.456) (xy 86.106 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid b5189627-6363-4a68-ad75-50563a32c0dd)
-  )
-  (wire (pts (xy 87.884 101.6) (xy 57.15 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid b5d3437f-ddb7-4e81-bd65-3211a46961e0)
-  )
-  (wire (pts (xy 57.404 114.3) (xy 57.404 107.696))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid b67dfa5c-19cf-48c8-915d-f78cac8f5ba8)
-  )
-  (wire (pts (xy 209.804 101.6) (xy 179.07 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid b6eff974-79c2-4ad0-b0f5-59110e31209d)
-  )
-  (wire (pts (xy 117.602 53.594) (xy 148.082 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid baa1bf10-d41e-4133-aa03-5f90a0fde186)
-  )
-  (wire (pts (xy 60.452 123.444) (xy 29.972 123.444))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid bcca8120-d696-4e04-8beb-b89f18f7cbc8)
-  )
-  (wire (pts (xy 278.638 53.594) (xy 270.002 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid bd3c16f2-f3cf-471a-907b-4a8734f67831)
-  )
-  (wire (pts (xy 58.166 94.996) (xy 57.15 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid bdc30420-fbb3-4864-9166-1d98334b1f1b)
-  )
-  (wire (pts (xy 55.118 62.738) (xy 57.658 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid be53d4f7-9944-487e-854c-bcab06f79b53)
-  )
-  (wire (pts (xy 91.186 62.738) (xy 90.17 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid bea7acc9-4794-48e6-b434-14628043339c)
-  )
-  (wire (pts (xy 182.372 62.738) (xy 181.356 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c18445ae-44e3-4c5c-abab-44c56e549eaf)
-  )
-  (wire (pts (xy 55.118 60.198) (xy 56.134 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c1e4871a-cc03-4133-9f71-5b4f7673b07a)
-  )
-  (wire (pts (xy 119.126 62.738) (xy 119.126 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c26f45e4-fda6-46d0-abc7-126feed47066)
-  )
-  (wire (pts (xy 53.086 92.456) (xy 54.102 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c48c1471-0c1d-40e4-9fa7-9d31afbe37e4)
-  )
-  (wire (pts (xy 24.638 107.696) (xy 57.404 107.696))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c4f043e9-934c-4bf9-93f9-3aacbc21fab6)
-  )
-  (wire (pts (xy 57.658 62.738) (xy 57.658 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c56d7b0b-0553-4bce-917f-a0db3cceecff)
-  )
-  (wire (pts (xy 118.618 101.6) (xy 87.884 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c5c76bc3-1378-4e0d-a085-1f9c3c69bd55)
-  )
-  (wire (pts (xy 119.126 60.198) (xy 121.666 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c62c9f2c-b0eb-47b5-b142-e302e6f775b1)
-  )
-  (wire (pts (xy 240.538 94.996) (xy 240.538 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c68f8a49-0814-4a7f-99d0-3ad6e68bee5a)
-  )
-  (wire (pts (xy 239.014 94.996) (xy 236.22 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c7af7b7d-9ce1-47d2-8a50-291f3a5334f2)
-  )
-  (wire (pts (xy 207.772 62.738) (xy 210.566 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid c9e79a6b-34a2-4a25-8cfc-6e5d4feb9c6e)
-  )
-  (wire (pts (xy 210.566 62.738) (xy 210.566 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid cb99af13-2c78-424c-88a0-56e81fce8736)
-  )
-  (wire (pts (xy 119.634 94.996) (xy 118.618 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid cc0a5e55-82b8-4f9f-a18e-f143c758f42d)
-  )
-  (wire (pts (xy 268.986 62.738) (xy 274.32 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid cea993c8-54da-4b9e-81fa-e633ff50e153)
-  )
-  (wire (pts (xy 21.082 92.456) (xy 21.082 114.3))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid ceb9ab58-3307-49f2-9024-fb7e9a675367)
-  )
-  (wire (pts (xy 119.634 92.456) (xy 116.84 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid d0b9f87f-6ade-4835-b11a-334b4ed35264)
-  )
-  (wire (pts (xy 29.718 62.738) (xy 28.702 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid da4cf321-912d-4061-badd-c4efc404ece2)
-  )
-  (wire (pts (xy 151.638 62.738) (xy 150.622 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid daa5738d-a86b-4532-a6bb-dd470c579ce0)
-  )
-  (wire (pts (xy 146.05 92.456) (xy 146.05 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid dc67f74a-14a1-4227-82f9-189c8ddb7de4)
-  )
-  (wire (pts (xy 56.388 116.84) (xy 58.928 116.84))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid dcb50b1a-26dd-4505-901b-a5d0daf8dd11)
-  )
-  (wire (pts (xy 241.046 60.198) (xy 243.586 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid dce3180b-96bc-41cc-a7ff-ba0d170ea435)
-  )
-  (wire (pts (xy 147.066 92.456) (xy 147.066 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid de3ecf07-7f8b-46d6-b133-86055f112f73)
-  )
-  (wire (pts (xy 150.622 69.342) (xy 181.356 69.342))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e17a8271-8f9c-44a5-9d16-c78826a2e78f)
-  )
-  (wire (pts (xy 274.32 62.738) (xy 274.32 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e1f5e51b-8f59-4857-b267-3d3160f04712)
-  )
-  (wire (pts (xy 175.006 92.456) (xy 176.022 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e2ef56c6-bebb-4e2b-84bd-e3bbdeb46660)
-  )
-  (wire (pts (xy 83.566 92.456) (xy 84.582 92.456))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e55175eb-8f22-430c-8a02-ef31f76f8768)
-  )
-  (wire (pts (xy 208.026 92.456) (xy 208.026 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e6fa25c2-dcf1-4c72-a167-6413ce0c217d)
-  )
-  (wire (pts (xy 274.32 94.996) (xy 266.954 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e71da901-3431-43cb-a619-f4e367c2db97)
-  )
-  (wire (pts (xy 180.086 94.996) (xy 179.07 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e7a5e2c3-b603-43ab-ad07-04ffeebdad51)
-  )
-  (wire (pts (xy 148.082 53.594) (xy 178.054 53.594))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e7e1f098-cbf0-4bef-a7d7-6a3e846ec253)
-  )
-  (wire (pts (xy 147.066 60.198) (xy 148.082 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e834fa89-dcc0-4e91-9af7-9449a6931ebf)
-  )
-  (wire (pts (xy 57.15 94.996) (xy 57.15 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid e8a2a193-71b2-4f19-ab96-6ab682490c63)
-  )
-  (wire (pts (xy 238.506 62.738) (xy 241.046 62.738))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid ef53cca8-c900-4f0b-b3f2-e54d618c96ac)
-  )
-  (wire (pts (xy 206.502 85.852) (xy 176.022 85.852))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid efaa55dd-5097-4b0e-9cf4-6161eade4940)
-  )
-  (wire (pts (xy 86.106 92.456) (xy 86.106 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid f28279a5-c311-406e-93dd-cf493bc993cd)
-  )
-  (wire (pts (xy 88.646 62.738) (xy 88.646 60.198))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid f781583a-705f-4e09-ad6d-d47a4381ac1c)
-  )
-  (wire (pts (xy 28.702 77.724) (xy 28.702 75.184))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid f9ab83a3-36bd-43f7-a707-a31c166f5e27)
-  )
-  (wire (pts (xy 147.066 94.996) (xy 145.034 94.996))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid fafaa908-c18a-4eae-8c7f-506788b6f336)
-  )
-  (wire (pts (xy 179.07 94.996) (xy 179.07 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid fceefd1a-3ac1-4671-ad4e-7c31ce955b2c)
-  )
-  (wire (pts (xy 240.538 101.6) (xy 278.638 101.6))
-    (stroke (width 0) (type default) (color 0 0 0 0))
-    (uuid fea917c7-c258-4d20-b6bc-70c8658d07d4)
-  )
-
-  (hierarchical_label "LED_DATA_IN" (shape input) (at 29.718 60.198 180)
-    (effects (font (size 1.27 1.27)) (justify right))
-    (uuid 8f0e9b10-f6e4-4ec7-a5d8-c27a59fc5608)
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 266.954 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 2335d509-0c7f-42ec-a03e-7ae7b25c9a57)
-    (property "Reference" "D31" (id 0) (at 254 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 254 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 266.954 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 266.954 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 254.254 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 254.254 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 245.364 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 245.364 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 245.364 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 245.364 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 245.364 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 245.364 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 245.364 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 245.364 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 245.364 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 45d904ec-4c58-46c1-8fb7-c17e94d67bf9))
-    (pin "2" (uuid ee118173-9759-4a4f-8198-7fddbd929158))
-    (pin "3" (uuid d0cf5cbf-15e7-49ca-9825-5549b0faefd7))
-    (pin "4" (uuid 896e38f5-bd07-4107-aff7-16e4d373f445))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 53.086 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 34c9480d-bd3c-4a2b-8c94-fe528e6f482b)
-    (property "Reference" "D11" (id 0) (at 40.132 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 40.132 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 53.086 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 53.086 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 40.386 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 40.386 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 31.496 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 31.496 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 31.496 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 31.496 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 31.496 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 31.496 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 31.496 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 31.496 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 31.496 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 73122ea0-297a-4a19-b7f3-12beb5d18040))
-    (pin "2" (uuid 7e414fb9-109e-477e-a93a-568bde5b1b36))
-    (pin "3" (uuid 9ca52413-3ddd-465c-bffd-69db63342c67))
-    (pin "4" (uuid 6cd9d30b-874c-4f79-b2f0-0c3c288bbd0e))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 213.106 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 43da279c-ce8a-4d69-8268-fe4e63e6e8c3)
-    (property "Reference" "D22" (id 0) (at 226.06 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 226.06 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 213.106 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 213.106 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 225.806 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 225.806 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 234.696 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 234.696 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 234.696 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 234.696 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 234.696 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 234.696 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 234.696 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 234.696 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 234.696 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid d6c89762-2ff4-49de-bf39-2df39458f5c5))
-    (pin "2" (uuid 394ed8de-f686-4e9c-9f4a-7767dd80cc77))
-    (pin "3" (uuid 61c917fd-f884-4c6e-8efe-df78f29809e4))
-    (pin "4" (uuid 1966bf15-110b-437d-8576-3381b7d45ae8))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 30.988 114.3 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 543e32b7-3172-4505-bef0-c74b3fa3ae39)
-    (property "Reference" "D32" (id 0) (at 43.942 110.49 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 43.942 121.158 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 30.988 114.3 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 30.988 114.3 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 43.688 106.68 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 43.688 108.585 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 52.578 209.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 52.578 309.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 52.578 509.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 52.578 609.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 52.578 709.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 52.578 809.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 52.578 909.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 52.578 1009.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 52.578 1109.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 35e546a6-dba6-4daf-9629-97d8866c33e6))
-    (pin "2" (uuid ebab2717-83c7-45d4-91cc-8db9e4210eea))
-    (pin "3" (uuid 53a33d20-5d00-4c00-8bc3-2fffc448016d))
-    (pin "4" (uuid 5b0df332-240a-4b03-96e8-5ba331b23665))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 60.452 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 5c68141c-294e-408b-a8ed-77b1098ecae3)
-    (property "Reference" "D12" (id 0) (at 73.406 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 73.406 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 60.452 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 60.452 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 73.152 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 73.152 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 82.042 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 82.042 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 82.042 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 82.042 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 82.042 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 82.042 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 82.042 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 82.042 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 82.042 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid b9219d71-ae46-46f5-90c7-6d8c242438aa))
-    (pin "2" (uuid 135d286e-6109-461c-bd84-a0ccfaede90c))
-    (pin "3" (uuid edfc4a57-e3f1-472d-86af-bef96c0d1933))
-    (pin "4" (uuid c9dec73e-f0e9-4224-a6e5-4166271cd72e))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 114.3 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 6881c8fa-da3e-4c9c-985d-9c3b3cbb3f7d)
-    (property "Reference" "D15" (id 0) (at 101.346 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 101.346 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 114.3 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 114.3 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 101.6 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 101.6 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 92.71 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 92.71 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 92.71 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 92.71 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 92.71 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 92.71 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 92.71 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 92.71 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 92.71 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 8cde446e-400b-4722-a518-b8fdf501221a))
-    (pin "2" (uuid a4e864d0-ba16-4a7d-823b-cf7188982491))
-    (pin "3" (uuid 80e3fe93-8ab9-4a2a-a123-eb454ec44801))
-    (pin "4" (uuid dbd01f20-5bd1-477f-8d20-8fccc7c82b78))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 175.006 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 7569e42f-4fed-4ed2-91ea-796eb67e62d5)
-    (property "Reference" "D19" (id 0) (at 162.052 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 162.052 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 175.006 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 175.006 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 162.306 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 162.306 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 153.416 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 153.416 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 153.416 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 153.416 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 153.416 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 153.416 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 153.416 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 153.416 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 153.416 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 33c094e3-5063-4619-9ebd-261b6382bd88))
-    (pin "2" (uuid 6314158c-6052-4032-8647-24f038ea5100))
-    (pin "3" (uuid 2795f510-3361-4a08-af10-684b2dc600b4))
-    (pin "4" (uuid 36cc2978-15c9-4f92-b686-efc73803a9c4))
-  )
-
-  (symbol (lib_id "Device:C_Small") (at 25.146 75.184 90) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 8279a195-b290-4d14-8a5f-42bb7b12c06f)
-    (property "Reference" "C91" (id 0) (at 25.908 70.104 90)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Value" "100n" (id 1) (at 27.178 72.136 90)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 25.146 75.184 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "~" (id 3) (at 25.146 75.184 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 016b7e06-51b5-44a0-9298-7978be2fd004))
-    (pin "2" (uuid 4997fecd-873f-4e91-9d16-54647a460525))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 121.666 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 8a480f8a-cb4c-4cc0-a6b2-efa4a6cdfb32)
-    (property "Reference" "D16" (id 0) (at 134.62 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 134.62 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 121.666 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 121.666 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 134.366 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 134.366 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 143.256 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 143.256 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 143.256 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 143.256 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 143.256 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 143.256 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 143.256 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 143.256 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 143.256 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 4075624a-da7b-4969-9199-b6366c7f2371))
-    (pin "2" (uuid 8506d378-e8f3-4ec0-84ee-9028b36e5e14))
-    (pin "3" (uuid 1d29789d-42fc-4402-9123-d754dca41b22))
-    (pin "4" (uuid 7a07fe35-1c19-4247-a664-b8951ffd09c3))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 151.638 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid 9984b63a-8346-40fd-8eb0-e64ea06b2e38)
-    (property "Reference" "D18" (id 0) (at 164.592 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 164.592 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 151.638 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 151.638 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 164.338 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 164.338 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 173.228 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 173.228 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 173.228 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 173.228 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 173.228 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 173.228 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 173.228 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 173.228 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 173.228 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid f4f16139-c28f-4d3f-8595-3a784bdf2c26))
-    (pin "2" (uuid 7777f905-29be-4f3d-9d6f-ca11e7136ce7))
-    (pin "3" (uuid 8211622d-9458-4e74-9724-3f044842ccb6))
-    (pin "4" (uuid 6a55dfa0-ef38-40de-aedb-f708ea9ea1c5))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 145.034 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid a083a2b7-f937-4927-9393-2d243ceda53e)
-    (property "Reference" "D17" (id 0) (at 132.08 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 132.08 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 145.034 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 145.034 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 132.334 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 132.334 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 123.444 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 123.444 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 123.444 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 123.444 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 123.444 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 123.444 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 123.444 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 123.444 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 123.444 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid d2cde4b9-0c1e-40aa-977e-7047a91ed434))
-    (pin "2" (uuid 17bd2124-3f82-4925-b5e4-ae1dd3f1cb62))
-    (pin "3" (uuid fee8ef33-6167-49ec-ab21-3a90dc9529cc))
-    (pin "4" (uuid 32328ad3-75c1-41af-b4c1-d369d8f0c44c))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 205.486 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid ad00b5db-b555-41d1-873d-3f1cc137d984)
-    (property "Reference" "D21" (id 0) (at 192.532 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 192.532 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 205.486 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 205.486 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 192.786 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 192.786 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 183.896 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 183.896 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 183.896 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 183.896 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 183.896 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 183.896 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 183.896 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 183.896 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 183.896 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 44a85d02-2950-47a7-88b5-68c2d1d78f1c))
-    (pin "2" (uuid 6b7119ba-a05c-4006-8c93-81aa099d9c04))
-    (pin "3" (uuid 10bf629e-3918-4987-a856-038798f5823b))
-    (pin "4" (uuid bd688d43-6fe2-4586-a70d-bfc930ef6f19))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 236.22 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid b35361d8-910e-49a6-a2a0-7512b3501e14)
-    (property "Reference" "D29" (id 0) (at 223.266 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 223.266 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 236.22 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 236.22 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 223.52 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 223.52 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 214.63 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 214.63 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 214.63 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 214.63 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 214.63 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 214.63 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 214.63 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 214.63 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 214.63 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 69a042d5-b3a6-489a-8ad0-551211312793))
-    (pin "2" (uuid f7001bef-2885-4277-a380-14b32eb4b71c))
-    (pin "3" (uuid af072c34-e8e7-47bd-8847-709a7067e08a))
-    (pin "4" (uuid 4507d711-323a-4a56-ad85-b0458fc0b843))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 243.586 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid b5e019de-2eda-437c-87f5-8e268c42e4a9)
-    (property "Reference" "D30" (id 0) (at 256.54 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 256.54 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 243.586 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 243.586 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 256.286 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 256.286 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 265.176 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 265.176 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 265.176 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 265.176 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 265.176 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 265.176 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 265.176 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 265.176 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 265.176 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 5822a91b-e581-4756-81ba-0a800a8c2573))
-    (pin "2" (uuid 5df444df-999f-4ab7-93e9-0d66b83c5a4f))
-    (pin "3" (uuid cd6f2ee7-f74f-4c7e-b448-028ce0eee219))
-    (pin "4" (uuid 96fa456b-4298-4b4d-8c12-025068410564))
-  )
-
-  (symbol (lib_id "power:+5V") (at 28.702 77.724 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid b8d71a99-2ad3-41a9-b958-4909a64238ba)
-    (property "Reference" "#PWR0198" (id 0) (at 28.702 73.914 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+5V" (id 1) (at 26.416 82.042 0)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Footprint" "" (id 2) (at 28.702 77.724 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 28.702 77.724 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 775138f7-902e-4852-a037-d7b43b2b9cf3))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 29.718 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid bf3a7b15-adbc-47a8-a847-6e9de4675f8c)
-    (property "Reference" "D10" (id 0) (at 42.672 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 42.672 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 29.718 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 29.718 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 42.418 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 42.418 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 51.308 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 51.308 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 51.308 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 51.308 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 51.308 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 51.308 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 51.308 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 51.308 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 51.308 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 9e3288ae-7334-4fdd-8b19-9df72da17738))
-    (pin "2" (uuid fe02f399-e15b-4538-b220-c7f8ec143b8e))
-    (pin "3" (uuid ed973c53-8d4d-4839-b105-d2ff26b445de))
-    (pin "4" (uuid ae1116a9-dd46-43d2-94cf-3687668e47d3))
-  )
-
-  (symbol (lib_id "power:GND") (at 22.098 75.184 270) (unit 1)
-    (in_bom yes) (on_board yes) (fields_autoplaced)
-    (uuid d066cf54-14d7-41f8-ac41-71d2e6e6ff84)
-    (property "Reference" "#PWR0389" (id 0) (at 15.748 75.184 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "GND" (id 1) (at 16.51 75.184 0))
-    (property "Footprint" "" (id 2) (at 22.098 75.184 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 22.098 75.184 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid cf7ee894-33e3-4720-b4c1-1831238c81ff))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 91.186 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid def9f54d-1110-411c-bbc1-ee0dc17f3899)
-    (property "Reference" "D14" (id 0) (at 104.14 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 104.14 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 91.186 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 91.186 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 103.886 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 103.886 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 112.776 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 112.776 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 112.776 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 112.776 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 112.776 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 112.776 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 112.776 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 112.776 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 112.776 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid f3d27a1c-a070-4bfb-b378-1ac4ff8df066))
-    (pin "2" (uuid 25b40e11-89d9-4327-b898-97370954f84f))
-    (pin "3" (uuid c68e796a-6863-4589-8ff5-3a9256f52834))
-    (pin "4" (uuid 25f89f5c-e41e-4571-95be-aebb997547ff))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 182.372 60.198 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid ec1fdd2c-defa-4540-8772-9d0b9bee94d7)
-    (property "Reference" "D20" (id 0) (at 195.326 56.388 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 195.326 67.056 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 182.372 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 182.372 60.198 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 195.072 52.578 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 195.072 54.483 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 203.962 155.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 203.962 255.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 203.962 455.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 203.962 555.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 203.962 655.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 203.962 755.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 203.962 855.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 203.962 955.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 203.962 1055.118 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid a39d353c-fb7c-458c-a351-eb4793a11f9e))
-    (pin "2" (uuid 1d03f32a-59aa-4fa9-999a-3b954e91d872))
-    (pin "3" (uuid 3d58aab2-afb5-40d2-9ac9-cd19cd9f3d0a))
-    (pin "4" (uuid cb044aec-7491-4a1d-942b-5137197a0998))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 61.468 114.3 0) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid f281eb7e-099d-47ae-9166-209f472b5232)
-    (property "Reference" "D36" (id 0) (at 74.422 110.49 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 74.422 121.158 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 61.468 114.3 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 61.468 114.3 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 74.168 106.68 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 74.168 108.585 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 83.058 209.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 83.058 309.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 83.058 509.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 83.058 609.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 83.058 709.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 83.058 809.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 83.058 909.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 83.058 1009.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 83.058 1109.22 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 689a1770-176b-4a9f-a34e-8035028c98a3))
-    (pin "2" (uuid 4df2e979-f1f7-4be1-94a7-4a4de3ba81bc))
-    (pin "3" (uuid 18b7146b-7e60-4d33-8864-9aef436e79f5))
-    (pin "4" (uuid 51d8cac1-c29c-4f8e-9b85-62e773b9c44c))
-  )
-
-  (symbol (lib_id "pdms_additional:WS2812B-2020") (at 83.566 94.996 180) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid fde4a0f9-a19e-4347-9abf-a78e6b67b1af)
-    (property "Reference" "D13" (id 0) (at 70.612 98.806 0))
-    (property "Value" "WS2812B-2020" (id 1) (at 70.612 88.138 0))
-    (property "Footprint" "PDMS_Additional:WS2812B2020" (id 2) (at 83.566 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 83.566 94.996 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Reference_1" "LED" (id 4) (at 70.866 102.616 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value_1" "WS2812B-2020" (id 5) (at 70.866 100.711 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Footprint_1" "WS2812B2020" (id 6) (at 61.976 0.076 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html" (id 7) (at 61.976 -99.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Height" "0.84" (id 8) (at 61.976 -299.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Name" "Worldsemi" (id 9) (at 61.976 -399.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Manufacturer_Part_Number" "WS2812B-2020" (id 10) (at 61.976 -499.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Part Number" "" (id 11) (at 61.976 -599.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Mouser Price/Stock" "" (id 12) (at 61.976 -699.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Part Number" "" (id 13) (at 61.976 -799.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (property "Arrow Price/Stock" "" (id 14) (at 61.976 -899.924 0)
-      (effects (font (size 1.27 1.27)) (justify left top) hide)
-    )
-    (pin "1" (uuid 89843628-60f7-4b49-aeb0-a6e8c2977822))
-    (pin "2" (uuid d86ac889-9f06-4414-aae0-fd534c0a2db4))
-    (pin "3" (uuid 7b88a62b-845a-4d18-b636-1499ae84addb))
-    (pin "4" (uuid 48721998-4bd4-472f-bd48-dbd7487bdb79))
-  )
-
-  (symbol (lib_id "power:GND") (at 28.702 53.594 270) (unit 1)
-    (in_bom yes) (on_board yes)
-    (uuid fe2d2786-e372-463e-babc-c9e169d852b5)
-    (property "Reference" "#PWR0193" (id 0) (at 22.352 53.594 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "GND" (id 1) (at 21.59 53.594 90)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "" (id 2) (at 28.702 53.594 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 28.702 53.594 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 396cb145-7b50-4c41-ac1f-6d0bec28259a))
-  )
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "0b5db7ee-449c-4b99-a9b6-e917219b4548")
+	(paper "A4")
+	(title_block
+		(title "ARGB - notification LED's")
+		(rev "V4.2")
+		(company "PGRacing Team")
+		(comment 1 "Karol Pergoł")
+	)
+	(lib_symbols
+		(symbol "Device:C_Small"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0.254) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "C"
+				(at 0.254 1.778 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C_Small"
+				(at 0.254 -2.032 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Unpolarized capacitor, small symbol"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "capacitor cap"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "C_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "C_Small_0_1"
+				(polyline
+					(pts
+						(xy -1.524 -0.508) (xy 1.524 -0.508)
+					)
+					(stroke
+						(width 0.3302)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.524 0.508) (xy 1.524 0.508)
+					)
+					(stroke
+						(width 0.3048)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "C_Small_1_1"
+				(pin passive line
+					(at 0 2.54 270)
+					(length 2.032)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 2.032)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "pdms_additional:WS2812B-2020"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "WS2812B-2020"
+				(at 1.27 4.445 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "LED; SMD; 2020; RGB; 2x2x0.84mm; 3.75.3V; Lens: transparent; 2kHz"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Reference_1" "LED"
+				(at 21.59 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "Value_1" "WS2812B-2020"
+				(at 21.59 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+				)
+			)
+			(property "Footprint_1" "WS2812B2020"
+				(at 21.59 -94.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+				(at 21.59 -194.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Height" "0.84"
+				(at 21.59 -394.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Manufacturer_Name" "Worldsemi"
+				(at 21.59 -494.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Manufacturer_Part_Number" "WS2812B-2020"
+				(at 21.59 -594.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Mouser Part Number" ""
+				(at 21.59 -694.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Mouser Price/Stock" ""
+				(at 21.59 -794.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Arrow Part Number" ""
+				(at 21.59 -894.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(property "Arrow Price/Stock" ""
+				(at 21.59 -994.92 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left top)
+					(hide yes)
+				)
+			)
+			(symbol "WS2812B-2020_1_1"
+				(rectangle
+					(start 5.08 2.54)
+					(end 20.32 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin passive line
+					(at 25.4 -2.54 180)
+					(length 5.08)
+					(name "DO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 25.4 0 180)
+					(length 5.08)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 0 0)
+					(length 5.08)
+					(name "DI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 0)
+					(length 5.08)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "power:+5V"
+			(power)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "+5V"
+				(at 0 3.556 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"+5V\""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "power-flag"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "+5V_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "+5V_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0) hide
+					(name "+5V"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "power:GND"
+			(power)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "power-flag"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0) hide
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+	)
+	(junction
+		(at 84.582 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "03f63278-91d1-4346-b538-cd667d39f464")
+	)
+	(junction
+		(at 240.538 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0ed8a883-0a9e-427f-927d-5d5a845aff6d")
+	)
+	(junction
+		(at 118.618 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "128208b5-dab0-4f08-a769-3d203d324f90")
+	)
+	(junction
+		(at 148.59 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "13e85ca8-4ee2-468b-b524-fba625876d27")
+	)
+	(junction
+		(at 120.65 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "276032e1-3d8b-4d5a-b470-898524cdf1a1")
+	)
+	(junction
+		(at 146.05 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "34f94b21-aff4-4f85-8a08-6d3f0e343992")
+	)
+	(junction
+		(at 212.09 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "384ba920-1376-4efd-b1b3-c7ddec8d847b")
+	)
+	(junction
+		(at 115.316 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "38545877-06af-4224-a919-bb7860f1efe3")
+	)
+	(junction
+		(at 239.522 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "39a775a1-d26b-493d-9b89-d9f38ac95252")
+	)
+	(junction
+		(at 237.236 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3a299563-e33a-4751-a91f-f77804f86fc6")
+	)
+	(junction
+		(at 179.07 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3b297ea6-9b20-40f8-b822-d15c18dac58f")
+	)
+	(junction
+		(at 86.868 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4052d465-bed2-47a6-a6e7-87003f0bae1e")
+	)
+	(junction
+		(at 28.702 75.184)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "46f829c0-2f1b-46aa-8934-f58eb3e1ed83")
+	)
+	(junction
+		(at 267.97 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5292e745-ff99-4ed0-a4b8-9f1754d9533a")
+	)
+	(junction
+		(at 59.436 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "59b3d7e3-c0e1-4019-b72f-bb1caccacd8c")
+	)
+	(junction
+		(at 270.002 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6a924489-55b5-4680-b5df-211e89f4026d")
+	)
+	(junction
+		(at 87.884 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6f63d556-74c2-4640-8406-46fd37f3a4f2")
+	)
+	(junction
+		(at 208.788 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "773970f0-e845-4176-8de8-35b892455584")
+	)
+	(junction
+		(at 57.15 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "831bbb02-d70f-4eb5-b3d9-d2df2904ce13")
+	)
+	(junction
+		(at 117.602 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "86571468-fae3-4f6b-8ec2-51bb8fd29f1a")
+	)
+	(junction
+		(at 54.102 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "98c6161d-8b15-46ee-99ae-42026485f2ad")
+	)
+	(junction
+		(at 176.022 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9fd5af97-0bd5-4593-b443-2a8028770e32")
+	)
+	(junction
+		(at 29.972 123.444)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9fe33489-bea3-449a-a022-61f62cc5a6cf")
+	)
+	(junction
+		(at 181.356 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a7784fe0-1985-493b-be5e-672c1e01436e")
+	)
+	(junction
+		(at 150.622 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "acd22b72-f05a-46e7-bfbb-9bfa2ddcf256")
+	)
+	(junction
+		(at 57.404 107.696)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "aeed08d7-829e-4694-96cb-673602a21a53")
+	)
+	(junction
+		(at 206.502 85.852)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bfc37a40-d801-4aa4-b87a-10fdaedadafe")
+	)
+	(junction
+		(at 209.804 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c26469f9-b43e-485b-8445-6e669c936a01")
+	)
+	(junction
+		(at 56.134 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d378dc6b-75fe-4e62-a628-1a08fb46e67d")
+	)
+	(junction
+		(at 26.67 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d63c3c4e-562f-4fd2-8e96-947cd3db4dbe")
+	)
+	(junction
+		(at 90.17 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f00eeac9-bd02-4d79-8568-6a29b430e307")
+	)
+	(junction
+		(at 28.702 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f69818ab-dde0-423b-bd13-5b3d7b81a7d3")
+	)
+	(junction
+		(at 178.054 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f9bc5345-c17f-4764-bdc8-0413930bdd88")
+	)
+	(junction
+		(at 242.57 69.342)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fb804524-8638-4bf5-bbb1-81229a08500e")
+	)
+	(junction
+		(at 148.082 53.594)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fbafd9cb-b95e-4271-9886-7283763c5c6d")
+	)
+	(no_connect
+		(at 86.868 116.84)
+		(uuid "2e6b5352-69f2-4947-be71-f70ec55a22a2")
+	)
+	(wire
+		(pts
+			(xy 177.546 92.456) (xy 177.546 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03ef1b05-4ce0-4a7a-9cf9-3910d374e7f8")
+	)
+	(wire
+		(pts
+			(xy 58.166 92.456) (xy 55.626 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03f652dd-f8c4-46ea-901b-42a6fb4da730")
+	)
+	(wire
+		(pts
+			(xy 146.05 85.852) (xy 115.316 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0436e0e8-1fb4-41b5-95d8-0706a3377d2c")
+	)
+	(wire
+		(pts
+			(xy 149.606 60.198) (xy 151.638 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "04eafa35-2375-4856-96e1-ce3efee12ab0")
+	)
+	(wire
+		(pts
+			(xy 208.788 53.594) (xy 239.522 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "066ba956-e226-4585-a93f-e403b5a7b61f")
+	)
+	(wire
+		(pts
+			(xy 87.884 114.3) (xy 87.884 107.696)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0b04962b-15c8-4703-b752-0694a39c5eb9")
+	)
+	(wire
+		(pts
+			(xy 90.17 69.342) (xy 120.65 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0f12f324-9251-4724-8143-148c8ad1e595")
+	)
+	(wire
+		(pts
+			(xy 21.082 114.3) (xy 30.988 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0f31edff-219a-453d-a192-36b89fe62c16")
+	)
+	(wire
+		(pts
+			(xy 207.772 60.198) (xy 208.788 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "10512204-8585-453f-b4cd-b91eb3ef1e8b")
+	)
+	(wire
+		(pts
+			(xy 208.788 60.198) (xy 208.788 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1084e6aa-5cc3-4ac3-81d2-7615bc83d82d")
+	)
+	(wire
+		(pts
+			(xy 267.97 85.852) (xy 237.236 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "12e64c11-9bd2-405f-b996-6c131fc04458")
+	)
+	(wire
+		(pts
+			(xy 54.102 85.852) (xy 16.764 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "16780133-06d3-485a-8ee7-346a19d58383")
+	)
+	(wire
+		(pts
+			(xy 209.804 94.996) (xy 209.804 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "16cbc359-e29e-4f4c-941f-4c56bad4a4a4")
+	)
+	(wire
+		(pts
+			(xy 176.022 85.852) (xy 146.05 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "16e5889c-910b-45cc-b1f5-b810af7a90f8")
+	)
+	(wire
+		(pts
+			(xy 236.22 92.456) (xy 237.236 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "171d2a69-bac1-4cbd-8ebf-a7242ad8fa52")
+	)
+	(wire
+		(pts
+			(xy 16.764 85.852) (xy 16.764 123.444)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "18704b64-b144-4da9-a10a-cb1ecc095f07")
+	)
+	(wire
+		(pts
+			(xy 208.026 94.996) (xy 205.486 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "19581110-b4a7-4ce2-9283-2b8eb1ac35ad")
+	)
+	(wire
+		(pts
+			(xy 241.554 94.996) (xy 240.538 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "196ee9d9-555f-4c77-bbc6-015590565a7c")
+	)
+	(wire
+		(pts
+			(xy 239.522 60.198) (xy 239.522 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "19ece9b4-696c-4fc0-8191-09f298c3c36e")
+	)
+	(wire
+		(pts
+			(xy 237.236 92.456) (xy 237.236 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1a56d2b5-62f1-483e-8db0-14c15b11cbd9")
+	)
+	(wire
+		(pts
+			(xy 116.586 60.198) (xy 117.602 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1b9a94a1-f393-4589-902c-df788079ab6a")
+	)
+	(wire
+		(pts
+			(xy 61.468 116.84) (xy 60.452 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1c169bd7-8360-4965-b721-9733dd8a0a6a")
+	)
+	(wire
+		(pts
+			(xy 241.046 62.738) (xy 241.046 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1cc0b095-f605-4752-96d0-4834e5c0b685")
+	)
+	(wire
+		(pts
+			(xy 206.502 92.456) (xy 206.502 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "221beea8-a349-4595-b335-edf14f042335")
+	)
+	(wire
+		(pts
+			(xy 270.256 85.852) (xy 267.97 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "24ebe09b-294b-4fef-a59b-3dd2435e250b")
+	)
+	(wire
+		(pts
+			(xy 238.506 60.198) (xy 239.522 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "24eda8b3-19bd-4e24-9066-be460a7943ca")
+	)
+	(wire
+		(pts
+			(xy 54.102 92.456) (xy 54.102 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "284ea3e4-e589-4a47-b544-3c775d958ed7")
+	)
+	(wire
+		(pts
+			(xy 116.84 94.996) (xy 114.3 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2a27ec61-2ebd-41ad-8bbf-c1a172b79cea")
+	)
+	(wire
+		(pts
+			(xy 88.646 60.198) (xy 91.186 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2b39cd68-0f10-4c92-95d8-82be58e13349")
+	)
+	(wire
+		(pts
+			(xy 176.022 92.456) (xy 176.022 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2b4ad36e-5b9b-4d6b-8e78-3c149a354acd")
+	)
+	(wire
+		(pts
+			(xy 242.57 69.342) (xy 270.256 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2cc1fc96-c471-4274-9f02-15402d17728b")
+	)
+	(wire
+		(pts
+			(xy 237.236 85.852) (xy 206.502 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2d46be1c-9d3e-4977-96bf-bbc7e23f31f5")
+	)
+	(wire
+		(pts
+			(xy 86.868 114.3) (xy 87.884 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2d9689d6-e3ed-48b6-81fc-744ecf2d8000")
+	)
+	(wire
+		(pts
+			(xy 57.404 107.696) (xy 87.884 107.696)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "315d427c-fb0b-4423-9f83-ee1cd139b948")
+	)
+	(wire
+		(pts
+			(xy 55.626 92.456) (xy 55.626 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "319d3f50-cf5b-4ee7-be74-c2a0ad35ad79")
+	)
+	(wire
+		(pts
+			(xy 240.538 101.6) (xy 209.804 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "329b528b-2db7-4dfa-9f97-3414a37bf531")
+	)
+	(wire
+		(pts
+			(xy 116.586 62.738) (xy 119.126 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "35408ab7-1f44-484f-be40-fab04c9fcdb5")
+	)
+	(wire
+		(pts
+			(xy 85.852 62.738) (xy 88.646 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "37e32a2e-104a-4447-9595-13861a71607b")
+	)
+	(wire
+		(pts
+			(xy 243.586 62.738) (xy 242.57 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3abfe823-2e9f-4e35-9756-088f4d5ce467")
+	)
+	(wire
+		(pts
+			(xy 88.9 94.996) (xy 87.884 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3cbb7ae9-17a6-4c81-af00-558f1f9d5933")
+	)
+	(wire
+		(pts
+			(xy 179.832 60.198) (xy 182.372 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3de5b8b8-7bd8-4e35-84a9-f4ecfa80d44b")
+	)
+	(wire
+		(pts
+			(xy 60.452 116.84) (xy 60.452 123.444)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "43995e33-f5e7-4204-b48a-a07ef02a800b")
+	)
+	(wire
+		(pts
+			(xy 148.082 60.198) (xy 148.082 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4617cf52-63e2-4ae4-81cf-646b42efec20")
+	)
+	(wire
+		(pts
+			(xy 56.134 53.594) (xy 86.868 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "478ed501-45e2-42ca-b681-980c16c1732a")
+	)
+	(wire
+		(pts
+			(xy 180.086 92.456) (xy 177.546 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "48e0b2b4-eb0e-416f-9fbe-ef07d43fce05")
+	)
+	(wire
+		(pts
+			(xy 27.686 75.184) (xy 28.702 75.184)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4b71a936-ce93-47e1-9455-165cee1edb26")
+	)
+	(wire
+		(pts
+			(xy 241.554 92.456) (xy 239.014 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5042fa58-1fb2-4bd5-9ff5-5ac03effb455")
+	)
+	(wire
+		(pts
+			(xy 87.884 94.996) (xy 87.884 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5197906c-eb4e-4b3d-882c-e3bce9d916c4")
+	)
+	(wire
+		(pts
+			(xy 26.67 94.996) (xy 26.67 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "54b10596-4f25-41bf-b14d-7fd13b567f30")
+	)
+	(wire
+		(pts
+			(xy 86.106 94.996) (xy 83.566 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5529cda5-58e9-414c-b777-e1da4d6df691")
+	)
+	(wire
+		(pts
+			(xy 210.566 60.198) (xy 213.106 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "58292db4-b46c-4997-8de1-a54e6c299ef9")
+	)
+	(wire
+		(pts
+			(xy 86.868 60.198) (xy 86.868 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "59a11048-a9aa-43e4-af8d-21ee01486050")
+	)
+	(wire
+		(pts
+			(xy 84.582 92.456) (xy 84.582 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5ad6ed7e-1053-4bef-9ec8-37e9ce325f7d")
+	)
+	(wire
+		(pts
+			(xy 59.436 69.342) (xy 90.17 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5bcfceb7-6859-4801-86e2-935e14f45b50")
+	)
+	(wire
+		(pts
+			(xy 56.134 60.198) (xy 56.134 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5e6e33fe-eb4e-439f-b93d-5360b4318a0a")
+	)
+	(wire
+		(pts
+			(xy 28.702 53.594) (xy 56.134 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5e8a83eb-41e8-49e8-a68e-d5d1c125d4b8")
+	)
+	(wire
+		(pts
+			(xy 30.988 116.84) (xy 29.972 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61f08c23-58cf-4647-bb05-308eb725fdfb")
+	)
+	(wire
+		(pts
+			(xy 86.868 53.594) (xy 117.602 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6252d18e-ce12-4a86-85ad-33c5fc3ace3f")
+	)
+	(wire
+		(pts
+			(xy 22.098 75.184) (xy 22.606 75.184)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "633c6e49-b5a5-48f4-9915-9b390211f822")
+	)
+	(wire
+		(pts
+			(xy 16.764 123.444) (xy 29.972 123.444)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64d3c1c5-50a4-4bee-b268-f9380ae54a5b")
+	)
+	(wire
+		(pts
+			(xy 177.038 60.198) (xy 178.054 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64f26f56-fb22-4439-9402-8a68810be3aa")
+	)
+	(wire
+		(pts
+			(xy 120.65 62.738) (xy 120.65 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "664c4600-2086-4025-a481-8e9f255af39d")
+	)
+	(wire
+		(pts
+			(xy 57.15 101.6) (xy 26.67 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "66901c84-815e-46b3-967d-ec4347eded4f")
+	)
+	(wire
+		(pts
+			(xy 59.436 62.738) (xy 59.436 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "67cf6428-39cc-4230-8cc2-e51165a97402")
+	)
+	(wire
+		(pts
+			(xy 115.316 85.852) (xy 84.582 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "69fd55e9-ab06-4de2-8242-c8b532df5657")
+	)
+	(wire
+		(pts
+			(xy 205.486 92.456) (xy 206.502 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6bb75c8f-e063-443c-a51f-bced9cabc7d2")
+	)
+	(wire
+		(pts
+			(xy 24.638 101.6) (xy 24.638 107.696)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c3c6c53-a844-49f9-a52c-4eceea63a353")
+	)
+	(wire
+		(pts
+			(xy 149.606 62.738) (xy 149.606 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c7423a0-e509-4f2c-abb4-c847a3d5608a")
+	)
+	(wire
+		(pts
+			(xy 268.986 60.198) (xy 270.002 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d431135-da00-494f-8c91-29194c4632de")
+	)
+	(wire
+		(pts
+			(xy 90.17 62.738) (xy 90.17 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6e7a6873-8726-44a1-be97-e78c9fd78983")
+	)
+	(wire
+		(pts
+			(xy 58.928 114.3) (xy 61.468 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f2e9ccc-33ea-4087-bcad-ce73e9c39365")
+	)
+	(wire
+		(pts
+			(xy 239.014 92.456) (xy 239.014 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f6075d9-b005-45b3-8356-3cb754c7de10")
+	)
+	(wire
+		(pts
+			(xy 28.702 69.342) (xy 59.436 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7164366c-d569-4b57-9a8d-9450948b5b85")
+	)
+	(wire
+		(pts
+			(xy 212.09 69.342) (xy 242.57 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "72693ca4-bf9a-4d76-a089-d77b16820445")
+	)
+	(wire
+		(pts
+			(xy 26.67 101.6) (xy 24.638 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "74ef6fc2-e344-4c1c-b51c-7dd556cdc142")
+	)
+	(wire
+		(pts
+			(xy 177.038 62.738) (xy 179.832 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "76049b26-7e74-4143-bc1b-e0c0f138a43f")
+	)
+	(wire
+		(pts
+			(xy 57.658 60.198) (xy 60.452 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "795186e6-c511-42a7-88aa-10e334bfd8a2")
+	)
+	(wire
+		(pts
+			(xy 148.59 101.6) (xy 118.618 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7b6620df-7255-44a0-b1e7-a927f06460df")
+	)
+	(wire
+		(pts
+			(xy 27.686 94.996) (xy 26.67 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7bc34bf9-ac94-406a-9cd8-8360e328c680")
+	)
+	(wire
+		(pts
+			(xy 116.84 92.456) (xy 116.84 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7c2f4de1-28a0-4c2b-9d98-ecd5909b7dcb")
+	)
+	(wire
+		(pts
+			(xy 149.606 92.456) (xy 147.066 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7eae69ef-a3cf-49de-ba7e-76d648e0800e")
+	)
+	(wire
+		(pts
+			(xy 179.832 62.738) (xy 179.832 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8055d5ff-3cf3-48eb-9bba-64f2062a17f3")
+	)
+	(wire
+		(pts
+			(xy 54.102 85.852) (xy 84.582 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "806a954d-00fe-4a2c-bcb2-bc012e8b3709")
+	)
+	(wire
+		(pts
+			(xy 270.002 60.198) (xy 270.002 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "83e7b7e2-b3bf-4353-8303-711c2b6a8f21")
+	)
+	(wire
+		(pts
+			(xy 58.928 116.84) (xy 58.928 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8554f2d7-a1fd-40de-8d18-e9a06ac78524")
+	)
+	(wire
+		(pts
+			(xy 267.97 92.456) (xy 267.97 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "85648ea7-ad60-4b7a-91de-193e650764e0")
+	)
+	(wire
+		(pts
+			(xy 266.954 92.456) (xy 267.97 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "86cdb487-2af4-4fb4-8173-17fdc409870c")
+	)
+	(wire
+		(pts
+			(xy 148.59 94.996) (xy 148.59 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "88a6bb3a-5c45-4f29-a413-1a4ab41de6fe")
+	)
+	(wire
+		(pts
+			(xy 114.3 92.456) (xy 115.316 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "88bfb3af-e210-4f70-ad09-fce33a233c6b")
+	)
+	(wire
+		(pts
+			(xy 56.388 114.3) (xy 57.404 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "88cf9b35-9cb9-4a69-b9b4-f9aadf797548")
+	)
+	(wire
+		(pts
+			(xy 181.356 69.342) (xy 212.09 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "89d5c5ea-8e91-44ea-b32f-09840a34d716")
+	)
+	(wire
+		(pts
+			(xy 179.07 101.6) (xy 148.59 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8c15ff0c-dc66-4658-bfe8-eaa8fcff0d65")
+	)
+	(wire
+		(pts
+			(xy 55.626 94.996) (xy 53.086 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8c904242-3bfe-45ce-b496-fe2c5a4ad0d0")
+	)
+	(wire
+		(pts
+			(xy 150.622 62.738) (xy 150.622 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8e080fbb-f061-48ef-9974-b4d2bc1e5c95")
+	)
+	(wire
+		(pts
+			(xy 242.57 62.738) (xy 242.57 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8e5844d8-a462-47df-81cb-a81530b92819")
+	)
+	(wire
+		(pts
+			(xy 118.618 94.996) (xy 118.618 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9033abf1-7720-4db8-bcb0-3d4c53888765")
+	)
+	(wire
+		(pts
+			(xy 145.034 92.456) (xy 146.05 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "922f9e32-8c94-4243-974d-93c52c26f76e")
+	)
+	(wire
+		(pts
+			(xy 213.106 62.738) (xy 212.09 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "927cf8a3-0c85-4342-9840-1f8502eb506d")
+	)
+	(wire
+		(pts
+			(xy 178.054 53.594) (xy 208.788 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9399aeba-5e04-4122-ab9a-c4ae186428ab")
+	)
+	(wire
+		(pts
+			(xy 28.702 75.184) (xy 28.702 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "953c36f1-09f4-4cdb-a5f8-5f5fa7d18cc9")
+	)
+	(wire
+		(pts
+			(xy 117.602 60.198) (xy 117.602 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "95cbd4b7-30be-418c-8e96-143e84fa5a5d")
+	)
+	(wire
+		(pts
+			(xy 149.606 94.996) (xy 148.59 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "95f70cfb-9a0e-4af6-adfd-a07d74392a26")
+	)
+	(wire
+		(pts
+			(xy 28.702 62.738) (xy 28.702 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9944ccc9-7328-4c79-b165-5bc64fa0d216")
+	)
+	(wire
+		(pts
+			(xy 239.522 53.594) (xy 270.002 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9aaf0fb6-ac05-4a51-a416-608d3012cc8f")
+	)
+	(wire
+		(pts
+			(xy 121.666 62.738) (xy 120.65 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ca2e341-819c-48c5-ba88-fa02be23e232")
+	)
+	(wire
+		(pts
+			(xy 27.686 92.456) (xy 21.082 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9cb491c5-239a-4426-a090-8a6da902cc8f")
+	)
+	(wire
+		(pts
+			(xy 181.356 62.738) (xy 181.356 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9dce7208-e2ac-427c-8930-0a08824b2368")
+	)
+	(wire
+		(pts
+			(xy 278.638 101.6) (xy 278.638 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a021d34e-922d-469c-a0a2-24e8af75b9a6")
+	)
+	(wire
+		(pts
+			(xy 212.09 62.738) (xy 212.09 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a2d152b3-cd6b-49f6-a0ba-aa3b2884d1ad")
+	)
+	(wire
+		(pts
+			(xy 60.452 62.738) (xy 59.436 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a31bd15f-3788-4029-8fa5-aeddcb7f8db9")
+	)
+	(wire
+		(pts
+			(xy 120.65 69.342) (xy 150.622 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a4c1256a-a610-40d1-809e-58632925feb6")
+	)
+	(wire
+		(pts
+			(xy 210.82 94.996) (xy 209.804 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a4ff2c87-cd02-4dd0-8155-fe0ec27148b8")
+	)
+	(wire
+		(pts
+			(xy 178.054 60.198) (xy 178.054 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a6f564fc-3dc2-4647-b488-1360a0e11d87")
+	)
+	(wire
+		(pts
+			(xy 270.256 69.342) (xy 270.256 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a731c9ad-c28d-4847-9fa7-35d6eddb8b8b")
+	)
+	(wire
+		(pts
+			(xy 115.316 92.456) (xy 115.316 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9fd8e29-ac57-46e7-94c8-3a3d4e70bf38")
+	)
+	(wire
+		(pts
+			(xy 85.852 60.198) (xy 86.868 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ad4d1f31-4988-43a1-84f7-c3a4ca9e7efc")
+	)
+	(wire
+		(pts
+			(xy 210.82 92.456) (xy 208.026 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "af08428c-becf-4643-9ab1-7b27afc07906")
+	)
+	(wire
+		(pts
+			(xy 177.546 94.996) (xy 175.006 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "af43f332-bf0b-452d-8840-afd1abd45f2a")
+	)
+	(wire
+		(pts
+			(xy 147.066 62.738) (xy 149.606 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b2fae5fc-aca1-4668-beaf-44980c37000e")
+	)
+	(wire
+		(pts
+			(xy 29.972 116.84) (xy 29.972 123.444)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b4136bc7-fcc0-4efa-92dd-766b385234d5")
+	)
+	(wire
+		(pts
+			(xy 88.9 92.456) (xy 86.106 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b5189627-6363-4a68-ad75-50563a32c0dd")
+	)
+	(wire
+		(pts
+			(xy 87.884 101.6) (xy 57.15 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b5d3437f-ddb7-4e81-bd65-3211a46961e0")
+	)
+	(wire
+		(pts
+			(xy 57.404 114.3) (xy 57.404 107.696)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b67dfa5c-19cf-48c8-915d-f78cac8f5ba8")
+	)
+	(wire
+		(pts
+			(xy 209.804 101.6) (xy 179.07 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b6eff974-79c2-4ad0-b0f5-59110e31209d")
+	)
+	(wire
+		(pts
+			(xy 117.602 53.594) (xy 148.082 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "baa1bf10-d41e-4133-aa03-5f90a0fde186")
+	)
+	(wire
+		(pts
+			(xy 60.452 123.444) (xy 29.972 123.444)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bcca8120-d696-4e04-8beb-b89f18f7cbc8")
+	)
+	(wire
+		(pts
+			(xy 278.638 53.594) (xy 270.002 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bd3c16f2-f3cf-471a-907b-4a8734f67831")
+	)
+	(wire
+		(pts
+			(xy 58.166 94.996) (xy 57.15 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bdc30420-fbb3-4864-9166-1d98334b1f1b")
+	)
+	(wire
+		(pts
+			(xy 55.118 62.738) (xy 57.658 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "be53d4f7-9944-487e-854c-bcab06f79b53")
+	)
+	(wire
+		(pts
+			(xy 91.186 62.738) (xy 90.17 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bea7acc9-4794-48e6-b434-14628043339c")
+	)
+	(wire
+		(pts
+			(xy 182.372 62.738) (xy 181.356 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c18445ae-44e3-4c5c-abab-44c56e549eaf")
+	)
+	(wire
+		(pts
+			(xy 55.118 60.198) (xy 56.134 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1e4871a-cc03-4133-9f71-5b4f7673b07a")
+	)
+	(wire
+		(pts
+			(xy 119.126 62.738) (xy 119.126 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c26f45e4-fda6-46d0-abc7-126feed47066")
+	)
+	(wire
+		(pts
+			(xy 53.086 92.456) (xy 54.102 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c48c1471-0c1d-40e4-9fa7-9d31afbe37e4")
+	)
+	(wire
+		(pts
+			(xy 24.638 107.696) (xy 57.404 107.696)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c4f043e9-934c-4bf9-93f9-3aacbc21fab6")
+	)
+	(wire
+		(pts
+			(xy 57.658 62.738) (xy 57.658 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c56d7b0b-0553-4bce-917f-a0db3cceecff")
+	)
+	(wire
+		(pts
+			(xy 118.618 101.6) (xy 87.884 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c5c76bc3-1378-4e0d-a085-1f9c3c69bd55")
+	)
+	(wire
+		(pts
+			(xy 119.126 60.198) (xy 121.666 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c62c9f2c-b0eb-47b5-b142-e302e6f775b1")
+	)
+	(wire
+		(pts
+			(xy 240.538 94.996) (xy 240.538 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c68f8a49-0814-4a7f-99d0-3ad6e68bee5a")
+	)
+	(wire
+		(pts
+			(xy 239.014 94.996) (xy 236.22 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c7af7b7d-9ce1-47d2-8a50-291f3a5334f2")
+	)
+	(wire
+		(pts
+			(xy 207.772 62.738) (xy 210.566 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c9e79a6b-34a2-4a25-8cfc-6e5d4feb9c6e")
+	)
+	(wire
+		(pts
+			(xy 210.566 62.738) (xy 210.566 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cb99af13-2c78-424c-88a0-56e81fce8736")
+	)
+	(wire
+		(pts
+			(xy 119.634 94.996) (xy 118.618 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cc0a5e55-82b8-4f9f-a18e-f143c758f42d")
+	)
+	(wire
+		(pts
+			(xy 268.986 62.738) (xy 274.32 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cea993c8-54da-4b9e-81fa-e633ff50e153")
+	)
+	(wire
+		(pts
+			(xy 21.082 92.456) (xy 21.082 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ceb9ab58-3307-49f2-9024-fb7e9a675367")
+	)
+	(wire
+		(pts
+			(xy 119.634 92.456) (xy 116.84 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d0b9f87f-6ade-4835-b11a-334b4ed35264")
+	)
+	(wire
+		(pts
+			(xy 29.718 62.738) (xy 28.702 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "da4cf321-912d-4061-badd-c4efc404ece2")
+	)
+	(wire
+		(pts
+			(xy 151.638 62.738) (xy 150.622 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "daa5738d-a86b-4532-a6bb-dd470c579ce0")
+	)
+	(wire
+		(pts
+			(xy 146.05 92.456) (xy 146.05 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dc67f74a-14a1-4227-82f9-189c8ddb7de4")
+	)
+	(wire
+		(pts
+			(xy 56.388 116.84) (xy 58.928 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dcb50b1a-26dd-4505-901b-a5d0daf8dd11")
+	)
+	(wire
+		(pts
+			(xy 241.046 60.198) (xy 243.586 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dce3180b-96bc-41cc-a7ff-ba0d170ea435")
+	)
+	(wire
+		(pts
+			(xy 147.066 92.456) (xy 147.066 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de3ecf07-7f8b-46d6-b133-86055f112f73")
+	)
+	(wire
+		(pts
+			(xy 150.622 69.342) (xy 181.356 69.342)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e17a8271-8f9c-44a5-9d16-c78826a2e78f")
+	)
+	(wire
+		(pts
+			(xy 274.32 62.738) (xy 274.32 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e1f5e51b-8f59-4857-b267-3d3160f04712")
+	)
+	(wire
+		(pts
+			(xy 175.006 92.456) (xy 176.022 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e2ef56c6-bebb-4e2b-84bd-e3bbdeb46660")
+	)
+	(wire
+		(pts
+			(xy 83.566 92.456) (xy 84.582 92.456)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e55175eb-8f22-430c-8a02-ef31f76f8768")
+	)
+	(wire
+		(pts
+			(xy 208.026 92.456) (xy 208.026 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e6fa25c2-dcf1-4c72-a167-6413ce0c217d")
+	)
+	(wire
+		(pts
+			(xy 274.32 94.996) (xy 266.954 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e71da901-3431-43cb-a619-f4e367c2db97")
+	)
+	(wire
+		(pts
+			(xy 180.086 94.996) (xy 179.07 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e7a5e2c3-b603-43ab-ad07-04ffeebdad51")
+	)
+	(wire
+		(pts
+			(xy 148.082 53.594) (xy 178.054 53.594)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e7e1f098-cbf0-4bef-a7d7-6a3e846ec253")
+	)
+	(wire
+		(pts
+			(xy 147.066 60.198) (xy 148.082 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e834fa89-dcc0-4e91-9af7-9449a6931ebf")
+	)
+	(wire
+		(pts
+			(xy 57.15 94.996) (xy 57.15 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e8a2a193-71b2-4f19-ab96-6ab682490c63")
+	)
+	(wire
+		(pts
+			(xy 238.506 62.738) (xy 241.046 62.738)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ef53cca8-c900-4f0b-b3f2-e54d618c96ac")
+	)
+	(wire
+		(pts
+			(xy 206.502 85.852) (xy 176.022 85.852)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "efaa55dd-5097-4b0e-9cf4-6161eade4940")
+	)
+	(wire
+		(pts
+			(xy 86.106 92.456) (xy 86.106 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f28279a5-c311-406e-93dd-cf493bc993cd")
+	)
+	(wire
+		(pts
+			(xy 88.646 62.738) (xy 88.646 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f781583a-705f-4e09-ad6d-d47a4381ac1c")
+	)
+	(wire
+		(pts
+			(xy 28.702 77.724) (xy 28.702 75.184)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f9ab83a3-36bd-43f7-a707-a31c166f5e27")
+	)
+	(wire
+		(pts
+			(xy 147.066 94.996) (xy 145.034 94.996)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fafaa908-c18a-4eae-8c7f-506788b6f336")
+	)
+	(wire
+		(pts
+			(xy 179.07 94.996) (xy 179.07 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fceefd1a-3ac1-4671-ad4e-7c31ce955b2c")
+	)
+	(wire
+		(pts
+			(xy 240.538 101.6) (xy 278.638 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fea917c7-c258-4d20-b6bc-70c8658d07d4")
+	)
+	(hierarchical_label "LED_DATA_IN"
+		(shape input)
+		(at 29.718 60.198 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "8f0e9b10-f6e4-4ec7-a5d8-c27a59fc5608")
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 266.954 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2335d509-0c7f-42ec-a03e-7ae7b25c9a57")
+		(property "Reference" "D31"
+			(at 254 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 254 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 266.954 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 266.954 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 266.954 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 254.254 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 254.254 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 245.364 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 245.364 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 245.364 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 245.364 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 245.364 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 245.364 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 245.364 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 245.364 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 245.364 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "45d904ec-4c58-46c1-8fb7-c17e94d67bf9")
+		)
+		(pin "2"
+			(uuid "ee118173-9759-4a4f-8198-7fddbd929158")
+		)
+		(pin "3"
+			(uuid "d0cf5cbf-15e7-49ca-9825-5549b0faefd7")
+		)
+		(pin "4"
+			(uuid "896e38f5-bd07-4107-aff7-16e4d373f445")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D31")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 53.086 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "34c9480d-bd3c-4a2b-8c94-fe528e6f482b")
+		(property "Reference" "D11"
+			(at 40.132 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 40.132 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 53.086 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 53.086 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 53.086 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 40.386 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 40.386 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 31.496 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 31.496 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 31.496 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 31.496 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 31.496 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 31.496 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 31.496 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 31.496 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 31.496 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "73122ea0-297a-4a19-b7f3-12beb5d18040")
+		)
+		(pin "2"
+			(uuid "7e414fb9-109e-477e-a93a-568bde5b1b36")
+		)
+		(pin "3"
+			(uuid "9ca52413-3ddd-465c-bffd-69db63342c67")
+		)
+		(pin "4"
+			(uuid "6cd9d30b-874c-4f79-b2f0-0c3c288bbd0e")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 213.106 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "43da279c-ce8a-4d69-8268-fe4e63e6e8c3")
+		(property "Reference" "D22"
+			(at 226.06 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 226.06 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 213.106 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 213.106 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 213.106 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 225.806 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 225.806 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 234.696 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 234.696 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 234.696 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 234.696 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 234.696 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 234.696 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 234.696 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 234.696 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 234.696 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d6c89762-2ff4-49de-bf39-2df39458f5c5")
+		)
+		(pin "2"
+			(uuid "394ed8de-f686-4e9c-9f4a-7767dd80cc77")
+		)
+		(pin "3"
+			(uuid "61c917fd-f884-4c6e-8efe-df78f29809e4")
+		)
+		(pin "4"
+			(uuid "1966bf15-110b-437d-8576-3381b7d45ae8")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D22")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 30.988 114.3 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "543e32b7-3172-4505-bef0-c74b3fa3ae39")
+		(property "Reference" "D32"
+			(at 43.942 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 43.942 121.158 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 30.988 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 30.988 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 30.988 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 43.688 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 43.688 108.585 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 52.578 209.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 52.578 309.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 52.578 509.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 52.578 609.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 52.578 709.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 52.578 809.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 52.578 909.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 52.578 1009.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 52.578 1109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "35e546a6-dba6-4daf-9629-97d8866c33e6")
+		)
+		(pin "2"
+			(uuid "ebab2717-83c7-45d4-91cc-8db9e4210eea")
+		)
+		(pin "3"
+			(uuid "53a33d20-5d00-4c00-8bc3-2fffc448016d")
+		)
+		(pin "4"
+			(uuid "5b0df332-240a-4b03-96e8-5ba331b23665")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D32")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 60.452 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5c68141c-294e-408b-a8ed-77b1098ecae3")
+		(property "Reference" "D12"
+			(at 73.406 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 73.406 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 60.452 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 60.452 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 60.452 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 73.152 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 73.152 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 82.042 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 82.042 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 82.042 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 82.042 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 82.042 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 82.042 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 82.042 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 82.042 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 82.042 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b9219d71-ae46-46f5-90c7-6d8c242438aa")
+		)
+		(pin "2"
+			(uuid "135d286e-6109-461c-bd84-a0ccfaede90c")
+		)
+		(pin "3"
+			(uuid "edfc4a57-e3f1-472d-86af-bef96c0d1933")
+		)
+		(pin "4"
+			(uuid "c9dec73e-f0e9-4224-a6e5-4166271cd72e")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D12")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 114.3 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6881c8fa-da3e-4c9c-985d-9c3b3cbb3f7d")
+		(property "Reference" "D15"
+			(at 101.346 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 101.346 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 114.3 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 114.3 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 114.3 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 101.6 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 101.6 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 92.71 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 92.71 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 92.71 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 92.71 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 92.71 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 92.71 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 92.71 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 92.71 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 92.71 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8cde446e-400b-4722-a518-b8fdf501221a")
+		)
+		(pin "2"
+			(uuid "a4e864d0-ba16-4a7d-823b-cf7188982491")
+		)
+		(pin "3"
+			(uuid "80e3fe93-8ab9-4a2a-a123-eb454ec44801")
+		)
+		(pin "4"
+			(uuid "dbd01f20-5bd1-477f-8d20-8fccc7c82b78")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D15")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 175.006 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7569e42f-4fed-4ed2-91ea-796eb67e62d5")
+		(property "Reference" "D19"
+			(at 162.052 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 162.052 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 175.006 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 175.006 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 175.006 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 162.306 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 162.306 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 153.416 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 153.416 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 153.416 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 153.416 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 153.416 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 153.416 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 153.416 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 153.416 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 153.416 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "33c094e3-5063-4619-9ebd-261b6382bd88")
+		)
+		(pin "2"
+			(uuid "6314158c-6052-4032-8647-24f038ea5100")
+		)
+		(pin "3"
+			(uuid "2795f510-3361-4a08-af10-684b2dc600b4")
+		)
+		(pin "4"
+			(uuid "36cc2978-15c9-4f92-b686-efc73803a9c4")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D19")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Small")
+		(at 25.146 75.184 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8279a195-b290-4d14-8a5f-42bb7b12c06f")
+		(property "Reference" "C91"
+			(at 25.908 70.104 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 27.178 72.136 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 25.146 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 25.146 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 25.146 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "016b7e06-51b5-44a0-9298-7978be2fd004")
+		)
+		(pin "2"
+			(uuid "4997fecd-873f-4e91-9d16-54647a460525")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "C91")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 121.666 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8a480f8a-cb4c-4cc0-a6b2-efa4a6cdfb32")
+		(property "Reference" "D16"
+			(at 134.62 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 134.62 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 121.666 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 121.666 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 121.666 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 134.366 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 134.366 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 143.256 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 143.256 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 143.256 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 143.256 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 143.256 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 143.256 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 143.256 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 143.256 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 143.256 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4075624a-da7b-4969-9199-b6366c7f2371")
+		)
+		(pin "2"
+			(uuid "8506d378-e8f3-4ec0-84ee-9028b36e5e14")
+		)
+		(pin "3"
+			(uuid "1d29789d-42fc-4402-9123-d754dca41b22")
+		)
+		(pin "4"
+			(uuid "7a07fe35-1c19-4247-a664-b8951ffd09c3")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D16")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 151.638 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9984b63a-8346-40fd-8eb0-e64ea06b2e38")
+		(property "Reference" "D18"
+			(at 164.592 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 164.592 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 151.638 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 151.638 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 151.638 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 164.338 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 164.338 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 173.228 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 173.228 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 173.228 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 173.228 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 173.228 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 173.228 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 173.228 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 173.228 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 173.228 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f4f16139-c28f-4d3f-8595-3a784bdf2c26")
+		)
+		(pin "2"
+			(uuid "7777f905-29be-4f3d-9d6f-ca11e7136ce7")
+		)
+		(pin "3"
+			(uuid "8211622d-9458-4e74-9724-3f044842ccb6")
+		)
+		(pin "4"
+			(uuid "6a55dfa0-ef38-40de-aedb-f708ea9ea1c5")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D18")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 145.034 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a083a2b7-f937-4927-9393-2d243ceda53e")
+		(property "Reference" "D17"
+			(at 132.08 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 132.08 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 145.034 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 145.034 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 145.034 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 132.334 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 132.334 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 123.444 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 123.444 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 123.444 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 123.444 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 123.444 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 123.444 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 123.444 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 123.444 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 123.444 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d2cde4b9-0c1e-40aa-977e-7047a91ed434")
+		)
+		(pin "2"
+			(uuid "17bd2124-3f82-4925-b5e4-ae1dd3f1cb62")
+		)
+		(pin "3"
+			(uuid "fee8ef33-6167-49ec-ab21-3a90dc9529cc")
+		)
+		(pin "4"
+			(uuid "32328ad3-75c1-41af-b4c1-d369d8f0c44c")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D17")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 205.486 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ad00b5db-b555-41d1-873d-3f1cc137d984")
+		(property "Reference" "D21"
+			(at 192.532 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 192.532 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 205.486 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 205.486 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 205.486 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 192.786 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 192.786 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 183.896 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 183.896 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 183.896 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 183.896 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 183.896 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 183.896 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 183.896 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 183.896 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 183.896 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "44a85d02-2950-47a7-88b5-68c2d1d78f1c")
+		)
+		(pin "2"
+			(uuid "6b7119ba-a05c-4006-8c93-81aa099d9c04")
+		)
+		(pin "3"
+			(uuid "10bf629e-3918-4987-a856-038798f5823b")
+		)
+		(pin "4"
+			(uuid "bd688d43-6fe2-4586-a70d-bfc930ef6f19")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D21")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 236.22 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b35361d8-910e-49a6-a2a0-7512b3501e14")
+		(property "Reference" "D29"
+			(at 223.266 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 223.266 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 236.22 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 236.22 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 236.22 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 223.52 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 223.52 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 214.63 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 214.63 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 214.63 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 214.63 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 214.63 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 214.63 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 214.63 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 214.63 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 214.63 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "69a042d5-b3a6-489a-8ad0-551211312793")
+		)
+		(pin "2"
+			(uuid "f7001bef-2885-4277-a380-14b32eb4b71c")
+		)
+		(pin "3"
+			(uuid "af072c34-e8e7-47bd-8847-709a7067e08a")
+		)
+		(pin "4"
+			(uuid "4507d711-323a-4a56-ad85-b0458fc0b843")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D29")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 243.586 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b5e019de-2eda-437c-87f5-8e268c42e4a9")
+		(property "Reference" "D30"
+			(at 256.54 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 256.54 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 243.586 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 243.586 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 243.586 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 256.286 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 256.286 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 265.176 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 265.176 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 265.176 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 265.176 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 265.176 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 265.176 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 265.176 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 265.176 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 265.176 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5822a91b-e581-4756-81ba-0a800a8c2573")
+		)
+		(pin "2"
+			(uuid "5df444df-999f-4ab7-93e9-0d66b83c5a4f")
+		)
+		(pin "3"
+			(uuid "cd6f2ee7-f74f-4c7e-b448-028ce0eee219")
+		)
+		(pin "4"
+			(uuid "96fa456b-4298-4b4d-8c12-025068410564")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D30")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 28.702 77.724 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b8d71a99-2ad3-41a9-b958-4909a64238ba")
+		(property "Reference" "#PWR0198"
+			(at 28.702 73.914 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 26.416 82.042 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 28.702 77.724 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 28.702 77.724 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 28.702 77.724 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "775138f7-902e-4852-a037-d7b43b2b9cf3")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "#PWR0198")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 29.718 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bf3a7b15-adbc-47a8-a847-6e9de4675f8c")
+		(property "Reference" "D10"
+			(at 42.672 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 42.672 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 29.718 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 29.718 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 29.718 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 42.418 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 42.418 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 51.308 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 51.308 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 51.308 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 51.308 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 51.308 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 51.308 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 51.308 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 51.308 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 51.308 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9e3288ae-7334-4fdd-8b19-9df72da17738")
+		)
+		(pin "2"
+			(uuid "fe02f399-e15b-4538-b220-c7f8ec143b8e")
+		)
+		(pin "3"
+			(uuid "ed973c53-8d4d-4839-b105-d2ff26b445de")
+		)
+		(pin "4"
+			(uuid "ae1116a9-dd46-43d2-94cf-3687668e47d3")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 22.098 75.184 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d066cf54-14d7-41f8-ac41-71d2e6e6ff84")
+		(property "Reference" "#PWR0389"
+			(at 15.748 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 16.51 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 22.098 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 22.098 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 22.098 75.184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "cf7ee894-33e3-4720-b4c1-1831238c81ff")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "#PWR0389")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 91.186 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "def9f54d-1110-411c-bbc1-ee0dc17f3899")
+		(property "Reference" "D14"
+			(at 104.14 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 104.14 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 91.186 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 91.186 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 91.186 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 103.886 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 103.886 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 112.776 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 112.776 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 112.776 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 112.776 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 112.776 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 112.776 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 112.776 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 112.776 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 112.776 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f3d27a1c-a070-4bfb-b378-1ac4ff8df066")
+		)
+		(pin "2"
+			(uuid "25b40e11-89d9-4327-b898-97370954f84f")
+		)
+		(pin "3"
+			(uuid "c68e796a-6863-4589-8ff5-3a9256f52834")
+		)
+		(pin "4"
+			(uuid "25f89f5c-e41e-4571-95be-aebb997547ff")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 182.372 60.198 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ec1fdd2c-defa-4540-8772-9d0b9bee94d7")
+		(property "Reference" "D20"
+			(at 195.326 56.388 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 195.326 67.056 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 182.372 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.372 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 182.372 60.198 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 195.072 52.578 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 195.072 54.483 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 203.962 155.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 203.962 255.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 203.962 455.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 203.962 555.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 203.962 655.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 203.962 755.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 203.962 855.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 203.962 955.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 203.962 1055.118 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a39d353c-fb7c-458c-a351-eb4793a11f9e")
+		)
+		(pin "2"
+			(uuid "1d03f32a-59aa-4fa9-999a-3b954e91d872")
+		)
+		(pin "3"
+			(uuid "3d58aab2-afb5-40d2-9ac9-cd19cd9f3d0a")
+		)
+		(pin "4"
+			(uuid "cb044aec-7491-4a1d-942b-5137197a0998")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D20")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 61.468 114.3 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f281eb7e-099d-47ae-9166-209f472b5232")
+		(property "Reference" "D36"
+			(at 74.422 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 74.422 121.158 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 61.468 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 61.468 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 61.468 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 74.168 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 74.168 108.585 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 83.058 209.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 83.058 309.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 83.058 509.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 83.058 609.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 83.058 709.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 83.058 809.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 83.058 909.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 83.058 1009.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 83.058 1109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "689a1770-176b-4a9f-a34e-8035028c98a3")
+		)
+		(pin "2"
+			(uuid "4df2e979-f1f7-4be1-94a7-4a4de3ba81bc")
+		)
+		(pin "3"
+			(uuid "18b7146b-7e60-4d33-8864-9aef436e79f5")
+		)
+		(pin "4"
+			(uuid "51d8cac1-c29c-4f8e-9b85-62e773b9c44c")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D36")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pdms_additional:WS2812B-2020")
+		(at 83.566 94.996 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fde4a0f9-a19e-4347-9abf-a78e6b67b1af")
+		(property "Reference" "D13"
+			(at 70.612 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "WS2812B-2020"
+			(at 70.612 88.138 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "PDMS_Additional:WS2812B2020"
+			(at 83.566 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 83.566 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 83.566 94.996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Reference_1" "LED"
+			(at 70.866 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value_1" "WS2812B-2020"
+			(at 70.866 100.711 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint_1" "WS2812B2020"
+			(at 61.976 0.076 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Datasheet_1" "https://www.alldatasheet.com/datasheet-pdf/pdf/1134522/WORLDSEMI/WS2812B-2020.html"
+			(at 61.976 -99.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Height" "0.84"
+			(at 61.976 -299.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Name" "Worldsemi"
+			(at 61.976 -399.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer_Part_Number" "WS2812B-2020"
+			(at 61.976 -499.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" ""
+			(at 61.976 -599.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Mouser Price/Stock" ""
+			(at 61.976 -699.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Part Number" ""
+			(at 61.976 -799.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(property "Arrow Price/Stock" ""
+			(at 61.976 -899.924 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "89843628-60f7-4b49-aeb0-a6e8c2977822")
+		)
+		(pin "2"
+			(uuid "d86ac889-9f06-4414-aae0-fd534c0a2db4")
+		)
+		(pin "3"
+			(uuid "7b88a62b-845a-4d18-b636-1499ae84addb")
+		)
+		(pin "4"
+			(uuid "48721998-4bd4-472f-bd48-dbd7487bdb79")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "D13")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 28.702 53.594 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fe2d2786-e372-463e-babc-c9e169d852b5")
+		(property "Reference" "#PWR0193"
+			(at 22.352 53.594 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 21.59 53.594 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 28.702 53.594 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 28.702 53.594 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 28.702 53.594 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "396cb145-7b50-4c41-ac1f-6d0bec28259a")
+		)
+		(instances
+			(project ""
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/72233c42-cc52-48f1-96b2-587884f89204"
+					(reference "#PWR0193")
+					(unit 1)
+				)
+			)
+		)
+	)
 )

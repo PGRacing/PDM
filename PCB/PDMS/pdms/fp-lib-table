@@ -1,2 +1,5 @@
 (fp_lib_table
+  (version 7)
+  (lib (name "PDMS_Additional")(type "KiCad")(uri "C:/Users/Karol/Documents/GitHub/PDM/PCB/PDMS/pdms_additional/PDMS_Additional.pretty")(options "")(descr ""))
+  (lib (name "PDM_Additional")(type "KiCad")(uri "C:/Users/Karol/Documents/GitHub/PDM/PCB/Additional/PDM_Additional.pretty")(options "")(descr ""))
 )
