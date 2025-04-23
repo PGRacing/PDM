@@ -1671,15 +1671,15 @@
 		(fields_autoplaced yes)
 		(uuid "4b35613a-23a3-4556-8aaf-d95ffc676ca7")
 		(property "Reference" "R73"
-			(at 94.615 27.94 90)
+			(at 94.615 29.21 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "2k2"
-			(at 94.615 30.48 90)
+		(property "Value" "10k"
+			(at 94.615 31.75 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1989,7 +1989,7 @@
 				)
 			)
 		)
-		(property "Value" "2k2"
+		(property "Value" "10k"
 			(at 94.615 41.91 90)
 			(effects
 				(font

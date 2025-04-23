@@ -1,6 +1,6 @@
-01-10 01:11:23 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 172:Plugin executed on: 'win32'
-01-10 01:11:23 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 173:Plugin executed with python version: '3.9.14 (main, Sep 19 2022, 05:11:57) [MSC v.1932 64 bit (AMD64)]'
-01-10 01:11:23 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 174:KiCad build version: (6.0.8)
-01-10 01:11:23 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 175:Plugin version: 1.1.11
-01-10 01:11:23 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 176:Frame repr: <wx._core.Frame object at 0x000001E0259494C0>
-01-10 01:11:23 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 183:Plugin failed to run as more or less then 1 footprint selected
+04-24 01:10:52 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 178:Plugin executed on: 'win32'
+04-24 01:10:52 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 179:Plugin executed with python version: '3.11.5 (main, Nov  3 2024, 06:58:22) [MSC v.1939 64 bit (AMD64)]'
+04-24 01:10:52 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 180:KiCad build version: 8.0.7
+04-24 01:10:52 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 181:Plugin version: 3.0.1
+04-24 01:10:52 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 182:Frame repr: <wx._core.Frame object at 0x0000019097629870>
+04-24 01:10:53 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 189:Plugin failed to run as more or less then 1 footprint selected
