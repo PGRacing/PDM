@@ -3434,6 +3434,12 @@
 		(uuid "aa50986c-479f-45b0-a9c0-5d6a4065dd38")
 	)
 	(junction
+		(at 254.254 144.018)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "acc98652-9bfd-4679-9510-c11fdc057f73")
+	)
+	(junction
 		(at -59.69 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3486,6 +3492,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "daaf49f4-41ff-442c-b4b9-f0d9f4928486")
+	)
+	(junction
+		(at 227.584 41.91)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e47d5ce3-6973-4c28-b9ee-403c396fdedc")
 	)
 	(junction
 		(at 44.069 171.958)
@@ -3560,6 +3572,16 @@
 			(type default)
 		)
 		(uuid "0455309b-fe21-4ab3-91df-37de7012be71")
+	)
+	(wire
+		(pts
+			(xy 254.254 145.034) (xy 254.254 144.018)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "058391f0-063e-4dc5-ae97-28e40715299d")
 	)
 	(wire
 		(pts
@@ -3663,6 +3685,16 @@
 	)
 	(wire
 		(pts
+			(xy 254.254 144.018) (xy 249.555 144.018)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1891eb16-413f-4ffe-9985-9ec82ef60175")
+	)
+	(wire
+		(pts
 			(xy 236.855 110.109) (xy 238.125 110.109)
 		)
 		(stroke
@@ -3723,6 +3755,16 @@
 	)
 	(wire
 		(pts
+			(xy 227.584 41.91) (xy 229.362 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1c5ebdda-5563-47ce-9e21-7ac6e45f929f")
+	)
+	(wire
+		(pts
 			(xy 272.669 120.396) (xy 274.955 120.396)
 		)
 		(stroke
@@ -3733,7 +3775,7 @@
 	)
 	(wire
 		(pts
-			(xy 225.298 41.91) (xy 227.076 41.91)
+			(xy 225.298 41.91) (xy 227.584 41.91)
 		)
 		(stroke
 			(width 0)
@@ -4087,7 +4129,7 @@
 	)
 	(wire
 		(pts
-			(xy 256.159 144.018) (xy 249.555 144.018)
+			(xy 256.159 144.018) (xy 254.254 144.018)
 		)
 		(stroke
 			(width 0)
@@ -4254,6 +4296,16 @@
 			(type default)
 		)
 		(uuid "5ae0fd0c-7f8d-469c-bd3d-6302b14c3fc9")
+	)
+	(wire
+		(pts
+			(xy 227.584 42.926) (xy 227.584 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5b4dde3a-c979-491f-89b7-9969c60d931e")
 	)
 	(polyline
 		(pts
@@ -6302,22 +6354,22 @@
 		(fields_autoplaced yes)
 		(uuid "1a532c04-2d71-4425-b24c-45aed9ce47d5")
 		(property "Reference" "FB1"
-			(at -18.4531 120.142 90)
+			(at -18.4531 120.65 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "110E"
-			(at -18.4531 122.682 90)
+		(property "Value" "742792063"
+			(at -18.4531 123.19 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_1206_3216Metric"
+		(property "Footprint" "Inductor_SMD:L_0805_2012Metric"
 			(at -18.415 128.778 90)
 			(effects
 				(font
@@ -8486,6 +8538,72 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 227.584 42.926 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "62e41ddd-874f-4731-83c3-c2ef38568026")
+		(property "Reference" "TP13"
+			(at 229.87 45.466 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "3.3V"
+			(at 229.87 47.498 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
+			(at 222.504 42.926 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 222.504 42.926 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 227.584 42.926 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8b17a9f8-fe26-4f0a-b97c-4e56863c8b2e")
+		)
+		(instances
+			(project "pdms"
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/f45d3215-b43f-44a4-abd3-b7200f9eb300"
+					(reference "TP13")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Transistor_FET:AO3401A")
 		(at 78.105 130.81 270)
 		(unit 1)
@@ -8825,6 +8943,72 @@
 			(project ""
 				(path "/d3407657-4284-42d4-8012-68a1da9eff64/f45d3215-b43f-44a4-abd3-b7200f9eb300"
 					(reference "L3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 254.254 145.034 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7726015d-bd10-4dc5-a675-495392587caa")
+		(property "Reference" "TP10"
+			(at 256.54 147.574 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "5V"
+			(at 256.54 149.606 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
+			(at 249.174 145.034 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 249.174 145.034 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 254.254 145.034 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "aef8542d-bf6a-41a5-8b62-dceac4c57844")
+		)
+		(instances
+			(project "pdms"
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/f45d3215-b43f-44a4-abd3-b7200f9eb300"
+					(reference "TP10")
 					(unit 1)
 				)
 			)
@@ -10606,7 +10790,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 227.076 41.91 270)
+		(at 229.362 41.91 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10615,7 +10799,7 @@
 		(fields_autoplaced yes)
 		(uuid "c93fb427-16f6-43c4-afff-1627283896d4")
 		(property "Reference" "#PWR069"
-			(at 223.266 41.91 0)
+			(at 225.552 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10624,7 +10808,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 231.394 41.9099 90)
+			(at 233.68 41.9099 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10633,7 +10817,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 227.076 41.91 0)
+			(at 229.362 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10642,7 +10826,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 227.076 41.91 0)
+			(at 229.362 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10651,7 +10835,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 227.076 41.91 0)
+			(at 229.362 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)

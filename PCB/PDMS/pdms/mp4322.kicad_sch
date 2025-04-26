@@ -2498,17 +2498,6 @@
 		)
 		(uuid "2c6ca2c4-5b5a-4bd5-be6f-8bcdd5f0b0bc")
 	)
-	(text "XEL4020-102MEB"
-		(exclude_from_sim no)
-		(at 155.575 35.56 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "2d67644e-f88f-4a1c-87f4-a9e7dbcfa75f")
-	)
 	(text "If electrolytic cap won't fit"
 		(exclude_from_sim no)
 		(at 187.325 26.035 0)
@@ -2530,17 +2519,6 @@
 			(href "https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MP4323GDE/document_id/10143/")
 		)
 		(uuid "828b9148-2542-490e-8010-9d601d61b061")
-	)
-	(text "742792063"
-		(exclude_from_sim no)
-		(at 127.635 35.56 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "85308790-8ff9-481b-a3a2-2376272ab7a1")
 	)
 	(text "To obtain best efficency always use converter that uses most of the advised by producer current range. \nFor MP432XX fammily there are following possibilites:\nMP4320 - 0.5A (Requires bigger coil L = 5.6uH, lower freq = 1.8Mhz)\nMP4321 - 1A (Requires bigger coil L = 5.6uH)\nMP4322 - 2A (current implemenation)\nMP4323 - 3A (same as 2A)\nCaution changing output voltage requires changes of FB shunt resistor!"
 		(exclude_from_sim no)
@@ -3339,15 +3317,15 @@
 		(fields_autoplaced yes)
 		(uuid "202eac97-5b4f-4363-8aae-516238315707")
 		(property "Reference" "L1"
-			(at 133.35 37.465 90)
+			(at 133.35 38.1 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "L"
-			(at 133.35 40.005 90)
+		(property "Value" "742792063"
+			(at 133.35 40.64 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3845,15 +3823,15 @@
 		(fields_autoplaced yes)
 		(uuid "463c7789-ff5f-4b9f-b750-3997e0a0fbcd")
 		(property "Reference" "L2"
-			(at 163.83 37.465 90)
+			(at 163.83 38.1 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "L"
-			(at 163.83 40.005 90)
+		(property "Value" "XEL4020-102MEB"
+			(at 163.83 40.64 90)
 			(effects
 				(font
 					(size 1.27 1.27)
