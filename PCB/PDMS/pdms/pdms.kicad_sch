@@ -245,108 +245,6 @@
 				)
 			)
 		)
-		(symbol "Connector:TestPoint"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0.762) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "TP"
-				(at 0 6.858 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "TestPoint"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 5.08 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "test point"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "test point tp"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "Pin* Test*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "TestPoint_0_1"
-				(circle
-					(center 0 3.302)
-					(radius 0.762)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "TestPoint_1_1"
-				(pin passive line
-					(at 0 0 90)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "Connector_Generic:Conn_02x04_Counter_Clockwise"
 			(pin_names
 				(offset 1.016) hide)
@@ -9174,16 +9072,6 @@
 	)
 	(wire
 		(pts
-			(xy 370.84 34.29) (xy 373.38 34.29)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0215b178-a510-4397-b2c1-00691c182ed4")
-	)
-	(wire
-		(pts
 			(xy 358.775 220.345) (xy 357.505 220.345)
 		)
 		(stroke
@@ -13869,6 +13757,16 @@
 			(justify left bottom)
 		)
 		(uuid "c3416154-5625-4612-9445-f0becfaeddd1")
+	)
+	(text "SAFETY LINE CUT-OFF"
+		(exclude_from_sim no)
+		(at 230.505 253.365 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "c5b2fe22-ee55-4dfe-928b-2d04f3852acd")
 	)
 	(text "Currently:\nhttps://www.mouser.pl/datasheet/2/445/150080VS75000-3085206.pdf\n"
 		(exclude_from_sim no)
@@ -19232,7 +19130,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "2d99b82e-4715-447f-94f0-250a0c6e0811")
 		(property "Reference" "J5"
 			(at 390.144 143.383 0)
@@ -24275,70 +24173,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 370.84 34.29 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "b84c6964-5564-4d57-8b96-ee4462f76a3a")
-		(property "Reference" "TP1"
-			(at 368.3 29.21 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "3.3V PG"
-			(at 368.3 31.75 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 370.84 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 370.84 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 370.84 34.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "979676d2-7794-4d5d-b32c-e90a1b43e67f")
-		)
-		(instances
-			(project ""
-				(path "/d3407657-4284-42d4-8012-68a1da9eff64"
-					(reference "TP1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 330.835 184.785 270)
 		(unit 1)
@@ -27724,16 +27558,6 @@
 				)
 				(justify left top)
 			)
-		)
-		(pin "PG3V3" output
-			(at 373.38 34.29 180)
-			(effects
-				(font
-					(size 1.016 1.016)
-				)
-				(justify left)
-			)
-			(uuid "6ff1f34e-fbce-4ecd-8aeb-b651f596e3fe")
 		)
 		(instances
 			(project "pdms"

@@ -11,6 +11,108 @@
 		(comment 1 "Karol Pergoł")
 	)
 	(lib_symbols
+		(symbol "Connector:TestPoint"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0.762) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "Device:D_TVS"
 			(pin_numbers hide)
 			(pin_names
@@ -1892,6 +1994,12 @@
 		(uuid "0b07a521-21bf-4584-be93-d0fa5aa72b2c")
 	)
 	(junction
+		(at 135.382 224.79)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0c1583dc-9dcf-4cca-8494-7b7ce6f0503d")
+	)
+	(junction
 		(at 134.62 132.08)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2289,16 +2397,6 @@
 		)
 		(uuid "0c028378-ee69-40e6-9b47-99050bf3ffee")
 	)
-	(polyline
-		(pts
-			(xy 131.826 210.185) (xy 148.971 210.185)
-		)
-		(stroke
-			(width 0)
-			(type dash)
-		)
-		(uuid "0fac2844-e276-4306-b77b-2f3eddd30602")
-	)
 	(wire
 		(pts
 			(xy 58.42 50.8) (xy 66.04 50.8)
@@ -2578,6 +2676,16 @@
 			(type default)
 		)
 		(uuid "351cb710-1735-41ec-99aa-c7d13ca85a0f")
+	)
+	(wire
+		(pts
+			(xy 135.382 224.79) (xy 135.382 228.092)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "37423e0e-e8c1-42f0-a136-4583c4dc14d6")
 	)
 	(wire
 		(pts
@@ -2879,16 +2987,6 @@
 		)
 		(uuid "59cebdfa-0003-4d73-8564-f11c7430b776")
 	)
-	(polyline
-		(pts
-			(xy 148.971 210.185) (xy 148.971 228.6)
-		)
-		(stroke
-			(width 0)
-			(type dash)
-		)
-		(uuid "5a2d6238-233a-49e7-b768-be4b6954a5bf")
-	)
 	(wire
 		(pts
 			(xy 66.04 50.8) (xy 78.74 50.8)
@@ -3159,16 +3257,6 @@
 		)
 		(uuid "876e2280-11c9-4438-8f25-61eef2d8020c")
 	)
-	(polyline
-		(pts
-			(xy 131.826 210.185) (xy 131.826 228.6)
-		)
-		(stroke
-			(width 0)
-			(type dash)
-		)
-		(uuid "87b7e7f2-9031-43a3-9195-0df40dafb4e4")
-	)
 	(wire
 		(pts
 			(xy 147.32 135.89) (xy 144.78 135.89)
@@ -3238,16 +3326,6 @@
 			(type default)
 		)
 		(uuid "8c112c74-382f-4399-af6a-e2b95ee56203")
-	)
-	(polyline
-		(pts
-			(xy 148.971 228.6) (xy 131.826 228.6)
-		)
-		(stroke
-			(width 0)
-			(type dash)
-		)
-		(uuid "8c25951a-dd51-4e07-8a21-e08191a44747")
 	)
 	(wire
 		(pts
@@ -3398,6 +3476,16 @@
 			(type default)
 		)
 		(uuid "9e51f46a-04a7-4ed6-9c3d-68fc6b8c1046")
+	)
+	(wire
+		(pts
+			(xy 135.382 224.79) (xy 138.176 224.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a19503a0-42d4-4088-b42b-1ccc81cdf9a3")
 	)
 	(wire
 		(pts
@@ -3601,7 +3689,7 @@
 	)
 	(wire
 		(pts
-			(xy 131.191 224.79) (xy 138.176 224.79)
+			(xy 131.191 224.79) (xy 135.382 224.79)
 		)
 		(stroke
 			(width 0)
@@ -7493,17 +7581,6 @@
 			"Cqu9AAAAAElFTkSuQmCC"
 		)
 	)
-	(text "OPTIONAL"
-		(exclude_from_sim no)
-		(at 131.826 209.55 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "0acf14e5-cef9-4dd6-a523-89b8692a85fc")
-	)
 	(text "For 5V it should be around 4.7k\nIf = 0.9mA\nVf = 1.14V\n"
 		(exclude_from_sim no)
 		(at 34.544 22.352 0)
@@ -7526,38 +7603,27 @@
 		)
 		(uuid "181632fc-1903-4c45-9a96-e20fa1317c9f")
 	)
-	(text "Not applicable ->"
+	(text "Safety override (test only) ->"
 		(exclude_from_sim no)
-		(at 115.57 137.16 0)
+		(at 102.87 135.89 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "1d892251-b1eb-499c-96f4-311b73960969")
+		(uuid "75470644-4b80-4966-8608-52360b9207d1")
 	)
-	(text "Not applicable ->"
+	(text "Safety override (test only) ->"
 		(exclude_from_sim no)
-		(at 115.57 175.26 0)
+		(at 102.87 173.355 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "53832b98-0435-4c83-9920-71e090ebe286")
-	)
-	(text "Not applicable ->"
-		(exclude_from_sim no)
-		(at 115.57 100.33 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "8a675c4e-b84e-4a98-b325-41e7c5b54bb9")
+		(uuid "ad704324-7cc0-4dbc-a2b6-4ba36078d2c0")
 	)
 	(text "Resistance should be selected for correct safety line voltage"
 		(exclude_from_sim no)
@@ -7581,9 +7647,9 @@
 		)
 		(uuid "c8e35c16-05e5-4ef7-9bf5-55812c4b84f1")
 	)
-	(text "Not applicable ->"
+	(text "Safety override (test only) ->"
 		(exclude_from_sim no)
-		(at 115.57 63.5 0)
+		(at 102.87 62.23 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7591,6 +7657,17 @@
 			(justify left bottom)
 		)
 		(uuid "eefa42f4-4056-4155-be07-7ca3a895abb0")
+	)
+	(text "Safety override (test only) ->"
+		(exclude_from_sim no)
+		(at 102.87 99.695 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f1bbeff9-c8a3-452c-be8d-ab6c473ca8b1")
 	)
 	(text "TODO Rev 3.0:\nAdd pull-down to all 16-channels input"
 		(exclude_from_sim no)
@@ -8385,7 +8462,7 @@
 		(dnp no)
 		(uuid "064f68cd-33aa-440f-a561-ea7f56e641ba")
 		(property "Reference" "R170"
-			(at 145.161 222.25 90)
+			(at 145.415 222.885 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8393,8 +8470,8 @@
 				(justify right)
 			)
 		)
-		(property "Value" "1k"
-			(at 147.066 222.25 90)
+		(property "Value" "10k"
+			(at 147.32 222.885 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8800,21 +8877,19 @@
 		(fields_autoplaced yes)
 		(uuid "36930de3-ab75-4ebd-a6b6-a9db6da681d6")
 		(property "Reference" "R40"
-			(at 149.733 102.362 90)
+			(at 148.59 95.25 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Value" "100k"
-			(at 148.59 104.267 90)
+		(property "Value" "10k"
+			(at 148.59 97.79 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
@@ -8936,24 +9011,21 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "3a70a292-9f46-4411-a623-983b624c65a1")
 		(property "Reference" "R41"
-			(at 151.003 137.922 90)
+			(at 149.86 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Value" "100k"
-			(at 149.86 139.827 90)
+		(property "Value" "10k"
+			(at 149.86 133.35 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
@@ -8999,17 +9071,16 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R_Small")
-		(at 149.86 173.99 90)
+		(lib_id "Connector:TestPoint")
+		(at 135.382 228.092 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4ec2f504-5b57-4292-b103-411cbef8ea53")
-		(property "Reference" "R42"
-			(at 151.003 176.022 90)
+		(uuid "47d5aeca-f1fb-4a48-80e2-b5225cd67c55")
+		(property "Reference" "TP11"
+			(at 137.668 230.632 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9017,8 +9088,74 @@
 				(justify right)
 			)
 		)
-		(property "Value" "100k"
-			(at 149.86 177.927 90)
+		(property "Value" "SAFETY_TP"
+			(at 137.668 232.664 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D2.0mm"
+			(at 130.302 228.092 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 130.302 228.092 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 135.382 228.092 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2d334fd0-28ed-4319-b467-fdd581f6c34b")
+		)
+		(instances
+			(project "pdms"
+				(path "/d3407657-4284-42d4-8012-68a1da9eff64/5e0d1f91-4fae-411e-a2b8-95f4b4fcadc5"
+					(reference "TP11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 149.86 173.99 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4ec2f504-5b57-4292-b103-411cbef8ea53")
+		(property "Reference" "R42"
+			(at 147.955 169.545 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "10k"
+			(at 147.955 171.45 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11222,21 +11359,19 @@
 		(fields_autoplaced yes)
 		(uuid "d384c046-9bec-4261-a632-63fb6ec47f2b")
 		(property "Reference" "R39"
-			(at 149.733 64.262 90)
+			(at 148.59 57.15 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Value" "100k"
-			(at 148.59 66.167 90)
+		(property "Value" "10k"
+			(at 148.59 59.69 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
@@ -11608,7 +11743,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "e56fe53b-8d81-47aa-bdfc-2ba550736a36")
 		(property "Reference" "R169"
 			(at 133.096 222.25 90)
@@ -11619,7 +11754,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "10k"
 			(at 135.001 222.25 90)
 			(effects
 				(font
