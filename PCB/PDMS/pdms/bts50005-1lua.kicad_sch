@@ -2160,7 +2160,7 @@
 		)
 		(uuid "86650132-ae48-42dc-a037-96b723f47f45")
 	)
-	(text "SZMM5Z3V3T1G "
+	(text "SZMM5Z3V9T1G "
 		(exclude_from_sim no)
 		(at 64.516 59.182 90)
 		(effects
@@ -3457,7 +3457,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "3V3"
+		(property "Value" "SZMM5Z3V9"
 			(at 68.326 56.8959 90)
 			(effects
 				(font

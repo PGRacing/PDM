@@ -2673,17 +2673,6 @@
 		)
 		(uuid "8c325410-be7f-4162-a391-4998273027b6")
 	)
-	(text "SZMM5Z3V3T1G "
-		(exclude_from_sim no)
-		(at 100.711 88.392 90)
-		(effects
-			(font
-				(size 0.6 0.6)
-			)
-			(justify left bottom)
-		)
-		(uuid "e6bca0ca-d555-4a00-a094-41441ea6091e")
-	)
 	(label "IS"
 		(at 140.335 94.488 0)
 		(fields_autoplaced yes)
@@ -3631,7 +3620,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "3V3"
+		(property "Value" "SZMM5Z3V9"
 			(at 104.521 86.1059 90)
 			(effects
 				(font
