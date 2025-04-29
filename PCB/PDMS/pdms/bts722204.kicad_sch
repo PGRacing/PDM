@@ -1790,6 +1790,22 @@
 		(color 0 0 0 0)
 		(uuid "e3c6241a-db2c-4517-aa75-92ac26a10905")
 	)
+	(junction
+		(at 130.81 60.198)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f8e0835d-c178-4921-b176-a22788d322d5")
+	)
+	(wire
+		(pts
+			(xy 136.398 66.548) (xy 140.97 66.548)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "02b32630-d45e-4f19-b03d-8109479fa4c0")
+	)
 	(wire
 		(pts
 			(xy 102.743 87.376) (xy 102.743 94.488)
@@ -2059,16 +2075,6 @@
 			(type default)
 		)
 		(uuid "6204cc16-c5fc-41d1-968d-35f91e567e4c")
-	)
-	(wire
-		(pts
-			(xy 139.7 66.548) (xy 140.97 66.548)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "676d2e76-f05c-40f0-a744-9f9e05697991")
 	)
 	(wire
 		(pts
@@ -2472,6 +2478,16 @@
 	)
 	(wire
 		(pts
+			(xy 136.398 60.198) (xy 130.81 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d780cb42-ff80-4bd1-aaa8-f7ab1ea5e5ae")
+	)
+	(wire
+		(pts
 			(xy 132.08 74.168) (xy 133.35 74.168)
 		)
 		(stroke
@@ -2489,6 +2505,16 @@
 			(type default)
 		)
 		(uuid "daa3356c-7339-49e0-b35c-c16be42b6b87")
+	)
+	(wire
+		(pts
+			(xy 136.398 66.548) (xy 136.398 60.198)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de549f1f-39cd-4606-9a93-91d8c6a20933")
 	)
 	(wire
 		(pts
@@ -3479,14 +3505,14 @@
 			)
 		)
 		(property "Value" "47"
-			(at 129.54 61.468 90)
+			(at 126.746 61.722 90)
 			(effects
 				(font
 					(size 0.8 0.8)
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 127 60.198 0)
 			(effects
 				(font
@@ -3693,7 +3719,7 @@
 			)
 		)
 		(property "Value" "470"
-			(at 130.175 70.358 90)
+			(at 126.746 70.358 90)
 			(effects
 				(font
 					(size 0.8 0.8)
@@ -4696,76 +4722,6 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 139.7 66.548 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "a8e85876-e6de-4985-b08d-03e047ded7dd")
-		(property "Reference" "#PWR0125"
-			(at 133.35 66.548 0)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 136.525 66.548 90)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 139.7 66.548 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 139.7 66.548 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 139.7 66.548 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "eb01cda6-b740-478c-88cb-a336df0f4704")
-		)
-		(instances
-			(project ""
-				(path "/d3407657-4284-42d4-8012-68a1da9eff64/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/382312d4-d5fa-4b39-ace5-70b089c5702e"
-					(reference "#PWR0125")
-					(unit 1)
-				)
-				(path "/d3407657-4284-42d4-8012-68a1da9eff64/1bbf27ea-c2a2-447a-8999-6ade1a66fd07/3f236385-25de-4e3f-a771-f7ba7d7dd03b"
-					(reference "#PWR0284")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
 		(at 123.19 60.198 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5625,7 +5581,7 @@
 		(dnp no)
 		(uuid "f08f341d-8dd8-45ec-93a5-bd831aaf6092")
 		(property "Reference" "C19"
-			(at 127.635 64.008 0)
+			(at 126.238 64.516 0)
 			(effects
 				(font
 					(size 0.8 0.8)
@@ -5634,7 +5590,7 @@
 			)
 		)
 		(property "Value" "470nF"
-			(at 125.73 66.548 0)
+			(at 124.968 65.786 0)
 			(effects
 				(font
 					(size 0.8 0.8)
