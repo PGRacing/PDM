@@ -1,0 +1,127 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "channels": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "integer" },
+                    "type": { "type": "string", "enum": ["BTS500", "SPOC2"] },
+                    "mode": { "type": "string" },
+                    "spocId": { "type": "integer" },
+                    "spocChId": { "type": "integer" },
+                    "name": { "type": "string", "maxLength": 32 },
+                    "batch": { "type": "integer" },
+                    "safety": {
+                        "type": "object",
+                        "properties": {
+                            "afterErrorCfg": {
+                                "type": "object",
+                                "properties": {
+                                    "behavior": { 
+                                        "type": "string",
+                                        "enum": ["NO", "LATCH", "TIME_LATCH", "RETRY"] 
+                                    },
+                                    "latchTime": { 
+                                        "type": "integer",
+                                        "description": "Required only when behavior is TIME_LATCH"
+                                    }
+                                },
+                                "required": ["behavior"],
+                                "allOf": [
+                                    {
+                                        "if": {
+                                            "properties": { "behavior": { "const": "TIME_LATCH" } }
+                                        },
+                                        "then": {
+                                            "required": ["latchTime"]
+                                        }
+                                    }
+                                ]
+                            },
+                            "actOnSafety": { "type": "boolean" },
+                            "errRetryThreshold": { "type": "integer" },
+                            "retryTimerInterval": { "type": "integer" },
+                            "retryCallback": { "type": "string" },
+                            "socCfg": {
+                                "type": "object",
+                                "properties": {
+                                    "useSoc": { "type": "boolean" },
+                                    "nominalThreshold": { "type": "integer", "minimum": 0 },
+                                    "allowInrush": { "type": "boolean" },
+                                    "inrushWindowFromStart": { 
+                                        "type": ["integer", "string"],
+                                        "enum": ["UINT32_MAX"],
+                                        "minimum": 0,
+                                        "description": "Can be an integer or the string 'UINT32_MAX'"
+                                    },
+                                    "inrushThreshold": { "type": "integer" },
+                                    "inrushTimeThreshold": { "type": "integer" }
+                                },
+                                "required": [
+                                    "useSoc",
+                                    "nominalThreshold",
+                                    "allowInrush",
+                                    "inrushWindowFromStart",
+                                    "inrushThreshold",
+                                    "inrushTimeThreshold"
+                                ]
+                            },
+                            "i2tCfg": {
+                                "type": "object",
+                                "properties": {
+                                    "useI2t": { "type": "boolean" },
+                                    "nominalCurrent": { "type": "integer" },
+                                    "nominalCurrentSq": { "type": "integer" },
+                                    "timeThreshold": { "type": "integer" },
+                                    "i2tThreshold": { "type": "integer" }
+                                },
+                                "required": [
+                                    "useI2t",
+                                    "nominalCurrent",
+                                    "nominalCurrentSq",
+                                    "timeThreshold",
+                                    "i2tThreshold"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "afterErrorCfg",
+                            "actOnSafety",
+                            "errRetryThreshold",
+                            "retryTimerInterval",
+                            "retryCallback"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "mode",
+                    "name"                   
+                ],
+                "allOf": [
+                    {
+                        "if": {
+                            "properties": { "type": { "const": "SPOC2" } }
+                        },
+                        "then": {
+                            "required": ["spocId", "spocChId"]
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": { "type": { "const": "BTS500" } }
+                        },
+                        "then": {
+                            "required": ["safety"]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "required": ["channels"]
+}

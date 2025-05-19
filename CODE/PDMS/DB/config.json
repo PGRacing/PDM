@@ -1,0 +1,196 @@
+{
+    "channels": [
+        {
+            "id": 1,
+            "name": "SERVO",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "LATCH"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 3,
+                "retryTimerInterval": 3000,
+                "retryCallback": "OUT_CH1_RetryCallback",
+                "socCfg": {
+                    "useSoc": true,
+                    "nominalThreshold": 2500,
+                    "allowInrush": true,
+                    "inrushWindowFromStart": "UINT32_MAX",
+                    "inrushTimeThreshold": 500,
+                    "inrushThreshold": 4000
+                }
+            }
+        },
+        {
+            "id": 2,
+            "name": "CAN L",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "LATCH"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 3,
+                "retryTimerInterval": 1000,
+                "retryCallback": "OUT_CH2_RetryCallback"
+            }
+        },
+        {
+            "id": 3,
+            "name": "GCU",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "RETRY"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 3,
+                "retryTimerInterval": 1000,
+                "retryCallback": "OUT_CH3_RetryCallback"
+            }
+        },
+        {
+            "id": 4,
+            "name": "FAN1",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "LATCH"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 3,
+                "retryTimerInterval": 1000,
+                "retryCallback": "OUT_CH4_RetryCallback"
+            }
+        },
+        {
+            "id": 5,
+            "name": "MAINS",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "LATCH"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 6,
+                "retryTimerInterval": 1000,
+                "retryCallback": "OUT_CH5_RetryCallback"
+            }
+        },
+        {
+            "id": 6,
+            "name": "PUMP",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "LATCH"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 6,
+                "retryTimerInterval": 1000,
+                "retryCallback": "OUT_CH6_RetryCallback"
+            }
+        },
+        {
+            "id": 7,
+            "name": "FAN2",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "LATCH"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 3,
+                "retryTimerInterval": 1000,
+                "retryCallback": "OUT_CH7_RetryCallback"
+            }
+        },
+        {
+            "id": 8,
+            "name": "ECU",
+            "type": "BTS500",
+            "mode": "UNUSED",
+            "safety": {
+                "afterErrorCfg": {
+                    "behavior": "RETRY"
+                },
+                "actOnSafety": false,
+                "errRetryThreshold": 6,
+                "retryTimerInterval": 2000,
+                "retryCallback": "OUT_CH8_RetryCallback"
+            }
+        },
+        {
+            "id": 9,
+            "name": "TELE B",
+            "type": "SPOC2",
+            "spocId": 1,
+            "spocChId": 1,
+            "mode": "UNUSED"
+        },
+        {
+            "id": 10,
+            "name": "E.LOG",
+            "type": "SPOC2",
+            "spocId": 1,
+            "spocChId": 2,
+            "mode": "UNUSED"
+        },
+        {
+            "id": 11,
+            "name": "TELE F",
+            "type": "SPOC2",
+            "spocId": 1,
+            "spocChId": 3,
+            "mode": "UNUSED"
+        },
+        {
+            "id": 12,
+            "name": "DASH",
+            "type": "SPOC2",
+            "spocId": 1,
+            "spocChId": 4,
+            "mode": "UNUSED"
+        },
+        {
+            "id": 13,
+            "name": "COMM",
+            "type": "SPOC2",
+            "spocId": 2,
+            "spocChId": 1,
+            "mode": "UNUSED"
+        },
+        {
+            "id": 14,
+            "name": "C.LOG",
+            "type": "SPOC2",
+            "spocId": 2,
+            "spocChId": 2,
+            "mode": "UNUSED"
+        },
+        {
+            "id": 15,
+            "name": "ADD 1",
+            "type": "SPOC2",
+            "spocId": 2,
+            "spocChId": 3,
+            "mode": "UNUSED"
+        },
+        {
+            "id": 16,
+            "name": "ADD 2",
+            "type": "SPOC2",
+            "spocId": 2,
+            "spocChId": 4,
+            "mode": "UNUSED"
+        }
+    ]
+}
