@@ -63,7 +63,7 @@ class PDMGenerator:
 
     def generate_c_code(self):
         code = '#include "out.h"\n\n'
-        code += "const T_OUT_CFG pdmConfig[] = {\n"
+        code += "const T_OUT_CFG pdmConfig[] __attribute__((section(\".config\"))) = {\n"
 
         for channel in self.config.get("channels", []):
             code += f'\t[OUT_ID_{channel["id"]}] = {{\t\n'
