@@ -31,17 +31,18 @@
 typedef struct _T_BSP_OUT_CFG
 {
     const T_IO     io;
-    TIM_TypeDef*   tim;
-    const uint8_t  ch;
-    const uint32_t chmask;
-    const uint32_t alt;
-    const uint32_t clock;
+    TIM_TypeDef*   tim;     // PWM timer
+    const uint8_t  ch;      // PWM timer channel
+    const uint32_t chmask;  // PWM timer channel mask
+    const uint32_t alt;     // GPIO alternate function for PWM
+    const uint32_t clock;   // PWM timer clock
     const volatile uint16_t* currentRawData;
     const uint32_t dkilis;
     const uint32_t sensRValue;
     const uint32_t faultLevel;  // Defined absolutly to remove non-needed calculations
 }T_BSP_OUT_CFG;
 
+#if BOARD_VER == PDMS_V4_2
 static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] = 
 {
     [OUT_ID_1] = 
@@ -197,6 +198,163 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .sensRValue = 2400
     }
 };
+#elif BOARD_VER == PDMS_V4_3
+static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] = 
+{
+    [OUT_ID_1] = 
+    {
+        .io = {PWM_SIG1_GPIO_Port, PWM_SIG1_Pin},
+        .tim = TIM3,
+        .ch = 4,
+        .chmask = LL_TIM_CHANNEL_CH4,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM3,
+        .currentRawData = &(adc1RawData[0]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_2] = 
+    {
+        .io = {PWM_SIG2_GPIO_Port, PWM_SIG2_Pin},
+        .tim = TIM3,
+        .ch = 3,
+        .chmask = LL_TIM_CHANNEL_CH3,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM3,
+        .currentRawData = &(adc1RawData[1]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_3] = 
+    {
+        .io = {PWM_SIG3_GPIO_Port, PWM_SIG3_Pin},
+        .tim = TIM3,
+        .ch = 2,
+        .chmask = LL_TIM_CHANNEL_CH2,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM3,
+        .currentRawData = &(adc1RawData[2]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_4] = 
+    {
+        .io = {PWM_SIG4_GPIO_Port, PWM_SIG4_Pin},
+        .tim = TIM3,
+        .ch = 1,
+        .chmask = LL_TIM_CHANNEL_CH1,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM3,
+        .currentRawData = &(adc1RawData[3]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_5] = 
+    {
+        .io = {PWM_SIG5_GPIO_Port, PWM_SIG5_Pin},
+        .tim = TIM4,
+        .ch = 4,
+        .chmask = LL_TIM_CHANNEL_CH4,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM4,
+        .currentRawData = &(adc1RawData[4]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_6] = 
+    {
+        .io = {PWM_SIG6_GPIO_Port, PWM_SIG6_Pin},
+        .tim = TIM4,
+        .ch = 3,
+        .chmask = LL_TIM_CHANNEL_CH3,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM4,
+        .currentRawData = &(adc1RawData[5]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_7] = 
+    {
+        .io = {PWM_SIG7_GPIO_Port, PWM_SIG7_Pin},
+        .tim = TIM4,
+        .ch = 2,
+        .chmask = LL_TIM_CHANNEL_CH2,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM4,
+        .currentRawData = &(adc1RawData[6]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_8] = 
+    {
+        .io = {PWM_SIG8_GPIO_Port, PWM_SIG8_Pin},
+        .tim = TIM4,
+        .ch = 1,
+        .chmask = LL_TIM_CHANNEL_CH1,
+        .alt = LL_GPIO_AF_2,
+        .clock = LL_APB1_GRP1_PERIPH_TIM4,
+        .currentRawData = &(adc1RawData[7]),
+        .dkilis = 38000,
+        .sensRValue = 3900,
+        .faultLevel = 12000
+    },
+    [OUT_ID_9] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[0]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_10] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[1]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_11] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[2]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_12] = 
+    {
+        .currentRawData = &(VMUX_LP1Voltage[3]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_13] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[0]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_14] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[1]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_15] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[2]),
+        .dkilis = 830,
+        .sensRValue = 2400
+    },
+    [OUT_ID_16] = 
+    {
+        .currentRawData = &(VMUX_LP2Voltage[3]),
+        .dkilis = 1830,
+        .sensRValue = 2400
+    }
+};
+#endif
 
 /// @brief Get I/O descriptor
 /// @param id Output channel id [1..16] T_OUT_ID

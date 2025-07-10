@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include "stm32l496xx.h"
 
+#define PDMS_V4_2 42
+#define PDMS_V4_3 43
+#define BOARD_VER PDMS_V4_3 
+
 #define FALSE false
 #define TRUE  true
 

@@ -30,7 +30,7 @@ volatile T_PDM_CFG pdmCfg =
 {
     // Platform protections
     .onInitBattCheckMaxTries = UINT32_MAX,
-    .isUvloEnabled = TRUE,
+    .isUvloEnabled = FALSE,
     .uvloVoltageHiThreshold = 10000, // 10V
     .uvloVoltageLoThreshold = 8000,  // 8V
     .uvloTimeThreshold = 10000, // 10s
@@ -167,39 +167,39 @@ void PDM_Init(void)
     }
 
     // Verify that voltage is sufficent for normal operation (repetetive turn-on protection)
-    VMUX_ReadBattVoltage();
-    uint32_t lastBattVoltage = 0;
+    // VMUX_ReadBattVoltage();
+    // uint32_t lastBattVoltage = 0;
     
-    for(uint32_t i = 0; i < pdmCfg.onInitBattCheckMaxTries; i++)
-    {
-        VMUX_ReadBattVoltage();
-        lastBattVoltage = VMUX_GetBattValue();
-        if(lastBattVoltage <= pdmCfg.minBattVolage)
-        {
-            backoffDelay = 10000000; 
-            while(backoffDelay--)
-            {
-                __NOP();
-            }
+    // for(uint32_t i = 0; i < pdmCfg.onInitBattCheckMaxTries; i++)
+    // {
+    //     VMUX_ReadBattVoltage();
+    //     lastBattVoltage = VMUX_GetBattValue();
+    //     if(lastBattVoltage <= pdmCfg.minBattVolage)
+    //     {
+    //         backoffDelay = 10000000; 
+    //         while(backoffDelay--)
+    //         {
+    //             __NOP();
+    //         }
 
-            LOG_WARN("PDM:: Insufficent battery voltage to start");
-            LOG_VAR(lastBattVoltage);
+    //         LOG_WARN("PDM:: Insufficent battery voltage to start");
+    //         LOG_VAR(lastBattVoltage);
 
-            if(i == pdmCfg.onInitBattCheckMaxTries - 1)
-            {
-                LOG_ERR("PDM:: Unable to start battery voltage too low!");
-                Error_Handler();
-            }
-        }
-        else
-        {
-            // If battery voltage is sufficent to start exit loop
-            break;
-        }
-    }
+    //         if(i == pdmCfg.onInitBattCheckMaxTries - 1)
+    //         {
+    //             LOG_ERR("PDM:: Unable to start battery voltage too low!");
+    //             Error_Handler();
+    //         }
+    //     }
+    //     else
+    //     {
+    //         // If battery voltage is sufficent to start exit loop
+    //         break;
+    //     }
+    // }
 
     LOG_INFO("PDM:: Board initialized successfully");
-    LOG_VAR(lastBattVoltage);
+    //LOG_VAR(lastBattVoltage);
 
     // Enable watchdog
     MX_IWDG_Init();

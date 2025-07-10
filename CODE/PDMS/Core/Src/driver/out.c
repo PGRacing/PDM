@@ -9,7 +9,7 @@
 #include "tim.h"
 #include "stdlib.h"
 #include "cmsis_os2.h"
-#include "ws2812b.h"Soc
+#include "ws2812b.h"
 
 /// USER DEFINES
 // Safety related defines
@@ -20,6 +20,7 @@
 #define OUT_DIAG_BTS_OPEN_LOAD_TRESHOLD 20 // [mA] Under this value output channel current is considered open load
 #define OUT_DIAG_BTS_DETECT_OPEN_LOAD TRUE // Is open load detection enabled on BTS channels?
 #define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
+#define OUT_DIAG_BTS_TRIP_THRESHOLD 40 // Arbitraty value that needs to be exceeded to trip SOC protection (removing super short local peaks)
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
@@ -78,6 +79,8 @@ void OUT_CH8_RetryCallback(void)
 #pragma endregion
 
 #pragma region OUTPUT_CONFIG
+
+#if BOARD_VER == PDMS_V4_2
 /// @brief Main output channels config [1..16]
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
 {
@@ -310,6 +313,267 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },        
 
 };
+#elif BOARD_VER == PDMS_V4_3
+/// @brief Main output channels config [1..16]
+T_OUT_CFG outsCfg[OUT_ID_MAX] =
+{
+        [OUT_ID_1] = {
+            .id = OUT_ID_1,
+            .name = "SERVO",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = 
+            {
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_RETRY 
+              },
+              .actOnSafety = FALSE,
+              .errRetryThreshold = 3,
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH1_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 15000, // mA
+                .allowInrush = FALSE,
+              }
+            }
+        },
+        [OUT_ID_2] = {
+            .id = OUT_ID_2,
+            .name = "CAN L",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = 
+            {
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_LATCH 
+              },
+              .actOnSafety = FALSE,
+              .retryCallback = &OUT_CH2_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 2000, // mA
+                .allowInrush = FALSE,
+              }              
+            }
+        },
+        [OUT_ID_3] = {
+            .id = OUT_ID_3,
+            .name = "GCU",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = 
+            {
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_RETRY
+              },
+              .actOnSafety = FALSE,
+              .errRetryThreshold = 3, // 
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH3_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 8000, // mA // 8000 before
+                .allowInrush = FALSE,
+              }
+            }
+        },
+        [OUT_ID_4] = {
+            .id = OUT_ID_4,
+            .name = "FAN1",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = 
+            {
+              .afterErrorCfg = 
+              {
+                .behavior = OUT_ERR_BEH_RETRY
+              },
+              .actOnSafety = FALSE,
+              .errRetryThreshold = 3, // 
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH4_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 10000, // mA
+                .allowInrush = TRUE,
+                .inrushWindowFromStart = UINT32_MAX,
+                .inrushTimeThreshold = 2000, // ms
+                .inrushThreshold = 30000 // mA
+              }
+            }
+        },
+        [OUT_ID_5] = {
+            .id = OUT_ID_5,
+            .name = "MAINS",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = 
+            {
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_RETRY
+              },
+              .actOnSafety = FALSE,
+              .errRetryThreshold = 6, 
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH5_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 15000, // mA
+                .allowInrush = FALSE,
+              }
+            }
+        },
+        [OUT_ID_6] = {
+            .id = OUT_ID_6,
+            .name = "PUMP",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = 
+            {
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_RETRY
+              },
+              .actOnSafety = FALSE,
+              .errRetryThreshold = 6,  
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH6_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 10000, // mA
+                .allowInrush = TRUE,
+                .inrushWindowFromStart = 5000, //ms
+                .inrushTimeThreshold = 1000, // ms
+                .inrushThreshold = 25000 // mA
+              }
+            }
+        },
+        [OUT_ID_7] = {
+            .id = OUT_ID_7,
+            .name = "FAN2",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = 
+            {
+              .afterErrorCfg = 
+              {
+                .behavior = OUT_ERR_BEH_RETRY
+              },
+              .actOnSafety = FALSE,
+              .errRetryThreshold = 3, // 
+              .retryTimerInterval = 1000,
+              .retryCallback = &OUT_CH7_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 10000, // mA
+                .allowInrush = TRUE,
+                .inrushWindowFromStart = UINT32_MAX,
+                .inrushTimeThreshold = 2000, // ms
+                .inrushThreshold = 30000 // mA
+              }
+            }
+        },
+        [OUT_ID_8] = {
+            .id = OUT_ID_8,
+            .name = "ECU",
+            .type = OUT_TYPE_BTS500,
+            .mode = OUT_MODE_UNUSED,
+            .safety = {
+              .afterErrorCfg = 
+              { 
+                .behavior = OUT_ERR_BEH_RETRY
+              },
+              .actOnSafety = FALSE,
+              .errRetryThreshold = 6, 
+              .retryTimerInterval = 2000,
+              .retryCallback = &OUT_CH8_RetryCallback,
+              .socCfg =
+              {
+                .useSoc = TRUE,
+                .nominalThreshold = 15000, // mA // 10000 DBW + 2000 ECU + LAMBDA // 5000 before
+                .allowInrush = FALSE,
+              }
+            }
+        },
+        [OUT_ID_9] = {
+            .id = OUT_ID_9,
+            .name = "TELE B",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_1,
+            .mode = OUT_MODE_UNUSED,
+        },
+        [OUT_ID_10] = {
+            .id = OUT_ID_10,
+            .name = "E.LOG",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_2,
+            .mode = OUT_MODE_UNUSED,
+        },
+        [OUT_ID_11] = {
+            .id = OUT_ID_11,
+            .name = "TELE F",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_3,
+            .mode = OUT_MODE_UNUSED,
+        },
+        [OUT_ID_12] = {
+            .id = OUT_ID_12,
+            .name = "DASH",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_1,
+            .spocChId = SPOC2_CH_ID_4,
+            .mode = OUT_MODE_UNUSED,
+        },
+        [OUT_ID_13] = {
+            .id = OUT_ID_13,
+            .name = "COMM",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_1,
+            .mode = OUT_MODE_UNUSED,
+        },        
+        [OUT_ID_14] = {
+            .id = OUT_ID_14,
+            .name = "C.LOG",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_2,
+            .mode = OUT_MODE_UNUSED,
+        },        
+        [OUT_ID_15] = {
+            .id = OUT_ID_15,
+            .name = "ADD 1",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_3,
+            .mode = OUT_MODE_UNUSED,
+        },        
+        [OUT_ID_16] = {
+            .id = OUT_ID_16,
+            .name = "ADD 2",
+            .type = OUT_TYPE_SPOC2,
+            .spocId = SPOC2_ID_2,
+            .spocChId = SPOC2_CH_ID_4,
+            .mode = OUT_MODE_UNUSED,
+        },        
+
+};
+#endif
 
 #pragma endregion
 
@@ -836,7 +1100,6 @@ static void OUT_DIAG_DispatchRetry(T_OUT_ID id)
   T_OUT_REG* reg = OUT_GETREGPTR(id);
   ASSERT(reg);
 
-  // TODO This comparsion does not execute proper amount of times
   if (reg->safety.errRetryCounter >= cfg->safety.errRetryThreshold)
   {
     // Disable timer and latch output channel
@@ -844,6 +1107,8 @@ static void OUT_DIAG_DispatchRetry(T_OUT_ID id)
   }
   else if (FALSE == reg->safety.inRetrySequence)
   {
+    reg->safety.errRetryCounter++;
+    
     // Check if safety function callback does exist
     ASSERT(cfg->safety.retryCallback);
 
@@ -853,8 +1118,6 @@ static void OUT_DIAG_DispatchRetry(T_OUT_ID id)
     // Set-off retry sequence counter 
     reg->safety.inRetrySequence = TRUE;
   }
-
-  reg->safety.errRetryCounter++;
   return;
 }
 
@@ -898,6 +1161,7 @@ static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id)
   // Set timer counters to 0
   outsReg[id].safety.socReg.inrushTripCounter = 0;
   outsReg[id].safety.socReg.timeInPreInrush = 0;
+  outsReg[id].safety.socReg.thresholdExceedCounter = 0;
 
   if(outsCfg[id].safety.socCfg.allowInrush == true)
   {
@@ -932,15 +1196,22 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
 
   T_OUT_STATUS status = OUT_STATUS_OK;
   // 1. Channel set ON
-  if (OUT_STATE_ON == state)
+  if (TRUE == outsCfg[id].safety.socCfg.useSoc && OUT_STATE_ON == state)
   {
     // 1.1 Check if current exceeds threshold
     if (currentMA >= outsReg[id].safety.socReg.currentThreshold)
     {
-      outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_TRIGGERED;
-      status = OUT_STATUS_SOC_FAULT;
-      // This brakes the rules of coding style, but is used to act as fast as possible
-      return status;
+      if(outsReg[id].safety.socReg.thresholdExceedCounter > OUT_DIAG_BTS_TRIP_THRESHOLD)
+      {
+        outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_TRIGGERED;
+        status = OUT_STATUS_SOC_FAULT;
+        // This brakes the rules of coding style, but is used to act as fast as possible
+        return status;
+      }
+      else
+      {
+        outsReg[id].safety.socReg.thresholdExceedCounter += 4;
+      }
     }
     // 1.2 If in inrush mode, check for first current peak
     else if (outsCfg[id].safety.socCfg.allowInrush == true)
@@ -960,7 +1231,7 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
           outsReg[id].safety.socReg.timeInPreInrush++;
           
           // 1.2.3 If counter passes threshold, go into normal operation with lower threshold
-          if (outsReg[id].safety.socReg.timeInPreInrush >= outsCfg[id].safety.socCfg.inrushWindowFromStart)
+          if (outsReg[id].safety.socReg.timeInPreInrush >= (outsCfg[id].safety.socCfg.inrushWindowFromStart/OUT_DIAG_READ_PERIOD))
           {
             outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.nominalThreshold;
             outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
@@ -973,12 +1244,18 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
         outsReg[id].safety.socReg.inrushTripCounter++;
 
         // 1.3.1 If counter passes threshold, go into normal operation with lower threshold
-        if (outsReg[id].safety.socReg.inrushTripCounter >= outsCfg[id].safety.socCfg.inrushTimeThreshold)
+        if (outsReg[id].safety.socReg.inrushTripCounter >= (outsCfg[id].safety.socCfg.inrushTimeThreshold/OUT_DIAG_READ_PERIOD))
         {
           outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.nominalThreshold;
           outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
         }
       }
+    }
+
+    if (currentMA < outsReg[id].safety.socReg.currentThreshold 
+      && outsReg[id].safety.socReg.thresholdExceedCounter > 0)
+    {
+      outsReg[id].safety.socReg.thresholdExceedCounter -= 1;
     }
   }
   return status;
@@ -1066,7 +1343,8 @@ static inline T_OUT_STATUS OUT_DIAG_BtsHardware(T_OUT_ID id, T_OUT_STATE state, 
     // Check if channnel is shorted to ground
     if(diffChVbat < OUT_DIAG_BTS_VBAT_HISTERESIS)
     {
-      newStatus = OUT_STATUS_SHORT_TO_VSS;
+      // During switching inductive load it takes some time to discharge
+      //newStatus = OUT_STATUS_SHORT_TO_VSS;
     }
     else
     {
@@ -1093,7 +1371,16 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   vPortEnterCritical();
   
   // Calculate current from ADC raw data
-  reg->currentMA = BSP_OUT_CalcCurrent(id);
+  if(OUT_STATE_ON == reg->state)
+  {
+    // If channel is ON calculate current
+    reg->currentMA = BSP_OUT_CalcCurrent(id);
+  }
+  else
+  {
+    // If channel is OFF override current to 0
+    reg->currentMA = 0;
+  }
   bool inFault = BSP_OUT_IsCurrentFault(id);
   
   // Get channel voltage from voltage multiplexer ADC data (already calculated)
@@ -1119,8 +1406,11 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
     reg->safety.retryTimerCounter++;
 
     // If timer counter exceeded threshold call retry callback
-    if(reg->safety.retryTimerCounter >= cfg->safety.retryTimerInterval)
+    if(reg->safety.retryTimerCounter >= (cfg->safety.retryTimerInterval/OUT_DIAG_READ_PERIOD))
     {
+      // Check if safety function callback does exist
+      ASSERT(cfg->safety.retryCallback);
+
       cfg->safety.retryCallback();
     }
   }

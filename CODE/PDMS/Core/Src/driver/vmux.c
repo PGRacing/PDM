@@ -25,11 +25,20 @@ extern SemaphoreHandle_t platformInitSemaphore;
 #define VMUX_STORE_VOLTAGE
 #define VMUX_USED_DIVIDER (2.32 / 12.32)
 //#define VMUX_USED_DIVIDER_INV 5.310344827586207
+//#define VMUX_USED_DIVIDER_INV 5.44853224
+
+#if BOARD_VER == PDMS_V4_2
 #define VMUX_USED_DIVIDER_INV 5.44853224
+#define VMUX_BATT_DIVIDER_INV 5.44853224
+#elif BOARD_VER == PDMS_V4_3
+#define VMUX_BATT_DIVIDER_INV 6.19
+#define VMUX_USED_DIVIDER_INV 5.47
+#endif
 
 #define VMUX_ADC_12BIT_MAX_VALUE 4096
 
 #define VMUX_GET_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
+#define VMUX_GET_BATT_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_BATT_DIVIDER_INV)
 
 // Battery voltage 1V at beggining
 volatile uint32_t VMUX_BattVoltage = 1000;
@@ -114,7 +123,7 @@ static void VMUX_SelectMuxAdcChannel (void)
      */
     sConfig.Channel = ADC_CHANNEL_8;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -131,7 +140,7 @@ static void  VMUX_SelectBatteryAdcChannel(void)
      */
     sConfig.Channel = ADC_CHANNEL_13;
     sConfig.Rank = 1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
     sConfig.Offset = 0;
     sConfig.OffsetNumber = ADC_OFFSET_NONE;
     sConfig.SingleDiff = ADC_SINGLE_ENDED;
@@ -184,7 +193,7 @@ void VMUX_ReadBattVoltage(void)
     {   
         vPortEnterCritical();
         #ifdef VMUX_STORE_VOLTAGE
-            VMUX_BattVoltage = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+            VMUX_BattVoltage = VMUX_GET_BATT_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
         #else
             VMUX_BattVoltage = HAL_ADC_GetValue(&hadc3);
         #endif

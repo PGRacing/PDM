@@ -54,11 +54,13 @@ typedef enum
 }
 T_OUT_SAFETY_SOC_STATUS;
 
+/// TODO Verify which parameters should be declared as const
+
 /// @brief Output chhannel after error configuration
 typedef struct _T_OUT_SAFETY_AERR_CFG
 {
     T_OUT_ERR_BEHAVIOR behavior; // After error routine selection
-    uint32_t latchTime;          // Time for /ref OUT_ERR_BEH_TIME_LATCH in ms
+    uint32_t latchTime;          // Time for /ref OUT_ERR_BEH_TIME_LATCH in ms /UNUSED/
 }T_OUT_SAFETY_AERR_CFG;
 
 /// @brief Output channel software overcurrent configuration
@@ -114,8 +116,9 @@ typedef struct _T_OUT_SAFETY_SOC_REG
 {
     T_OUT_SAFETY_SOC_STATUS status;            // Software over-current system status
     uint32_t                currentThreshold;  // Currently applicable current threshold - can be changed dynamically (Ith) [mA]
-    uint32_t                inrushTripCounter; // Counter incremented when current is over threshold in inrush
+    uint32_t                inrushTripCounter; // Counter incremented when in OUT_SAFETY_SOC_INRUSH_WINDOW
     uint32_t                timeInPreInrush;   // Couter used to measure time from channel start
+    uint32_t                thresholdExceedCounter; // How many times current threshold was exceeded
 }
 T_OUT_SAFETY_SOC_REG;
 
