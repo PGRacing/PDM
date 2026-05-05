@@ -30,7 +30,7 @@ volatile T_PDM_CFG pdmCfg =
 {
     // Platform protections
     .onInitBattCheckMaxTries = UINT32_MAX,
-    .isUvloEnabled = FALSE,
+    .isUvloEnabled = TRUE,
     .uvloVoltageHiThreshold = 10000, // 10V
     .uvloVoltageLoThreshold = 8000,  // 8V
     .uvloTimeThreshold = 10000, // 10s
@@ -92,7 +92,7 @@ static void PDM_SoftLimpHomeModeTimerCallback()
     VMUX_ReadBattVoltage();
     HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
     BUZZER_TurnOn();
-    osDelay(1000);
+    osDelay(2000);
     BUZZER_TurnOff();
     HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
 }

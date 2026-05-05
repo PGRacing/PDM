@@ -278,8 +278,7 @@ static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
 T_LOGIC_CFG logicCfg[POWER_OUT_COUNT] = 
 {
   [0] = {
-    .isUsed = TRUE,
-    .exp = LOGIC_EXP_ALWAYS_ON
+    .isUsed = FALSE,
   },
   [1] = {
     .isUsed = FALSE,
@@ -305,17 +304,13 @@ T_LOGIC_CFG logicCfg[POWER_OUT_COUNT] =
     .exp = 
     { .opr = LOGIC_OPERATOR_IT, 
     .input1Type = LOGIC_INPUT_TYPE_SENSOR, 
-    .input1ID = IN_PHY_ID_6, 
+    .input1ID = IN_PHY_ID_1, 
     .input2Type = LOGIC_INPUT_TYPE_UNSET, 
     }
   },
   [6] = {
     .isUsed = TRUE,
-    .exp = { .opr = LOGIC_OPERATOR_IT, 
-    .input1Type = LOGIC_INPUT_TYPE_SENSOR, 
-    .input1ID = IN_PHY_ID_7, 
-    .input2Type = LOGIC_INPUT_TYPE_UNSET, 
-    }
+    .exp = LOGIC_EXP_ALWAYS_ON,
   },
   [7] = {
     .isUsed = TRUE,
@@ -350,7 +345,8 @@ T_LOGIC_CFG logicCfg[POWER_OUT_COUNT] =
     .isUsed = FALSE
   },
   [15] = {
-    .isUsed = FALSE
+    .isUsed = TRUE,
+    .exp = LOGIC_EXP_ALWAYS_ON
   }
 };
 

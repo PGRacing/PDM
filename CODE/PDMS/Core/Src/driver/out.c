@@ -10,6 +10,7 @@
 #include "stdlib.h"
 #include "cmsis_os2.h"
 #include "ws2812b.h"
+#include "pdm.h"
 
 /// USER DEFINES
 // Safety related defines
@@ -319,30 +320,33 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 {
         [OUT_ID_1] = {
             .id = OUT_ID_1,
-            .name = "SERVO",
+            .name = "-",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
-            .safety = 
-            {
-              .afterErrorCfg = 
-              { 
-                .behavior = OUT_ERR_BEH_RETRY 
-              },
-              .actOnSafety = FALSE,
-              .errRetryThreshold = 3,
-              .retryTimerInterval = 1000,
-              .retryCallback = &OUT_CH1_RetryCallback,
-              .socCfg =
-              {
-                .useSoc = TRUE,
-                .nominalThreshold = 15000, // mA
-                .allowInrush = FALSE,
-              }
-            }
+            // .safety = 
+            // {
+            //   .afterErrorCfg = 
+            //   { 
+            //     .behavior = OUT_ERR_BEH_RETRY 
+            //   },
+            //   .actOnSafety = FALSE,
+            //   .errRetryThreshold = 3,
+            //   .retryTimerInterval = 1000,
+            //   .retryCallback = &OUT_CH1_RetryCallback,
+            //   .socCfg =
+            //   {
+            //     .useSoc = TRUE,
+            //     .nominalThreshold = 10000, // mA
+            //     .allowInrush = TRUE,
+            //     .inrushWindowFromStart = 2000,
+            //     .inrushTimeThreshold = 2000, // ms
+            //     .inrushThreshold = 20000 // mA
+            //   }
+            // }
         },
         [OUT_ID_2] = {
             .id = OUT_ID_2,
-            .name = "CAN L",
+            .name = "-",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .safety = 
@@ -363,7 +367,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_3] = {
             .id = OUT_ID_3,
-            .name = "GCU",
+            .name = "ECU",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .safety = 
@@ -379,7 +383,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .socCfg =
               {
                 .useSoc = TRUE,
-                .nominalThreshold = 8000, // mA // 8000 before
+                .nominalThreshold = 10000, // (max.) 10A DBW + 2A ECU + 2A LAMBDA
                 .allowInrush = FALSE,
               }
             }
@@ -412,7 +416,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_5] = {
             .id = OUT_ID_5,
-            .name = "MAINS",
+            .name = "COILS",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .safety = 
@@ -461,7 +465,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_7] = {
             .id = OUT_ID_7,
-            .name = "FAN2",
+            .name = "INJECTOR",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .safety = 
@@ -487,7 +491,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_8] = {
             .id = OUT_ID_8,
-            .name = "ECU",
+            .name = "SERVO",
             .type = OUT_TYPE_BTS500,
             .mode = OUT_MODE_UNUSED,
             .safety = {
@@ -502,14 +506,14 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .socCfg =
               {
                 .useSoc = TRUE,
-                .nominalThreshold = 15000, // mA // 10000 DBW + 2000 ECU + LAMBDA // 5000 before
+                .nominalThreshold = 15000,
                 .allowInrush = FALSE,
               }
             }
         },
         [OUT_ID_9] = {
             .id = OUT_ID_9,
-            .name = "TELE B",
+            .name = "ADD 1",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_1,
@@ -517,7 +521,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_10] = {
             .id = OUT_ID_10,
-            .name = "E.LOG",
+            .name = "ADD 2",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_2,
@@ -525,7 +529,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_11] = {
             .id = OUT_ID_11,
-            .name = "TELE F",
+            .name = "ADD 3",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_3,
@@ -533,7 +537,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_12] = {
             .id = OUT_ID_12,
-            .name = "DASH",
+            .name = "ADD 4",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_1,
             .spocChId = SPOC2_CH_ID_4,
@@ -541,7 +545,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },
         [OUT_ID_13] = {
             .id = OUT_ID_13,
-            .name = "COMM",
+            .name = "ADD 5",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_1,
@@ -549,7 +553,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },        
         [OUT_ID_14] = {
             .id = OUT_ID_14,
-            .name = "C.LOG",
+            .name = "ADD 6",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_2,
@@ -557,7 +561,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },        
         [OUT_ID_15] = {
             .id = OUT_ID_15,
-            .name = "ADD 1",
+            .name = "ADD 7",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_3,
@@ -565,7 +569,7 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
         },        
         [OUT_ID_16] = {
             .id = OUT_ID_16,
-            .name = "ADD 2",
+            .name = "EGT2CAN",
             .type = OUT_TYPE_SPOC2,
             .spocId = SPOC2_ID_2,
             .spocChId = SPOC2_CH_ID_4,
@@ -1392,7 +1396,15 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   // Check for software overcurrent
   T_OUT_STATUS swStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
 
-  newStatus = OUT_STATUS_GET_HIGHER_PRIORITY(hwStatus, swStatus);
+  // Check safety line
+  T_OUT_STATUS safetyStatus = OUT_STATUS_OK;
+  if(OUT_STATE_ON == reg->state && reg->voltageMV < OUT_DIAG_BTS_VBAT_HISTERESIS && FALSE == PDM_GetSafetyState())
+  {
+    safetyStatus = OUT_STATUS_SAFETY_OPEN;
+  }
+
+  newStatus = OUT_STATUS_GET_HIGHER_PRIORITY(safetyStatus, swStatus);
+  newStatus = OUT_STATUS_GET_HIGHER_PRIORITY(hwStatus, newStatus);
 
   // If any error act as selected in configuration
   if(newStatus >= OUT_STATUS_PRIORITY_DIV)

@@ -23,6 +23,7 @@ typedef enum
 {
     OUT_STATUS_OK            = 0,
     OUT_STATUS_OPEN_LOAD     = 1,
+    OUT_STATUS_SAFETY_OPEN   = 8,
 
     OUT_STATUS_PRIORITY_DIV  = 9,
     // Software protection position

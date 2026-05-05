@@ -22,14 +22,15 @@
 #define OFF_STATE_BIT 5
 #define DATA_SIZE 24
 
-WS2812B_COLOR_T red = {0x3F, 0x00, 0x00};
-WS2812B_COLOR_T green = {0x00, 0x3F, 0x00};
-WS2812B_COLOR_T blue = {0x00, 0x00, 0x3F};
+WS2812B_COLOR_T red = {0xC0, 0x00, 0x00};
+WS2812B_COLOR_T green = {0x00, 0xC0, 0x00};
+WS2812B_COLOR_T blue = {0x00, 0x00, 0xC0};
 WS2812B_COLOR_T clear = {0x00, 0x00, 0x00};
 WS2812B_COLOR_T rcpergol = {219, 82, 15};
 
-#define WS2812B_STAT_LED1 17
-#define WS2812B_STAT_LED2 18
+#define WS2812B_STAT_LED1 16
+#define WS2812B_STAT_LED2 17
+
 
 const uint8_t gamma8[] =
 {
@@ -57,15 +58,22 @@ struct
     uint32_t pwm_channel;
 }ws2812b_conf;
 
-uint8_t buff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
-uint8_t dpbuff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
+static struct
+{
+    uint8_t buff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
+    uint8_t dpbuff[RESET_SIG_SIZE + LED_NUM * DATA_SIZE + 1];
+    uint32_t hbLedCounter;
+    bool hbLedState;
+}ws2812b_handle;
+
+
 
 static void WS2812B_SetByteHelper(uint32_t pos, uint8_t value)
 {
 
     for(uint8_t i = 0; i < 8; i++)
     {
-        buff[pos + i] = (value & 0x80) ? ON_STATE_BIT : OFF_STATE_BIT;
+        ws2812b_handle.buff[pos + i] = (value & 0x80) ? ON_STATE_BIT : OFF_STATE_BIT;
         value <<= 1;
     }
 }
@@ -84,15 +92,18 @@ static void WS2812B_InitInternal(TIM_HandleTypeDef* htim, uint32_t Channel)
     ws2812b_conf.htim = htim;
     ws2812b_conf.pwm_channel = Channel;
 
+    ws2812b_handle.hbLedCounter = 0;
+    ws2812b_handle.hbLedState = FALSE;
+
     /* PWM duty = 0% - RESET */
-    memset(buff, 0x00, RESET_SIG_SIZE);
+    memset(ws2812b_handle.buff, 0x00, RESET_SIG_SIZE);
 
     /* PWM duty = 32% - OFF_STATE_BIT */
-    memset(buff + RESET_SIG_SIZE, OFF_STATE_BIT, ARRAY_COUNT(buff) - RESET_SIG_SIZE);
+    memset(ws2812b_handle.buff + RESET_SIG_SIZE, OFF_STATE_BIT, ARRAY_COUNT(ws2812b_handle.buff) - RESET_SIG_SIZE);
 
-    buff[40] = ON_STATE_BIT;
+    ws2812b_handle.buff[40] = ON_STATE_BIT;
     /* PWM duty = 100% - EOT */
-    buff[ARRAY_COUNT(buff) - 1] = 100;
+    ws2812b_handle.buff[ARRAY_COUNT(ws2812b_handle.buff) - 1] = 100;
 
     HAL_TIM_Base_Start(htim);
 }
@@ -105,16 +116,16 @@ void WS2812B_Init(void)
 
 void WS2812B_Flush(void)
 {
-    memset(buff, 0x00, RESET_SIG_SIZE);
-    buff[ARRAY_COUNT(buff) - 1] = 100;
-    HAL_TIM_PWM_Start_DMA(ws2812b_conf.htim, ws2812b_conf.pwm_channel, (const uint32_t*)&buff, ARRAY_COUNT(buff));
-    memcpy(dpbuff, buff, sizeof(buff));
+    memset(ws2812b_handle.buff, 0x00, RESET_SIG_SIZE);
+    ws2812b_handle.buff[ARRAY_COUNT(ws2812b_handle.buff) - 1] = 100;
+    HAL_TIM_PWM_Start_DMA(ws2812b_conf.htim, ws2812b_conf.pwm_channel, (const uint32_t*)&ws2812b_handle.buff, ARRAY_COUNT(ws2812b_handle.buff));
+    memcpy(ws2812b_handle.dpbuff, ws2812b_handle.buff, sizeof(ws2812b_handle.buff));
 }
 
 // Flush only if update needed
 static void WS2812B_FlushIf(void)
 {
-    if(memcmp(dpbuff, buff, sizeof(buff)) != 0)
+    if(memcmp(ws2812b_handle.dpbuff, ws2812b_handle.buff, sizeof(ws2812b_handle.buff)) != 0)
     {
         WS2812B_Flush();
     }
@@ -260,6 +271,24 @@ static void WS2812B_EvaluateLeds(void)
     default:
         break;
     }
+
+
+    // Heartbeat LED
+    if(ws2812b_handle.hbLedCounter > 5)
+    {
+        ws2812b_handle.hbLedCounter = 0;
+        ws2812b_handle.hbLedState = !ws2812b_handle.hbLedState;
+        if(ws2812b_handle.hbLedState)
+        {
+            WS2812B_SetSingle(WS2812B_STAT_LED2, blue);
+        }
+        else
+        {
+            WS2812B_SetSingle(WS2812B_STAT_LED2, clear);
+        }
+    }
+
+    ws2812b_handle.hbLedCounter++;
 }
 
 // TODO Move to another module (app)
