@@ -11,14 +11,14 @@ T_CANH_CFG cansCfg[CANH_INSTANCE_MAX] =
     [CANH_INSTANCE_1] = 
     {
         .enabled = TRUE,
-        .baud = 1000000,  // Not evalueted now
+        .baud = 1000000,
         .terminator = FALSE, 
         .baseId = 0x400
     },
     [CANH_INSTANCE_2] = 
     {
         .enabled = TRUE,
-        .baud = 1000000, // Not evalueted now
+        .baud = 1000000,
         .terminator = TRUE,
         .baseId = 0x400
     },
@@ -228,7 +228,7 @@ T_CANH_TX_PACKAGE CANH_TxSysStatus =
 {
     .header = 
     {
-        .DLC = 4,
+        .DLC = sizeof(T_CANH_SYSTEM_STATUS),
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
@@ -390,10 +390,11 @@ void CANH_Send_TxCurrent13_16(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2
     CANH_PushToQueue(instance, CANH_TxCurrent13_16);
 }
 
-void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyState)
+void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyState)
 {
     CANH_TxSysStatus.data.system_status.status = sysStatus;
     CANH_TxSysStatus.data.system_status.battVoltage = battVoltage;
+    CANH_TxSysStatus.data.system_status.coreTemp = coreTemp;
     CANH_TxSysStatus.data.system_status.safetyLineState = safetyState;
 
     CANH_PushToQueue(instance, CANH_TxSysStatus);

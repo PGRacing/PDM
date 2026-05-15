@@ -15,6 +15,8 @@ void VMUX_ReadBattVoltage(void);
 // Get battery voltage ADC channel 13
 uint32_t VMUX_GetBattValue(void);
 
+int16_t VMUX_GetTempValue(void);
+
 
 extern volatile uint16_t VMUX_LP1Voltage[4];
 extern volatile uint16_t VMUX_LP2Voltage[4];

@@ -13,13 +13,14 @@ from matplotlib.figure import Figure
 CHANNEL_COUNT = 16
 BASE_ID = 0x400
 
-CAN_CHANNEL = "COM5"
+CAN_CHANNEL = "COM14"
 CAN_BITRATE = 1000000
 SERIAL_BAUD = 115200
 
 HISTORY_LEN = 300
 GUI_UPDATE_MS = 50
-PLOT_UPDATE_MS = 50
+PLOT_UPDATE_MS = 1
+AVG_WINDOW_MS = 500
 
 # ================= CAN IDS =================
 IDS = {
@@ -57,16 +58,22 @@ def get_tag(state, status):
 
 # ================= GLOBAL DATA =================
 channels = [
-    {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0}
+    {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0}
     for _ in range(CHANNEL_COUNT)
 ]
 
-sys_status = {"status": 0, "batt": 0, "safety": 0}
+sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": False, "total_current": 0}
 
 name_parts = defaultdict(dict)
 
+# Debug logging limits for SYS_STATUS parsing
+MAX_SYS_STATUS_LOGS = 10
+sys_status_log_count = 0
+
 voltage_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
 current_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+current_avg_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
 
 lock = threading.Lock()
 
@@ -79,6 +86,29 @@ def parse_u16x4(data):
     return struct.unpack("<4H", data)
 
 
+def parse_system_status(data):
+    # Expected layout (packed, little-endian):
+    # uint8_t status;
+    # uint16_t battVoltage;  // mV
+    # int16_t coreTemp;      // tenths of degree C
+    # uint8_t safetyLineState; // boolean
+    status = data[0] if len(data) > 0 else 0
+
+    if len(data) >= 3:
+        batt_voltage = struct.unpack_from("<H", data, 1)[0]
+    else:
+        batt_voltage = 0
+
+    if len(data) >= 5:
+        core_temp = struct.unpack_from("<h", data, 3)[0] / 10.0
+    else:
+        core_temp = 0.0
+
+    safety_line_state = bool(data[5]) if len(data) > 5 else False
+
+    return status, batt_voltage, core_temp, safety_line_state
+
+
 def update_names(data):
     meta = data[0]
     part = (meta >> 4) & 0x0F
@@ -88,6 +118,18 @@ def update_names(data):
     name_parts[ch][part] = txt
 
     channels[ch]["name"] = "".join(name_parts[ch][i] for i in sorted(name_parts[ch]))
+
+
+def trim_history(hist, now):
+    cutoff = now - (AVG_WINDOW_MS / 1000.0)
+    while hist and hist[0][0] < cutoff:
+        hist.popleft()
+
+
+def average_history(hist):
+    if not hist:
+        return 0
+    return sum(v for _, v in hist) / len(hist)
 
 
 # ================= CAN THREAD =================
@@ -118,9 +160,28 @@ def can_worker():
 
             # -------- SYS STATUS --------
             if cid == IDS["SYS_STATUS"]:
-                sys_status["status"] = d[0]
-                sys_status["batt"] = d[1] | (d[2] << 8)
-                sys_status["safety"] = d[3]
+                        # allow updating a small debug counter
+                        global sys_status_log_count
+                        status, batt_voltage, core_temp, safety_line_state = parse_system_status(d)
+                        sys_status["status"] = status
+                        sys_status["batt"] = batt_voltage
+                        sys_status["core_temp"] = core_temp
+                        sys_status["safety"] = safety_line_state
+
+                        # limited debug output to help diagnose constant temperature
+                        try:
+                            if sys_status_log_count < MAX_SYS_STATUS_LOGS:
+                                raw_hex = d.hex()
+                                b3 = d[3] if len(d) > 3 else None
+                                b4 = d[4] if len(d) > 4 else None
+                                val_at_3 = struct.unpack_from("<h", d, 3)[0] if len(d) >= 5 else None
+                                val_at_4 = struct.unpack_from("<h", d, 4)[0] if len(d) >= 6 else None
+                                print(
+                                    f"SYS_STATUS raw: {raw_hex} bytes[3]={b3} bytes[4]={b4} s16@3={val_at_3} s16@4={val_at_4} parsed_core={core_temp}"
+                                )
+                                sys_status_log_count += 1
+                        except Exception as e:
+                            print("SYS_STATUS debug print failed:", e)
 
             # -------- STATUS --------
             elif cid == IDS["STATUS_1_8"]:
@@ -168,8 +229,18 @@ def can_worker():
 
                 for i in range(4):
                     ch = base + i
-                    channels[ch]["current"] = vals[i] * 10
-                    current_history[ch].append((t, vals[i] * 10))
+                    inst = vals[i] * 10
+                    channels[ch]["current"] = inst
+                    current_history[ch].append((t, inst))
+
+                    win = current_avg_window[ch]
+                    win.append((t, inst))
+                    trim_history(win, t)
+                    avg = average_history(win)
+                    channels[ch]["current_avg"] = avg
+                    current_avg_history[ch].append((t, avg))
+
+                sys_status["total_current"] = sum(ch["current_avg"] for ch in channels)
 
             elif cid == IDS["NAMES"]:
                 update_names(d)
@@ -202,7 +273,9 @@ class App:
 
         self.sys_lbl = tk.StringVar()
         self.batt_lbl = tk.StringVar()
+        self.temp_lbl = tk.StringVar()
         self.safe_lbl = tk.StringVar()
+        self.total_i_lbl = tk.StringVar()
 
         tk.Label(sys_frame, text="State").grid(row=0, column=0)
         tk.Label(sys_frame, textvariable=self.sys_lbl).grid(row=0, column=1)
@@ -210,12 +283,18 @@ class App:
         tk.Label(sys_frame, text="Battery").grid(row=1, column=0)
         tk.Label(sys_frame, textvariable=self.batt_lbl).grid(row=1, column=1)
 
-        tk.Label(sys_frame, text="Safety").grid(row=2, column=0)
-        tk.Label(sys_frame, textvariable=self.safe_lbl).grid(row=2, column=1)
+        tk.Label(sys_frame, text="Core Temp").grid(row=2, column=0)
+        tk.Label(sys_frame, textvariable=self.temp_lbl).grid(row=2, column=1)
+
+        tk.Label(sys_frame, text="Safety").grid(row=3, column=0)
+        tk.Label(sys_frame, textvariable=self.safe_lbl).grid(row=3, column=1)
+
+        tk.Label(sys_frame, text="Total I avg").grid(row=4, column=0)
+        tk.Label(sys_frame, textvariable=self.total_i_lbl).grid(row=4, column=1)
 
         # ===== TABLE =====
         self.tree = ttk.Treeview(root)
-        self.tree["columns"] = ("Name", "Status", "State", "V [mV]", "I [mA]")
+        self.tree["columns"] = ("Name", "Status", "State", "V [mV]", "I inst [mA]", "I avg [mA]")
         for c in self.tree["columns"]:
             self.tree.heading(c, text=c)
         self.tree.pack(fill=tk.BOTH, expand=True)
@@ -225,7 +304,7 @@ class App:
         self.tree.tag_configure("warn", background="#fff3b0")
         self.tree.tag_configure("fault", background="#ffb3b3")
 
-        self.rows = [self.tree.insert("", "end", text=str(i+1), values=("", "", "", "", ""))
+        self.rows = [self.tree.insert("", "end", text=str(i+1), values=("", "", "", "", "", ""))
                  for i in range(CHANNEL_COUNT)]
 
         # ===== PLOT =====
@@ -247,7 +326,9 @@ class App:
         with lock:
             self.sys_lbl.set(str(sys_status["status"]))
             self.batt_lbl.set(f"{sys_status['batt']} mV")
+            self.temp_lbl.set(f"{sys_status['core_temp']:.1f} °C")
             self.safe_lbl.set(str(sys_status["safety"]))
+            self.total_i_lbl.set(f"{sys_status['total_current']:.1f} mA")
 
             for i, ch in enumerate(channels):
                 tag = get_tag(ch["state"], ch["status"])
@@ -258,7 +339,8 @@ class App:
                         OUT_STATUS_MAP.get(ch["status"], ch["status"]),
                         OUT_STATE_MAP.get(ch["state"], ch["state"]),
                         ch["voltage"],
-                        ch["current"]
+                        ch["current"],
+                        f"{ch['current_avg']:.1f}",
                     ),
                     tags=(tag,)
                 )
@@ -280,7 +362,11 @@ class App:
 
                 if len(current_history[ch]) > 1:
                     t, c = zip(*current_history[ch])
-                    self.ax_i.plot(t, c, label=f"CH{ch+1}")
+                    self.ax_i.plot(t, c, label=f"CH{ch+1} inst", linewidth=1, alpha=0.6)
+
+                if len(current_avg_history[ch]) > 1:
+                    t, c = zip(*current_avg_history[ch])
+                    self.ax_i.plot(t, c, label=f"CH{ch+1} avg", linewidth=2)
 
         self.ax_v.legend()
         self.ax_i.legend()

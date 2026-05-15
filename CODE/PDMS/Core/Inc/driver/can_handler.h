@@ -40,6 +40,7 @@ typedef struct __packed _T_CANH_SYSTEM_STATUS
 {
     uint8_t  status;
     uint16_t battVoltage;
+    int16_t coreTemp;
     uint8_t  safetyLineState;
 }T_CANH_SYSTEM_STATUS;
 
@@ -108,7 +109,7 @@ void CANH_Send_TxStatus9_16(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, ui
 
 void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16]);
 
-void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, uint8_t safetyLineStatus);
+void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyLineStatus);
 
 void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7]);
 

@@ -14,7 +14,7 @@
 
 /// USER DEFINES
 // Safety related defines
-#define OUT_DIAG_READ_FREQ 200 // 200 Hz frequency of adc read
+#define OUT_DIAG_READ_FREQ 200 // Hz frequency of ADC data provided via semaphore from ADC IRQ
 #define OUT_DIAG_READ_PERIOD (1000 / OUT_DIAG_READ_FREQ)
 #define OUT_SAFETY_OC_OFF 0xFFFF
 #define OUT_DIAG_MS_TO_OC_TRIP(X) ((X) / OUT_DIAG_READ_PERIOD)

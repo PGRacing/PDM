@@ -34,6 +34,12 @@ extern SemaphoreHandle_t adc1ConvReadySemaphore;
 extern SemaphoreHandle_t adc2ConvReadySemaphore;
 
 #define ADC_12BIT_MAX_VALUE 4096
+
+#define ADC1_SAMPLING_RATE 5000 // Hz, frequency of ADC1 conversion
+#define ADC1_SW_OVERSAMPLING_RATIO (ADC1_SAMPLING_RATE/200)
+
+#define ADC2_SAMPLING_RATE 200 // Hz, frequency of ADC2 conversion
+
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -68,8 +74,8 @@ void MX_ADC1_Init(void)
   hadc1.Init.LowPowerAutoWait = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.NbrOfConversion = 8;
-  hadc1.Init.DiscontinuousConvMode = ENABLE;
-  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T8_TRGO;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T15_TRGO;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
@@ -196,7 +202,7 @@ void MX_ADC2_Init(void)
   hadc2.Init.LowPowerAutoWait = DISABLE;
   hadc2.Init.ContinuousConvMode = DISABLE;
   hadc2.Init.NbrOfConversion = 8;
-  hadc2.Init.DiscontinuousConvMode = ENABLE;
+  hadc2.Init.DiscontinuousConvMode = DISABLE;
   hadc2.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T8_TRGO;
   hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc2.Init.DMAContinuousRequests = ENABLE;
@@ -295,7 +301,7 @@ void MX_ADC3_Init(void)
 
   /* USER CODE END ADC3_Init 0 */
 
-  //ADC_ChannelConfTypeDef sConfig = {0};
+  ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC3_Init 1 */
 
@@ -325,16 +331,16 @@ void MX_ADC3_Init(void)
 
   /** Configure Regular Channel
   */
-  // sConfig.Channel = ADC_CHANNEL_6;
-  // sConfig.Rank = ADC_REGULAR_RANK_1;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
-  // sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  // sConfig.OffsetNumber = ADC_OFFSET_NONE;
-  // sConfig.Offset = 0;
-  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
+  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN ADC3_Init 2 */
 
   /* USER CODE END ADC3_Init 2 */
@@ -614,20 +620,43 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
 uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
+/* Current readout averaging */
+volatile uint32_t adc1SumData[ADC1_CHANNEL_COUNT] = {0};
+volatile uint16_t adc1AvgData[ADC1_CHANNEL_COUNT] = {0};
+volatile uint16_t adc1SumCounter = 0;
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
     ASSERT(adc1ConvReadySemaphore);
     ASSERT(adc2ConvReadySemaphore);
     if(hadc == &hadc1)
     {
-      /* Can be possibly changed to semaphore */
-      static portBASE_TYPE xHigherPriorityTaskWoken;
-      xHigherPriorityTaskWoken = pdFALSE;
-
-      if(adc1ConvReadySemaphore != NULL)
+      for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
       {
-        xSemaphoreGiveFromISR(adc1ConvReadySemaphore, &xHigherPriorityTaskWoken);
+        adc1SumData[i] += adc1RawData[i];
       }
+      adc1SumCounter++;
+
+      if(adc1SumCounter >= ADC1_SW_OVERSAMPLING_RATIO)
+      {
+        adc1SumCounter = 0;
+
+        // Calculate average and reset sum
+        for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
+        {
+          adc1AvgData[i] = adc1SumData[i] / ADC1_SW_OVERSAMPLING_RATIO;
+          adc1SumData[i] = 0;
+        }
+        
+        // Notify task that new ADC1 data is ready
+        static portBASE_TYPE xHigherPriorityTaskWoken;
+        xHigherPriorityTaskWoken = pdFALSE;
+        if(adc1ConvReadySemaphore != NULL)
+        {
+          xSemaphoreGiveFromISR(adc1ConvReadySemaphore, &xHigherPriorityTaskWoken);
+        }
+      }
+
     }else if(hadc == &hadc2)
     {
       static portBASE_TYPE xHigherPriorityTaskWoken;
@@ -655,8 +684,8 @@ void ADC1_Init(void)
 { 
   // TODO Check if it's really 5ms and how it does affect OC trip and others
 
-    /* Timer 8 configured to execute ADC conversion each 5ms */
-    HAL_TIM_Base_Start(&htim8);
+    /* Timer 15 configured to execute ADC1 conversion each 0.1ms */
+    HAL_TIM_Base_Start(&htim15);
 
     /* Start ADC in DMA mode */
     // ADC1 - BSP current sensors
@@ -672,8 +701,8 @@ void ADC1_Init(void)
 
 void ADC2_Init(void)
 {
-    /* Right now ADC2 also executed from TIM8*/
-
+    /* Timer 8 configured to execute ADC2 conversion each 5ms */
+    HAL_TIM_Base_Start(&htim8);
     /* Start ADC in DMA mode */
     // ADC2 - BSP inputs
     HAL_ADC_Start_DMA(&hadc2, (uint32_t*)adc2RawData, ADC2_CHANNEL_COUNT);

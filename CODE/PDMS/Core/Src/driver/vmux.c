@@ -43,6 +43,8 @@ extern SemaphoreHandle_t platformInitSemaphore;
 // Battery voltage 1V at beggining
 volatile uint32_t VMUX_BattVoltage = 1000;
 
+volatile int16_t VMUX_TempValue = 250; // 25.0 C at beggining
+
 volatile uint16_t VMUX_LP1Voltage[4] = {0};
 
 volatile uint16_t VMUX_LP2Voltage[4] = {0};
@@ -50,6 +52,10 @@ volatile uint16_t VMUX_LP2Voltage[4] = {0};
 volatile uint32_t VMUX_Value[VMUX_INPUT_COUNT] = {0};
 
 static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 4, 3, 5, 6, 7, 0, 1, 8, 9, 10, 11, 12, 13, 14, 15};
+
+static uint16_t tempSensorCal1; // Factory calibration value for 30 degrees C @ 3.0V
+static uint16_t tempSensorCal2; // Factory calibration value for 130 degrees C @ 3.0V
+
 
 static T_IO VMUX_SelectorConfig[VMUX_SELECTOR_COUNT] = 
 {
@@ -150,6 +156,23 @@ static void  VMUX_SelectBatteryAdcChannel(void)
     }
 }
 
+static void VMUX_SelectTempAdcChannel(void)
+{
+    ADC_ChannelConfTypeDef sConfig = {0};
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
 static void  VMUX_SelectLP1AdcChannel(void)
 {
     ADC_ChannelConfTypeDef sConfig = {0};
@@ -198,6 +221,22 @@ void VMUX_ReadBattVoltage(void)
             VMUX_BattVoltage = HAL_ADC_GetValue(&hadc3);
         #endif
         vPortExitCritical();
+    }       
+    HAL_ADC_Stop(&hadc3);
+}
+
+void VMUX_ReadTemp(void)
+{
+    VMUX_SelectTempAdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    if(HAL_ADC_PollForConversion(&hadc3, 100) == HAL_OK)
+    {   
+        uint32_t tempRaw = HAL_ADC_GetValue(&hadc3);
+
+        VMUX_TempValue = (int16_t)(((((int64_t)tempRaw * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE) - tempSensorCal1) *
+                       (TEMPSENSOR_CAL2_TEMP - TEMPSENSOR_CAL1_TEMP) /
+                       (tempSensorCal2 - tempSensorCal1) + TEMPSENSOR_CAL1_TEMP) * 10);
     }       
     HAL_ADC_Stop(&hadc3);
 }
@@ -281,14 +320,22 @@ uint32_t VMUX_GetBattValue(void)
     return VMUX_BattVoltage;
 }
 
+int16_t VMUX_GetTempValue(void)
+{
+    return VMUX_TempValue;
+}
+
 void vmuxTaskStart(void *argument)
 {
     /* USER CODE BEGIN vmuxTaskStart */
     LOG_INFO("VMUX:: Task start");
+    tempSensorCal1 = (*((uint16_t*)TEMPSENSOR_CAL1_ADDR)) * 3000/VDD_VALUE;
+    tempSensorCal2 = (*((uint16_t*)TEMPSENSOR_CAL2_ADDR)) * 3000/VDD_VALUE;
     /* Infinite loop */
     for(;;)
     {
         VMUX_ReadBattVoltage();
+        VMUX_ReadTemp();
         VMUX_GetAllPooling();
         VMUX_ReadLPChannel();
         // TODO Do it faster if possible
