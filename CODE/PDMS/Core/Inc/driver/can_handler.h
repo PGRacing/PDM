@@ -28,6 +28,7 @@ typedef struct
 {
     CAN_HandleTypeDef *hcan;
     QueueHandle_t txQueueHandle;
+    QueueHandle_t rxQueueHandle;
     bool readyForTx;
     uint32_t txMailbox[4];
 }T_CANH_REG;
@@ -80,6 +81,12 @@ typedef struct T_CANH_TX_PACKAGE
     T_CANH_DATA data;
 }T_CANH_TX_PACKAGE;
 
+typedef struct T_CANH_RX_PACKAGE 
+{
+    CAN_RxHeaderTypeDef header;
+    T_CANH_DATA data;
+}T_CANH_RX_PACKAGE;
+
 
 /// @brief Main CAN configuration
 extern T_CANH_CFG cansCfg[CANH_INSTANCE_MAX];
@@ -91,7 +98,8 @@ void can2TaskStart(void *argument);
 /// @brief CAN bus module initialization
 void CANH_Init(void);
 
-void CANH_PushToQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg);
+void CANH_PushToTxQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg);
+void CANH_PushToRxQueue(T_CANH_INSTANCE instance, T_CANH_RX_PACKAGE pkg);
 
 /* TX MESSAGES */
 void CANH_Send_TxVoltage1_4(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4);

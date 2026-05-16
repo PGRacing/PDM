@@ -1,8 +1,10 @@
 #ifndef __INPUT_H_
 #define __INPUT_H_
 
-#include "bsp_input.h"
+#include "bsp_caninput.h"
+#include "bsp_phyinput.h"
 
+typedef uint16_t T_INPUT_ID;
 typedef enum
 {
     IN_MODE_UNUSED  = 0x00,
@@ -20,7 +22,7 @@ typedef enum
 
 typedef struct _T_IN_CFG
 {
-    const T_INPUT_ID  id;      // id should reflect position in inputsCfg
+    const uint16_t    location;
     T_IN_TYPE         type;
     T_IN_MODE         mode;
 }T_IN_CFG;

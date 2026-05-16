@@ -29,8 +29,6 @@ void assert_failed_pdm(uint8_t *file, uint32_t line);
 #define ASSERT(...)
 #endif
 
-typedef uint16_t T_INPUT_ID;
-
 typedef enum
 {
     STATUS_OK,

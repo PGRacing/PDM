@@ -1,0 +1,24 @@
+timestamp,1778942804.6059377
+system_status,status,0
+system_status,batt_mV,16446
+system_status,core_temp_C,-44.0
+system_status,safety,0
+system_status,total_current_mA,0.0
+
+ch,name,status,state,voltage_mV,current_mA,current_avg_mA
+1,-,0,0,0,0,0.0
+2,-,0,0,0,0,0.0
+3,ECU,1,1,16415,0,0.0
+4,FAN1,1,1,16464,0,0.0
+5,COILS,8,1,0,0,0.0
+6,PUMP,0,0,0,0,0.0
+7,INJECTOR,8,1,103,0,0.0
+8,SERVO,1,1,16415,0,0.0
+9,ADD 1,0,1,16453,0,0.0
+10,ADD 2,0,1,16442,0,0.0
+11,ADD 3,0,1,16410,0,0.0
+12,ADD 4,0,1,16355,0,0.0
+13,ADD 5,0,0,0,0,0.0
+14,ADD 6,0,1,16475,0,0.0
+15,ADD 7,0,0,0,0,0.0
+16,EGT2CAN,0,1,16399,0,0.0

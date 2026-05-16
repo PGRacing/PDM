@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "string.h"
 #include "semphr.h"
+#include "bsp_caninput.h"
 #include "tim.h"
 
 T_CANH_CFG cansCfg[CANH_INSTANCE_MAX] = 
@@ -30,6 +31,7 @@ T_CANH_REG cansReg[CANH_INSTANCE_MAX] =
     {
         .hcan = &hcan1,
         .txQueueHandle = NULL,
+        .rxQueueHandle = NULL,
         .readyForTx = FALSE,
         .txMailbox = {0}
     },
@@ -37,9 +39,24 @@ T_CANH_REG cansReg[CANH_INSTANCE_MAX] =
     {
         .hcan = &hcan2,
         .txQueueHandle = NULL,
+        .rxQueueHandle = NULL,
         .readyForTx = FALSE,
         .txMailbox = {0}
     },
+};
+
+static CAN_FilterTypeDef canAllowAllFilter = 
+{
+    .FilterBank = 0,
+    .FilterMode = CAN_FILTERMODE_IDMASK,
+    .FilterScale = CAN_FILTERSCALE_32BIT,
+    .FilterIdHigh = 0x0000,
+    .FilterIdLow = 0x0000,
+    .FilterMaskIdHigh = 0x0000,
+    .FilterMaskIdLow = 0x0000,
+    .FilterFIFOAssignment = CAN_FILTER_FIFO0,
+    .FilterActivation = ENABLE,
+    .SlaveStartFilterBank = 14
 };
 
 /////////////////////////
@@ -277,7 +294,7 @@ void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uin
     CANH_TxStatus1_8.data.status_8ch.status[6] = s7;
     CANH_TxStatus1_8.data.status_8ch.status[7] = s8;
 
-    CANH_PushToQueue(instance, CANH_TxStatus1_8);
+    CANH_PushToTxQueue(instance, CANH_TxStatus1_8);
 }
 
 void CANH_Send_TxStatus9_16(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
@@ -291,7 +308,7 @@ void CANH_Send_TxStatus9_16(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, ui
     CANH_TxStatus9_16.data.status_8ch.status[6] = s7;
     CANH_TxStatus9_16.data.status_8ch.status[7] = s8;
 
-    CANH_PushToQueue(instance, CANH_TxStatus9_16);
+    CANH_PushToTxQueue(instance, CANH_TxStatus9_16);
 }
 
 void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16])
@@ -307,7 +324,7 @@ void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16])
         CANH_TxState1_16.data.state_16ch.state[i / 2] |= s[i] << (i % 2 ? 0 : 4);
     }
 
-    CANH_PushToQueue(instance, CANH_TxState1_16);
+    CANH_PushToTxQueue(instance, CANH_TxState1_16);
 }
                             
 void CANH_Send_TxVoltage1_4(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
@@ -317,7 +334,7 @@ void CANH_Send_TxVoltage1_4(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, 
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage1_4.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue(instance, CANH_TxVoltage1_4);
+    CANH_PushToTxQueue(instance, CANH_TxVoltage1_4);
 }
 
 void CANH_Send_TxVoltage5_8(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
@@ -327,7 +344,7 @@ void CANH_Send_TxVoltage5_8(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, 
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage5_8.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue(instance, CANH_TxVoltage5_8);
+    CANH_PushToTxQueue(instance, CANH_TxVoltage5_8);
 }
 
 void CANH_Send_TxVoltage9_12(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
@@ -337,7 +354,7 @@ void CANH_Send_TxVoltage9_12(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2,
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage9_12.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue(instance, CANH_TxVoltage9_12);
+    CANH_PushToTxQueue(instance, CANH_TxVoltage9_12);
 }
 
 void CANH_Send_TxVoltage13_16(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2, uint16_t v3, uint16_t v4)
@@ -347,7 +364,7 @@ void CANH_Send_TxVoltage13_16(T_CANH_INSTANCE instance, uint16_t v1, uint16_t v2
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[2] = v3;
     CANH_TxVoltage13_16.data.voltage_4ch.voltage[3] = v4;
 
-    CANH_PushToQueue(instance, CANH_TxVoltage13_16);
+    CANH_PushToTxQueue(instance, CANH_TxVoltage13_16);
 }
 
 void CANH_Send_TxCurrent1_4(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -357,7 +374,7 @@ void CANH_Send_TxCurrent1_4(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, 
     CANH_TxCurrent1_4.data.current_4ch.current[2] = c3;
     CANH_TxCurrent1_4.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue(instance, CANH_TxCurrent1_4);
+    CANH_PushToTxQueue(instance, CANH_TxCurrent1_4);
 }
 
 void CANH_Send_TxCurrent5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -367,7 +384,7 @@ void CANH_Send_TxCurrent5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, 
     CANH_TxCurrent5_8.data.current_4ch.current[2] = c3;
     CANH_TxCurrent5_8.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue(instance, CANH_TxCurrent5_8);
+    CANH_PushToTxQueue(instance, CANH_TxCurrent5_8);
 }
 
 void CANH_Send_TxCurrent9_12(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -377,7 +394,7 @@ void CANH_Send_TxCurrent9_12(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2,
     CANH_TxCurrent9_12.data.current_4ch.current[2] = c3;
     CANH_TxCurrent9_12.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue(instance, CANH_TxCurrent9_12);
+    CANH_PushToTxQueue(instance, CANH_TxCurrent9_12);
 }
 
 void CANH_Send_TxCurrent13_16(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
@@ -387,7 +404,7 @@ void CANH_Send_TxCurrent13_16(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2
     CANH_TxCurrent13_16.data.current_4ch.current[2] = c3;
     CANH_TxCurrent13_16.data.current_4ch.current[3] = c4;
 
-    CANH_PushToQueue(instance, CANH_TxCurrent13_16);
+    CANH_PushToTxQueue(instance, CANH_TxCurrent13_16);
 }
 
 void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyState)
@@ -397,7 +414,7 @@ void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t b
     CANH_TxSysStatus.data.system_status.coreTemp = coreTemp;
     CANH_TxSysStatus.data.system_status.safetyLineState = safetyState;
 
-    CANH_PushToQueue(instance, CANH_TxSysStatus);
+    CANH_PushToTxQueue(instance, CANH_TxSysStatus);
 }
 
 void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7])
@@ -405,7 +422,7 @@ void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char st
     CANH_TxNames.data.raw[0] = (part << 4) + (id & 0x0F); 
     memcpy(&(CANH_TxNames.data.raw[1]), str, 7);
 
-    CANH_PushToQueue(instance, CANH_TxNames);
+    CANH_PushToTxQueue(instance, CANH_TxNames);
 }
 
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)
@@ -434,7 +451,7 @@ static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)
     }
 }
 
-void CANH_PushToQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg)
+void CANH_PushToTxQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg)
 {
     if (cansCfg[instance].enabled == TRUE)
     {
@@ -449,7 +466,29 @@ void CANH_PushToQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg)
         else if (cansReg[instance].txQueueHandle == NULL)
         {
             /* Queue handle does not exist yet */
-            LOG_ERR("CANH:: CAN queue does not exist");
+            LOG_ERR("CANH:: CAN TX queue does not exist");
+            __NOP();
+        };
+    }
+}
+
+void CANH_PushToRxQueue(T_CANH_INSTANCE instance, T_CANH_RX_PACKAGE pkg)
+{
+    if (cansCfg[instance].enabled == TRUE)
+    {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        if (cansReg[instance].readyForTx == TRUE &&
+            cansReg[instance].rxQueueHandle != NULL &&
+            xQueueSendFromISR(cansReg[instance].rxQueueHandle, &pkg, &xHigherPriorityTaskWoken) != pdPASS)
+        {
+            /* Problem with pushing data to queue */
+            LOG_WARN("CANH:: Unable to push can data to RX queue, queue full?");
+            __NOP();
+        }
+        else if (cansReg[instance].rxQueueHandle == NULL)
+        {
+            /* Queue handle does not exist yet */
+            LOG_ERR("CANH:: CAN RX queue does not exist");
             __NOP();
         };
     }
@@ -462,11 +501,21 @@ static void CANH_InitModule(T_CANH_INSTANCE instance)
 
     /* Create queue for CAN TX data*/
     cansReg[instance].txQueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
+    cansReg[instance].rxQueueHandle = xQueueCreate(10, sizeof(T_CANH_RX_PACKAGE));
 
+    // Initialize TX queue
     if(cansReg[instance].txQueueHandle == NULL)
     {
         /* Error creating xQueue -> heap too small [?] */
         LOG_ERR("Unable to create CAN TX queue");
+        __NOP();
+    }
+
+    // Initialize RX queue
+    if(cansReg[instance].rxQueueHandle == NULL)
+    {
+        /* Error creating xQueue -> heap too small [?] */
+        LOG_ERR("Unable to create CAN RX queue");
         __NOP();
     }
 }
@@ -502,8 +551,16 @@ void CANH_Init(void)
 void can1TaskStart(void *argument)
 {
     LOG_INFO("CAN1:: Task start");
+
+    canAllowAllFilter.FilterBank = 0;
+    if (HAL_CAN_ConfigFilter(&hcan1, &canAllowAllFilter) != HAL_OK)
+    {
+        LOG_ERR("CANH:: CAN1 filter configuration failed!");
+    }
+
     /* Start CAN1 -  CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens */
     HAL_CAN_Start(&hcan1);
+    HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
 
     osTimerId_t can1TxStartTimer = osTimerNew((osTimerFunc_t)CANH_AllowTxCallback1, osTimerOnce, NULL, NULL);
     if(can1TxStartTimer)
@@ -527,11 +584,21 @@ void can1TaskStart(void *argument)
         }
         
         if(cansReg[CANH_INSTANCE_1].readyForTx == TRUE && cansReg[CANH_INSTANCE_1].txQueueHandle != NULL 
-            && xQueueReceive(cansReg[CANH_INSTANCE_1].txQueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
+            && xQueueReceive(cansReg[CANH_INSTANCE_1].txQueueHandle, &canPackage, pdMS_TO_TICKS(1)) == pdPASS)
         {
             CAN_TxHeaderTypeDef header = canPackage.header;
             header.StdId = canPackage.header.StdId + cansCfg[CANH_INSTANCE_1].baseId;
             HAL_CAN_AddTxMessage(&hcan1, &header, canPackage.data.raw, cansReg[CANH_INSTANCE_1].txMailbox);
+        }
+
+        if(cansReg[CANH_INSTANCE_1].rxQueueHandle != NULL)
+        {
+            T_CANH_RX_PACKAGE rxPkg;
+            if(xQueueReceive(cansReg[CANH_INSTANCE_1].rxQueueHandle, &rxPkg, 0) == pdPASS)
+            {
+                /* Process received package */
+                BSP_CANIN_DispatchFrame(CANH_INSTANCE_1, rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
+            }
         }
         osDelay(1);
     }
@@ -540,8 +607,16 @@ void can1TaskStart(void *argument)
 void can2TaskStart(void *argument)
 {
     LOG_INFO("CAN2:: Task start");
+
+    canAllowAllFilter.FilterBank = 14;
+    if (HAL_CAN_ConfigFilter(&hcan2, &canAllowAllFilter) != HAL_OK)
+    {
+        LOG_ERR("CANH:: CAN2 filter configuration failed!");
+    }
+
     /* Start CAN2  - CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens*/
     HAL_CAN_Start(&hcan2);
+    HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING);
 
     osTimerId_t can2TxStartTimer = osTimerNew((osTimerFunc_t)CANH_AllowTxCallback2, osTimerOnce, NULL, NULL);
     if(can2TxStartTimer)
@@ -565,16 +640,46 @@ void can2TaskStart(void *argument)
         }
         
         if(cansReg[CANH_INSTANCE_2].readyForTx == TRUE && cansReg[CANH_INSTANCE_2].txQueueHandle != NULL 
-            && xQueueReceive(cansReg[CANH_INSTANCE_2].txQueueHandle, &canPackage, portMAX_DELAY) == pdPASS)
+            && xQueueReceive(cansReg[CANH_INSTANCE_2].txQueueHandle, &canPackage, pdMS_TO_TICKS(1)) == pdPASS)
         {
             CAN_TxHeaderTypeDef header = canPackage.header;
             header.StdId = canPackage.header.StdId + cansCfg[CANH_INSTANCE_2].baseId;
             HAL_CAN_AddTxMessage(&hcan2, &header, canPackage.data.raw, cansReg[CANH_INSTANCE_2].txMailbox);
+        }
+        
+        if(cansReg[CANH_INSTANCE_2].rxQueueHandle != NULL)
+        {
+            T_CANH_RX_PACKAGE rxPkg;
+            if(xQueueReceive(cansReg[CANH_INSTANCE_2].rxQueueHandle, &rxPkg, 0) == pdPASS)
+            {
+                /* Process received package */
+                BSP_CANIN_DispatchFrame(CANH_INSTANCE_2, rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
+            }
         }
 
         osDelay(1);
     }
 }
 
-///
-/// TODO [MAJOR REWORK] Add CAN inputs handling
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+    T_CANH_RX_PACKAGE rxPkg;
+
+    // CAN1 MSG
+    if (hcan->Instance == CAN1)
+    {
+        if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &(rxPkg.header), rxPkg.data.raw) == HAL_OK)
+        {
+            CANH_PushToRxQueue(CANH_INSTANCE_1, rxPkg);
+        }
+    }
+    // CAN2 MSG
+    else if (hcan->Instance == CAN2)
+    {
+        if (HAL_CAN_GetRxMessage(&hcan2, CAN_RX_FIFO0, &(rxPkg.header), rxPkg.data.raw) == HAL_OK)
+        {
+            CANH_PushToRxQueue(CANH_INSTANCE_2, rxPkg);
+        }
+    }
+}

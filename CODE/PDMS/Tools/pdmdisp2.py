@@ -5,6 +5,9 @@ import tkinter as tk
 from tkinter import ttk
 from collections import defaultdict, deque
 import time
+import csv
+import os
+import datetime
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -67,6 +70,11 @@ channels = [
 sys_status = {"status": 0, "batt": 0, "safety": 0}
 
 name_parts = defaultdict(dict)
+
+# continuous CSV logging setup
+LOG_FILE_NAME = f"pdmdisp2_{datetime.datetime.now():%Y%m%d-%H%M%S}.csv"
+log_f = None
+log_writer = None
 
 voltage_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
 current_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
@@ -169,12 +177,65 @@ def can_worker():
                 cid = msg.arbitration_id
                 d = msg.data
 
+                # open log file when we have a working bus
+                global log_f, log_writer
+                if log_writer is None:
+                    try:
+                        log_f = open(LOG_FILE_NAME, "a", newline="")
+                        log_writer = csv.writer(log_f)
+                        try:
+                            if os.path.getsize(LOG_FILE_NAME) == 0:
+                                log_writer.writerow(["timestamp", "arb_id", "data_hex", "msg_type", "extra"])
+                                log_f.flush()
+                        except OSError:
+                            pass
+                    except Exception as e:
+                        print("Could not open pdmdisp2 log file:", e)
+
                 with lock:
                     # -------- SYS STATUS --------
-                    if cid == IDS["SYS_STATUS"]:
-                        sys_status["status"] = d[0]
-                        sys_status["batt"] = d[1] | (d[2] << 8)
-                        sys_status["safety"] = d[3]
+                    # write CSV row for this message
+                    try:
+                        msg_type = next((k for k, v in IDS.items() if v == cid), "UNKNOWN")
+                    except Exception:
+                        msg_type = "UNKNOWN"
+                    extra = ""
+                    try:
+                        if cid == IDS["SYS_STATUS"]:
+                            sys_status["status"] = d[0]
+                            sys_status["batt"] = d[1] | (d[2] << 8)
+                            sys_status["safety"] = d[3]
+                            extra = f"status={sys_status['status']};batt={sys_status['batt']};safety={sys_status['safety']}"
+                        elif cid in (IDS["VOLT_1_4"], IDS["VOLT_5_8"], IDS["VOLT_9_12"], IDS["VOLT_13_16"]):
+                            vals = parse_u16x4(d)
+                            extra = ",".join(str(x) for x in vals)
+                        elif cid in (IDS["CURR_1_4"], IDS["CURR_5_8"], IDS["CURR_9_12"], IDS["CURR_13_16"]):
+                            vals = parse_u16x4(d)
+                            extra = ",".join(str(x) for x in vals)
+                        elif cid == IDS["STATUS_1_8"] or cid == IDS["STATUS_9_16"]:
+                            extra = ",".join(str(x) for x in d[:8])
+                        elif cid == IDS["STATE_1_16"]:
+                            states = []
+                            for i in range(16):
+                                b = d[i//2]
+                                states.append((b >> 4) & 0x0F if i % 2 == 0 else b & 0x0F)
+                            extra = ",".join(str(x) for x in states)
+                        elif cid == IDS["NAMES"]:
+                            try:
+                                extra = d[1:].decode(errors="ignore").rstrip("\x00")
+                            except Exception:
+                                extra = d.hex()
+                        else:
+                            extra = d.hex()
+                    except Exception:
+                        extra = d.hex()
+
+                    if log_writer is not None:
+                        try:
+                            log_writer.writerow([time.time(), hex(cid), d.hex(), msg_type, extra])
+                            log_f.flush()
+                        except Exception:
+                            pass
 
                     # -------- STATUS --------
                     elif cid == IDS["STATUS_1_8"]:
@@ -278,6 +339,12 @@ def can_worker():
                 except Exception:
                     pass
             # ensure a pause before next reconnect attempt
+            # close log file if open
+            try:
+                if log_f is not None:
+                    log_f.close()
+            except Exception:
+                pass
             time.sleep(backoff)
 
 

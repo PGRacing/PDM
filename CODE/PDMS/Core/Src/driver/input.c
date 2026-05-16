@@ -7,6 +7,7 @@
 
 /// USER DEFINES
 #define IN_VALUE_UNUSED 0xFFFF
+#define IN_INVALID_ID 0xFFFF
 
 /// FUNCTION PROTOTYPES
 
@@ -17,57 +18,62 @@ T_IN_CFG inputsCfg[] =
 {
     [0] =
       {
-        .id = IN_PHY_ID_1,
+        .location = IN_PHY_LOC_1,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_SCHMITT,
     },
     [1] =
       {
-        .id = IN_PHY_ID_2,
+        .location = IN_PHY_LOC_2,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_UNUSED,
         },
     [2] =
       {
-        .id = IN_PHY_ID_3,
+        .location = IN_PHY_LOC_3,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_UNUSED,
         },
     [3] =
       {
-        .id = IN_PHY_ID_4,
+        .location = IN_PHY_LOC_4,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_UNUSED,
         },
     [4] =
       {
-        .id = IN_PHY_ID_5,
+        .location = IN_PHY_LOC_5,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_SCHMITT,
         },
     [5] =
       {
-        .id = IN_PHY_ID_6,
+        .location = IN_PHY_LOC_6,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_SCHMITT,
         },
     [6] =
       {
-        .id = IN_PHY_ID_7,
+        .location = IN_PHY_LOC_7,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_SCHMITT,
         },
     [7] =
       {
-        .id = IN_PHY_ID_8,
+        .location = IN_PHY_LOC_8,
         .type = IN_TYPE_PHY,
         .mode = IN_MODE_SCHMITT,
       },
+    [8] = 
+      {
+        .location = IN_CAN_LOC_1,
+        .type = IN_TYPE_CAN,
+        .mode = IN_MODE_SCHMITT,
+      } 
 };
 
 T_IN_CFG *IN_GetCfgPtr(T_INPUT_ID id)
 {
-  // TODO Extend for can inputs
   ASSERT(id >= 0 && id < ARRAY_COUNT(inputsCfg));
   return &(inputsCfg[id]);
 }
@@ -86,22 +92,13 @@ T_IN_TYPE IN_GetType(T_INPUT_ID id)
 bool IN_IsPhysical(T_IN_CFG* cfg)
 {
   ASSERT( cfg );
-  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(inputsCfg) );
 
-  if( cfg->id < IN_PHY_MAX )
-  {
-    return TRUE;
-  }
-  else
-  {
-    return FALSE;
-  }
+  return (cfg->type == IN_TYPE_PHY);
 }
 
 void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode)
 {
   ASSERT( cfg );
-  ASSERT( cfg->id >= 0 && cfg->id < ARRAY_COUNT(inputsCfg));
 
   switch (targetMode)
   {
@@ -133,12 +130,11 @@ bool IN_GetValueSchmitt(T_INPUT_ID id)
   {
     if( IN_GetType(id) == IN_TYPE_PHY )
     {
-      ret =  BSP_IN_GetValueSchmitt(id);
+      ret = BSP_PHYIN_GetValueSchmitt(IN_GetCfgPtr(id)->location);
     } 
     else
     {
-      LOG_WARN( "IN:: NOT IMPLEMENTED trying to get value from non physical input");
-      ret = FALSE;
+      ret = BSP_CANIN_GetValueSchmitt(IN_GetCfgPtr(id)->location);
     }
   }
   else
@@ -158,12 +154,11 @@ uint32_t IN_GetValueAnalog(T_INPUT_ID id)
   {
     if( IN_GetType(id) == IN_TYPE_PHY )
     {
-      ret =  BSP_IN_GetValueAnalog(id);
+      ret = BSP_PHYIN_GetValueAnalog(IN_GetCfgPtr(id)->location);
     } 
     else
     {
-      LOG_WARN( "IN:: NOT IMPLEMENTED trying to get value from non physical input");
-      ret = 0;
+      ret = BSP_CANIN_GetValueAnalog(IN_GetCfgPtr(id)->location);
     }
   }
   else
@@ -177,6 +172,7 @@ uint32_t IN_GetValueAnalog(T_INPUT_ID id)
 
 uint32_t IN_GetValue(T_INPUT_ID id)
 {
+  ASSERT(id >= 0 && id < ARRAY_COUNT(inputsCfg));
   T_IN_CFG* in = IN_GetCfgPtr(id);
   uint16_t ret = 0x0;
 
@@ -211,8 +207,3 @@ T_IN_MODE IN_GetMode(T_INPUT_ID id)
 
   return IN_MODE_UNUSED;
 }
-
-
-///
-/// TODO [MAJOR REWORK] Add handling of can inputs
-///

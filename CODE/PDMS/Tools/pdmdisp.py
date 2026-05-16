@@ -1,10 +1,14 @@
 import can
+from can import Message
 import struct
 import threading
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox, filedialog
+import csv
 from collections import defaultdict, deque
 import time
+import os
+import datetime
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
@@ -19,8 +23,8 @@ SERIAL_BAUD = 115200
 
 HISTORY_LEN = 300
 GUI_UPDATE_MS = 50
-PLOT_UPDATE_MS = 1
-AVG_WINDOW_MS = 500
+PLOT_UPDATE_MS = 10
+AVG_WINDOW_MS = 200
 
 # ================= CAN IDS =================
 IDS = {
@@ -62,13 +66,9 @@ channels = [
     for _ in range(CHANNEL_COUNT)
 ]
 
-sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": False, "total_current": 0}
+sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
 
 name_parts = defaultdict(dict)
-
-# Debug logging limits for SYS_STATUS parsing
-MAX_SYS_STATUS_LOGS = 10
-sys_status_log_count = 0
 
 voltage_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
 current_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
@@ -76,6 +76,13 @@ current_avg_history = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
 current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
 
 lock = threading.Lock()
+bus_lock = threading.Lock()
+can_bus = None
+
+# continuous CSV logging globals (created at program start)
+LOG_FILE_NAME = f"pdmdisp_{datetime.datetime.now():%Y%m%d-%H%M%S}.csv"
+log_f = None
+log_writer = None
 
 # acquisition control
 acquire_event = threading.Event()
@@ -87,26 +94,11 @@ def parse_u16x4(data):
 
 
 def parse_system_status(data):
-    # Expected layout (packed, little-endian):
-    # uint8_t status;
-    # uint16_t battVoltage;  // mV
-    # int16_t coreTemp;      // tenths of degree C
-    # uint8_t safetyLineState; // boolean
-    status = data[0] if len(data) > 0 else 0
-
-    if len(data) >= 3:
-        batt_voltage = struct.unpack_from("<H", data, 1)[0]
-    else:
-        batt_voltage = 0
-
-    if len(data) >= 5:
-        core_temp = struct.unpack_from("<h", data, 3)[0] / 10.0
-    else:
-        core_temp = 0.0
-
-    safety_line_state = bool(data[5]) if len(data) > 5 else False
-
-    return status, batt_voltage, core_temp, safety_line_state
+    status = data[0]
+    batt_voltage = data[1] | (data[2] << 8)
+    core_temp_raw = struct.unpack_from("<h", data, 3)[0]
+    safety_line_state = data[5] if len(data) > 5 else 0
+    return status, batt_voltage, core_temp_raw / 10.0, safety_line_state
 
 
 def update_names(data):
@@ -132,8 +124,59 @@ def average_history(hist):
     return sum(v for _, v in hist) / len(hist)
 
 
+def parse_hex_bytes(text):
+    cleaned = text.replace(",", " ").split()
+    if not cleaned:
+        return b""
+    values = []
+    for token in cleaned:
+        token = token.strip()
+        if not token:
+            continue
+        values.append(int(token, 16))
+    if len(values) > 8:
+        raise ValueError("CAN payload must be 8 bytes or less")
+    for value in values:
+        if value < 0 or value > 0xFF:
+            raise ValueError(f"Invalid byte value: {value}")
+    return bytes(values)
+
+
+def parse_can_id(text):
+    cleaned = text.strip()
+    if not cleaned:
+        raise ValueError("CAN ID is empty")
+
+    if "(" in cleaned:
+        cleaned = cleaned.split("(", 1)[-1].rstrip(")")
+
+    if cleaned.lower().startswith("0x"):
+        return int(cleaned, 16)
+
+    try:
+        return int(cleaned, 0)
+    except ValueError:
+        if cleaned in IDS:
+            return IDS[cleaned]
+        raise
+
+
+def send_can_frame(arbitration_id, payload):
+    global can_bus
+    if can_bus is None:
+        raise RuntimeError("CAN bus is not ready")
+    if arbitration_id < 0 or arbitration_id > 0x1FFFFFFF:
+        raise ValueError("CAN ID must be between 0 and 0x1FFFFFFF")
+
+    is_extended_id = arbitration_id > 0x7FF
+    msg = Message(arbitration_id=arbitration_id, data=payload, is_extended_id=is_extended_id)
+    can_bus.send(msg)
+
+
 # ================= CAN THREAD =================
 def can_worker():
+    global can_bus
+    global log_f, log_writer
     try:
         bus = can.interface.Bus(
             channel=CAN_CHANNEL,
@@ -141,10 +184,71 @@ def can_worker():
             bitrate=CAN_BITRATE,
             ttyBaudrate=SERIAL_BAUD,
         )
+        can_bus = bus
         print("CAN connected")
     except Exception as e:
         print("CAN init failed:", e)
         return
+
+    # open CSV log file (new file per program start) and start table logger
+    try:
+        log_f = open(LOG_FILE_NAME, "a", newline="")
+        log_writer = csv.writer(log_f)
+        try:
+            if os.path.getsize(LOG_FILE_NAME) == 0:
+                header = ["timestamp", "total_i_mA", "batt_mV", "core_temp_C", "safety"]
+                for i in range(CHANNEL_COUNT):
+                    n = i + 1
+                    header += [
+                        f"ch{n}_name",
+                        f"ch{n}_status",
+                        f"ch{n}_state",
+                        f"ch{n}_voltage_mV",
+                        f"ch{n}_i_inst_mA",
+                        f"ch{n}_i_avg_mA",
+                    ]
+                log_writer.writerow(header)
+                log_f.flush()
+        except OSError:
+            pass
+    except Exception as e:
+        print("Could not open log file:", e)
+        log_f = None
+        log_writer = None
+
+    # start background logger thread to write table snapshots
+    def table_logger(interval=0.05):
+        global log_writer, log_f
+        while True:
+            time.sleep(interval)
+            if log_writer is None:
+                continue
+            with lock:
+                ts = time.time()
+                try:
+                    row = [
+                        ts,
+                        f"{sys_status.get('total_current',0):.1f}",
+                        sys_status.get("batt", ""),
+                        f"{sys_status.get('core_temp',0):.1f}",
+                        sys_status.get("safety", ""),
+                    ]
+                    for ch in channels:
+                        row.extend([
+                            ch.get("name", ""),
+                            ch.get("status", ""),
+                            ch.get("state", ""),
+                            ch.get("voltage", ""),
+                            ch.get("current", ""),
+                            f"{ch.get('current_avg', 0):.1f}",
+                        ])
+                    log_writer.writerow(row)
+                    log_f.flush()
+                except Exception:
+                    pass
+
+    t = threading.Thread(target=table_logger, args=(0.05,), daemon=True)
+    t.start()
 
     while True:
         # wait until acquisition enabled
@@ -160,28 +264,11 @@ def can_worker():
 
             # -------- SYS STATUS --------
             if cid == IDS["SYS_STATUS"]:
-                        # allow updating a small debug counter
-                        global sys_status_log_count
                         status, batt_voltage, core_temp, safety_line_state = parse_system_status(d)
                         sys_status["status"] = status
                         sys_status["batt"] = batt_voltage
                         sys_status["core_temp"] = core_temp
                         sys_status["safety"] = safety_line_state
-
-                        # limited debug output to help diagnose constant temperature
-                        try:
-                            if sys_status_log_count < MAX_SYS_STATUS_LOGS:
-                                raw_hex = d.hex()
-                                b3 = d[3] if len(d) > 3 else None
-                                b4 = d[4] if len(d) > 4 else None
-                                val_at_3 = struct.unpack_from("<h", d, 3)[0] if len(d) >= 5 else None
-                                val_at_4 = struct.unpack_from("<h", d, 4)[0] if len(d) >= 6 else None
-                                print(
-                                    f"SYS_STATUS raw: {raw_hex} bytes[3]={b3} bytes[4]={b4} s16@3={val_at_3} s16@4={val_at_4} parsed_core={core_temp}"
-                                )
-                                sys_status_log_count += 1
-                        except Exception as e:
-                            print("SYS_STATUS debug print failed:", e)
 
             # -------- STATUS --------
             elif cid == IDS["STATUS_1_8"]:
@@ -245,6 +332,13 @@ def can_worker():
             elif cid == IDS["NAMES"]:
                 update_names(d)
 
+    # close log on exit
+    try:
+        if log_f is not None:
+            log_f.close()
+    except Exception:
+        pass
+
 
 # ================= GUI =================
 class App:
@@ -292,6 +386,33 @@ class App:
         tk.Label(sys_frame, text="Total I avg").grid(row=4, column=0)
         tk.Label(sys_frame, textvariable=self.total_i_lbl).grid(row=4, column=1)
 
+        # --- transmit frame ---
+        tx_frame = tk.LabelFrame(top, text="Send CAN frame")
+        tx_frame.pack(side=tk.RIGHT, padx=10)
+
+        self.send_id_var = tk.StringVar(value="SYS_STATUS")
+        self.send_data_var = tk.StringVar(value="00 00 00 00 00 00 00 00")
+
+        self.send_id_map = {name: cid for name, cid in IDS.items()}
+        self.send_id_combo = ttk.Combobox(
+            tx_frame,
+            textvariable=self.send_id_var,
+            values=[f"{name} (0x{cid:03X})" for name, cid in IDS.items()],
+            state="normal",
+            width=24,
+        )
+        self.send_id_combo.set("0x401")
+        self.send_id_combo.grid(row=0, column=0, columnspan=2, sticky="ew", padx=2, pady=2)
+
+        tk.Label(tx_frame, text="Data (hex)").grid(row=1, column=0, sticky="w")
+        tk.Entry(tx_frame, textvariable=self.send_data_var, width=28).grid(row=1, column=1, sticky="ew", padx=2, pady=2)
+
+        tk.Button(tx_frame, text="Send", command=self.send_selected_frame).grid(row=2, column=0, columnspan=2, sticky="ew", padx=2, pady=2)
+
+        tx_frame.grid_columnconfigure(1, weight=1)
+
+        # Save CSV snapshot (button removed; logging is continuous)
+
         # ===== TABLE =====
         self.tree = ttk.Treeview(root)
         self.tree["columns"] = ("Name", "Status", "State", "V [mV]", "I inst [mA]", "I avg [mA]")
@@ -320,6 +441,70 @@ class App:
 
     def selected(self):
         return [i for i, v in enumerate(self.vars) if v.get()]
+
+    def send_selected_frame(self):
+        selected_text = self.send_id_combo.get()
+        try:
+            arbitration_id = parse_can_id(selected_text)
+        except Exception:
+            name = selected_text.split(" (")[0]
+            arbitration_id = self.send_id_map.get(name)
+
+        if arbitration_id is None:
+            messagebox.showerror("Send CAN frame", "Please enter a valid CAN ID")
+            return
+
+        try:
+            payload = parse_hex_bytes(self.send_data_var.get())
+        except Exception as e:
+            messagebox.showerror("Send CAN frame", f"Invalid hex payload: {e}")
+            return
+
+        try:
+            send_can_frame(arbitration_id, payload)
+        except Exception as e:
+            messagebox.showerror("Send CAN frame", f"Failed to send CAN frame: {e}")
+            return
+
+        print(f"Sent CAN frame id=0x{arbitration_id:X} data={payload.hex(' ')}")
+
+    def save_csv(self):
+        fn = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV files", "*.csv"), ("All files", "*")],
+            title="Save snapshot as CSV",
+        )
+        if not fn:
+            return
+
+        try:
+            with open(fn, "w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow(["timestamp", time.time()])
+                # system status
+                writer.writerow(["system_status", "status", sys_status["status"]])
+                writer.writerow(["system_status", "batt_mV", sys_status["batt"]])
+                writer.writerow(["system_status", "core_temp_C", f"{sys_status['core_temp']:.1f}"])
+                writer.writerow(["system_status", "safety", sys_status["safety"]])
+                writer.writerow(["system_status", "total_current_mA", f"{sys_status['total_current']:.1f}"])
+                writer.writerow([])
+                # channels
+                writer.writerow(["ch", "name", "status", "state", "voltage_mV", "current_mA", "current_avg_mA"])
+                for i, ch in enumerate(channels):
+                    writer.writerow([
+                        i+1,
+                        ch.get("name", ""),
+                        ch.get("status", ""),
+                        ch.get("state", ""),
+                        ch.get("voltage", ""),
+                        ch.get("current", ""),
+                        f"{ch.get('current_avg', 0):.1f}",
+                    ])
+        except Exception as e:
+            messagebox.showerror("Save CSV", f"Failed to save CSV: {e}")
+            return
+
+        messagebox.showinfo("Save CSV", f"Saved snapshot to {fn}")
 
     # ===== GUI UPDATE =====
     def update_gui(self):

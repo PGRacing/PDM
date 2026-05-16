@@ -5,7 +5,7 @@
 #include "typedefs.h"
 #include "FreeRTOS.h"
 #include "cmsis_os2.h"
-#include "bsp_input.h"
+#include "bsp_phyinput.h"
 #include "semphr.h"
 
 xTaskHandle adc1TaskHandleLocal;
@@ -64,8 +64,7 @@ void adc2TaskStart(void *argument)
         if(xSemaphoreTake( adc2ConvReadySemaphore, portMAX_DELAY ) == pdTRUE)
         {
             // Perform physical inputs assesment
-            BSP_IN_EvaluateValues();
-            // TODO [MAJOR REWORK] Add synchronization using readout in input.c
+            BSP_PHYIN_EvaluateValues();
             // Input value should be evaluted after execution here
         }
     }

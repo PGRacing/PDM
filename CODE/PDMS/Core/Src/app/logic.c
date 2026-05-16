@@ -291,7 +291,7 @@ T_LOGIC_CFG logicCfg[POWER_OUT_COUNT] =
     .isUsed = TRUE,
     .exp = { .opr = LOGIC_OPERATOR_IT, 
     .input1Type = LOGIC_INPUT_TYPE_SENSOR, 
-    .input1ID = IN_PHY_ID_7, 
+    .input1ID = 8, 
     .input2Type = LOGIC_INPUT_TYPE_UNSET, 
     }
   },
@@ -304,7 +304,7 @@ T_LOGIC_CFG logicCfg[POWER_OUT_COUNT] =
     .exp = 
     { .opr = LOGIC_OPERATOR_IT, 
     .input1Type = LOGIC_INPUT_TYPE_SENSOR, 
-    .input1ID = IN_PHY_ID_1, 
+    .input1ID = 0, 
     .input2Type = LOGIC_INPUT_TYPE_UNSET, 
     }
   },
