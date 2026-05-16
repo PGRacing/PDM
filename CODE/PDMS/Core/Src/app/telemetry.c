@@ -196,5 +196,5 @@ void telemTaskStart(void *argument)
 }
 
 /// 
-/// TODO [LOW] Add memory and on-board temperatures to telemetry & verify output speed (can bus)
+/// TODO [LOW] Add temperature from sensor on PCB
 ///

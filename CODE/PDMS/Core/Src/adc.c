@@ -683,9 +683,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 
 void ADC1_Init(void)
 { 
-  // TODO Check if it's really 5ms and how it does affect OC trip and others
-
-    /* Timer 15 configured to execute ADC1 conversion each 0.1ms */
+    /* Timer 15 configured to execute ADC1 conversion each 0.1ms / 10kHz */
     HAL_TIM_Base_Start(&htim15);
 
     /* Start ADC in DMA mode */
