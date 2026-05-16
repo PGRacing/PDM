@@ -22,6 +22,9 @@
 #define OUT_DIAG_BTS_DETECT_OPEN_LOAD TRUE // Is open load detection enabled on BTS channels?
 #define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
 #define OUT_DIAG_BTS_TRIP_THRESHOLD 40 // Arbitraty value that needs to be exceeded to trip SOC protection (removing super short local peaks)
+// EMA
+#define OUT_DIAG_EMA_CURRENT_ALPHA 0.05f // Alpha for exponential moving average of current, lower value means smoother readings but longer time to react to changes
+#define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.05f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
@@ -1379,16 +1382,19 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   {
     // If channel is ON calculate current
     reg->currentMA = BSP_OUT_CalcCurrent(id);
+    reg->emaCurrentMA = (reg->currentMA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentMA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
   }
   else
   {
     // If channel is OFF override current to 0
     reg->currentMA = 0;
+    reg->emaCurrentMA = (1 - OUT_DIAG_EMA_CURRENT_ALPHA) * reg->emaCurrentMA;
   }
   bool inFault = BSP_OUT_IsCurrentFault(id);
   
   // Get channel voltage from voltage multiplexer ADC data (already calculated)
   reg->voltageMV = VMUX_GetValue(id);
+  reg->emaVoltageMV = (reg->voltageMV * OUT_DIAG_EMA_VOLTAGE_ALPHA) + (reg->emaVoltageMV * (1 - OUT_DIAG_EMA_VOLTAGE_ALPHA));
 
   // Check for hardware issues and state changes
   T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA, inFault);
@@ -1654,10 +1660,22 @@ uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id)
   return OUT_GETREGPTR(id)->currentMA / 10;
 }
 
+uint16_t OUT_DIAG_GetEmaCurrent_pA(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->emaCurrentMA / 10;
+}
+
 uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETREGPTR(id)->voltageMV;
+}
+
+uint32_t OUT_DIAG_GetEmaVoltage(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->emaVoltageMV;
 }
 
 T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
@@ -1751,16 +1769,18 @@ void testTaskEntry(void *argument)
 }
 
 ///
-/// TODO [MAJOR REWORK] Seperate output control code from safety functions, move safety functions into blocks, 
+/// TODO [MAJOR REWORK] 
+/// [DONE] Seperate output control code from safety functions, move safety functions into blocks, 
 /// safety on seperate core or assure that it is safe to run always (on hardware timer as critical section), 
 /// Status and state calculations should be done more properly
 /// Add signal filtering on current and voltage signals
 /// Handle PWM  signals [WORK IN PROGRESS]
-/// [IMPORTANT ]Add safety detection as status or state
-/// Assure safety retry correct working - does safety affect diagnosis? 
-/// Remove this 4x shit from OC trip
+/// [DONE] [IMPORTANT ]Add safety detection as status or state
+/// [DONE] Assure safety retry correct working - does safety affect diagnosis? 
+/// [DONE] Remove this 4x shit from OC trip
 /// Sync current and voltage 
 /// Change RTOS tasks names (remove entry nomencalture)
 /// Read all and clean up defines
-/// Unify calls to cfg and reg
+/// [DONE ]Unify calls to cfg and reg
 /// Change time quanta to 1ms
+/// [DONE] Added software oversampling to current detection // at 10kHz

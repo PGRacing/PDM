@@ -644,6 +644,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
         // Calculate average and reset sum
         for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
         {
+          // TODO Consider adding median filter here, to remove outliers
           adc1AvgData[i] = adc1SumData[i] / ADC1_SW_OVERSAMPLING_RATIO;
           adc1SumData[i] = 0;
         }

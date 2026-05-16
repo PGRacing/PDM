@@ -40,8 +40,11 @@ extern SemaphoreHandle_t platformInitSemaphore;
 #define VMUX_GET_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
 #define VMUX_GET_BATT_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_BATT_DIVIDER_INV)
 
+#define VMUX_BATT_VOLTAGE_EWMA_ALPHA 0.05f // Alpha for exponential moving average of battery voltage, lower value means smoother readings but longer time to react to changes
+
 // Battery voltage 1V at beggining
 volatile uint32_t VMUX_BattVoltage = 1000;
+volatile uint32_t VMUX_BattVoltageEma = 1000;
 
 volatile int16_t VMUX_TempValue = 250; // 25.0 C at beggining
 
@@ -217,6 +220,7 @@ void VMUX_ReadBattVoltage(void)
         vPortEnterCritical();
         #ifdef VMUX_STORE_VOLTAGE
             VMUX_BattVoltage = VMUX_GET_BATT_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+            VMUX_BattVoltageEma = (VMUX_BattVoltage * VMUX_BATT_VOLTAGE_EWMA_ALPHA) + (VMUX_BattVoltageEma * (1 - VMUX_BATT_VOLTAGE_EWMA_ALPHA));
         #else
             VMUX_BattVoltage = HAL_ADC_GetValue(&hadc3);
         #endif
@@ -318,6 +322,11 @@ uint32_t VMUX_GetValue(uint8_t index)
 uint32_t VMUX_GetBattValue(void)
 {
     return VMUX_BattVoltage;
+}
+
+uint32_t VMUX_GetBattValueEma(void)
+{
+    return VMUX_BattVoltageEma;
 }
 
 int16_t VMUX_GetTempValue(void)

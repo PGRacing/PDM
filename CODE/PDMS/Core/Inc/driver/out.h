@@ -150,6 +150,8 @@ typedef struct _T_OUT_REG
     // Acquired from board
     uint32_t         currentMA;   // Here for ease of debug and code simplification
     uint32_t         voltageMV; 
+    uint32_t         emaCurrentMA; // Exponential moving average of current for smoother readings
+    uint32_t         emaVoltageMV; // Exponential moving average of voltage for smoother readings   
     // PWM mode
     uint_fast8_t     pwmDuty;      // PWM duty
     uint_fast8_t     prevPwmDuty; // Previous pwm duty (before last update)
@@ -209,10 +211,20 @@ uint32_t OUT_DIAG_GetCurrent(T_OUT_ID id);
 /// @return Electrical voltage value [mV]
 uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id);
 
+/// @brief Get output channel voltage value in mV range from EMA
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Electrical voltage value [mV]
+uint32_t OUT_DIAG_GetEmaVoltage(T_OUT_ID id);
+
 /// @brief Get output channel current value in pA range
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @return Electrical current value [pA]
 uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id);
+
+/// @brief Get output channel current value in pA range from EMA
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Electrical current value [pA]
+uint16_t OUT_DIAG_GetEmaCurrent_pA(T_OUT_ID id);
 
 /// @brief Get output channel status value
 /// @param id Output channel id [1..16] T_OUT_ID

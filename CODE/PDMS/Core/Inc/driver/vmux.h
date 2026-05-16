@@ -15,6 +15,9 @@ void VMUX_ReadBattVoltage(void);
 // Get battery voltage ADC channel 13
 uint32_t VMUX_GetBattValue(void);
 
+// Get battery voltage in mV using exponential moving average to smooth readings
+uint32_t VMUX_GetBattValueEma(void);
+
 int16_t VMUX_GetTempValue(void);
 
 
