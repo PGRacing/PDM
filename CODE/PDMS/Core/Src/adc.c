@@ -650,23 +650,25 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
         }
         
         // Notify task that new ADC1 data is ready
-        static portBASE_TYPE xHigherPriorityTaskWoken;
+        portBASE_TYPE xHigherPriorityTaskWoken;
         xHigherPriorityTaskWoken = pdFALSE;
         if(adc1ConvReadySemaphore != NULL)
         {
           xSemaphoreGiveFromISR(adc1ConvReadySemaphore, &xHigherPriorityTaskWoken);
         }
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
       }
 
     }else if(hadc == &hadc2)
     {
-      static portBASE_TYPE xHigherPriorityTaskWoken;
+      portBASE_TYPE xHigherPriorityTaskWoken;
       xHigherPriorityTaskWoken = pdFALSE;
       
       if(adc2ConvReadySemaphore != NULL)
       {
         xSemaphoreGiveFromISR(adc2ConvReadySemaphore, &xHigherPriorityTaskWoken);
       }
+      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     else if(hadc == &hadc3)
     {

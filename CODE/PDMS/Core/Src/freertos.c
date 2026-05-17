@@ -82,7 +82,7 @@ osThreadId_t adc1TaskHandle;
 const osThreadAttr_t adc1Task_attributes = {
   .name = "adc1Task",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityAboveNormal2, // Task that executes diagnostic functions
 };
 /* Definitions for testTask */
 osThreadId_t testTaskHandle;
@@ -124,7 +124,7 @@ osThreadId_t adc2TaskHandle;
 const osThreadAttr_t adc2Task_attributes = {
   .name = "adc2Task",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityAboveNormal1, // Task that executes physical input assessment functions
 };
 /* Definitions for argbTask */
 osThreadId_t argbTaskHandle;
