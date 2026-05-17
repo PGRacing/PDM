@@ -3,6 +3,7 @@
 #include "out.h"
 #include "pdm.h"
 #include "vmux.h"
+#include "bsp_phyinput.h"
 #include "string.h"
 #include "cmsis_os2.h"
 #include "semphr.h"
@@ -77,6 +78,12 @@ static void TELEM_SendNamesByCan(T_CANH_INSTANCE canInstance)
             }
         }
     }
+}
+
+static void TELEM_SendPhyInputsByCan(T_CANH_INSTANCE canInstance)
+{
+    CANH_Send_PhyInputs1_4(canInstance, BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_1), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_2), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_3), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_4));
+    CANH_Send_PhyInputs5_8(canInstance, BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_5), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_6), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_7), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_8));
 }
 
 void telemTaskStart(void *argument)
@@ -170,6 +177,23 @@ void telemTaskStart(void *argument)
             {
                 TELEM_SendSystemDataByCan(CANH_INSTANCE_1);
                 TELEM_SendSystemDataByCan(CANH_INSTANCE_2);
+            }
+        }
+
+        if(telemCfg.sendPhyInputs == TRUE)
+        {
+            if (telemCfg.canInstance == CANH_INSTANCE_1)
+            {
+                TELEM_SendPhyInputsByCan(CANH_INSTANCE_1);
+            }
+            else if (telemCfg.canInstance == CANH_INSTANCE_2)
+            {
+                TELEM_SendPhyInputsByCan(CANH_INSTANCE_2);
+            }
+            else
+            {
+                TELEM_SendPhyInputsByCan(CANH_INSTANCE_1);
+                TELEM_SendPhyInputsByCan(CANH_INSTANCE_2);
             }
         }
 

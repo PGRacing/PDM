@@ -69,20 +69,22 @@ static CAN_FilterTypeDef canAllowAllFilter =
 /// @brief All used CAN bus ID's
 typedef enum
 {
-    CANH_ID_PNP           = 0x000, // Header sent on device power-up
-    CANH_ID_SYS_STATUS    = 0x001, // System status
-    CANH_ID_STATUS_1_8    = 0x002, // Status of channels 1-8 (default value)
-    CANH_ID_STATUS_9_16   = 0x003, // Status of channels 9-16 (default value)
-    CANH_ID_STATE_1_16    = 0x004, // State of channels 1-16 (default value)
-    CANH_ID_VOLTAGE_1_4   = 0x005, // Voltage of channels 1-4 (default value)
-    CANH_ID_VOLTAGE_5_8   = 0x006, // Voltage of channels 5-8 (default value)
-    CANH_ID_VOLTAGE_9_12  = 0x007, // Voltage of channels 9-12 (default value)
-    CANH_ID_VOLTAGE_13_16 = 0x008, // Voltage of channels 13-16 (default value)
-    CANH_ID_CURRENT_1_4   = 0x009, // Current of channels 1-4 (default value)
-    CANH_ID_CURRENT_5_8   = 0x00A, // Current of channels 5-8 (default value)
-    CANH_ID_CURRENT_9_12  = 0x00B, // Current of channels 9-12 (default value)
-    CANH_ID_CURRENT_13_16 = 0x00C, // Current of channels 13-16 (default value)
-    CANH_ID_NAMES         = 0x00D, // Channel of current name
+    CANH_ID_PNP             = 0x000, // Header sent on device power-up
+    CANH_ID_SYS_STATUS      = 0x001, // System status
+    CANH_ID_STATUS_1_8      = 0x002, // Status of channels 1-8 (default value)
+    CANH_ID_STATUS_9_16     = 0x003, // Status of channels 9-16 (default value)
+    CANH_ID_STATE_1_16      = 0x004, // State of channels 1-16 (default value)
+    CANH_ID_VOLTAGE_1_4     = 0x005, // Voltage of channels 1-4 (default value)
+    CANH_ID_VOLTAGE_5_8     = 0x006, // Voltage of channels 5-8 (default value)
+    CANH_ID_VOLTAGE_9_12    = 0x007, // Voltage of channels 9-12 (default value)
+    CANH_ID_VOLTAGE_13_16   = 0x008, // Voltage of channels 13-16 (default value)
+    CANH_ID_CURRENT_1_4     = 0x009, // Current of channels 1-4 (default value)
+    CANH_ID_CURRENT_5_8     = 0x00A, // Current of channels 5-8 (default value)
+    CANH_ID_CURRENT_9_12    = 0x00B, // Current of channels 9-12 (default value)
+    CANH_ID_CURRENT_13_16   = 0x00C, // Current of channels 13-16 (default value)
+    CANH_ID_NAMES           = 0x00D, // Channel of current name,
+    CANH_ID_PHY_INPUTS_1_4  = 0x00E, // Physical inputs 1-4
+    CANH_ID_PHY_INPUTS_5_8  = 0x00F, // Physical inputs 5-8
 }T_CANH_ID;
 
 /// @brief [pnpTxMsg] Message sent on device power-up
@@ -283,6 +285,34 @@ T_CANH_TX_PACKAGE CANH_TxNames =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_TxPhyInputs1_4 = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_PHY_INPUTS_1_4,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+T_CANH_TX_PACKAGE CANH_TxPhyInputs5_8 = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_PHY_INPUTS_5_8,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
 void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
     CANH_TxStatus1_8.data.status_8ch.status[0] = s1;
@@ -423,6 +453,26 @@ void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char st
     memcpy(&(CANH_TxNames.data.raw[1]), str, 7);
 
     CANH_PushToTxQueue(instance, CANH_TxNames);
+}
+
+void CANH_Send_PhyInputs1_4(T_CANH_INSTANCE instance, uint16_t i1, uint16_t i2, uint16_t i3, uint16_t i4)
+{
+    CANH_TxPhyInputs1_4.data.phy_inputs_4ch.input[0] = i1;
+    CANH_TxPhyInputs1_4.data.phy_inputs_4ch.input[1] = i2;
+    CANH_TxPhyInputs1_4.data.phy_inputs_4ch.input[2] = i3;
+    CANH_TxPhyInputs1_4.data.phy_inputs_4ch.input[3] = i4;
+
+    CANH_PushToTxQueue(instance, CANH_TxPhyInputs1_4);
+}
+
+void CANH_Send_PhyInputs5_8(T_CANH_INSTANCE instance, uint16_t i5, uint16_t i6, uint16_t i7, uint16_t i8)
+{
+    CANH_TxPhyInputs5_8.data.phy_inputs_4ch.input[0] = i5;
+    CANH_TxPhyInputs5_8.data.phy_inputs_4ch.input[1] = i6;
+    CANH_TxPhyInputs5_8.data.phy_inputs_4ch.input[2] = i7;
+    CANH_TxPhyInputs5_8.data.phy_inputs_4ch.input[3] = i8;
+
+    CANH_PushToTxQueue(instance, CANH_TxPhyInputs5_8);
 }
 
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)

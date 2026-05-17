@@ -15,6 +15,7 @@ typedef struct _T_TELEM_CFG
     bool              sendVoltage;       // Flag to send voltage data
     bool              sendCurrent;       // Flag to send current data
     bool              sendNames;         // Flag to send names
+    bool              sendPhyInputs;     // Flag to send physical inputs data
 } T_TELEM_CFG; 
 
 /// @brief Telemetry module configuration
