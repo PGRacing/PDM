@@ -72,12 +72,18 @@ T_IN_CFG inputsCfg[] =
       } 
 };
 
+/// @brief Get input configuration pointer by input ID
+/// @param id Input ID
+/// @return Pointer to input configuration or NULL if invalid ID
 T_IN_CFG *IN_GetCfgPtr(T_INPUT_ID id)
 {
   ASSERT(id >= 0 && id < ARRAY_COUNT(inputsCfg));
   return &(inputsCfg[id]);
 }
 
+/// @brief Get input type by input ID
+/// @param id Input ID
+/// @return Input type or IN_TYPE_INVALID if invalid ID
 T_IN_TYPE IN_GetType(T_INPUT_ID id)
 {
   T_IN_CFG* in = IN_GetCfgPtr(id);
@@ -89,6 +95,9 @@ T_IN_TYPE IN_GetType(T_INPUT_ID id)
   return IN_TYPE_INVALID;
 }
 
+/// @brief Check if input is physical by input configuration pointer
+/// @param cfg Input configuration pointer
+/// @return True if input is physical, False otherwise
 bool IN_IsPhysical(T_IN_CFG* cfg)
 {
   ASSERT( cfg );
@@ -96,6 +105,9 @@ bool IN_IsPhysical(T_IN_CFG* cfg)
   return (cfg->type == IN_TYPE_PHY);
 }
 
+/// @brief Change input mode by input configuration pointer
+/// @param cfg Input configuration pointer
+/// @param targetMode Target mode to change to
 void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode)
 {
   ASSERT( cfg );
@@ -122,6 +134,9 @@ void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode)
 
 }
 
+/// @brief Get Schmitt trigger input value by input ID
+/// @param id Input ID
+/// @return True if input is HIGH, False otherwise
 bool IN_GetValueSchmitt(T_INPUT_ID id)
 {
   bool ret = FALSE;
@@ -146,6 +161,9 @@ bool IN_GetValueSchmitt(T_INPUT_ID id)
   return ret;
 }
 
+/// @brief Get analog input value by input ID
+/// @param id Input ID
+/// @return Analog value in mV range [0, 5000]
 uint32_t IN_GetValueAnalog(T_INPUT_ID id)
 {
   bool ret = 0;
@@ -170,6 +188,9 @@ uint32_t IN_GetValueAnalog(T_INPUT_ID id)
   return ret;
 }
 
+/// @brief Get input value by input ID
+/// @param id Input ID
+/// @return Input value based on its mode
 uint32_t IN_GetValue(T_INPUT_ID id)
 {
   ASSERT(id >= 0 && id < ARRAY_COUNT(inputsCfg));
@@ -197,6 +218,9 @@ uint32_t IN_GetValue(T_INPUT_ID id)
   return ret;
 }
 
+/// @brief Get input mode by input ID
+/// @param id Input ID
+/// @return Input mode or IN_MODE_UNUSED if invalid ID
 T_IN_MODE IN_GetMode(T_INPUT_ID id)
 {
   T_IN_CFG* in = IN_GetCfgPtr(id);

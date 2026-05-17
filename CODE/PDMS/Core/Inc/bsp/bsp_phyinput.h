@@ -17,24 +17,18 @@ typedef enum
     IN_PHY_MAX
 }T_IN_PHY_LOC;
 
-typedef struct _T_BSP_PHYIN_CFG
-{
-    const T_IO        io;
-    uint16_t * const  rawData; // pointer to rawData from input
-}T_BSP_PHYIN_CFG;
-
-/// @brief This function perfroms work on data from inputs should be called in main slow loop   
-/// @param 
+/// @brief This function perfroms work on data from inputs should be called after input data acquisition
+/// @param  None
 void BSP_PHYIN_EvaluateValues(void);
 
 /// @brief Get physical input value as schmitt trigger
-/// @param id Physical input ID
-/// @return Input value as shcmitt trigger
+/// @param location location of the physical input
+/// @return Input value as schmitt trigger
 /// @note This function should be called only for physical inputs
 bool BSP_PHYIN_GetValueSchmitt(T_IN_PHY_LOC location);
 
 /// @brief Get physical input value as analog
-/// @param id Physical input ID
+/// @param location location of the physical input
 /// @return Input value as analog
 /// @note This function should be called only for physical inputs
 uint_fast16_t BSP_PHYIN_GetValueAnalog(T_IN_PHY_LOC location);

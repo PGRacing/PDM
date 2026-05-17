@@ -6,8 +6,21 @@
 #include "stm32l4xx_hal_gpio.h"
 #include "FreeRTOS.h"
 
-#define PHY_INPUT_VOLTAGE_DIVIDER 1.53
+/// USER DEFINES
+#define PHY_INPUT_VOLTAGE_DIVIDER 1.53 // Voltage divider on board scales max input voltage from 0-5V to 0-3.3V range for ADC
 
+/// MACRO FUNCTIONS
+
+/// FUNCTION PROTOTYPES
+
+/// PRIVATE TYPEDEFS
+typedef struct _T_BSP_PHYIN_CFG
+{
+    const T_IO        io;
+    uint16_t * const  rawData; // pointer to rawData from input
+}T_BSP_PHYIN_CFG;
+
+/// @brief Physical inputs configuration
 T_BSP_PHYIN_CFG bspPhyInputsCfg[IN_PHY_MAX] =
     {
         [IN_PHY_LOC_1] =
@@ -52,6 +65,7 @@ T_BSP_PHYIN_CFG bspPhyInputsCfg[IN_PHY_MAX] =
             },
 };
 
+/// @brief Physical inputs register
 T_BSP_IN_REG bspPhyInputsReg[IN_PHY_MAX] =
     {
         [IN_PHY_LOC_1] =
@@ -104,7 +118,8 @@ T_BSP_IN_REG bspPhyInputsReg[IN_PHY_MAX] =
             },
 };
 
-
+/// @brief Evaluate values of all physical inputs
+/// @param  None
 void BSP_PHYIN_EvaluateValues(void)
 {
     vPortEnterCritical();
@@ -132,12 +147,18 @@ void BSP_PHYIN_EvaluateValues(void)
     vPortExitCritical();
 }
 
+/// @brief Get value of physical input as schmitt trigger
+/// @param location location of the physical input
+/// @return schmitt state of the physical input
 bool BSP_PHYIN_GetValueSchmitt(T_IN_PHY_LOC location)
 {
     ASSERT(location < IN_PHY_MAX);
     return bspPhyInputsReg[location].schmittState;
 }
 
+/// @brief Get value of physical input as analog voltage
+/// @param location location of the physical input
+/// @return The analog voltage value in mV (0-5000 mV)
 uint_fast16_t BSP_PHYIN_GetValueAnalog(T_IN_PHY_LOC location)
 {
     ASSERT(location < IN_PHY_MAX);

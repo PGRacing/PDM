@@ -4,6 +4,33 @@
 #include "logger.h"
 #include <string.h>
 
+/// USER DEFINES
+
+/// MACRO FUNCTIONS
+
+/// FUNCTION PROTOTYPES
+static void BSP_CANIN_EvaluateValue(T_IN_CAN_LOC loc);
+
+/// PRIVATE TYPEDEFS
+typedef enum _T_BSP_CANIN_DATATYPE
+{
+    CAN_INPUT_TYPE_BOOL,
+    CAN_INPUT_TYPE_UINT16,
+    CAN_INPUT_TYPE_UINT32,
+    CAN_INPUT_TYPE_INT16,
+    CAN_INPUT_TYPE_INT32,
+    CAN_INPUT_TYPE_FLOAT,
+}T_BSP_CANIN_DATATYPE;
+
+typedef struct _T_BSP_CANIN_CFG
+{
+    bool isUsed;
+    T_CANH_INSTANCE canInstance;
+    uint32_t canId;
+    uint16_t offset;
+    T_BSP_CANIN_DATATYPE dataType;
+}T_BSP_CANIN_CFG;
+
 static const uint8_t canInputSize[] =
 {
     [CAN_INPUT_TYPE_BOOL] = 1,
@@ -14,6 +41,7 @@ static const uint8_t canInputSize[] =
     [CAN_INPUT_TYPE_FLOAT] = 2,
 };
 
+/// @brief CAN inputs configuration
 T_BSP_CANIN_CFG bspCanInputsCfg[] =
 {
     [IN_CAN_LOC_1] =
@@ -23,7 +51,6 @@ T_BSP_CANIN_CFG bspCanInputsCfg[] =
             .canId = 0x730,
             .offset = 0,
             .dataType = CAN_INPUT_TYPE_UINT16,
-            .rawData = 0,
         },
     [IN_CAN_LOC_2] =
         {
@@ -32,7 +59,6 @@ T_BSP_CANIN_CFG bspCanInputsCfg[] =
             .canId = 0x901,
             .offset = 0,
             .dataType = CAN_INPUT_TYPE_INT32,
-            .rawData = 0,
         },
     [IN_CAN_LOC_3] =
         {
@@ -41,7 +67,6 @@ T_BSP_CANIN_CFG bspCanInputsCfg[] =
             .canId = 0x902,
             .offset = 0,
             .dataType = CAN_INPUT_TYPE_BOOL,
-            .rawData = 0,
         },
     [IN_CAN_LOC_4] =
         {
@@ -97,6 +122,7 @@ T_BSP_CANIN_CFG bspCanInputsCfg[] =
         }
 };
 
+/// @brief CAN inputs register
 T_BSP_IN_REG bspCanInputsReg[] =
 {
     [IN_CAN_LOC_1] =
@@ -197,9 +223,11 @@ T_BSP_IN_REG bspCanInputsReg[] =
         }
 };
 
-
-static void BSP_CANIN_EvaluateValue(T_IN_CAN_LOC loc);
-
+/// @brief Dispatch a received CAN frame to the appropriate input based on its ID and instance
+/// @param canInstance The CAN instance to which the frame was received
+/// @param id The ID of the received CAN frame
+/// @param raw A pointer to the raw data of the received CAN frame
+/// @param dlc The data length code of the received CAN frame
 void BSP_CANIN_DispatchFrame(T_CANH_INSTANCE canInstance, uint32_t id, uint8_t* raw, uint8_t dlc)
 {
     for(uint8_t i = 0; i < IN_CAN_MAX; i++)
@@ -216,14 +244,15 @@ void BSP_CANIN_DispatchFrame(T_CANH_INSTANCE canInstance, uint32_t id, uint8_t* 
                 LOG_WARN("BSP_CANIN:: Received frame with insufficient data length for input");
                 continue;
             }
-            memcpy(&(bspCanInputsCfg[i].rawData), raw + bspCanInputsCfg[i].offset, canInputSize[bspCanInputsCfg[i].dataType]);
+            // Copy the data from input frame
+            memcpy(&(bspCanInputsReg[i].rawValue), raw + bspCanInputsCfg[i].offset, canInputSize[bspCanInputsCfg[i].dataType]);
             BSP_CANIN_EvaluateValue(i);
         }
     }
 }
 
-// Change to evaluate single value and later on update when some message enters into queue
-// Later on interpreted as voltage so in range of ADC 0-5000mV
+/// @brief Evaluates the value of a CAN input based on its configuration
+/// @param loc The location of the CAN input to evaluate
 static void BSP_CANIN_EvaluateValue(T_IN_CAN_LOC loc)
 {
     
@@ -234,33 +263,33 @@ static void BSP_CANIN_EvaluateValue(T_IN_CAN_LOC loc)
 
     if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_BOOL)
     {
-        bspCanInputsReg[loc].rawValue = bspCanInputsReg[loc].schmittState ? 1 : 0;
-        bspCanInputsReg[loc].voltageValue = bspCanInputsReg[loc].schmittState ? 5000 : 0;   
+        const bool value = *((bool*)(&bspCanInputsReg[loc].rawValue));
+        bspCanInputsReg[loc].voltageValue = value ? 5000 : 0;   
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_UINT16)
     {
-        bspCanInputsReg[loc].rawValue = *((uint16_t*)(&bspCanInputsCfg[loc].rawData));
-        bspCanInputsReg[loc].voltageValue = bspCanInputsReg[loc].rawValue * 5000 / 65535; // Scale to 0-5000 mV
+        const uint16_t value = *((uint16_t*)(&bspCanInputsReg[loc].rawValue));
+        bspCanInputsReg[loc].voltageValue = value * 5000 / 65535; // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_INT16)
     {
-        bspCanInputsReg[loc].rawValue = *((int16_t*)(&bspCanInputsCfg[loc].rawData));
-        bspCanInputsReg[loc].voltageValue = bspCanInputsReg[loc].rawValue * 5000 / 32767; // Scale to 0-5000 mV
+        const int16_t value = *((int16_t*)(&bspCanInputsReg[loc].rawValue));
+        bspCanInputsReg[loc].voltageValue = value * 5000 / 32767; // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_UINT32)
     {
-        bspCanInputsReg[loc].rawValue = *((uint32_t*)(&bspCanInputsCfg[loc].rawData));
-        bspCanInputsReg[loc].voltageValue = bspCanInputsReg[loc].rawValue * 5000 / 4294967295; // Scale to 0-5000 mV
+        const uint32_t value = *((uint32_t*)(&bspCanInputsReg[loc].rawValue));
+        bspCanInputsReg[loc].voltageValue = value * 5000 / 4294967295; // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_INT32)
     {
-        bspCanInputsReg[loc].rawValue = *((int32_t*)(&bspCanInputsCfg[loc].rawData));
-        bspCanInputsReg[loc].voltageValue = bspCanInputsReg[loc].rawValue * 5000 / 2147483647; // Scale to 0-5000 mV
+        const int32_t value = *((int32_t*)(&bspCanInputsReg[loc].rawValue));
+        bspCanInputsReg[loc].voltageValue = value * 5000 / 2147483647; // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_FLOAT)
     {
-        bspCanInputsReg[loc].rawValue = *((float*)(&bspCanInputsCfg[loc].rawData));
-        bspCanInputsReg[loc].voltageValue = bspCanInputsReg[loc].rawValue; // Assume float is already in the 0-5000 mV range
+        const float value = *((float*)(&bspCanInputsReg[loc].rawValue));
+        bspCanInputsReg[loc].voltageValue = value; // Assume float is already in the 0-5000 mV range
     }
     else
     {
@@ -275,14 +304,21 @@ static void BSP_CANIN_EvaluateValue(T_IN_CAN_LOC loc)
     {
         bspCanInputsReg[loc].schmittState = FALSE;
     }
+
 }
 
+/// @brief Get value of CAN input as schmitt trigger
+/// @param location The location of the CAN input
+/// @return The schmitt trigger value
 bool BSP_CANIN_GetValueSchmitt(T_IN_CAN_LOC location)
 {
     ASSERT(location < IN_CAN_MAX);
     return bspCanInputsReg[location].schmittState;
 }
 
+/// @brief Get value of CAN input as analog voltage
+/// @param location The location of the CAN input
+/// @return The analog voltage value in mV (0-5000 mV)
 uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location)
 {
     ASSERT(location < IN_CAN_MAX);

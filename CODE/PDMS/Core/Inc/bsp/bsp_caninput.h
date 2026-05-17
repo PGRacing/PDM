@@ -24,29 +24,24 @@ typedef enum
     IN_CAN_MAX
 }T_IN_CAN_LOC;
 
-typedef enum _T_BSP_CANIN_DATATYPE
-{
-    CAN_INPUT_TYPE_BOOL,
-    CAN_INPUT_TYPE_UINT16,
-    CAN_INPUT_TYPE_UINT32,
-    CAN_INPUT_TYPE_INT16,
-    CAN_INPUT_TYPE_INT32,
-    CAN_INPUT_TYPE_FLOAT,
-}T_BSP_CANIN_DATATYPE;
-
-typedef struct _T_BSP_CANIN_CFG
-{
-    bool isUsed;
-    T_CANH_INSTANCE canInstance;
-    uint32_t canId;
-    uint16_t offset;
-    T_BSP_CANIN_DATATYPE dataType;
-    uint32_t rawData;
-}T_BSP_CANIN_CFG;
-
+/// @brief Dispatch a received CAN frame to the appropriate input based on its ID and instance
+/// @param canInstance The CAN instance to which the frame was received
+/// @param id The ID of the received CAN frame
+/// @param raw A pointer to the raw data of the received CAN frame
+/// @param dlc The data length code of the received CAN frame
+/// @note This function should be called from CAN receive callback after receiving a CAN frame
 void BSP_CANIN_DispatchFrame(T_CANH_INSTANCE canInstance, uint32_t id, uint8_t* raw, uint8_t dlc);
-bool BSP_CANIN_GetValueSchmitt(T_IN_CAN_LOC location);
-uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location);
 
+/// @brief Get CAN input value as schmitt trigger
+/// @param location location of the CAN input
+/// @return Input value as schmitt trigger
+/// @note This function should be called only for CAN inputs
+bool BSP_CANIN_GetValueSchmitt(T_IN_CAN_LOC location);
+
+/// @brief Get CAN input value as analog
+/// @param location location of the CAN input
+/// @return Input value as analog
+/// @note This function should be called only for CAN inputs
+uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location);
 
 #endif // __BSP_CANINPUT_H_

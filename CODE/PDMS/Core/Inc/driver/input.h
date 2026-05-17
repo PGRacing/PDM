@@ -27,7 +27,6 @@ typedef struct _T_IN_CFG
     T_IN_MODE         mode;
 }T_IN_CFG;
 
-
 extern T_IN_CFG inputsCfg[];
 
 bool IN_GetValueSchmitt(uint16_t id);
