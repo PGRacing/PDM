@@ -82,7 +82,7 @@ osThreadId_t adc1TaskHandle;
 const osThreadAttr_t adc1Task_attributes = {
   .name = "adc1Task",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal2, // Task that executes diagnostic functions
+  .priority = (osPriority_t) osPriorityRealtime, // Task that executes diagnostic functions
 };
 /* Definitions for testTask */
 osThreadId_t testTaskHandle;

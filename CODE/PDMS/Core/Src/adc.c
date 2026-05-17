@@ -35,7 +35,7 @@ extern SemaphoreHandle_t adc2ConvReadySemaphore;
 
 #define ADC_12BIT_MAX_VALUE 4096
 
-#define ADC1_SAMPLING_RATE 5000 // Hz, frequency of ADC1 conversion
+#define ADC1_SAMPLING_RATE 10000 // Hz, frequency of ADC1 conversion
 #define ADC1_SW_OVERSAMPLING_RATIO (ADC1_SAMPLING_RATE/200)
 
 #define ADC2_SAMPLING_RATE 200 // Hz, frequency of ADC2 conversion
@@ -641,10 +641,18 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
       {
         adc1SumCounter = 0;
 
+
+        // TODO Consider adding median filter here, to remove outliers
+        // Save ADC data to array of length [ADC1_CHANNEL_COUNT][ADC1_SW_OVERSAMPLING_RATIO]
+        // Set some window size for median filter eg. 5
+        // Move window over ADC data array
+        // Sort values inside of window and take middle value as output
+        // Calculate average for ADC data array based on median window values
+
         // Calculate average and reset sum
         for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
         {
-          // TODO Consider adding median filter here, to remove outliers
+          
           adc1AvgData[i] = adc1SumData[i] / ADC1_SW_OVERSAMPLING_RATIO;
           adc1SumData[i] = 0;
         }
