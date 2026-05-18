@@ -17,7 +17,7 @@ from matplotlib.figure import Figure
 CHANNEL_COUNT = 16
 BASE_ID = 0x400
 
-CAN_CHANNEL = "COM14"
+CAN_CHANNEL = "COM5"
 CAN_BITRATE = 1000000
 SERIAL_BAUD = 115200
 

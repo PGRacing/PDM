@@ -1620,7 +1620,10 @@ static void OUT_DIAG_SingleSpoc(T_OUT_ID id)
   
   // TODO VMUX_GetValue in two seperate sections? Here and in bts (does it make sense?)
   reg->voltageMV = VMUX_GetValue(id);
+  reg->emaVoltageMV = (reg->voltageMV * OUT_DIAG_EMA_VOLTAGE_ALPHA) + (reg->emaVoltageMV * (1 - OUT_DIAG_EMA_VOLTAGE_ALPHA));
+
   reg->currentMA = BSP_OUT_CalcCurrent(id);
+  reg->emaCurrentMA = (reg->currentMA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentMA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
   //uint32_t batteryVoltage = VMUX_GetBattValue();
   //uint32_t dkilis = BSP_OUT_GetDkilis(id);
   

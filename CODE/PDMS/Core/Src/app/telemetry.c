@@ -20,6 +20,7 @@ T_TELEM_CFG telemCfg =
     .sendVoltage = TRUE,
     .sendCurrent = TRUE,
     .sendNames = TRUE,
+    .sendPhyInputs = TRUE,
 };
 
 static void TELEM_SendVoltageByCan(T_CANH_INSTANCE canInstance)

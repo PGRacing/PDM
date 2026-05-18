@@ -7,7 +7,7 @@
 #include "FreeRTOS.h"
 
 /// USER DEFINES
-#define PHY_INPUT_VOLTAGE_DIVIDER 1.53 // Voltage divider on board scales max input voltage from 0-5V to 0-3.3V range for ADC
+#define PHY_INPUT_VOLTAGE_DIVIDER 1.836f // Voltage divider on board scales max input voltage from 0-5V to 0-3.3V range for ADC
 
 /// MACRO FUNCTIONS
 
