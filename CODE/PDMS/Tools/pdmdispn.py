@@ -32,7 +32,7 @@ SERIAL_BAUD = 115200
 
 HISTORY_LEN = 300
 GUI_UPDATE_MS = 30    # Snappy response for text matrices
-PLOT_UPDATE_MS = 40   # 25 FPS update rate - absolutely smooth with PyQtGraph
+PLOT_UPDATE_MS = 10   # 25 FPS update rate - absolutely smooth with PyQtGraph
 
 # ================= CAN IDS =================
 IDS = {
@@ -133,6 +133,10 @@ def can_isolated_process(pipe_conn, tx_queue):
     last_gui_update = time.time()
     last_log_time = time.time()
     acquiring = True
+    start_time = time.time()
+    frame_counts = defaultdict(int)
+    frame_first_seen = {}
+    frame_last_seen = {}
 
     while True:
         while not tx_queue.empty():
@@ -164,6 +168,9 @@ def can_isolated_process(pipe_conn, tx_queue):
             cid = msg.arbitration_id
             d = msg.data
             t_now = time.time()
+            frame_counts[cid] += 1
+            frame_first_seen.setdefault(cid, t_now)
+            frame_last_seen[cid] = t_now
 
             if cid == IDS["SYS_STATUS"]:
                 status, batt_voltage, core_temp, safety_line_state = parse_system_status(d)
@@ -222,10 +229,18 @@ def can_isolated_process(pipe_conn, tx_queue):
             if t_now - last_gui_update >= 0.03: 
                 last_gui_update = t_now
                 packet = {
-                    "time": t_now,
+                    "time": t_now - start_time,
                     "sys": sys_status.copy(),
                     "ch": [c.copy() for c in channels],
-                    "phy": list(phy_inputs)
+                    "phy": list(phy_inputs),
+                    "frames": [
+                        {
+                            "id": fid,
+                            "count": frame_counts[fid],
+                            "freq": frame_counts[fid] / max(1e-6, frame_last_seen[fid] - frame_first_seen[fid]),
+                        }
+                        for fid in sorted(frame_counts)
+                    ],
                 }
                 pipe_conn.send(packet)
 
@@ -253,6 +268,7 @@ class MainWindow(QMainWindow):
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
         self.latest_ch = [{"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0} for _ in range(CHANNEL_COUNT)]
         self.latest_phy = [0] * PHY_INPUT_COUNT
+        self.latest_frames = []
 
         self.hist_v = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
         self.hist_i = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
@@ -355,6 +371,14 @@ class MainWindow(QMainWindow):
         phy_table_vbox.addWidget(self.table_phy)
         tables_layout.addWidget(phy_table_box, stretch=2)
 
+        frames_box = QGroupBox("Received CAN Frames")
+        frames_vbox = QVBoxLayout(frames_box)
+        self.table_frames = QTableWidget(0, 2)
+        self.table_frames.setHorizontalHeaderLabels(["Frame ID", "Frequency [Hz]"])
+        self.table_frames.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        frames_vbox.addWidget(self.table_frames)
+        tables_layout.addWidget(frames_box, stretch=2)
+
         # Create PyQtGraph Layout Context Container
         graph_container = pg.GraphicsLayoutWidget()
         graph_container.setBackground('#1E1E1E')
@@ -362,6 +386,10 @@ class MainWindow(QMainWindow):
         # Instantiate separate plot layouts
         self.plot_v = graph_container.addPlot(row=0, col=0)
         self.plot_i = graph_container.addPlot(row=1, col=0)
+
+        # Add legends to plots
+        self.plot_v.addLegend(offset=(10, 10))
+        self.plot_i.addLegend(offset=(10, 10))
 
         # Style Plot Objects
         self.plot_v.setTitle("Voltage Tracks History", color='#BB86FC', size='11pt')
@@ -377,15 +405,15 @@ class MainWindow(QMainWindow):
             clr = TRACK_COLORS[ch % len(TRACK_COLORS)]
             
             # Voltage Curve
-            self.curves_v[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1.5))
+            self.curves_v[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1.5), name=f"CH{ch+1}")
             self.plot_v.addItem(self.curves_v[ch])
             
-            # Current Instantaneous Curve (Thin / Semi-Transparent)
-            self.curves_i_inst[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr + "40", width=1))
+            # Current Instantaneous Curve (Thick / Semi-Transparent)
+            self.curves_i_inst[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr + "40", width=2.5), name=f"CH{ch+1}")
             self.plot_i.addItem(self.curves_i_inst[ch])
             
-            # Current Average Curve (Thick / Solid)
-            self.curves_i_avg[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=2.5))
+            # Current Average Curve (Thin / Solid)
+            self.curves_i_avg[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1), name=f"CH{ch+1}")
             self.plot_i.addItem(self.curves_i_avg[ch])
 
         main_layout.addWidget(graph_container, stretch=3)
@@ -416,6 +444,7 @@ class MainWindow(QMainWindow):
                 self.latest_sys = packet["sys"]
                 self.latest_ch = packet["ch"]
                 self.latest_phy = packet["phy"]
+                self.latest_frames = packet.get("frames", [])
                 t_now = packet["time"]
 
                 for i, ch in enumerate(self.latest_ch):
@@ -455,6 +484,24 @@ class MainWindow(QMainWindow):
         for i, val in enumerate(self.latest_phy):
             item = self.table_phy.item(i, 1)
             if item.text() != str(val): item.setText(str(val))
+
+        self.table_frames.setRowCount(len(self.latest_frames))
+        for row, frame in enumerate(self.latest_frames):
+            fid_text = f"0x{frame['id']:03X}"
+            freq_text = f"{frame['freq']:.1f}"
+            id_item = self.table_frames.item(row, 0)
+            if id_item is None:
+                id_item = QTableWidgetItem()
+                self.table_frames.setItem(row, 0, id_item)
+            if id_item.text() != fid_text:
+                id_item.setText(fid_text)
+            freq_item = self.table_frames.item(row, 1)
+            if freq_item is None:
+                freq_item = QTableWidgetItem()
+                freq_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                self.table_frames.setItem(row, 1, freq_item)
+            if freq_item.text() != freq_text:
+                freq_item.setText(freq_text)
 
     def update_plots(self):
         # High performance pointer loop map

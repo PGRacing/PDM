@@ -12,7 +12,7 @@
 
 T_TELEM_CFG telemCfg = 
 {
-    .telemInterval = 50, // 50 ms interval
+    .telemInterval = 20, // 20 ms interval
     .canInstance = CANH_INSTANCE_2,
     .sendSystemData = TRUE,
     .sendStatus = TRUE,

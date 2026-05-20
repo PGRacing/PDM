@@ -7,6 +7,7 @@
 #include "vmux.h"
 #include "bsp_out.h"
 #include "adc.h"
+#include "adc_handler.h"
 
 //#define LL_TIM_OC_SetCompare(TIM, CNUM, CMP) LL_TIM_OC_SetCompareCH##CNUM(TIM, CMP)
 #define BSP_OUT_FAULT_ADC_LEVEL 4000

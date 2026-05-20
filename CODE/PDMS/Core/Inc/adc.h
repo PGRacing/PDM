@@ -41,6 +41,9 @@ extern ADC_HandleTypeDef hadc3;
 /* USER CODE BEGIN Private defines */
 #define ADC1_CHANNEL_COUNT 8
 #define ADC2_CHANNEL_COUNT 8
+
+#define ADC1_SAMPLING_RATE 10000 // Hz, frequency of ADC1 conversion
+#define ADC1_SW_OVERSAMPLING_RATIO (ADC1_SAMPLING_RATE/200)
 /* USER CODE END Private defines */
 
 void MX_ADC1_Init(void);
@@ -51,7 +54,7 @@ void MX_ADC3_Init(void);
 extern uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
 extern uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
-extern volatile uint16_t adc1AvgData[ADC1_CHANNEL_COUNT];
+extern volatile uint16_t adc1MedianBufferShadow[ADC1_CHANNEL_COUNT][ADC1_SW_OVERSAMPLING_RATIO];
 
 void ADC1_Init(void);
 void ADC2_Init(void);

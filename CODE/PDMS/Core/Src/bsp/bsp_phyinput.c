@@ -8,7 +8,7 @@
 
 /// USER DEFINES
 #define PHY_INPUT_VOLTAGE_DIVIDER 1.836f // Voltage divider on board scales max input voltage from 0-5V to 0-3.3V range for ADC
-
+#define PHY_INPUT_EMA_ALPHA 0.3f 
 /// MACRO FUNCTIONS
 
 /// FUNCTION PROTOTYPES
@@ -73,48 +73,56 @@ T_BSP_IN_REG bspPhyInputsReg[IN_PHY_MAX] =
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
         [IN_PHY_LOC_2] =
             {
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
         [IN_PHY_LOC_3] =
             {
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
         [IN_PHY_LOC_4] =
             {
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
         [IN_PHY_LOC_5] =
             {
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
         [IN_PHY_LOC_6] =
             {
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
         [IN_PHY_LOC_7] =
             {
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
         [IN_PHY_LOC_8] =
             {
                 .rawValue = 0,
                 .schmittState = FALSE,
                 .voltageValue = 0,
+                .emaVoltageValue = 0,
             },
 };
 
@@ -143,6 +151,8 @@ void BSP_PHYIN_EvaluateValues(void)
         bspPhyInputsReg[i].rawValue = *(bspPhyInputsCfg[i].rawData);
         // Calculate voltage value
         bspPhyInputsReg[i].voltageValue = (((float)*(bspPhyInputsCfg[i].rawData)*PHY_INPUT_VOLTAGE_DIVIDER)/(float)4096)*(float)VDD_VALUE;
+        // Calculate EMA filtered voltage value
+        bspPhyInputsReg[i].emaVoltageValue = (uint_fast16_t)(PHY_INPUT_EMA_ALPHA * bspPhyInputsReg[i].voltageValue + (1.0f - PHY_INPUT_EMA_ALPHA) * bspPhyInputsReg[i].emaVoltageValue);
     } 
     vPortExitCritical();
 }
@@ -162,5 +172,5 @@ bool BSP_PHYIN_GetValueSchmitt(T_IN_PHY_LOC location)
 uint_fast16_t BSP_PHYIN_GetValueAnalog(T_IN_PHY_LOC location)
 {
     ASSERT(location < IN_PHY_MAX);
-    return bspPhyInputsReg[location].voltageValue;
+    return bspPhyInputsReg[location].emaVoltageValue;
 }

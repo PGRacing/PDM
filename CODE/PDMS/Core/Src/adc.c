@@ -29,14 +29,12 @@
 #include "semphr.h"
 #include "stm32l4xx_hal_adc.h"
 #include "pdm.h"
+#include <string.h>
 
 extern SemaphoreHandle_t adc1ConvReadySemaphore;
 extern SemaphoreHandle_t adc2ConvReadySemaphore;
 
 #define ADC_12BIT_MAX_VALUE 4096
-
-#define ADC1_SAMPLING_RATE 10000 // Hz, frequency of ADC1 conversion
-#define ADC1_SW_OVERSAMPLING_RATIO (ADC1_SAMPLING_RATE/200)
 
 #define ADC2_SAMPLING_RATE 200 // Hz, frequency of ADC2 conversion
 
@@ -621,9 +619,18 @@ uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
 uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
 /* Current readout averaging */
-volatile uint32_t adc1SumData[ADC1_CHANNEL_COUNT] = {0};
-volatile uint16_t adc1AvgData[ADC1_CHANNEL_COUNT] = {0};
-volatile uint16_t adc1SumCounter = 0;
+volatile uint16_t adc1MedianCounter = 0;
+
+volatile uint16_t adc1MedianBuffer[ADC1_CHANNEL_COUNT][ADC1_SW_OVERSAMPLING_RATIO] = {0};
+volatile uint16_t adc1MedianBufferShadow[ADC1_CHANNEL_COUNT][ADC1_SW_OVERSAMPLING_RATIO] = {0};
+
+#ifdef DEBUG
+volatile static uint32_t DWTfastADC1TS = 0;
+volatile static uint32_t DWTfastADC1DLT = 0;
+
+volatile static uint32_t DWTslowADC1TS = 0;
+volatile static uint32_t DWTslowADC1DLT = 0;
+#endif
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
@@ -631,37 +638,30 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     ASSERT(adc2ConvReadySemaphore);
     if(hadc == &hadc1)
     {
+#ifdef DEBUG
+      DWTfastADC1DLT = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME - DWTfastADC1TS);
+      DWTfastADC1TS = DEBUG_ARM_GET_TIME;
+#endif
       for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
       {
-        adc1SumData[i] += adc1RawData[i];
+        adc1MedianBuffer[i][adc1MedianCounter] = adc1RawData[i];
       }
-      adc1SumCounter++;
+      adc1MedianCounter++;
 
-      if(adc1SumCounter >= ADC1_SW_OVERSAMPLING_RATIO)
+      // If enough samples collected for oversampling, calculate median and average
+      if(adc1MedianCounter >= ADC1_SW_OVERSAMPLING_RATIO)
       {
-        adc1SumCounter = 0;
-
-
-        // TODO Consider adding median filter here, to remove outliers
-        // Save ADC data to array of length [ADC1_CHANNEL_COUNT][ADC1_SW_OVERSAMPLING_RATIO]
-        // Set some window size for median filter eg. 5
-        // Move window over ADC data array
-        // Sort values inside of window and take middle value as output
-        // Calculate average for ADC data array based on median window values
-
-        // Calculate average and reset sum
-        for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
-        {
-          
-          adc1AvgData[i] = adc1SumData[i] / ADC1_SW_OVERSAMPLING_RATIO;
-          adc1SumData[i] = 0;
-        }
-        
+        adc1MedianCounter = 0;
+        memcpy((void*)adc1MedianBufferShadow, (void*)adc1MedianBuffer, sizeof(adc1MedianBuffer));
         // Notify task that new ADC1 data is ready
         portBASE_TYPE xHigherPriorityTaskWoken;
         xHigherPriorityTaskWoken = pdFALSE;
         if(adc1ConvReadySemaphore != NULL)
         {
+#ifdef DEBUG
+          DWTslowADC1DLT = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME - DWTslowADC1TS);
+          DWTslowADC1TS = DEBUG_ARM_GET_TIME;
+#endif
           xSemaphoreGiveFromISR(adc1ConvReadySemaphore, &xHigherPriorityTaskWoken);
         }
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);

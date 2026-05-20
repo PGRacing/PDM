@@ -1582,21 +1582,21 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
 
 
 // Performance watches
-volatile uint32_t fastLoopDelta = 0;
-volatile uint32_t fastLoopPeriod = 0;
-uint32_t t1, t2 = 0;
+static volatile uint32_t DWToutBtsPROC = 0;
+static volatile uint32_t DWToutBtsPER = 0;
+static volatile uint32_t t1, t2 = 0;
 
 // FAST CONTROL LOOP BODY
 void OUT_DIAG_AllBts(void)
 {
   t1 = DEBUG_ARM_GET_TIME;
-  fastLoopPeriod = DEBUG_ARM_CLOCKS_TO_US(t1 - t2);
+  DWToutBtsPER = DEBUG_ARM_CLOCKS_TO_US(t1 - t2);
   for(uint8_t id = 0; id < OUT_ID_BTS_MAX; id++)
   {
     OUT_DIAG_SingleBtsNew(id);
   }
   t2 = DEBUG_ARM_GET_TIME;
-  fastLoopDelta = DEBUG_ARM_CLOCKS_TO_US(t2 - t1);
+  DWToutBtsPROC = DEBUG_ARM_CLOCKS_TO_US(t2 - t1);
 }
 
 /// @brief Perform all needed processing for output channel of SPOC2 type

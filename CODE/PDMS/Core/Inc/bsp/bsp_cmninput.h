@@ -12,6 +12,7 @@ typedef struct _T_BSP_IN_REG
    uint_fast32_t rawValue;
    bool          schmittState;
    uint_fast16_t voltageValue; // 0 - 5000 mV voltage range
+   uint_fast16_t emaVoltageValue; // EMA filtered voltage value 0 - 5000 mV range
 }
 T_BSP_IN_REG;
 
