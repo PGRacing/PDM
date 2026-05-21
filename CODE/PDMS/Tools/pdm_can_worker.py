@@ -2,6 +2,7 @@ import csv
 import datetime
 import time
 from collections import defaultdict, deque
+from pathlib import Path
 
 import can
 from can import Message
@@ -16,6 +17,10 @@ from pdm_shared import (
     parse_system_status,
     parse_u16x4,
 )
+
+BASE_DIR = Path(__file__).resolve().parent
+LOG_DIR = BASE_DIR / "log"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def can_isolated_process(pipe_conn, tx_queue):
@@ -36,7 +41,7 @@ def can_isolated_process(pipe_conn, tx_queue):
     name_parts = defaultdict(dict)
     current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
 
-    log_file_name = f"pdmdisp_{datetime.datetime.now():%Y%m%d-%H%M%S}.csv"
+    log_file_name = LOG_DIR / f"pdmdisp_{datetime.datetime.now():%Y%m%d-%H%M%S}.csv"
     try:
         log_f = open(log_file_name, "a", newline="")
         log_writer = csv.writer(log_f)

@@ -24,6 +24,10 @@ from PyQt5.QtWidgets import (
 
 from pdm_shared import CHANNEL_COUNT
 
+BASE_DIR = Path(__file__).resolve().parent
+CONFIG_DIR = BASE_DIR / "config"
+CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+
 OUT_TYPE_BTS500 = 0x00
 OUT_TYPE_SPOC2 = 0x01
 
@@ -445,14 +449,14 @@ class ConfigTab(QWidget):
         self.btn_export = QPushButton("Export JSON")
         self.btn_export.clicked.connect(self.export_json)
         title_row.addWidget(self.btn_export)
-        self.btn_export_binary = QPushButton("Export STM32 Binary")
+        self.btn_export_binary = QPushButton("Export binary")
         self.btn_export_binary.clicked.connect(self.export_binary)
         title_row.addWidget(self.btn_export_binary)
         layout.addLayout(title_row)
 
         subtitle = QLabel(
             "One tab per channel. Type is display-only and derived from the channel number; channels 1-8 export spoc fields as 0. "
-            "Use Load JSON to restore a saved configuration or Export STM32 Binary for a packed little-endian payload."
+            "Use Load JSON to restore a saved configuration or Export binary for a packed little-endian payload."
         )
         subtitle.setWordWrap(True)
         layout.addWidget(subtitle)
@@ -492,7 +496,7 @@ class ConfigTab(QWidget):
         file_path, _ = QFileDialog.getOpenFileName(
             self,
             "Load output channel configuration",
-            "",
+            str(CONFIG_DIR),
             "JSON Files (*.json);;All Files (*)",
         )
         if not file_path:
@@ -506,7 +510,7 @@ class ConfigTab(QWidget):
             QMessageBox.critical(self, "Load failed", f"Could not load JSON: {exc}")
 
     def export_binary(self):
-        default_name = "pdm_output_config.bin"
+        default_name = str(CONFIG_DIR / "pdm_output_config.bin")
         file_path, _ = QFileDialog.getSaveFileName(
             self,
             "Export packed STM32 binary",
@@ -523,7 +527,7 @@ class ConfigTab(QWidget):
             QMessageBox.critical(self, "Export failed", f"Could not export binary: {exc}")
 
     def export_json(self):
-        default_name = "pdm_output_config.json"
+        default_name = str(CONFIG_DIR / "pdm_output_config.json")
         file_path, _ = QFileDialog.getSaveFileName(
             self,
             "Export output channel configuration",
