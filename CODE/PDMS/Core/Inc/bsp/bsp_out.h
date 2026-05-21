@@ -7,6 +7,7 @@
 // Max index of BTS500 type device
 #define OUT_ID_BTS_MAX 8
 
+#pragma pack(push ,1)
 /// @brief Output channels ID
 typedef enum
 {
@@ -37,6 +38,8 @@ typedef enum
     OUT_MODE_PWM      = 0x02, // PWM output for load balancing
     OUT_MODE_BATCH    = 0x03  // Batching two inputs works for std
 }T_OUT_MODE;
+
+#pragma pack(pop)
 
 /// @brief Output channel state
 typedef enum

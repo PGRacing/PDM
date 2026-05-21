@@ -23,8 +23,8 @@
 #define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
 #define OUT_DIAG_BTS_TRIP_THRESHOLD 40 // Arbitraty value that needs to be exceeded to trip SOC protection (removing super short local peaks)
 // EMA
-#define OUT_DIAG_EMA_CURRENT_ALPHA 0.05f // Alpha for exponential moving average of current, lower value means smoother readings but longer time to react to changes
-#define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.05f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
+#define OUT_DIAG_EMA_CURRENT_ALPHA 0.2f // Alpha for exponential moving average of current, lower value means smoother readings but longer time to react to changes
+#define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.2f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
@@ -318,6 +318,10 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 
 };
 #elif BOARD_VER == PDMS_V4_3
+
+volatile T_OUT_CFG (*volatile configPtrA)[16] = (T_OUT_CFG (*)[16])0x080E0000; // Pointing to CONFIGB1 section in flash
+volatile T_OUT_CFG (*volatile configPtrB)[16] = (T_OUT_CFG (*)[16])0x080F0000; // Pointing to CONFIGB1 section in flash
+
 /// @brief Main output channels config [1..16]
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
 {
@@ -335,7 +339,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
             //   .actOnSafety = FALSE,
             //   .errRetryThreshold = 3,
             //   .retryTimerInterval = 1000,
-            //   .retryCallback = &OUT_CH1_RetryCallback,
             //   .socCfg =
             //   {
             //     .useSoc = TRUE,
@@ -359,7 +362,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
                 .behavior = OUT_ERR_BEH_LATCH 
               },
               .actOnSafety = FALSE,
-              .retryCallback = &OUT_CH2_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
@@ -382,7 +384,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .actOnSafety = FALSE,
               .errRetryThreshold = 3, // 
               .retryTimerInterval = 1000,
-              .retryCallback = &OUT_CH3_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
@@ -405,7 +406,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .actOnSafety = FALSE,
               .errRetryThreshold = 3, // 
               .retryTimerInterval = 1000,
-              .retryCallback = &OUT_CH4_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
@@ -431,7 +431,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .actOnSafety = FALSE,
               .errRetryThreshold = 6, 
               .retryTimerInterval = 1000,
-              .retryCallback = &OUT_CH5_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
@@ -454,7 +453,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .actOnSafety = FALSE,
               .errRetryThreshold = 6,  
               .retryTimerInterval = 1000,
-              .retryCallback = &OUT_CH6_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
@@ -480,7 +478,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .actOnSafety = FALSE,
               .errRetryThreshold = 3, // 
               .retryTimerInterval = 1000,
-              .retryCallback = &OUT_CH7_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
@@ -505,7 +502,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
               .actOnSafety = FALSE,
               .errRetryThreshold = 6, 
               .retryTimerInterval = 2000,
-              .retryCallback = &OUT_CH8_RetryCallback,
               .socCfg =
               {
                 .useSoc = TRUE,
@@ -797,6 +793,27 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
     .currentMA = 0,
     .voltageMV = 0
   }
+};
+
+
+void  (*outsRetryCallbacks[OUT_ID_MAX])(void) = 
+{
+  [OUT_ID_1] = &OUT_CH1_RetryCallback,
+  [OUT_ID_2] = &OUT_CH2_RetryCallback,
+  [OUT_ID_3] = &OUT_CH3_RetryCallback,
+  [OUT_ID_4] = &OUT_CH4_RetryCallback,
+  [OUT_ID_5] = &OUT_CH5_RetryCallback,
+  [OUT_ID_6] = &OUT_CH6_RetryCallback,
+  [OUT_ID_7] = &OUT_CH7_RetryCallback,
+  [OUT_ID_8] = &OUT_CH8_RetryCallback,
+  [OUT_ID_9] = NULL,
+  [OUT_ID_10] = NULL,
+  [OUT_ID_11] = NULL,
+  [OUT_ID_12] = NULL,
+  [OUT_ID_13] = NULL,
+  [OUT_ID_14] = NULL,
+  [OUT_ID_15] = NULL,
+  [OUT_ID_16] = NULL
 };
 
 #pragma endregion
@@ -1115,10 +1132,7 @@ static void OUT_DIAG_DispatchRetry(T_OUT_ID id)
   else if (FALSE == reg->safety.inRetrySequence)
   {
     reg->safety.errRetryCounter++;
-    
-    // Check if safety function callback does exist
-    ASSERT(cfg->safety.retryCallback);
-
+  
     // Reset timer counter for retry execution routine
     reg->safety.retryTimerCounter = 0;
 
@@ -1427,9 +1441,9 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
     if(reg->safety.retryTimerCounter >= (cfg->safety.retryTimerInterval/OUT_DIAG_READ_PERIOD))
     {
       // Check if safety function callback does exist
-      ASSERT(cfg->safety.retryCallback);
+      ASSERT(outsRetryCallbacks[id]);
 
-      cfg->safety.retryCallback();
+      outsRetryCallbacks[id]();
     }
   }
 

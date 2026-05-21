@@ -10,6 +10,8 @@
 #define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
 #define OUT_DIAG_NAME_LEN 32
 
+#pragma pack(push, 1)
+
 /// @brief Output channel type
 typedef enum
 {
@@ -56,7 +58,6 @@ typedef enum
 T_OUT_SAFETY_SOC_STATUS;
 
 /// TODO Verify which parameters should be declared as const
-
 /// @brief Output chhannel after error configuration
 typedef struct _T_OUT_SAFETY_AERR_CFG
 {
@@ -93,11 +94,9 @@ typedef struct _T_OUT_SAFETY_CFG
     bool                  actOnSafety;            // This specifies if this channel should be turned of when "safety line" is opened
     const uint16_t        errRetryThreshold;      // Number of retries to be performed
     uint32_t              retryTimerInterval;     // Retry interval
-    void                  (*retryCallback)(void); // Safety callback
     T_OUT_SAFETY_SOC_CFG  socCfg;                 // Software over current configuration
     T_OUT_SAFETY_I2T_CFG  i2tCfg;                 // I2t configuration
 }T_OUT_SAFETY_CFG; 
-
 
 /// @brief Output channel configuration struct
 typedef struct _T_OUT_CFG
@@ -111,6 +110,8 @@ typedef struct _T_OUT_CFG
     T_OUT_ID         batch;                   // Optional for OUT_MODE_BATCH (BTS500 only)
     T_OUT_SAFETY_CFG safety;                  // Safety configuration
 }T_OUT_CFG;
+
+#pragma pack(pop)
 
 /// @brief Output channel software overcurrent status register
 typedef struct _T_OUT_SAFETY_SOC_REG
