@@ -169,10 +169,14 @@ class MainWindow(QMainWindow):
         tabs.addTab(dashboard, "Dashboard")
         self.config_tab = ConfigTab()
         self.config_tab.send_binary_requested.connect(self.send_isotp_config)
-        tabs.addTab(self.config_tab, "Configuration")
+        self.config_tab.send_reset_requested.connect(self.send_reset_device)
+        tabs.addTab(self.config_tab, "Output configuration")
 
     def send_isotp_config(self, payload):
         self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
+
+    def send_reset_device(self):
+        self.tx_queue.put({"cmd": "RESET_DEVICE"})
 
     def send_selected_frame(self):
         tx_id_text = self.combo_tx_id.currentText()

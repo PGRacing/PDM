@@ -33,6 +33,13 @@ ISOTP_GATEWAY_FRAMES = (
     bytes((0x52, 0xA8, 0xB7, 0x20, 0xAD, 0xAD, 0xFF, 0xF0)),
 )
 
+RESET_DEVICE_ID = 0x4AF
+RESET_DEVICE_FRAMES = (
+    bytes((0xAE, 0x3A, 0x3E, 0x2B, 0x07, 0x17, 0xC8, 0x4C)),
+    bytes((0x2D, 0x72, 0x88, 0x04, 0x9F, 0xEA, 0xDA, 0xC7)),
+    bytes((0x44, 0x8E, 0x0E, 0xD9, 0x56, 0xA1, 0x35, 0x0F)),
+)
+
 
 def _pipe_progress(pipe_conn, progress, status, done=False, error=None):
     packet = {"isotp_progress": int(progress), "isotp_status": status}
@@ -130,6 +137,21 @@ def _send_isotp_config(can_bus, pipe_conn, payload):
         _pipe_progress(pipe_conn, 0, "Transfer failed", done=True, error=str(exc))
 
 
+def _send_fixed_frames(can_bus, pipe_conn, arbitration_id, frames, status_prefix="Sending frames"):
+    try:
+        total_steps = len(frames)
+        _pipe_progress(pipe_conn, 0, status_prefix)
+        for index, frame_data in enumerate(frames, start=1):
+            can_bus.send(Message(arbitration_id=arbitration_id, data=frame_data, is_extended_id=False))
+            percent = int(index * 100 / total_steps)
+            _pipe_progress(pipe_conn, percent, f"Frame {index}/{total_steps}")
+            time.sleep(ISOTP_FRAME_DELAY_S)
+
+        _pipe_progress(pipe_conn, 100, "Reset command sent", done=True)
+    except Exception as exc:
+        _pipe_progress(pipe_conn, 0, "Reset failed", done=True, error=str(exc))
+
+
 def can_isolated_process(pipe_conn, tx_queue):
     try:
         can_bus = can.interface.Bus(
@@ -197,6 +219,8 @@ def can_isolated_process(pipe_conn, tx_queue):
                     pipe_conn.send({"error": f"TX err: {exc}"})
             elif task.get("cmd") == "ISOTP_SEND":
                 _send_isotp_config(can_bus, pipe_conn, task["payload"])
+            elif task.get("cmd") == "RESET_DEVICE":
+                _send_fixed_frames(can_bus, pipe_conn, RESET_DEVICE_ID, RESET_DEVICE_FRAMES, "Sending reset frames")
 
         if not acquiring:
             time.sleep(0.02)

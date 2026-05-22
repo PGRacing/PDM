@@ -174,8 +174,29 @@ ACTION_BUTTON_STYLE = (
     "QPushButton { padding: 6px 12px; }"
 )
 
+
+class CtrlClickButton(QPushButton):
+    ctrlClicked = pyqtSignal()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton and event.modifiers() & Qt.ControlModifier:
+            super().mousePressEvent(event)
+            return
+        event.ignore()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton and event.modifiers() & Qt.ControlModifier:
+            super().mouseReleaseEvent(event)
+            self.ctrlClicked.emit()
+            return
+        event.ignore()
+
 SEND_DEVICE_BUTTON_STYLE = (
     "QPushButton { padding: 6px 12px; background-color: #09BC8A; color: #2D2D2D; border: none; border-radius: 4px; font-weight: bold; }"
+)
+
+RESET_BUTTON_STYLE = (
+    "QPushButton { padding: 6px 12px; background-color: #e30026; color: #f5f5f5; border: none; border-radius: 4px; font-weight: bold; }"
 )
 
 
@@ -489,6 +510,7 @@ class ChannelConfigPage(QWidget):
 
 class ConfigTab(QWidget):
     send_binary_requested = pyqtSignal(object)
+    send_reset_requested = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -528,6 +550,12 @@ class ConfigTab(QWidget):
         self.btn_send_binary.clicked.connect(self._send_binary)
         self.btn_send_binary.setStyleSheet(SEND_DEVICE_BUTTON_STYLE)
         title_row.addWidget(self.btn_send_binary)
+
+        self.btn_reset_device = CtrlClickButton("Reset device")
+        self.btn_reset_device.setToolTip("Works only with Ctrl + Click")
+        self.btn_reset_device.ctrlClicked.connect(self._send_reset)
+        self.btn_reset_device.setStyleSheet(RESET_BUTTON_STYLE)
+        title_row.addWidget(self.btn_reset_device)
         layout.addLayout(title_row)
 
         # subtitle = QLabel(
@@ -562,6 +590,7 @@ class ConfigTab(QWidget):
         transfer_row.setContentsMargins(0, 0, 0, 0)
         transfer_row.setSpacing(8)
         self.lbl_send_status = QLabel("Idle")
+        self.lbl_send_status.setStyleSheet("font-weight: bold; background-color: none; color: #E0E0E0;")
         self.lbl_send_status.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         transfer_row.addWidget(self.lbl_send_status)
         self.progress_send = QProgressBar()
@@ -593,12 +622,17 @@ class ConfigTab(QWidget):
         self.set_isotp_state(0, "Preparing transfer", busy=True)
         self.send_binary_requested.emit(self._build_binary_payload())
 
+    def _send_reset(self):
+        self.set_isotp_state(0, "Preparing reset", busy=True)
+        self.send_reset_requested.emit()
+
     def set_isotp_state(self, progress, status=None, busy=None):
         self.progress_send.setValue(max(0, min(100, int(progress))))
         if status is not None:
             self.lbl_send_status.setText(status)
         if busy is not None:
             self.btn_send_binary.setEnabled(not busy)
+            self.btn_reset_device.setEnabled(not busy)
 
     def load_json(self):
         file_path, _ = QFileDialog.getOpenFileName(

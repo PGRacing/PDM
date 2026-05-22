@@ -70,6 +70,7 @@ class PlotPanel(QWidget):
         self.graph_container = pg.GraphicsLayoutWidget()
         self.graph_container.setBackground("#1E1E1E")
         plots_layout.addWidget(self.graph_container)
+        self.graph_container.setToolTip("Click Ctrl + Space to pause the charts")
         root_layout.addWidget(plots_panel, stretch=3)
 
         self.plot_v = self.graph_container.addPlot(row=0, col=0)

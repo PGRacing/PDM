@@ -1,0 +1,532 @@
+{
+  "channels": [
+    {
+      "id": 0,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "-",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 1,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "-",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "ECU",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 4,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 3,
+        "retryTimerInterval": 1000,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 10000,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "FAN1",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 4,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 3,
+        "retryTimerInterval": 1000,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 10000,
+          "allowInrush": true,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 30000,
+          "inrushTimeThreshold": 2000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "COILS",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 4,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 6,
+        "retryTimerInterval": 1000,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 15000,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "PUMP",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 4,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 6,
+        "retryTimerInterval": 1000,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 10000,
+          "allowInrush": true,
+          "inrushWindowFromStart": 5000,
+          "inrushThreshold": 25000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "INJECTOR",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 4,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 3,
+        "retryTimerInterval": 1000,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 10000,
+          "allowInrush": true,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 30000,
+          "inrushTimeThreshold": 2000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": 0,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "SERVO",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 4,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 6,
+        "retryTimerInterval": 2000,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 15000,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": 1,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "ADD 1",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": 1,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 1,
+      "name": "ADD 2",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": 1,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 2,
+      "name": "ADD 3",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": 1,
+      "mode": 1,
+      "spocId": 0,
+      "spocChId": 3,
+      "name": "ADD 4",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": 1,
+      "mode": 1,
+      "spocId": 1,
+      "spocChId": 0,
+      "name": "ADD 5",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": 1,
+      "mode": 1,
+      "spocId": 1,
+      "spocChId": 1,
+      "name": "ADD 6",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 14,
+      "type": 1,
+      "mode": 1,
+      "spocId": 1,
+      "spocChId": 2,
+      "name": "ADD 7",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    },
+    {
+      "id": 15,
+      "type": 1,
+      "mode": 1,
+      "spocId": 1,
+      "spocChId": 3,
+      "name": "EGT2CAN",
+      "batch": 0,
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 0,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": false,
+          "nominalThreshold": 0,
+          "allowInrush": false,
+          "inrushWindowFromStart": 0,
+          "inrushThreshold": 0,
+          "inrushTimeThreshold": 0
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 0,
+          "nominalCurrentSq": 0,
+          "timeThreshold": 0,
+          "i2tThreshold": 0
+        }
+      }
+    }
+  ]
+}
