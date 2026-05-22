@@ -1,0 +1,3 @@
+[submodule "CODE/PDMS/Middlewares/Third_Party/isotp-c"]
+	path = CODE/PDMS/Middlewares/Third_Party/isotp-c
+	url = https://github.com/rcp444/isotp-c
