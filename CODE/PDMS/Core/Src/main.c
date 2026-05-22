@@ -110,7 +110,7 @@ int main(void)
   MX_ADC3_Init();
   MX_SPI2_Init();
   MX_TIM2_Init();
-  //MX_IWDG_Init();
+  // MX_IWDG_Init();
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
  

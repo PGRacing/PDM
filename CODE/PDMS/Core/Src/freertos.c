@@ -82,7 +82,7 @@ osThreadId_t adc1TaskHandle;
 const osThreadAttr_t adc1Task_attributes = {
   .name = "adc1Task",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityRealtime, // Task that executes diagnostic functions
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for testTask */
 osThreadId_t testTaskHandle;
@@ -124,7 +124,7 @@ osThreadId_t adc2TaskHandle;
 const osThreadAttr_t adc2Task_attributes = {
   .name = "adc2Task",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal1, // Task that executes physical input assessment functions
+  .priority = (osPriority_t) osPriorityAboveNormal1,
 };
 /* Definitions for argbTask */
 osThreadId_t argbTaskHandle;
@@ -132,6 +132,13 @@ const osThreadAttr_t argbTask_attributes = {
   .name = "argbTask",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for isotpTask */
+osThreadId_t isotpTaskHandle;
+const osThreadAttr_t isotpTask_attributes = {
+  .name = "isotpTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal3,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -151,6 +158,7 @@ extern void spoc2CurrTaskStart(void *argument);
 extern void telemTaskStart(void *argument);
 extern void adc2TaskStart(void *argument);
 extern void argbTaskStart(void *argument);
+extern void isotpTaskStart(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -222,6 +230,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of argbTask */
   argbTaskHandle = osThreadNew(argbTaskStart, NULL, &argbTask_attributes);
 
+  /* creation of isotpTask */
+  isotpTaskHandle = osThreadNew(isotpTaskStart, NULL, &isotpTask_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -288,11 +299,41 @@ void RTOS_SoftLimpHomeMode(void)
   vTaskSuspend(adc2TaskHandle);
   vTaskSuspend(pdmTaskHandle);
   vTaskSuspend(statusTaskHandle);
+  vTaskSuspend(isotpTaskHandle);
 }
 
 void RTOS_HardLimpHomeMode(void)
 {
   vTaskSuspendAll();
+}
+
+void RTOS_SuspendTelemetry(void)
+{
+  vTaskSuspend(telemTaskHandle);
+}
+
+void RTOS_ResumeTelemetry(void)
+{
+  vTaskResume(telemTaskHandle);
+}
+
+void RTOS_SuspendForConfigChange(void)
+{
+  vTaskSuspend(spoc2CurrTaskHandle);
+  vTaskSuspend(adc1TaskHandle);
+  vTaskSuspend(adc2TaskHandle);
+  vTaskSuspend(pdmTaskHandle);
+  vTaskSuspend(telemTaskHandle);
+}
+
+void RTOS_ResumeAfterConfigChange(void)
+{
+  vTaskResume(spoc2CurrTaskHandle);
+  vTaskResume(adc1TaskHandle);
+  vTaskResume(adc2TaskHandle);
+  vTaskResume(pdmTaskHandle);
+  vTaskResume(telemTaskHandle);
+
 }
 /* USER CODE END Application */
 

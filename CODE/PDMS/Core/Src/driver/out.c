@@ -319,9 +319,6 @@ T_OUT_CFG outsCfg[OUT_ID_MAX] =
 };
 #elif BOARD_VER == PDMS_V4_3
 
-volatile T_OUT_CFG (*volatile configPtrA)[16] = (T_OUT_CFG (*)[16])0x080E0000; // Pointing to CONFIGB1 section in flash
-volatile T_OUT_CFG (*volatile configPtrB)[16] = (T_OUT_CFG (*)[16])0x080F0000; // Pointing to CONFIGB1 section in flash
-
 /// @brief Main output channels config [1..16]
 T_OUT_CFG outsCfg[OUT_ID_MAX] =
 {
@@ -1725,6 +1722,29 @@ T_OUT_MODE OUT_GetMode(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETCFGPTR(id)->mode;
+}
+
+void OUT_ResetRegistersAll(void)
+{
+  for(uint8_t id = 0; id < OUT_ID_MAX; id++)
+  {
+    T_OUT_REG* reg = OUT_GETREGPTR(id);
+    ASSERT(reg);
+    reg->state = OUT_STATE_OFF;
+    reg->status = OUT_STATUS_OK;
+    reg->currentMA = 0;
+    reg->voltageMV = 0;
+    reg->emaCurrentMA = 0;
+    reg->emaVoltageMV = 0;
+    reg->safety.inRetrySequence = FALSE;
+    reg->safety.errRetryCounter = 0;
+    reg->safety.retryTimerCounter = 0;
+    reg->safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
+    reg->safety.socReg.currentThreshold = 0;
+    reg->safety.socReg.timeInPreInrush = 0;
+    reg->safety.socReg.inrushTripCounter = 0;
+    reg->safety.i2tReg.i2tSum = 0;
+  }
 }
 
 

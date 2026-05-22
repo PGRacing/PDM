@@ -159,10 +159,10 @@ typedef struct _T_OUT_REG
 }T_OUT_REG;
 
 // Main outputs config
-extern T_OUT_CFG outsCfg[];
+extern T_OUT_CFG outsCfg[OUT_ID_MAX];
 
 // Main outputs status
-extern T_OUT_REG outsReg[];
+extern T_OUT_REG outsReg[OUT_ID_MAX];
 
 /// @brief Change mode of selected output channel
 /// @param id Output channel id [1..16] T_OUT_ID
@@ -255,6 +255,8 @@ T_OUT_MODE OUT_GetMode(T_OUT_ID id);
 /// @brief Perform output handling of all SPOC type elements
 void OUT_DIAG_AllSpoc(void);
 
+/// @brief Reset all output channel registers to default values
+void OUT_ResetRegistersAll(void);
 
 
 

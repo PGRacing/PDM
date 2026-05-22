@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "stm32l496xx.h"
 
 #define PDMS_V4_2 42

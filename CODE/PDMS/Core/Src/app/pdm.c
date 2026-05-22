@@ -7,6 +7,8 @@
 #include "cmsis_os2.h"
 #include "task.h"
 #include "tim.h"
+#include "app_isotp.h"
+#include "config.h"
 
 /* HAL, MX includes */
 #include "iwdg.h"
@@ -132,7 +134,12 @@ void PDM_Init(void)
     /* ===== CONFIG LOAD ===== */
     // TODO Load settings from flash to respective flash structs(rn mockup)
     // TODO Add status return function for all initializers;
-
+    // LOG_INFO("PDM:: Board initialized successfully");
+    // LOG_INFO("PDM::Flash test");
+    // int32_t flashTestRes = BSP_FLASH_TestProc();
+    // LOG_VAR(flashTestRes);
+    
+    CONFIG_LoadConfig(CONFIG_SELECTION_A);
     /* ===== PERIPHERAL INIT ===== */
 
     // Initialize ADC acquisition handler
@@ -153,6 +160,9 @@ void PDM_Init(void)
 
     // Iniitialize SPOC2 External outputs (all outputs disabled)
     SPOC2_Init();
+
+    // Intitialize ISO-TP module
+    APP_ISOTP_Init();
 
     // Enable debug DWT clock
     DEBUG_ARM_DWT_INIT;
@@ -197,9 +207,6 @@ void PDM_Init(void)
     //         break;
     //     }
     // }
-
-    LOG_INFO("PDM:: Board initialized successfully");
-    //LOG_VAR(lastBattVoltage);
 
     // Enable watchdog
     MX_IWDG_Init();

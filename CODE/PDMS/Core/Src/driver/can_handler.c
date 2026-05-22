@@ -5,6 +5,7 @@
 #include "string.h"
 #include "semphr.h"
 #include "bsp_caninput.h"
+#include "app_isotp.h"
 #include "tim.h"
 
 T_CANH_CFG cansCfg[CANH_INSTANCE_MAX] = 
@@ -85,6 +86,9 @@ typedef enum
     CANH_ID_NAMES           = 0x00D, // Channel of current name,
     CANH_ID_PHY_INPUTS_1_4  = 0x00E, // Physical inputs 1-4
     CANH_ID_PHY_INPUTS_5_8  = 0x00F, // Physical inputs 5-8
+    CANH_ID_ISOTP_ENTRANCE =  0x050, // Entrance gateway for ISO-TP communication mode
+    CANH_ID_ISOTP_TX       =  0x051, // CAN ID used for ISO-TP transmission
+    CANH_ID_ISOTP_RX       =  0x052, // CAN ID used for ISO-TP reception
 }T_CANH_ID;
 
 /// @brief [pnpTxMsg] Message sent on device power-up
@@ -704,6 +708,15 @@ void can2TaskStart(void *argument)
             {
                 /* Process received package */
                 BSP_CANIN_DispatchFrame(CANH_INSTANCE_2, rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
+                
+                if(rxPkg.header.StdId == CANH_ID_ISOTP_ENTRANCE + cansCfg[CANH_INSTANCE_2].baseId)
+                {
+                    APP_ISOTP_EntranceGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
+                }
+                else if(rxPkg.header.StdId == CANH_ID_ISOTP_RX + cansCfg[CANH_INSTANCE_2].baseId)
+                {
+                    APP_ISOTP_DispatchFrame(rxPkg.data.raw, rxPkg.header.DLC);
+                }
             }
         }
 
