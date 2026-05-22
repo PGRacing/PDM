@@ -80,6 +80,8 @@ TRACK_COLORS = [
 
 
 def get_row_colors(state, status):
+    if state == 2:
+        return "#4A1F1F", "#FF8A80"
     if status == 0 and state == 0:
         return "#242424", "#A0A0A0"
     if status == 0:

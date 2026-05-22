@@ -78,13 +78,13 @@ class PlotPanel(QWidget):
         self.plot_v.addLegend(offset=(10, 10))
         self.plot_i.addLegend(offset=(10, 10))
 
-        self.plot_v.setTitle("Voltage Tracks History", color="#BB86FC", size="11pt")
+        self.plot_v.setTitle("Voltage", color="#BB86FC", size="11pt")
         self.plot_v.setLabel("left", "Voltage", units="V")
         self.plot_v.showGrid(x=True, y=True, alpha=0.15)
         self.plot_v.setMouseEnabled(x=True, y=True)
         self.plot_v.getViewBox().setMouseMode(pg.ViewBox.RectMode)
 
-        self.plot_i.setTitle("Current Consumption Profiler", color="#BB86FC", size="11pt")
+        self.plot_i.setTitle("Current", color="#BB86FC", size="11pt")
         self.plot_i.setLabel("left", "Current", units="A")
         self.plot_i.showGrid(x=True, y=True, alpha=0.15)
         self.plot_i.setMouseEnabled(x=True, y=True)

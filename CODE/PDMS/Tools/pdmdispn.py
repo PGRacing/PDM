@@ -45,8 +45,8 @@ CHECKBOX_TICK_PATH = (Path(__file__).resolve().parent / "assets" / "checkbox-tic
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("PDM CAN Dashboard")
-        self.resize(1920, 1400)
+        self.setWindowTitle("PDMS Control App")
+        self.resize(1920, 1080)
 
         self.pipe_ui, self.pipe_worker = multiprocessing.Pipe(duplex=False)
         self.tx_queue = multiprocessing.Queue()
@@ -64,6 +64,7 @@ class MainWindow(QMainWindow):
         self.latest_phy = [0] * PHY_INPUT_COUNT
         self.latest_frames = []
         self.plotting_enabled = True
+        self.config_tab = None
 
         self.init_ui()
 
@@ -166,7 +167,12 @@ class MainWindow(QMainWindow):
         dashboard_layout.addWidget(self.plot_panel, stretch=3)
 
         tabs.addTab(dashboard, "Dashboard")
-        tabs.addTab(ConfigTab(), "Configuration")
+        self.config_tab = ConfigTab()
+        self.config_tab.send_binary_requested.connect(self.send_isotp_config)
+        tabs.addTab(self.config_tab, "Configuration")
+
+    def send_isotp_config(self, payload):
+        self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
 
     def send_selected_frame(self):
         tx_id_text = self.combo_tx_id.currentText()
@@ -190,7 +196,19 @@ class MainWindow(QMainWindow):
         while self.pipe_ui.poll():
             try:
                 packet = self.pipe_ui.recv()
+                if "isotp_progress" in packet:
+                    if self.config_tab is not None:
+                        self.config_tab.set_isotp_state(
+                            packet.get("isotp_progress", 0),
+                            packet.get("isotp_status", ""),
+                            busy=not packet.get("isotp_done", False),
+                        )
+                        if packet.get("isotp_error"):
+                            self.config_tab.set_isotp_state(0, f"Error: {packet['isotp_error']}", busy=False)
+                    continue
                 if "error" in packet:
+                    if self.config_tab is not None:
+                        self.config_tab.set_isotp_state(0, f"Error: {packet['error']}", busy=False)
                     continue
 
                 self.latest_sys = packet["sys"]

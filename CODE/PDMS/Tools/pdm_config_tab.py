@@ -2,7 +2,7 @@ import json
 import struct
 from pathlib import Path
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
+    QProgressBar,
     QScrollArea,
     QSpinBox,
     QTabWidget,
@@ -40,6 +41,8 @@ OUT_ERR_BEH_NO = 0x00
 OUT_ERR_BEH_LATCH = 0x01
 OUT_ERR_BEH_TIME_LATCH = 0x03
 OUT_ERR_BEH_RETRY = 0x04
+
+UINT32_MAX = 0xFFFFFFFF
 
 SPOC2_ID_1 = 0x00
 SPOC2_ID_2 = 0x01
@@ -160,6 +163,22 @@ PAGE_LABEL_STYLE = (
     "padding: 4px 6px;}"
 )
 
+TRANSFER_GROUP_STYLE = (
+    "QGroupBox { color: #E0E0E0; font-weight: bold; border: 1px solid #444444; border-radius: 6px; margin-top: 8px; padding-top: 12px; }"
+    "QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }"
+    "QProgressBar { background-color: #2D2D2D; border: 1px solid #444444; border-radius: 4px; color: #E0E0E0; text-align: center; height: 18px; }"
+    "QProgressBar::chunk { background-color: #BB86FC; border-radius: 3px; }"
+)
+
+ACTION_BUTTON_STYLE = (
+    "QPushButton { padding: 6px 12px; }"
+)
+
+SEND_DEVICE_BUTTON_STYLE = (
+    "QPushButton { padding: 6px 12px; background-color: #09BC8A; color: #2D2D2D; border: none; border-radius: 4px; font-weight: bold; }"
+)
+
+
 
 class ChannelConfigPage(QWidget):
     def __init__(self, channel_index, parent=None):
@@ -230,11 +249,24 @@ class ChannelConfigPage(QWidget):
         self.check_allow_inrush = QCheckBox()
         self.check_allow_inrush.setStyleSheet(CHECKBOX_STYLE)
         self.edit_inrush_window_from_start = _make_spinbox(0, 2147483647, 0, " ms")
+        self.check_inrush_window_infinite = QCheckBox("Infinite")
+        self.check_inrush_window_infinite.setStyleSheet(CHECKBOX_STYLE)
+        self.label_inrush_window_infinite = QLabel("∞")
+        self.label_inrush_window_infinite.setStyleSheet("QLabel { color: #E0E0E0; font-size: 16px; font-weight: bold; }")
+        self.label_inrush_window_infinite.hide()
+        inrush_window_row = QWidget()
+        inrush_window_layout = QHBoxLayout(inrush_window_row)
+        inrush_window_layout.setContentsMargins(0, 0, 0, 0)
+        inrush_window_layout.setSpacing(8)
+        inrush_window_layout.addWidget(self.edit_inrush_window_from_start)
+        inrush_window_layout.addWidget(self.check_inrush_window_infinite)
+        inrush_window_layout.addWidget(self.label_inrush_window_infinite)
+        inrush_window_layout.addStretch(1)
         self.edit_inrush_threshold = _make_spinbox(0, 65535, 0, " mA", 100)
         self.edit_inrush_time_threshold = _make_spinbox(0, 2147483647, 0, " ms")
         soc_form.addRow(FIELD_LABELS["soc"]["nominal_threshold"], self.edit_nominal_threshold)
         soc_form.addRow(FIELD_LABELS["soc"]["allow_inrush"], self.check_allow_inrush)
-        soc_form.addRow(FIELD_LABELS["soc"]["inrush_window_from_start"], self.edit_inrush_window_from_start)
+        soc_form.addRow(FIELD_LABELS["soc"]["inrush_window_from_start"], inrush_window_row)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_threshold"], self.edit_inrush_threshold)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_time_threshold"], self.edit_inrush_time_threshold)
         outer.addWidget(self.soc_box)
@@ -261,10 +293,12 @@ class ChannelConfigPage(QWidget):
         self.i2t_enable.toggled.connect(self._sync_i2t_state)
         self.edit_nominal_current.valueChanged.connect(self._update_i2t_fields)
         self.edit_time_threshold.valueChanged.connect(self._update_i2t_fields)
+        self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
 
         self._apply_spoc_mapping()
         self._sync_soc_state()
         self._sync_i2t_state()
+        self._sync_inrush_window_state()
         self._update_i2t_fields()
 
     def _apply_spoc_mapping(self):
@@ -293,12 +327,15 @@ class ChannelConfigPage(QWidget):
             self.edit_nominal_threshold,
             self.check_allow_inrush,
             self.edit_inrush_window_from_start,
+            self.check_inrush_window_infinite,
+            self.label_inrush_window_infinite,
             self.edit_inrush_threshold,
             self.edit_inrush_time_threshold,
         ):
             widget.setEnabled(enabled)
             widget.setStyleSheet("" if enabled else "color: #222222;")
         self.soc_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
+        self._sync_inrush_window_state()
 
     def _sync_i2t_state(self):
         enabled = self.i2t_enable.isChecked()
@@ -311,6 +348,26 @@ class ChannelConfigPage(QWidget):
             widget.setEnabled(enabled)
             widget.setStyleSheet("" if enabled else "color: #222222;")
         self.i2t_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
+
+    def _sync_inrush_window_state(self):
+        infinite = self.check_inrush_window_infinite.isChecked()
+        self.edit_inrush_window_from_start.setVisible(not infinite)
+        self.label_inrush_window_infinite.setVisible(infinite)
+        self.edit_inrush_window_from_start.setEnabled(self.soc_enable.isChecked() and not infinite)
+        self.check_inrush_window_infinite.setEnabled(self.soc_enable.isChecked())
+
+    def _set_inrush_window_from_start(self, value):
+        value = int(value)
+        if value >= UINT32_MAX:
+            self.check_inrush_window_infinite.setChecked(True)
+        else:
+            self.check_inrush_window_infinite.setChecked(False)
+            self.edit_inrush_window_from_start.setValue(max(0, min(2147483647, value)))
+
+    def _get_inrush_window_from_start(self):
+        if self.check_inrush_window_infinite.isChecked():
+            return UINT32_MAX
+        return self.edit_inrush_window_from_start.value()
 
     def _update_i2t_fields(self, *args):
         nominal_current = self.edit_nominal_current.value()
@@ -343,7 +400,7 @@ class ChannelConfigPage(QWidget):
         self.soc_enable.setChecked(bool(soc.get("useSoc", self.soc_enable.isChecked())))
         self.edit_nominal_threshold.setValue(int(soc.get("nominalThreshold", self.edit_nominal_threshold.value())))
         self.check_allow_inrush.setChecked(bool(soc.get("allowInrush", self.check_allow_inrush.isChecked())))
-        self.edit_inrush_window_from_start.setValue(int(soc.get("inrushWindowFromStart", self.edit_inrush_window_from_start.value())))
+        self._set_inrush_window_from_start(soc.get("inrushWindowFromStart", self._get_inrush_window_from_start()))
         self.edit_inrush_threshold.setValue(int(soc.get("inrushThreshold", self.edit_inrush_threshold.value())))
         self.edit_inrush_time_threshold.setValue(int(soc.get("inrushTimeThreshold", self.edit_inrush_time_threshold.value())))
 
@@ -376,7 +433,7 @@ class ChannelConfigPage(QWidget):
             1 if self.soc_enable.isChecked() else 0,  # use_soc
             self.edit_nominal_threshold.value(),  # nominal_threshold
             1 if self.check_allow_inrush.isChecked() else 0,  # allow_inrush
-            self.edit_inrush_window_from_start.value(),  # inrush_window_from_start
+            self._get_inrush_window_from_start(),  # inrush_window_from_start
             self.edit_inrush_threshold.value(),  # inrush_threshold
             self.edit_inrush_time_threshold.value(),  # inrush_time_threshold
             1 if self.i2t_enable.isChecked() else 0,  # use_i2t
@@ -415,7 +472,7 @@ class ChannelConfigPage(QWidget):
                     "useSoc": self.soc_enable.isChecked(),
                     "nominalThreshold": self.edit_nominal_threshold.value(),
                     "allowInrush": self.check_allow_inrush.isChecked(),
-                    "inrushWindowFromStart": self.edit_inrush_window_from_start.value(),
+                    "inrushWindowFromStart": self._get_inrush_window_from_start(),
                     "inrushThreshold": self.edit_inrush_threshold.value(),
                     "inrushTimeThreshold": self.edit_inrush_time_threshold.value(),
                 },
@@ -431,6 +488,8 @@ class ChannelConfigPage(QWidget):
 
 
 class ConfigTab(QWidget):
+    send_binary_requested = pyqtSignal(object)
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -439,27 +498,44 @@ class ConfigTab(QWidget):
         layout.setSpacing(8)
 
         title_row = QHBoxLayout()
-        title_label = QLabel("Hierarchical output channel configuration")
+        title_row.setContentsMargins(12, 12, 12, 12)
+        title_label = QLabel("Output channel configuration")
         title_label.setStyleSheet("font-size: 16px; font-weight: bold;")
         title_row.addWidget(title_label)
         title_row.addStretch(1)
-        self.btn_load = QPushButton("Load JSON")
-        self.btn_load.clicked.connect(self.load_json)
-        title_row.addWidget(self.btn_load)
-        self.btn_export = QPushButton("Export JSON")
-        self.btn_export.clicked.connect(self.export_json)
-        title_row.addWidget(self.btn_export)
+
+        self.btn_load_binary = QPushButton("Load binary")
+        self.btn_load_binary.clicked.connect(self.load_binary)
+        self.btn_load_binary.setStyleSheet(ACTION_BUTTON_STYLE)
+        title_row.addWidget(self.btn_load_binary)
+
         self.btn_export_binary = QPushButton("Export binary")
         self.btn_export_binary.clicked.connect(self.export_binary)
+        self.btn_export_binary.setStyleSheet(ACTION_BUTTON_STYLE)
         title_row.addWidget(self.btn_export_binary)
+
+        self.btn_load = QPushButton("Load JSON")
+        self.btn_load.clicked.connect(self.load_json)
+        self.btn_load.setStyleSheet(ACTION_BUTTON_STYLE)
+        title_row.addWidget(self.btn_load)
+
+        self.btn_export = QPushButton("Export JSON")
+        self.btn_export.clicked.connect(self.export_json)
+        self.btn_export.setStyleSheet(ACTION_BUTTON_STYLE)
+        title_row.addWidget(self.btn_export)
+
+        self.btn_send_binary = QPushButton("Send to device")
+        self.btn_send_binary.clicked.connect(self._send_binary)
+        self.btn_send_binary.setStyleSheet(SEND_DEVICE_BUTTON_STYLE)
+        title_row.addWidget(self.btn_send_binary)
         layout.addLayout(title_row)
 
-        subtitle = QLabel(
-            "One tab per channel. Type is display-only and derived from the channel number; channels 1-8 export spoc fields as 0. "
-            "Use Load JSON to restore a saved configuration or Export binary for a packed little-endian payload."
-        )
-        subtitle.setWordWrap(True)
-        layout.addWidget(subtitle)
+        # subtitle = QLabel(
+        #     "One tab per channel. Type is display-only and derived from the channel number; channels 1-8 export spoc fields as 0. "
+        #     "Use Load JSON to restore a saved configuration or Export binary for a packed little-endian payload."
+        # )
+        # subtitle.setWordWrap(True)
+        # layout.addWidget(subtitle)
 
         self.tabs = QTabWidget()
         self.tabs.setMovable(True)
@@ -475,6 +551,27 @@ class ConfigTab(QWidget):
             scroll.setWidget(page)
             self.tabs.addTab(scroll, f"Channel {index + 1}")
         layout.addWidget(self.tabs, 1)
+
+        transfer_box = QGroupBox("Transfer status")
+        transfer_box.setStyleSheet(TRANSFER_GROUP_STYLE)
+        transfer_layout = QVBoxLayout(transfer_box)
+        transfer_layout.setContentsMargins(12, 12, 12, 12)
+        transfer_layout.setSpacing(6)
+
+        transfer_row = QHBoxLayout()
+        transfer_row.setContentsMargins(0, 0, 0, 0)
+        transfer_row.setSpacing(8)
+        self.lbl_send_status = QLabel("Idle")
+        self.lbl_send_status.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        transfer_row.addWidget(self.lbl_send_status)
+        self.progress_send = QProgressBar()
+        self.progress_send.setRange(0, 100)
+        self.progress_send.setValue(0)
+        self.progress_send.setTextVisible(True)
+        self.progress_send.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        transfer_row.addWidget(self.progress_send, 1)
+        transfer_layout.addLayout(transfer_row)
+        layout.addWidget(transfer_box)
 
     def collect_config(self):
         return {"channels": [widget.to_dict() for widget in self.channel_widgets]}
@@ -492,6 +589,17 @@ class ConfigTab(QWidget):
         # STM32 expects a raw array of packed channel structs with no file header.
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)
 
+    def _send_binary(self):
+        self.set_isotp_state(0, "Preparing transfer", busy=True)
+        self.send_binary_requested.emit(self._build_binary_payload())
+
+    def set_isotp_state(self, progress, status=None, busy=None):
+        self.progress_send.setValue(max(0, min(100, int(progress))))
+        if status is not None:
+            self.lbl_send_status.setText(status)
+        if busy is not None:
+            self.btn_send_binary.setEnabled(not busy)
+
     def load_json(self):
         file_path, _ = QFileDialog.getOpenFileName(
             self,
@@ -508,6 +616,117 @@ class ConfigTab(QWidget):
             self.apply_config(loaded)
         except Exception as exc:
             QMessageBox.critical(self, "Load failed", f"Could not load JSON: {exc}")
+
+    def load_binary(self):
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Load packed STM32 binary",
+            str(CONFIG_DIR),
+            "Binary Files (*.bin);;All Files (*)",
+        )
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, "rb") as handle:
+                data = handle.read()
+
+            # Accept either raw array of records or optional header PDMB + version
+            payload = None
+            expected_size = CHANNEL_COUNT * BINARY_RECORD_SIZE
+            if len(data) == expected_size:
+                payload = data
+            elif len(data) >= 5 and data[:4] == BINARY_MAGIC:
+                # header present: 4-byte magic + 1-byte version
+                payload = data[5:]
+                if len(payload) != expected_size:
+                    raise ValueError("Binary header found but payload size mismatch")
+            elif len(data) % BINARY_RECORD_SIZE == 0 and len(data) >= expected_size:
+                # file may contain multiple concatenated records; take first CHANNEL_COUNT
+                payload = data[:expected_size]
+            else:
+                raise ValueError(f"Invalid binary size: {len(data)} bytes")
+
+            def _clamp(v, lo, hi):
+                try:
+                    iv = int(v)
+                except Exception:
+                    return lo
+                if iv < lo:
+                    return lo
+                if iv > hi:
+                    return hi
+                return iv
+
+            channels = []
+            for i in range(CHANNEL_COUNT):
+                start = i * BINARY_RECORD_SIZE
+                rec = payload[start : start + BINARY_RECORD_SIZE]
+                tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
+                (
+                    ch_id,
+                    type_v,
+                    mode_v,
+                    spoc_id,
+                    spoc_ch,
+                    name_bytes,
+                    batch,
+                    after_err_beh,
+                    after_err_latch_time,
+                    act_on_safety,
+                    err_retry_threshold,
+                    retry_timer_interval,
+                    use_soc,
+                    nominal_threshold,
+                    allow_inrush,
+                    inrush_window_from_start,
+                    inrush_threshold,
+                    inrush_time_threshold,
+                    use_i2t,
+                    nominal_current,
+                    nominal_current_sq,
+                    time_threshold,
+                    i2t_threshold,
+                ) = tup
+
+                name = name_bytes.split(b"\0", 1)[0].decode("utf-8", errors="replace")
+
+                # clamp values to safe ranges expected by UI widgets to avoid OverflowError
+                ch_dict = {
+                    "id": ch_id,
+                    "type": type_v,
+                    "mode": mode_v,
+                    "spocId": spoc_id,
+                    "spocChId": spoc_ch,
+                    "name": name,
+                    "batch": batch,
+                    "safety": {
+                        "afterErrorCfg": {"behavior": after_err_beh, "latchTime": _clamp(after_err_latch_time, 0, 2147483647)},
+                        "actOnSafety": bool(act_on_safety),
+                        "errRetryThreshold": _clamp(err_retry_threshold, 0, 65535),
+                        "retryTimerInterval": _clamp(retry_timer_interval, 0, 2147483647),
+                        "socCfg": {
+                            "useSoc": bool(use_soc),
+                            "nominalThreshold": _clamp(nominal_threshold, 0, 65535),
+                            "allowInrush": bool(allow_inrush),
+                            "inrushWindowFromStart": _clamp(inrush_window_from_start, 0, UINT32_MAX),
+                            "inrushThreshold": _clamp(inrush_threshold, 0, 2147483647),
+                            "inrushTimeThreshold": _clamp(inrush_time_threshold, 0, 2147483647),
+                        },
+                        "i2tCfg": {
+                            "useI2t": bool(use_i2t),
+                            "nominalCurrent": _clamp(nominal_current, 0, 65535),
+                            "nominalCurrentSq": _clamp(nominal_current_sq, 0, 2147483647),
+                            "timeThreshold": _clamp(time_threshold, 0, 2147483647),
+                            "i2tThreshold": _clamp(i2t_threshold, 0, 2147483647),
+                        },
+                    },
+                }
+                channels.append(ch_dict)
+
+            self.apply_config({"channels": channels})
+        except Exception as exc:
+            QMessageBox.critical(self, "Load failed", f"Could not load binary: {exc}")
 
     def export_binary(self):
         default_name = str(CONFIG_DIR / "pdm_output_config.bin")
