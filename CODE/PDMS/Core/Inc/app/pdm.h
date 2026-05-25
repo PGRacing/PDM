@@ -58,6 +58,7 @@ typedef struct
     uint32_t         uvloLoCounter;   // Undervoltage LO protection counter
     uint32_t         uvloHiCounter;   // Undervoltage HI protection counter
     osTimerId_t      uvloTimer;       // Undervoltage protection timer
+    uint32_t         resetGwCounter;  // Counter for reset gateway asks
 }T_PDM_REG;
 
 
@@ -66,6 +67,7 @@ extern volatile T_PDM_REG pdmReg;
 
 T_PDM_SYS_STATUS PDM_GetSysStatus(void);
 bool PDM_GetSafetyState(void);
+void PDM_CANResetGateway(uint32_t id, uint8_t* data, uint32_t size);
 
 // Platform start
 void PDM_Init(void);

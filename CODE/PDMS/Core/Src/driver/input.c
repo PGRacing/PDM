@@ -14,7 +14,7 @@
 /// MACRO FUNCTIONS
 
 // Physical inputs shouldn't be redefined
-T_IN_CFG inputsCfg[] =
+T_IN_CFG inputsCfg[IN_PHY_MAX + IN_CAN_MAX] =
 {
     [0] =
       {
@@ -166,7 +166,7 @@ bool IN_GetValueSchmitt(T_INPUT_ID id)
 /// @return Analog value in mV range [0, 5000]
 uint32_t IN_GetValueAnalog(T_INPUT_ID id)
 {
-  bool ret = 0;
+  uint32_t ret = 0;
 
   if( IN_GetMode(id) == IN_MODE_ANALOG )
   {

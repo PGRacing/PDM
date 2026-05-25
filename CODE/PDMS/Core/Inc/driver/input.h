@@ -5,6 +5,8 @@
 #include "bsp_phyinput.h"
 
 typedef uint16_t T_INPUT_ID;
+
+#pragma pack(push, 1)
 typedef enum
 {
     IN_MODE_UNUSED  = 0x00,
@@ -27,7 +29,9 @@ typedef struct _T_IN_CFG
     T_IN_MODE         mode;
 }T_IN_CFG;
 
-extern T_IN_CFG inputsCfg[];
+extern T_IN_CFG inputsCfg[IN_PHY_MAX + IN_CAN_MAX];
+
+#pragma pack(pop)
 
 bool IN_GetValueSchmitt(uint16_t id);
 

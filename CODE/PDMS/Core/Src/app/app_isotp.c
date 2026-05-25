@@ -7,21 +7,22 @@
 #include "semphr.h"
 #include "config.h"
 
+#define ISOTP_RX_BUFSIZE 4096
+#define ISOTP_TX_BUFSIZE 4096
+
+#define ISOTP_GATEWAY_PATTERN_SIZE 3
+
 SemaphoreHandle_t isotpAllowedSemaphore = NULL;
 
-static const uint8_t isotpGateway[3][8] = {{0xfd, 0xf8, 0x0a, 0xf9, 0x66, 0x56, 0x18, 0x78}, {0x80, 0x5a, 0xef, 0xf0, 0x01, 0xf0, 0x70, 0x48}, {0x52, 0xa8, 0xb7, 0x20, 0xad, 0xad, 0xff, 0xf0}};
+static const uint8_t isotpGatewayPattern[ISOTP_GATEWAY_PATTERN_SIZE][8] = {{0xfd, 0xf8, 0x0a, 0xf9, 0x66, 0x56, 0x18, 0x78}, 
+                                                  {0x80, 0x5a, 0xef, 0xf0, 0x01, 0xf0, 0x70, 0x48},
+                                                  {0x52, 0xa8, 0xb7, 0x20, 0xad, 0xad, 0xff, 0xf0}};
 static uint8_t isotpGatewayCounter = 0;
-
-#define DFU_RX_BUFSIZE 4096
-#define DFU_TX_BUFSIZE 4096
-
-volatile uint32_t debugCounter = 0;
 
 typedef struct _T_ISOTP_CONFIG
 {
     uint32_t isoTpEntrance;
     uint32_t isoTpTxId;
-    uint32_t isoTpRxId;
 }
 T_ISOTP_CONFIG;
 
@@ -35,9 +36,10 @@ typedef struct _T_ISOTP_HANDLE
     // uint32_t numberOfBlocks; //  Number of blocks
     // uint32_t expNumberOfBlocks; // Expected number of blocks
     IsoTpLink isoTpLink;
-    uint8_t isotpRecvBuf[DFU_RX_BUFSIZE];
-    uint8_t isotpSendBuf[DFU_TX_BUFSIZE];
-    uint8_t flashBuffer[DFU_RX_BUFSIZE];
+    uint8_t isotpRecvBuf[ISOTP_RX_BUFSIZE];
+    uint8_t isotpSendBuf[ISOTP_TX_BUFSIZE];
+    uint8_t flashBuffer[ISOTP_RX_BUFSIZE];
+    bool isTxInProgress;
     // uint8_t image[DFU_FLASH_BUFFER_SIZE];
     // bool isotpDownDone;
     //bool flashProgDone;
@@ -49,8 +51,7 @@ T_ISOTP_HANDLE isotpHandle = {0};
 // Should reflect in CANH configuration as base ID for correct CAN instance
 T_ISOTP_CONFIG isotpConfig = {
     .isoTpEntrance = 0x450, // entrance ID
-    .isoTpTxId = 0x451, // TX ID 
-    .isoTpRxId = 0x452  // Rx ID
+    .isoTpTxId = 0x051, // TX ID + Base ID 
 };
 
 extern void RTOS_SuspendTelemetry(void);
@@ -67,18 +68,18 @@ void APP_ISOTP_Init(void)
 /// @param id CAN ID of received frame
 /// @param data Data of received frame
 /// @param size Size of received frame
-/// @note This function should be called sequentially with frames defined in isotpGateway array, if sequence is correct then ISOTP task will be allowed to start and receive configuration data, otherwise sequence will be reset and ISOTP task will not start
-void APP_ISOTP_EntranceGateway(uint32_t id, uint8_t* data, uint32_t size)
+/// @note This function should be called sequentially with frames defined in isotpGatewayPattern array, if sequence is correct then ISOTP task will be allowed to start and receive configuration data, otherwise sequence will be reset and ISOTP task will not start
+void APP_ISOTP_CANEntranceGateway(uint32_t id, uint8_t* data, uint32_t size)
 {
     if(size != 8)
     {
         isotpGatewayCounter = 0;
         return;
     }
-    else if(size == 8 && 0 == memcmp(data, isotpGateway[isotpGatewayCounter], 8))
+    else if(size == 8 && 0 == memcmp(data, isotpGatewayPattern[isotpGatewayCounter], 8))
     {
         isotpGatewayCounter++;
-        if(isotpGatewayCounter >= 3)
+        if(isotpGatewayCounter >= ISOTP_GATEWAY_PATTERN_SIZE)
         {
             isotpGatewayCounter = 0;
             xSemaphoreGive(isotpAllowedSemaphore);
@@ -114,7 +115,17 @@ static void APP_ISOTP_RxReady(T_ISOTP_HANDLE* handle, uint32_t size)
 void APP_ISOTP_DispatchFrame(uint8_t*data, uint32_t dlc)
 {
     isotp_on_can_message(&isotpHandle.isoTpLink, data, dlc);
-    debugCounter++;
+}
+
+bool APP_ISOTP_Send(uint8_t* data, uint32_t size)
+{
+    int32_t ret = isotp_send(&isotpHandle.isoTpLink, data, size);
+    if (ISOTP_RET_OK == ret) {
+        isotpHandle.isTxInProgress = true;
+        return true;
+    }
+
+    return false;
 }
 
 void isotpTaskStart(void *argument)
@@ -145,7 +156,22 @@ void isotpTaskStart(void *argument)
                     RTOS_ResumeTelemetry();
                     break;
                 }
-                osDelay(pdMS_TO_TICKS(1));
+
+                if(isotpHandle.isTxInProgress == true && isotpHandle.isoTpLink.send_status == ISOTP_SEND_STATUS_IDLE)
+                {
+                    // Resume after TX
+                    isotpHandle.isTxInProgress = false;
+                    RTOS_ResumeTelemetry();
+                    break;
+                }
+                else if(isotpHandle.isoTpLink.send_status == ISOTP_SEND_STATUS_INPROGRESS)
+                {
+                    osDelay(pdMS_TO_TICKS(10));
+                }
+                else
+                {
+                    osDelay(pdMS_TO_TICKS(1));
+                }
             }
         }
         osDelay(pdMS_TO_TICKS(1));

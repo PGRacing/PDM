@@ -12,24 +12,6 @@
 static void BSP_CANIN_EvaluateValue(T_IN_CAN_LOC loc);
 
 /// PRIVATE TYPEDEFS
-typedef enum _T_BSP_CANIN_DATATYPE
-{
-    CAN_INPUT_TYPE_BOOL,
-    CAN_INPUT_TYPE_UINT16,
-    CAN_INPUT_TYPE_UINT32,
-    CAN_INPUT_TYPE_INT16,
-    CAN_INPUT_TYPE_INT32,
-    CAN_INPUT_TYPE_FLOAT,
-}T_BSP_CANIN_DATATYPE;
-
-typedef struct _T_BSP_CANIN_CFG
-{
-    bool isUsed;
-    T_CANH_INSTANCE canInstance;
-    uint32_t canId;
-    uint16_t offset;
-    T_BSP_CANIN_DATATYPE dataType;
-}T_BSP_CANIN_CFG;
 
 static const uint8_t canInputSize[] =
 {
@@ -42,7 +24,7 @@ static const uint8_t canInputSize[] =
 };
 
 /// @brief CAN inputs configuration
-T_BSP_CANIN_CFG bspCanInputsCfg[] =
+T_BSP_CANIN_CFG bspCanInputsCfg[IN_CAN_MAX] =
 {
     [IN_CAN_LOC_1] =
         {
@@ -122,8 +104,9 @@ T_BSP_CANIN_CFG bspCanInputsCfg[] =
         }
 };
 
+
 /// @brief CAN inputs register
-T_BSP_IN_REG bspCanInputsReg[] =
+T_BSP_IN_REG bspCanInputsReg[IN_CAN_MAX] =
 {
     [IN_CAN_LOC_1] =
         {

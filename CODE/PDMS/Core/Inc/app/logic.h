@@ -26,6 +26,7 @@ typedef enum
   LOGIC_VAR_TYPE_NONE = 0x03
 } T_LOGIC_VAR_TYPE;
 
+#pragma pack(push, 1)
 typedef enum
 {
     LOGIC_INPUT_TYPE_SENSOR = 0x00,
@@ -64,6 +65,7 @@ typedef struct
 /// @brief Logic module configuration
 extern T_LOGIC_CFG logicCfg[POWER_OUT_COUNT];
 
+#pragma pack(pop)
 
 /// @brief Evaluate logic expressions controling all outputs
 /// @return Array of evaluated results

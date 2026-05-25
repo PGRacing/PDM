@@ -18,6 +18,9 @@
 /// Get array elements count
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
+// Get ceil from division
+#define DIV_CEIL(X, Y) (((X) + (Y) - 1) / (Y))
+
 /// CONFIG
 #define POWER_OUT_COUNT 16
 #define USE_PDM_ASSERT 1

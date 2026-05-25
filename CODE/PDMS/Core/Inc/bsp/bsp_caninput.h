@@ -24,6 +24,28 @@ typedef enum
     IN_CAN_MAX
 }T_IN_CAN_LOC;
 
+#pragma pack(push, 1)
+typedef enum _T_BSP_CANIN_DATATYPE
+{
+    CAN_INPUT_TYPE_BOOL,
+    CAN_INPUT_TYPE_UINT16,
+    CAN_INPUT_TYPE_UINT32,
+    CAN_INPUT_TYPE_INT16,
+    CAN_INPUT_TYPE_INT32,
+    CAN_INPUT_TYPE_FLOAT,
+}T_BSP_CANIN_DATATYPE;
+
+typedef struct _T_BSP_CANIN_CFG
+{
+    bool isUsed;
+    T_CANH_INSTANCE canInstance;
+    uint32_t canId;
+    uint16_t offset;
+    T_BSP_CANIN_DATATYPE dataType;
+}T_BSP_CANIN_CFG;
+
+#pragma pack(pop)
+
 /// @brief Dispatch a received CAN frame to the appropriate input based on its ID and instance
 /// @param canInstance The CAN instance to which the frame was received
 /// @param id The ID of the received CAN frame
@@ -43,5 +65,7 @@ bool BSP_CANIN_GetValueSchmitt(T_IN_CAN_LOC location);
 /// @return Input value as analog
 /// @note This function should be called only for CAN inputs
 uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location);
+
+extern T_BSP_CANIN_CFG bspCanInputsCfg[IN_CAN_MAX];
 
 #endif // __BSP_CANINPUT_H_

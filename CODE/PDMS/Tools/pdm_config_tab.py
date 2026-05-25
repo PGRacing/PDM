@@ -133,6 +133,38 @@ LOGIC_VAR_TO_INPUT_TYPES = {
     0x03: [0x03],
 }
 
+IN_MODE_UNUSED = 0x00
+IN_MODE_SCHMITT = 0x01
+IN_MODE_ANALOG = 0x02
+IN_MODE_OUTPUT = 0x03
+
+IN_TYPE_PHY = 0x00
+IN_TYPE_CAN = 0x01
+IN_TYPE_INVALID = 0xFF
+
+LOGIC_INPUT_TYPE_SENSOR = 0x00
+LOGIC_INPUT_TYPE_CONST_SCHMITT = 0x01
+LOGIC_INPUT_TYPE_CONST_ANALOG = 0x02
+LOGIC_INPUT_TYPE_UNSET = 0x03
+
+OUTPUT_CONFIG_COUNT = CHANNEL_COUNT
+CAN_INPUT_COUNT = 16
+INPUT_CONFIG_COUNT = CHANNEL_COUNT + 8
+LOGIC_CONFIG_COUNT = CHANNEL_COUNT
+
+CAN_INPUT_RECORD_FORMAT = "<BBIHB"
+CAN_INPUT_RECORD_SIZE = struct.calcsize(CAN_INPUT_RECORD_FORMAT)
+
+INPUT_RECORD_FORMAT = "<HBB"
+INPUT_RECORD_SIZE = struct.calcsize(INPUT_RECORD_FORMAT)
+
+LOGIC_RECORD_FORMAT = "<BBIBIB"
+LOGIC_RECORD_SIZE = struct.calcsize(LOGIC_RECORD_FORMAT)
+
+CAN_INPUT_TOTAL_SIZE = CAN_INPUT_COUNT * CAN_INPUT_RECORD_SIZE
+INPUT_TOTAL_SIZE = INPUT_CONFIG_COUNT * INPUT_RECORD_SIZE
+LOGIC_TOTAL_SIZE = LOGIC_CONFIG_COUNT * LOGIC_RECORD_SIZE
+
 INPUT_INTERPRETATION_LABELS = [
     ("Digital (Schmitt)", 0x00),
     ("Analog", 0x01),
@@ -213,6 +245,11 @@ BINARY_RECORD_FORMAT = "<" + "".join(
     ]
 )
 BINARY_RECORD_SIZE = struct.calcsize(BINARY_RECORD_FORMAT)
+
+OUTPUT_RECORD_FORMAT = BINARY_RECORD_FORMAT
+OUTPUT_RECORD_SIZE = BINARY_RECORD_SIZE
+
+OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * OUTPUT_RECORD_SIZE
 
 def _make_spinbox(minimum, maximum, value, suffix="", step = 1):
     spin = QSpinBox()
@@ -711,6 +748,105 @@ class LogicChannelPage(QWidget):
         self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
         self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
 
+    def _logic_operand_value(self, type_combo, source_combo, bool_combo, value_edit):
+        input_type = type_combo.currentData()
+        if input_type == LOGIC_INPUT_TYPE_SENSOR:
+            source_value = source_combo.currentData()
+            return 0 if source_value is None else int(source_value)
+        if input_type == LOGIC_INPUT_TYPE_CONST_SCHMITT:
+            bool_value = bool_combo.currentData()
+            return 1 if bool_value is None else int(bool_value)
+        if input_type == LOGIC_INPUT_TYPE_CONST_ANALOG:
+            try:
+                return int(value_edit.text())
+            except Exception:
+                return 0
+        return 0
+
+    def apply_dict(self, data):
+        if not isinstance(data, dict):
+            return
+
+        self.check_used.setChecked(bool(data.get("isUsed", self.check_used.isChecked())))
+
+        exp = data.get("exp", {}) or {}
+        operator_index = self.combo_operator.findData(exp.get("opr", self.combo_operator.currentData()))
+        if operator_index >= 0:
+            self.combo_operator.setCurrentIndex(operator_index)
+
+        input1_type = exp.get("input1Type", self.combo_input1_type.currentData())
+        input2_type = exp.get("input2Type", self.combo_input2_type.currentData())
+        input1_index = self.combo_input1_type.findData(input1_type)
+        input2_index = self.combo_input2_type.findData(input2_type)
+        if input1_index >= 0:
+            self.combo_input1_type.setCurrentIndex(input1_index)
+        if input2_index >= 0:
+            self.combo_input2_type.setCurrentIndex(input2_index)
+
+        input1_const = exp.get("input1Const", exp.get("input1ID", 0))
+        input2_const = exp.get("input2Const", exp.get("input2ID", 0))
+        self.combo_input1_source.setCurrentIndex(max(0, self.combo_input1_source.findData(exp.get("input1ID", self.combo_input1_source.currentData()))))
+        self.combo_input2_source.setCurrentIndex(max(0, self.combo_input2_source.findData(exp.get("input2ID", self.combo_input2_source.currentData()))))
+        self.combo_input1_bool.setCurrentIndex(1 if int(input1_const) else 0)
+        self.combo_input2_bool.setCurrentIndex(1 if int(input2_const) else 0)
+        self.edit_input1_value.setText(str(int(input1_const)))
+        self.edit_input2_value.setText(str(int(input2_const)))
+
+        self.check_always_on.setChecked(
+            self.combo_operator.currentData() == 0x03
+            and self.combo_input1_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
+            and self.combo_input2_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
+            and self.combo_input1_bool.currentData() == 1
+            and self.combo_input2_bool.currentData() == 1
+        )
+
+        self._sync_logic_operator_state()
+
+    def to_dict(self):
+        return {
+            "isUsed": self.check_used.isChecked(),
+            "exp": {
+                "input1Type": self.combo_input1_type.currentData(),
+                "input1ID": self.combo_input1_source.currentData(),
+                "input1Const": self._logic_operand_value(
+                    self.combo_input1_type,
+                    self.combo_input1_source,
+                    self.combo_input1_bool,
+                    self.edit_input1_value,
+                ),
+                "input2Type": self.combo_input2_type.currentData(),
+                "input2ID": self.combo_input2_source.currentData(),
+                "input2Const": self._logic_operand_value(
+                    self.combo_input2_type,
+                    self.combo_input2_source,
+                    self.combo_input2_bool,
+                    self.edit_input2_value,
+                ),
+                "opr": self.combo_operator.currentData(),
+            },
+        }
+
+    def pack_logic_record(self):
+        return struct.pack(
+            LOGIC_RECORD_FORMAT,
+            1 if self.check_used.isChecked() else 0,
+            self.combo_input1_type.currentData(),
+            self._logic_operand_value(
+                self.combo_input1_type,
+                self.combo_input1_source,
+                self.combo_input1_bool,
+                self.edit_input1_value,
+            ),
+            self.combo_input2_type.currentData(),
+            self._logic_operand_value(
+                self.combo_input2_type,
+                self.combo_input2_source,
+                self.combo_input2_bool,
+                self.edit_input2_value,
+            ),
+            self.combo_operator.currentData(),
+        )
+
     def _on_always_on_toggled(self, checked):
         if checked:
             # Force operator E and both inputs to CONST_SCHMITT = TRUE
@@ -863,6 +999,7 @@ class InputsConfigPage(QWidget):
             physical_layout.addWidget(label, index + 1, 0)
             physical_layout.addWidget(combo, index + 1, 1)
             self.physical_rows.append({"label": label, "interpretation": combo})
+            combo.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
 
         outer.addWidget(physical_group)
 
@@ -927,13 +1064,113 @@ class InputsConfigPage(QWidget):
             combo_instance.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
             spin_can_id.valueChanged.connect(lambda *_: self.inputsChanged.emit())
             spin_offset.valueChanged.connect(lambda *_: self.inputsChanged.emit())
+            combo_data_type.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
+            combo_interpretation.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
 
         outer.addWidget(can_group)
+
+    def _packed_input_mode(self, interpretation_combo):
+        return IN_MODE_SCHMITT if interpretation_combo.currentData() == 0x00 else IN_MODE_ANALOG
+
+    def to_dict(self):
+        return {
+            "physical": [
+                {
+                    "location": index,
+                    "type": IN_TYPE_PHY,
+                    "mode": self._packed_input_mode(row["interpretation"]),
+                }
+                for index, row in enumerate(self.physical_rows)
+            ],
+            "can": [
+                {
+                    "isUsed": row["used"].isChecked(),
+                    "canInstance": row["instance"].currentData(),
+                    "canId": row["can_id"].value(),
+                    "offset": row["offset"].value(),
+                    "dataType": row["data_type"].currentData(),
+                    "location": index,
+                    "type": IN_TYPE_CAN,
+                    "mode": self._packed_input_mode(row["interpretation"]),
+                }
+                for index, row in enumerate(self.can_rows)
+            ],
+        }
+
+    def apply_dict(self, data):
+        if not isinstance(data, dict):
+            return
+
+        physical = data.get("physical", []) or []
+        for index, row_data in enumerate(physical[: len(self.physical_rows)]):
+            if not isinstance(row_data, dict):
+                continue
+            mode_index = self.physical_rows[index]["interpretation"].findData(
+                IN_MODE_SCHMITT if int(row_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else 0x01
+            )
+            if mode_index >= 0:
+                self.physical_rows[index]["interpretation"].setCurrentIndex(mode_index)
+
+        can_rows = data.get("can", []) or []
+        for index, row_data in enumerate(can_rows[: len(self.can_rows)]):
+            if not isinstance(row_data, dict):
+                continue
+            self.can_rows[index]["used"].setChecked(bool(row_data.get("isUsed", self.can_rows[index]["used"].isChecked())))
+            instance_index = self.can_rows[index]["instance"].findData(row_data.get("canInstance", self.can_rows[index]["instance"].currentData()))
+            if instance_index >= 0:
+                self.can_rows[index]["instance"].setCurrentIndex(instance_index)
+            self.can_rows[index]["can_id"].setValue(int(row_data.get("canId", self.can_rows[index]["can_id"].value())))
+            self.can_rows[index]["offset"].setValue(int(row_data.get("offset", self.can_rows[index]["offset"].value())))
+            data_type_index = self.can_rows[index]["data_type"].findData(row_data.get("dataType", self.can_rows[index]["data_type"].currentData()))
+            if data_type_index >= 0:
+                self.can_rows[index]["data_type"].setCurrentIndex(data_type_index)
+            mode_index = self.can_rows[index]["interpretation"].findData(
+                IN_MODE_SCHMITT if int(row_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else 0x01
+            )
+            if mode_index >= 0:
+                self.can_rows[index]["interpretation"].setCurrentIndex(mode_index)
+
+    def pack_can_inputs(self):
+        payload = []
+        for row in self.can_rows:
+            payload.append(
+                struct.pack(
+                    CAN_INPUT_RECORD_FORMAT,
+                    1 if row["used"].isChecked() else 0,
+                    row["instance"].currentData(),
+                    row["can_id"].value(),
+                    row["offset"].value(),
+                    row["data_type"].currentData(),
+                )
+            )
+        return b"".join(payload)
+
+    def pack_inputs(self):
+        payload = []
+        for index, row in enumerate(self.physical_rows):
+            payload.append(
+                struct.pack(
+                    INPUT_RECORD_FORMAT,
+                    index,
+                    IN_TYPE_PHY,
+                    self._packed_input_mode(row["interpretation"]),
+                )
+            )
+        for index, row in enumerate(self.can_rows):
+            payload.append(
+                struct.pack(
+                    INPUT_RECORD_FORMAT,
+                    index,
+                    IN_TYPE_CAN,
+                    self._packed_input_mode(row["interpretation"]),
+                )
+            )
+        return b"".join(payload)
 
     def get_sensor_sources(self):
         sources = []
         for index in range(8):
-            sources.append((f"PHY input {index + 1}", f"phy:{index + 1}"))
+            sources.append((f"PHY input {index + 1}", index))
 
         for index, row in enumerate(self.can_rows):
             if not row["used"].isChecked():
@@ -944,7 +1181,7 @@ class InputsConfigPage(QWidget):
             sources.append(
                 (
                     f"CAN input {index + 1} (inst {can_instance + 1}, 0x{can_id:03X}, off {offset})",
-                    f"can:{index + 1}",
+                    8 + index,
                 )
             )
 
@@ -954,6 +1191,7 @@ class InputsConfigPage(QWidget):
 class ConfigTab(QWidget):
     send_binary_requested = pyqtSignal(object)
     send_reset_requested = pyqtSignal()
+    request_config_requested = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -993,6 +1231,11 @@ class ConfigTab(QWidget):
         self.btn_send_binary.clicked.connect(self._send_binary)
         self.btn_send_binary.setStyleSheet(SEND_DEVICE_BUTTON_STYLE)
         title_row.addWidget(self.btn_send_binary)
+
+        self.btn_request_config = QPushButton("Request config")
+        self.btn_request_config.clicked.connect(self._request_config)
+        self.btn_request_config.setStyleSheet(ACTION_BUTTON_STYLE)
+        title_row.addWidget(self.btn_request_config)
 
         self.btn_reset_device = CtrlClickButton("Reset device")
         self.btn_reset_device.setToolTip("Works only with Ctrl + Click")
@@ -1056,7 +1299,11 @@ class ConfigTab(QWidget):
         layout.addWidget(transfer_box)
 
     def collect_config(self):
-        return {"channels": [widget.to_dict() for widget in self.channel_widgets]}
+        return {
+            "channels": [widget.to_dict() for widget in self.channel_widgets],
+            "inputs": self.inputs_page.to_dict(),
+            "logic": [widget.logic_page.to_dict() for widget in self.channel_widgets],
+        }
 
     def apply_config(self, config):
         channels = config.get("channels") if isinstance(config, dict) else config
@@ -1066,6 +1313,20 @@ class ConfigTab(QWidget):
         for index, channel_data in enumerate(channels[: len(self.channel_widgets)]):
             if isinstance(channel_data, dict):
                 self.channel_widgets[index].apply_dict(channel_data)
+                logic_data = channel_data.get("logic")
+                if isinstance(logic_data, dict):
+                    self.channel_widgets[index].logic_page.apply_dict(logic_data)
+
+        if isinstance(config, dict):
+            inputs_data = config.get("inputs")
+            if isinstance(inputs_data, dict):
+                self.inputs_page.apply_dict(inputs_data)
+
+            logic_data = config.get("logic")
+            if isinstance(logic_data, list):
+                for index, logic_item in enumerate(logic_data[: len(self.channel_widgets)]):
+                    if isinstance(logic_item, dict):
+                        self.channel_widgets[index].logic_page.apply_dict(logic_item)
 
         self._refresh_logic_sensor_sources()
 
@@ -1073,9 +1334,26 @@ class ConfigTab(QWidget):
         for channel_widget in self.channel_widgets:
             channel_widget.logic_page.refresh_sensor_sources()
 
-    def _build_binary_payload(self):
-        # STM32 expects a raw array of packed channel structs with no file header.
+    def _build_output_payload(self):
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)
+
+    def _build_can_inputs_payload(self):
+        return self.inputs_page.pack_can_inputs()
+
+    def _build_inputs_payload(self):
+        return self.inputs_page.pack_inputs()
+
+    def _build_logic_payload(self):
+        return b"".join(widget.logic_page.pack_logic_record() for widget in self.channel_widgets)
+
+    def _build_binary_payload(self):
+        # Payload order matches the device parser: output config, CAN inputs, inputs, logic.
+        return (
+            self._build_output_payload()
+            + self._build_can_inputs_payload()
+            + self._build_inputs_payload()
+            + self._build_logic_payload()
+        )
 
     def _send_binary(self):
         self.set_isotp_state(0, "Preparing transfer", busy=True)
@@ -1085,6 +1363,10 @@ class ConfigTab(QWidget):
         self.set_isotp_state(0, "Preparing reset", busy=True)
         self.send_reset_requested.emit()
 
+    def _request_config(self):
+        self.set_isotp_state(0, "Preparing config request", busy=True)
+        self.request_config_requested.emit()
+
     def set_isotp_state(self, progress, status=None, busy=None):
         self.progress_send.setValue(max(0, min(100, int(progress))))
         if status is not None:
@@ -1092,6 +1374,7 @@ class ConfigTab(QWidget):
         if busy is not None:
             self.btn_send_binary.setEnabled(not busy)
             self.btn_reset_device.setEnabled(not busy)
+            self.btn_request_config.setEnabled(not busy)
 
     def load_json(self):
         file_path, _ = QFileDialog.getOpenFileName(
@@ -1123,34 +1406,48 @@ class ConfigTab(QWidget):
         try:
             with open(file_path, "rb") as handle:
                 data = handle.read()
+            self.load_binary_payload(data)
+        except Exception as exc:
+            QMessageBox.critical(self, "Load failed", f"Could not load binary: {exc}")
 
-            # Accept either raw array of records or optional header PDMB + version
-            payload = None
-            expected_size = CHANNEL_COUNT * BINARY_RECORD_SIZE
-            if len(data) == expected_size:
-                payload = data
-            elif len(data) >= 5 and data[:4] == BINARY_MAGIC:
-                # header present: 4-byte magic + 1-byte version
-                payload = data[5:]
-                if len(payload) != expected_size:
-                    raise ValueError("Binary header found but payload size mismatch")
-            elif len(data) % BINARY_RECORD_SIZE == 0 and len(data) >= expected_size:
-                # file may contain multiple concatenated records; take first CHANNEL_COUNT
-                payload = data[:expected_size]
-            else:
-                raise ValueError(f"Invalid binary size: {len(data)} bytes")
+    def load_binary_payload(self, data):
+        try:
+            self._load_binary_payload(data)
+        except Exception as exc:
+            QMessageBox.critical(self, "Load failed", f"Could not load binary: {exc}")
 
-            def _clamp(v, lo, hi):
-                try:
-                    iv = int(v)
-                except Exception:
-                    return lo
-                if iv < lo:
-                    return lo
-                if iv > hi:
-                    return hi
-                return iv
+    def _load_binary_payload(self, data):
+        expected_size = (
+            OUTPUT_CONFIG_TOTAL_SIZE
+            + CAN_INPUT_TOTAL_SIZE
+            + INPUT_TOTAL_SIZE
+            + LOGIC_TOTAL_SIZE
+        )
+        legacy_output_size = OUTPUT_CONFIG_TOTAL_SIZE
+        payload = None
+        if len(data) == expected_size:
+            payload = data
+        elif len(data) == legacy_output_size:
+            payload = data
+        elif len(data) >= 5 and data[:4] == BINARY_MAGIC:
+            payload = data[5:]
+            if len(payload) not in (expected_size, legacy_output_size):
+                raise ValueError("Binary header found but payload size mismatch")
+        else:
+            raise ValueError(f"Invalid binary size: {len(data)} bytes")
 
+        def _clamp(v, lo, hi):
+            try:
+                iv = int(v)
+            except Exception:
+                return lo
+            if iv < lo:
+                return lo
+            if iv > hi:
+                return hi
+            return iv
+
+        if len(payload) == legacy_output_size:
             channels = []
             for i in range(CHANNEL_COUNT):
                 start = i * BINARY_RECORD_SIZE
@@ -1183,8 +1480,6 @@ class ConfigTab(QWidget):
                 ) = tup
 
                 name = name_bytes.split(b"\0", 1)[0].decode("utf-8", errors="replace")
-
-                # clamp values to safe ranges expected by UI widgets to avoid OverflowError
                 ch_dict = {
                     "id": ch_id,
                     "type": type_v,
@@ -1218,8 +1513,118 @@ class ConfigTab(QWidget):
                 channels.append(ch_dict)
 
             self.apply_config({"channels": channels})
-        except Exception as exc:
-            QMessageBox.critical(self, "Load failed", f"Could not load binary: {exc}")
+            return
+
+        offset = 0
+        channels = []
+        for i in range(CHANNEL_COUNT):
+            start = i * BINARY_RECORD_SIZE
+            rec = payload[offset : offset + BINARY_RECORD_SIZE]
+            tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
+            (
+                ch_id,
+                type_v,
+                mode_v,
+                spoc_id,
+                spoc_ch,
+                name_bytes,
+                batch,
+                after_err_beh,
+                after_err_latch_time,
+                act_on_safety,
+                err_retry_threshold,
+                retry_timer_interval,
+                use_soc,
+                nominal_threshold,
+                allow_inrush,
+                inrush_window_from_start,
+                inrush_threshold,
+                inrush_time_threshold,
+                use_i2t,
+                nominal_current,
+                nominal_current_sq,
+                time_threshold,
+                i2t_threshold,
+            ) = tup
+
+            name = name_bytes.split(b"\0", 1)[0].decode("utf-8", errors="replace")
+
+            ch_dict = {
+                "id": ch_id,
+                "type": type_v,
+                "mode": mode_v,
+                "spocId": spoc_id,
+                "spocChId": spoc_ch,
+                "name": name,
+                "batch": batch,
+                "safety": {
+                    "afterErrorCfg": {"behavior": after_err_beh, "latchTime": _clamp(after_err_latch_time, 0, 2147483647)},
+                    "actOnSafety": bool(act_on_safety),
+                    "errRetryThreshold": _clamp(err_retry_threshold, 0, 65535),
+                    "retryTimerInterval": _clamp(retry_timer_interval, 0, 2147483647),
+                    "socCfg": {
+                        "useSoc": bool(use_soc),
+                        "nominalThreshold": _clamp(nominal_threshold, 0, 65535),
+                        "allowInrush": bool(allow_inrush),
+                        "inrushWindowFromStart": _clamp(inrush_window_from_start, 0, UINT32_MAX),
+                        "inrushThreshold": _clamp(inrush_threshold, 0, 2147483647),
+                        "inrushTimeThreshold": _clamp(inrush_time_threshold, 0, 2147483647),
+                    },
+                    "i2tCfg": {
+                        "useI2t": bool(use_i2t),
+                        "nominalCurrent": _clamp(nominal_current, 0, 65535),
+                        "nominalCurrentSq": _clamp(nominal_current_sq, 0, 2147483647),
+                        "timeThreshold": _clamp(time_threshold, 0, 2147483647),
+                        "i2tThreshold": _clamp(i2t_threshold, 0, 2147483647),
+                    },
+                },
+            }
+            channels.append(ch_dict)
+            offset += BINARY_RECORD_SIZE
+
+        can_inputs = []
+        for index in range(CAN_INPUT_COUNT):
+            rec = payload[offset : offset + CAN_INPUT_RECORD_SIZE]
+            is_used, can_instance, can_id, cd_offset, data_type = struct.unpack(CAN_INPUT_RECORD_FORMAT, rec)
+            can_inputs.append(
+                {
+                    "isUsed": bool(is_used),
+                    "canInstance": can_instance,
+                    "canId": can_id,
+                    "offset": cd_offset,
+                    "dataType": data_type,
+                }
+            )
+            offset += CAN_INPUT_RECORD_SIZE
+
+        inputs = []
+        for index in range(INPUT_CONFIG_COUNT):
+            rec = payload[offset : offset + INPUT_RECORD_SIZE]
+            location, in_type, mode = struct.unpack(INPUT_RECORD_FORMAT, rec)
+            inputs.append({"location": location, "type": in_type, "mode": mode})
+            offset += INPUT_RECORD_SIZE
+
+        logic = []
+        for index in range(LOGIC_CONFIG_COUNT):
+            rec = payload[offset : offset + LOGIC_RECORD_SIZE]
+            is_used, input1_type, input1_value, input2_type, input2_value, opr = struct.unpack(LOGIC_RECORD_FORMAT, rec)
+            logic.append(
+                {
+                    "isUsed": bool(is_used),
+                    "exp": {
+                        "input1Type": input1_type,
+                        "input1ID": input1_value if input1_type == LOGIC_INPUT_TYPE_SENSOR else 0,
+                        "input1Const": input1_value if input1_type != LOGIC_INPUT_TYPE_SENSOR else 0,
+                        "input2Type": input2_type,
+                        "input2ID": input2_value if input2_type == LOGIC_INPUT_TYPE_SENSOR else 0,
+                        "input2Const": input2_value if input2_type != LOGIC_INPUT_TYPE_SENSOR else 0,
+                        "opr": opr,
+                    },
+                }
+            )
+            offset += LOGIC_RECORD_SIZE
+
+        self.apply_config({"channels": channels, "inputs": {"can": can_inputs, "physical": inputs[:8]}, "logic": logic})
 
     def export_binary(self):
         default_name = str(CONFIG_DIR / "pdm_output_config.bin")

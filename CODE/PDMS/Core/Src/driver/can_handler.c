@@ -6,6 +6,8 @@
 #include "semphr.h"
 #include "bsp_caninput.h"
 #include "app_isotp.h"
+#include "pdm.h"
+#include "config.h"
 #include "tim.h"
 
 T_CANH_CFG cansCfg[CANH_INSTANCE_MAX] = 
@@ -89,6 +91,8 @@ typedef enum
     CANH_ID_ISOTP_ENTRANCE =  0x050, // Entrance gateway for ISO-TP communication mode
     CANH_ID_ISOTP_TX       =  0x051, // CAN ID used for ISO-TP transmission
     CANH_ID_ISOTP_RX       =  0x052, // CAN ID used for ISO-TP reception
+    CANH_ID_CONFIG_REQ     =  0x059, // CAN ID used for configuration request (eg. to send current config or request config update)
+    CANH_ID_FORCE_RESET    =  0x0AF, // Force reset command, if specific pattern is sent to CAN with this ID then device will reset  
 }T_CANH_ID;
 
 /// @brief [pnpTxMsg] Message sent on device power-up
@@ -652,6 +656,12 @@ void can1TaskStart(void *argument)
             {
                 /* Process received package */
                 BSP_CANIN_DispatchFrame(CANH_INSTANCE_1, rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
+
+                // Force reset command reception
+                if(rxPkg.header.StdId == CANH_ID_FORCE_RESET + cansCfg[CANH_INSTANCE_1].baseId)
+                {
+                    PDM_CANResetGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
+                }
             }
         }
         osDelay(1);
@@ -709,13 +719,29 @@ void can2TaskStart(void *argument)
                 /* Process received package */
                 BSP_CANIN_DispatchFrame(CANH_INSTANCE_2, rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
                 
+                // ISO-TP related frames (entrance GW and data frame reception) -- only CAN2
                 if(rxPkg.header.StdId == CANH_ID_ISOTP_ENTRANCE + cansCfg[CANH_INSTANCE_2].baseId)
                 {
-                    APP_ISOTP_EntranceGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
+                    APP_ISOTP_CANEntranceGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
                 }
                 else if(rxPkg.header.StdId == CANH_ID_ISOTP_RX + cansCfg[CANH_INSTANCE_2].baseId)
                 {
                     APP_ISOTP_DispatchFrame(rxPkg.data.raw, rxPkg.header.DLC);
+                }
+                else if(rxPkg.header.StdId == CANH_ID_CONFIG_REQ + cansCfg[CANH_INSTANCE_2].baseId)
+                {
+                    // Right now config A is hardcoded - B unused
+                    uint32_t size = 0;
+                    uint8_t* cfgPtr = NULL;
+                    CONFIG_GetCfgExpSize(&size);
+                    CONFIG_GetCfgPtr(CONFIG_SELECTION_A, &cfgPtr);
+                    APP_ISOTP_Send(cfgPtr, size);
+                }
+                
+                // Force reset command reception
+                if(rxPkg.header.StdId == CANH_ID_FORCE_RESET + cansCfg[CANH_INSTANCE_2].baseId)
+                {
+                    PDM_CANResetGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
                 }
             }
         }

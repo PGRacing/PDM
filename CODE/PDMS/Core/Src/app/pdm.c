@@ -9,6 +9,7 @@
 #include "tim.h"
 #include "app_isotp.h"
 #include "config.h"
+#include "string.h"
 
 /* HAL, MX includes */
 #include "iwdg.h"
@@ -19,6 +20,8 @@
 /////////////////////////
 
 #define UVLO_TIMER_PERIOD 50
+
+#define PDM_RESET_GATEWAY_PATTERN_SIZE 3
 
 extern void RTOS_SoftLimpHomeMode(void);
 
@@ -80,6 +83,10 @@ static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] =
     OUT_MODE_STD,
     OUT_MODE_STD,
 };
+
+static const uint8_t resetGatewayPattern[PDM_RESET_GATEWAY_PATTERN_SIZE][8] = {{0xae, 0x3a, 0x3e, 0x2b, 0x07, 0x17, 0xc8, 0x4c}, 
+                                                  {0x2d, 0x72, 0x88, 0x04, 0x9f, 0xea, 0xda, 0xc7}, 
+                                                  {0x44, 0x8e, 0x0e, 0xd9, 0x56, 0xa1, 0x35, 0x0f}};
 
 static void PDM_OutConfig(void)
 {
@@ -287,6 +294,34 @@ bool PDM_GetSafetyState(void)
 {
     return pdmReg.safetyState;
 }
+
+/// @brief Allow to reset device via CAN when specific pattern is sent to CAN.
+/// @param id Frame ID
+/// @param data Frame data
+/// @param size Frame data size
+void PDM_CANResetGateway(uint32_t id, uint8_t* data, uint32_t size)
+{
+    if(size != 8)
+    {
+        pdmReg.resetGwCounter = 0;
+        return;
+    }
+    else if(size == 8 && 0 == memcmp(data, resetGatewayPattern[pdmReg.resetGwCounter], 8))
+    {
+        pdmReg.resetGwCounter++;
+        if(pdmReg.resetGwCounter >= PDM_RESET_GATEWAY_PATTERN_SIZE)
+        {
+            pdmReg.resetGwCounter = 0;
+            LOG_INFO("PDM:: Reset gateway pattern detected, reseting device");
+            NVIC_SystemReset();
+        }
+    }
+    else
+    {
+        pdmReg.resetGwCounter = 0;
+    }
+}
+
 
 void pdmTaskStart(void *argument)
 {       

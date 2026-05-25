@@ -4,16 +4,27 @@
 #include "bsp_flash.h"
 #include "string.h"
 #include "logger.h"
+#include "bsp_caninput.h"
+#include "input.h"
+#include "logic.h"
 #include "cmsis_os2.h"
 #include "FreeRTOS.h"
 
 T_OUT_CFG (*configPtrA)[16] = (T_OUT_CFG (*)[16])0x080E0000; // Pointing to CONFIGB1 section in flash
 T_OUT_CFG (*configPtrB)[16] = (T_OUT_CFG (*)[16])0x080F0000; // Pointing to CONFIGB1 section in flash
 
-#define CONFIGB1_SECTOR 0 
-#define CONFIGB2_SECTOR 32
+#define CONFIGB1_START_SECTOR 0 
+#define CONFIGB2_START_SECTOR 32
 
-#define CONFIG_EXPECTED_SIZE 1360
+//                         [OUTPUT][BSP_CAN][INPUT][LOGIC]
+#define CONFIG_EXPECTED_SIZE 1360 + 144 + 96 + 192
+
+#define CONFIG_EXPECTED_SIZE_IN_SECTOR DIV_CEIL(CONFIG_EXPECTED_SIZE, FLASH_SECTOR_SIZE)
+
+#define CONFIG_OUTCFG_OFFSET  0
+#define CONFIG_CANCFG_OFFSET  1360
+#define CONFIG_INPUTCFG_OFFSET 1504
+#define CONFIG_LOGICCFG_OFFSET 1600
 
 extern void RTOS_SuspendForConfigChange(void);
 extern void RTOS_ResumeAfterConfigChange(void);
@@ -37,10 +48,16 @@ void CONFIG_LoadConfig(T_CONFIG_SELECTION configSelection)
     if(configSelection == CONFIG_SELECTION_A)
     {
         memcpy(outsCfg, configPtrA, sizeof(outsCfg));
+        memcpy(bspCanInputsCfg, (T_BSP_CANIN_CFG*)((uint8_t*)configPtrA + CONFIG_CANCFG_OFFSET), sizeof(bspCanInputsCfg));
+        memcpy(inputsCfg, (T_IN_CFG*)((uint8_t*)configPtrA + CONFIG_INPUTCFG_OFFSET), sizeof(inputsCfg));
+        memcpy(logicCfg, (T_LOGIC_CFG*)((uint8_t*)configPtrA + CONFIG_LOGICCFG_OFFSET), sizeof(logicCfg));
     }
     else if(configSelection == CONFIG_SELECTION_B)
     {
         memcpy(outsCfg, configPtrB, sizeof(outsCfg));
+        memcpy(bspCanInputsCfg, (T_BSP_CANIN_CFG*)((uint8_t*)configPtrB + CONFIG_CANCFG_OFFSET), sizeof(bspCanInputsCfg));
+        memcpy(inputsCfg, (T_IN_CFG*)((uint8_t*)configPtrB + CONFIG_INPUTCFG_OFFSET), sizeof(inputsCfg));
+        memcpy(logicCfg, (T_LOGIC_CFG*)((uint8_t*)configPtrB + CONFIG_LOGICCFG_OFFSET), sizeof(logicCfg));
     }
 }
 
@@ -80,26 +97,39 @@ static bool CONFIG_FlushConfig(T_CONFIG_SELECTION configSelection, uint8_t* data
 
     if(configSelection == CONFIG_SELECTION_A)
     {
-        if(BSP_FLASH_Erease(CONFIGB1_SECTOR) == 0)
+        for(uint32_t i = 0; i < CONFIG_EXPECTED_SIZE_IN_SECTOR; i++)
         {
-            if(BSP_FLASH_Prog(CONFIGB1_SECTOR, 0, data, size) == 0)
+            if(BSP_FLASH_Erease(CONFIGB1_START_SECTOR + i) != 0)
             {
-                return true;
+                LOG_ERR("CONFIG:: Failed to erase flash sector!");
+                return false;
             }
         }
 
+         if(BSP_FLASH_Prog(CONFIGB1_START_SECTOR, 0, data, size) != 0)
+         {
+             LOG_ERR("CONFIG:: Failed to program flash!");
+             return false;
+         }
     }
     else if(configSelection == CONFIG_SELECTION_B)
     {  
-        if(BSP_FLASH_Erease(CONFIGB2_SECTOR) == 0)
+        for(uint32_t i = 0; i < CONFIG_EXPECTED_SIZE_IN_SECTOR; i++)
         {
-            if(BSP_FLASH_Prog(CONFIGB2_SECTOR, 0, data, size) == 0)
+            if(BSP_FLASH_Erease(CONFIGB2_START_SECTOR + i) != 0)
             {
-                return true;
+                LOG_ERR("CONFIG:: Failed to erase flash sector!");
+                return false;
             }
         }
-     }
-    return false;
+
+        if(BSP_FLASH_Prog(CONFIGB2_START_SECTOR, 0, data, size) != 0)
+        {
+            LOG_ERR("CONFIG:: Failed to program flash!");
+            return false;
+        }
+    }
+    return true;
 }
 
 /// @brief Perform full sequence of applying new configuration (pre-change actions, config flush, post-change actions)
@@ -119,4 +149,21 @@ void CONFIG_NewConfig(T_CONFIG_SELECTION configSelection, uint8_t* data, uint32_
     {
         LOG_ERR("CONFIG:: Failed to flush new config to flash!");
     }
+}
+
+void CONFIG_GetCfgPtr(T_CONFIG_SELECTION configSelection, uint8_t** outPtr)
+{
+    if(configSelection == CONFIG_SELECTION_A)
+    {
+        *outPtr = (uint8_t*)configPtrA;
+    }
+    else if(configSelection == CONFIG_SELECTION_B)
+    {
+        *outPtr = (uint8_t*)configPtrB;
+    }
+}
+
+void CONFIG_GetCfgExpSize(uint32_t* outSize)
+{
+    *outSize = CONFIG_EXPECTED_SIZE;
 }

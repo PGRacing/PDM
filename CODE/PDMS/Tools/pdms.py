@@ -55,10 +55,8 @@ class MainWindow(QMainWindow):
         self.pipe_ui, self.pipe_worker = multiprocessing.Pipe(duplex=False)
         self.tx_queue = multiprocessing.Queue()
 
-        self.worker_process = multiprocessing.Process(
-            target=can_isolated_process, args=(self.pipe_worker, self.tx_queue), daemon=True
-        )
-        self.worker_process.start()
+        self.worker_process = None
+        self.worker_started = False
 
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
         self.latest_ch = [
@@ -82,6 +80,17 @@ class MainWindow(QMainWindow):
         self.plot_timer = QTimer(self)
         self.plot_timer.timeout.connect(self.update_plots)
         self.plot_timer.start(PLOT_UPDATE_MS)
+
+        QTimer.singleShot(0, self.start_can_worker)
+
+    def start_can_worker(self):
+        if self.worker_started:
+            return
+        self.worker_process = multiprocessing.Process(
+            target=can_isolated_process, args=(self.pipe_worker, self.tx_queue), daemon=True
+        )
+        self.worker_process.start()
+        self.worker_started = True
 
     def init_ui(self):
         tabs = QTabWidget()
@@ -174,6 +183,7 @@ class MainWindow(QMainWindow):
         self.config_tab = ConfigTab()
         self.config_tab.send_binary_requested.connect(self.send_isotp_config)
         self.config_tab.send_reset_requested.connect(self.send_reset_device)
+        self.config_tab.request_config_requested.connect(self.request_config_from_device)
         tabs.addTab(self.config_tab, "Configuration")
 
     def send_isotp_config(self, payload):
@@ -181,6 +191,9 @@ class MainWindow(QMainWindow):
 
     def send_reset_device(self):
         self.tx_queue.put({"cmd": "RESET_DEVICE"})
+
+    def request_config_from_device(self):
+        self.tx_queue.put({"cmd": "REQUEST_CONFIG"})
 
     def send_selected_frame(self):
         tx_id_text = self.combo_tx_id.currentText()
@@ -213,6 +226,11 @@ class MainWindow(QMainWindow):
                         )
                         if packet.get("isotp_error"):
                             self.config_tab.set_isotp_state(0, f"Error: {packet['isotp_error']}", busy=False)
+                    continue
+                if "isotp_config_payload" in packet:
+                    if self.config_tab is not None:
+                        self.config_tab.load_binary_payload(packet["isotp_config_payload"])
+                        self.config_tab.set_isotp_state(100, "Config received and loaded", busy=False)
                     continue
                 if "error" in packet:
                     if self.config_tab is not None:
@@ -289,8 +307,9 @@ class MainWindow(QMainWindow):
             self.plot_timer.stop()
 
     def closeEvent(self, event):
-        self.tx_queue.put({"cmd": "EXIT"})
-        self.worker_process.join(timeout=0.5)
+        if self.worker_started:
+            self.tx_queue.put({"cmd": "EXIT"})
+            self.worker_process.join(timeout=0.5)
         super().closeEvent(event)
 
 
