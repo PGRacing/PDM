@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QColor, QKeySequence
+from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
     QComboBox,
@@ -39,14 +39,18 @@ from pdm_shared import (
     get_row_colors,
 )
 
-CHECKBOX_TICK_PATH = (Path(__file__).resolve().parent / "assets" / "checkbox-tick.svg").as_posix()
+import ctypes
+# Tells Windows to treat the script as a distinct application rather than a Python script
+myappid = 'mycompany.myproduct.subproduct.version' 
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
+CHECKBOX_TICK_PATH = (Path(__file__).resolve().parent / "assets" / "checkbox-tick.svg").as_posix()
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("PDMS Control App")
-        self.resize(1920, 1080)
+        self.resize(1920, 1280)
 
         self.pipe_ui, self.pipe_worker = multiprocessing.Pipe(duplex=False)
         self.tx_queue = multiprocessing.Queue()
@@ -170,7 +174,7 @@ class MainWindow(QMainWindow):
         self.config_tab = ConfigTab()
         self.config_tab.send_binary_requested.connect(self.send_isotp_config)
         self.config_tab.send_reset_requested.connect(self.send_reset_device)
-        tabs.addTab(self.config_tab, "Output configuration")
+        tabs.addTab(self.config_tab, "Configuration")
 
     def send_isotp_config(self, payload):
         self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
@@ -294,6 +298,7 @@ if __name__ == "__main__":
     multiprocessing.freeze_support()
     app = QApplication(sys.argv)
     app.setStyleSheet(build_dark_stylesheet(CHECKBOX_TICK_PATH))
+    app.setWindowIcon(QIcon("assets/pdms.ico"))
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

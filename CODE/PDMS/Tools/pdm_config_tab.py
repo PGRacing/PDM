@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QPushButton,
     QProgressBar,
+    QGridLayout,
     QScrollArea,
     QSpinBox,
     QTabWidget,
@@ -84,6 +85,72 @@ FIELD_LABELS = {
         "i2t_threshold": "I2T threshold:",
     },
 }
+
+LOGIC_OPERATOR_LABELS = [
+    ("AND", 0x00),
+    ("OR", 0x01),
+    ("NE", 0x02),
+    ("E", 0x03),
+    ("G", 0x04),
+    ("GE", 0x05),
+    ("L", 0x06),
+    ("LE", 0x07),
+    ("IT", 0x08),
+    ("IF", 0x09),
+]
+
+LOGIC_INPUT_TYPE_LABELS = [
+    ("SENSOR", 0x00),
+    ("CONST_SCHMITT", 0x01),
+    ("CONST_ANALOG", 0x02),
+    ("UNSET", 0x03),
+]
+
+LOGIC_VAR_TYPE_LABELS = [
+    ("SCHMITT", 0x00),
+    ("ANALOG", 0x01),
+    ("ANY", 0x02),
+    ("NONE", 0x03),
+]
+
+LOGIC_OPERATOR_RELATIONS = {
+    0x00: (0x00, 0x00),
+    0x01: (0x00, 0x00),
+    0x02: (0x02, 0x02),
+    0x03: (0x02, 0x02),
+    0x04: (0x01, 0x01),
+    0x05: (0x01, 0x01),
+    0x06: (0x01, 0x01),
+    0x07: (0x01, 0x01),
+    0x08: (0x00, 0x03),
+    0x09: (0x00, 0x03),
+}
+
+LOGIC_VAR_TO_INPUT_TYPES = {
+    0x00: [0x00, 0x01],
+    0x01: [0x00, 0x02],
+    0x02: [0x00, 0x01, 0x02],
+    0x03: [0x03],
+}
+
+INPUT_INTERPRETATION_LABELS = [
+    ("Digital (Schmitt)", 0x00),
+    ("Analog", 0x01),
+]
+
+CAN_INSTANCE_LABELS = [
+    ("CANH_INSTANCE_1", 0x00),
+    ("CANH_INSTANCE_2", 0x01),
+]
+
+CAN_INPUT_DATA_TYPE_LABELS = [
+    ("CAN_INPUT_TYPE_BOOL", 0x00),
+    ("CAN_INPUT_TYPE_UINT16", 0x01),
+    ("CAN_INPUT_TYPE_UINT32", 0x02),
+    ("CAN_INPUT_TYPE_INT16", 0x03),
+    ("CAN_INPUT_TYPE_INT32", 0x04),
+    ("CAN_INPUT_TYPE_FLOAT", 0x05),
+]
 
 SPOC_MAPPING_LABELS = {
     8: "SPOC2_ID_1 / SPOC2_CH_ID_1",
@@ -236,6 +303,9 @@ class ChannelConfigPage(QWidget):
         channel_form.addRow(FIELD_LABELS["channel"]["name"], self.edit_name)
         channel_form.addRow(FIELD_LABELS["channel"]["batch"], self.edit_batch)
         outer.addWidget(channel_group)
+
+        self.logic_page = LogicChannelPage(channel_index)
+        outer.addWidget(self.logic_page)
 
         safety_group = QGroupBox("Safety")
         safety_form = QFormLayout(safety_group)
@@ -508,6 +578,379 @@ class ChannelConfigPage(QWidget):
         }
 
 
+class LogicChannelPage(QWidget):
+    def __init__(self, channel_index, parent=None):
+        super().__init__(parent)
+        self.channel_index = channel_index
+        self.setStyleSheet(PAGE_LABEL_STYLE)
+        self._sensor_source_provider = lambda: []
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(8)
+        outer.setAlignment(Qt.AlignTop)
+
+        logic_group = QGroupBox(f"Control logic")
+        logic_form = QFormLayout(logic_group)
+        self.logic_group = logic_group
+        logic_form.setContentsMargins(10, 12, 10, 10)
+        logic_form.setVerticalSpacing(6)
+        logic_form.setHorizontalSpacing(12)
+
+        self.check_used = QCheckBox("")
+        self.check_used.setStyleSheet(CHECKBOX_STYLE)
+        self.check_used.setChecked(False)
+        logic_form.addRow("Channel used:", self.check_used)
+
+        self.check_always_on = QCheckBox("")
+        self.check_always_on.setStyleSheet(CHECKBOX_STYLE)
+        self.check_always_on.setChecked(False)
+        logic_form.addRow("Always on", self.check_always_on)
+
+        self.combo_operator = QComboBox()
+        for label, value in LOGIC_OPERATOR_LABELS:
+            self.combo_operator.addItem(label, value)
+        self.combo_operator.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        logic_form.addRow("Operator:", self.combo_operator)
+
+        self.label_relation = QLabel("First: - | Second: -")
+        self.label_relation.setStyleSheet("QLabel { color: #B0B0B0; font-style: italic; }")
+        logic_form.addRow("Allowed:", self.label_relation)
+
+        self.combo_input1_type = QComboBox()
+        self.combo_input2_type = QComboBox()
+        self.combo_input1_type.setFixedWidth(150)
+        self.combo_input2_type.setFixedWidth(150)
+
+        self.combo_input1_source = QComboBox()
+        self.combo_input2_source = QComboBox()
+        self.combo_input1_source.setFixedWidth(240)
+        self.combo_input2_source.setFixedWidth(240)
+        self.combo_input1_source.setVisible(False)
+        self.combo_input2_source.setVisible(False)
+
+        self.edit_input1_value = QLineEdit("0")
+        self.edit_input1_value.setPlaceholderText("Input ID or constant")
+        self.edit_input2_value = QLineEdit("0")
+        self.edit_input2_value.setPlaceholderText("Input ID or constant")
+        self.edit_input1_value.setFixedWidth(180)
+        self.edit_input2_value.setFixedWidth(180)
+
+        self.combo_input1_bool = QComboBox()
+        self.combo_input1_bool.addItem("OFF", 0)
+        self.combo_input1_bool.addItem("ON", 1)
+        self.combo_input1_bool.setFixedWidth(120)
+        self.combo_input1_bool.setVisible(False)
+
+        self.combo_input2_bool = QComboBox()
+        self.combo_input2_bool.addItem("OFF", 0)
+        self.combo_input2_bool.addItem("ON", 1)
+        self.combo_input2_bool.setFixedWidth(120)
+        self.combo_input2_bool.setVisible(False)
+
+        input1_row = QWidget()
+        input1_layout = QHBoxLayout(input1_row)
+        input1_layout.setContentsMargins(0, 0, 0, 0)
+        input1_layout.setSpacing(10)
+        input1_layout.addWidget(self.combo_input1_type)
+        input1_layout.addWidget(self.combo_input1_source)
+        input1_layout.addWidget(self.combo_input1_bool)
+        input1_layout.addWidget(self.edit_input1_value)
+        input1_layout.addStretch(1)
+
+        input2_row = QWidget()
+        input2_layout = QHBoxLayout(input2_row)
+        input2_layout.setContentsMargins(0, 0, 0, 0)
+        input2_layout.setSpacing(10)
+        input2_layout.addWidget(self.combo_input2_type)
+        input2_layout.addWidget(self.combo_input2_source)
+        input2_layout.addWidget(self.combo_input2_bool)
+        input2_layout.addWidget(self.edit_input2_value)
+        input2_layout.addStretch(1)
+
+        logic_form.addRow("Input 1:", input1_row)
+        logic_form.addRow("Input 2:", input2_row)
+        outer.addWidget(logic_group)
+
+        self.combo_operator.currentIndexChanged.connect(self._sync_logic_operator_state)
+        self.combo_input1_type.currentIndexChanged.connect(lambda *_: self._sync_input_row(self.combo_input1_type, self.edit_input1_value))
+        self.combo_input2_type.currentIndexChanged.connect(lambda *_: self._sync_input_row(self.combo_input2_type, self.edit_input2_value))
+        self.combo_input1_source.currentIndexChanged.connect(lambda *_: None)
+        self.combo_input2_source.currentIndexChanged.connect(lambda *_: None)
+        self.check_always_on.toggled.connect(self._on_always_on_toggled)
+
+        self._sync_logic_operator_state()
+        self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
+        self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
+        self.refresh_sensor_sources()
+
+    def set_sensor_source_provider(self, provider):
+        self._sensor_source_provider = provider or (lambda: [])
+        self.refresh_sensor_sources()
+
+    def refresh_sensor_sources(self):
+        sources = list(self._sensor_source_provider())
+        if not sources:
+            sources = [("No used inputs available", None)]
+
+        for combo in (self.combo_input1_source, self.combo_input2_source):
+            current_value = combo.currentData()
+            combo.blockSignals(True)
+            combo.clear()
+            for label, value in sources:
+                combo.addItem(label, value)
+            if current_value is not None:
+                current_index = combo.findData(current_value)
+                if current_index >= 0:
+                    combo.setCurrentIndex(current_index)
+                else:
+                    combo.setCurrentIndex(0)
+            else:
+                combo.setCurrentIndex(0)
+            combo.blockSignals(False)
+        self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
+        self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
+
+    def _on_always_on_toggled(self, checked):
+        if checked:
+            # Force operator E and both inputs to CONST_SCHMITT = TRUE
+            # Operator E value is 0x03, CONST_SCHMITT input type is 0x01
+            opr_value = 0x03
+            const_schmitt = 0x01
+            # Set operator (this will repopulate allowed input type combos)
+            idx = self.combo_operator.findData(opr_value)
+            if idx >= 0:
+                self.combo_operator.setCurrentIndex(idx)
+            self._sync_logic_operator_state()
+
+            # Set both input types to CONST_SCHMITT if available
+            try:
+                idx1 = self.combo_input1_type.findData(const_schmitt)
+                if idx1 >= 0:
+                    self.combo_input1_type.setCurrentIndex(idx1)
+            except Exception:
+                pass
+            try:
+                idx2 = self.combo_input2_type.findData(const_schmitt)
+                if idx2 >= 0:
+                    self.combo_input2_type.setCurrentIndex(idx2)
+            except Exception:
+                pass
+
+            # Set constant values to TRUE (1)
+            self.combo_input1_bool.setCurrentIndex(1)
+            self.combo_input2_bool.setCurrentIndex(1)
+
+            # Disable editing of input types and values while Always ON
+            self.combo_input1_type.setEnabled(False)
+            self.combo_input2_type.setEnabled(False)
+            self.combo_input1_bool.setEnabled(False)
+            self.combo_input2_bool.setEnabled(False)
+            self.edit_input1_value.setEnabled(False)
+            self.edit_input2_value.setEnabled(False)
+            self.combo_operator.setEnabled(False)
+        else:
+            # Re-enable and refresh operator-derived state
+            self.combo_operator.setEnabled(True)
+            self.combo_input1_type.setEnabled(True)
+            self.combo_input2_type.setEnabled(True)
+            # Let the operator logic decide whether input2 should be enabled
+            self._sync_logic_operator_state()
+
+    def _logic_var_label(self, value):
+        return {
+            0x00: "SCHMITT",
+            0x01: "ANALOG",
+            0x02: "ANY",
+            0x03: "NONE",
+        }.get(value, str(value))
+
+    def _populate_input_type_combo(self, combo, allowed_values, current_value=None):
+        combo.blockSignals(True)
+        combo.clear()
+        for value in allowed_values:
+            combo.addItem(self._input_type_label(value), value)
+        if current_value in allowed_values:
+            combo.setCurrentIndex(combo.findData(current_value))
+        elif allowed_values:
+            combo.setCurrentIndex(0)
+        combo.blockSignals(False)
+
+    def _input_type_label(self, value):
+        return {
+            0x00: "SENSOR",
+            0x01: "CONST_SCHMITT",
+            0x02: "CONST_ANALOG",
+            0x03: "UNSET",
+        }.get(value, str(value))
+
+    def _sync_logic_operator_state(self):
+        operator = self.combo_operator.currentData()
+        allowed_first_var, allowed_second_var = LOGIC_OPERATOR_RELATIONS.get(operator, (0x03, 0x03))
+        self.label_relation.setText(
+            f"First: {self._logic_var_label(allowed_first_var)} | Second: {self._logic_var_label(allowed_second_var)}"
+        )
+
+        first_allowed = LOGIC_VAR_TO_INPUT_TYPES.get(allowed_first_var, [0x03])
+        second_allowed = LOGIC_VAR_TO_INPUT_TYPES.get(allowed_second_var, [0x03])
+
+        current_first = self.combo_input1_type.currentData()
+        current_second = self.combo_input2_type.currentData()
+        self._populate_input_type_combo(self.combo_input1_type, first_allowed, current_first)
+        self._populate_input_type_combo(self.combo_input2_type, second_allowed, current_second)
+        self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
+        self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
+
+        second_enabled = allowed_second_var != 0x03
+        self.combo_input2_type.setEnabled(second_enabled)
+        self.edit_input2_value.setEnabled(second_enabled and self.combo_input2_type.currentData() != 0x03)
+        if not second_enabled:
+            self.edit_input2_value.setText("0")
+
+    def _sync_input_row(self, type_combo, value_edit):
+        input_type = type_combo.currentData()
+        is_sensor = input_type == 0x00
+        is_const = input_type in (0x01, 0x02)
+        source_combo = self.combo_input1_source if type_combo is self.combo_input1_type else self.combo_input2_source
+        bool_combo = self.combo_input1_bool if type_combo is self.combo_input1_type else self.combo_input2_bool
+
+        source_combo.setVisible(is_sensor)
+        source_combo.setEnabled(is_sensor)
+        bool_combo.setVisible(input_type == 0x01)
+        bool_combo.setEnabled(input_type == 0x01)
+        value_edit.setVisible(input_type == 0x02)
+        value_edit.setEnabled(input_type == 0x02)
+        if input_type == 0x00:
+            value_edit.setPlaceholderText("Input ID")
+        elif input_type in (0x01, 0x02):
+            value_edit.setPlaceholderText("Constant value")
+        else:
+            value_edit.setPlaceholderText("Unused")
+
+
+class InputsConfigPage(QWidget):
+    inputsChanged = pyqtSignal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setStyleSheet(PAGE_LABEL_STYLE)
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(20, 20, 20, 20)
+        outer.setSpacing(12)
+        outer.setAlignment(Qt.AlignTop)
+
+        summary = QLabel(
+            "This tab only changes the viewport. Physical inputs expose Analog/Digital selection; CAN inputs add bus and decoding fields."
+        )
+        summary.setWordWrap(True)
+        outer.addWidget(summary)
+
+        physical_group = QGroupBox("Physical inputs")
+        physical_layout = QGridLayout(physical_group)
+        physical_layout.setContentsMargins(10, 12, 10, 10)
+        physical_layout.setHorizontalSpacing(10)
+        physical_layout.setVerticalSpacing(8)
+        physical_layout.addWidget(QLabel("Input"), 0, 0)
+        physical_layout.addWidget(QLabel("Interpretation"), 0, 1)
+
+        self.physical_rows = []
+        for index in range(8):
+            label = QLabel(f"Physical input {index + 1}")
+            combo = QComboBox()
+            for option_label, option_value in INPUT_INTERPRETATION_LABELS:
+                combo.addItem(option_label, option_value)
+            physical_layout.addWidget(label, index + 1, 0)
+            physical_layout.addWidget(combo, index + 1, 1)
+            self.physical_rows.append({"label": label, "interpretation": combo})
+
+        outer.addWidget(physical_group)
+
+        can_group = QGroupBox("CAN inputs")
+        can_layout = QGridLayout(can_group)
+        can_layout.setContentsMargins(10, 12, 10, 10)
+        can_layout.setHorizontalSpacing(10)
+        can_layout.setVerticalSpacing(8)
+        can_layout.addWidget(QLabel("Input"), 0, 0)
+        can_layout.addWidget(QLabel("Used"), 0, 1)
+        can_layout.addWidget(QLabel("CAN instance"), 0, 2)
+        can_layout.addWidget(QLabel("CAN ID"), 0, 3)
+        can_layout.addWidget(QLabel("Offset"), 0, 4)
+        can_layout.addWidget(QLabel("Data type"), 0, 5)
+        can_layout.addWidget(QLabel("Interpretation"), 0, 6)
+
+        self.can_rows = []
+        for index in range(16):
+            label = QLabel(f"CAN input {index + 1}")
+
+            check_used = QCheckBox()
+            check_used.setStyleSheet(CHECKBOX_STYLE)
+
+            combo_instance = QComboBox()
+            for option_label, option_value in CAN_INSTANCE_LABELS:
+                combo_instance.addItem(option_label, option_value)
+
+            spin_can_id = _make_spinbox(0, 0x7FF, 0)
+            spin_can_id.setDisplayIntegerBase(16)
+            spin_can_id.setPrefix("0x")
+
+            spin_offset = _make_spinbox(0, 7, 0)
+
+            combo_data_type = QComboBox()
+            for option_label, option_value in CAN_INPUT_DATA_TYPE_LABELS:
+                combo_data_type.addItem(option_label, option_value)
+
+            combo_interpretation = QComboBox()
+            for option_label, option_value in INPUT_INTERPRETATION_LABELS:
+                combo_interpretation.addItem(option_label, option_value)
+
+            can_layout.addWidget(label, index + 1, 0)
+            can_layout.addWidget(check_used, index + 1, 1)
+            can_layout.addWidget(combo_instance, index + 1, 2)
+            can_layout.addWidget(spin_can_id, index + 1, 3)
+            can_layout.addWidget(spin_offset, index + 1, 4)
+            can_layout.addWidget(combo_data_type, index + 1, 5)
+            can_layout.addWidget(combo_interpretation, index + 1, 6)
+
+            self.can_rows.append(
+                {
+                    "label": label,
+                    "used": check_used,
+                    "instance": combo_instance,
+                    "can_id": spin_can_id,
+                    "offset": spin_offset,
+                    "data_type": combo_data_type,
+                    "interpretation": combo_interpretation,
+                }
+            )
+            check_used.toggled.connect(lambda *_: self.inputsChanged.emit())
+            combo_instance.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
+            spin_can_id.valueChanged.connect(lambda *_: self.inputsChanged.emit())
+            spin_offset.valueChanged.connect(lambda *_: self.inputsChanged.emit())
+
+        outer.addWidget(can_group)
+
+    def get_sensor_sources(self):
+        sources = []
+        for index in range(8):
+            sources.append((f"PHY input {index + 1}", f"phy:{index + 1}"))
+
+        for index, row in enumerate(self.can_rows):
+            if not row["used"].isChecked():
+                continue
+            can_id = row["can_id"].value()
+            can_instance = row["instance"].currentData()
+            offset = row["offset"].value()
+            sources.append(
+                (
+                    f"CAN input {index + 1} (inst {can_instance + 1}, 0x{can_id:03X}, off {offset})",
+                    f"can:{index + 1}",
+                )
+            )
+
+        return sources
+
+
 class ConfigTab(QWidget):
     send_binary_requested = pyqtSignal(object)
     send_reset_requested = pyqtSignal()
@@ -521,7 +964,7 @@ class ConfigTab(QWidget):
 
         title_row = QHBoxLayout()
         title_row.setContentsMargins(12, 12, 12, 12)
-        title_label = QLabel("Output channel configuration")
+        title_label = QLabel("Device control configuration")
         title_label.setStyleSheet("font-size: 16px; font-weight: bold;")
         title_row.addWidget(title_label)
         title_row.addStretch(1)
@@ -568,6 +1011,13 @@ class ConfigTab(QWidget):
         self.tabs = QTabWidget()
         self.tabs.setMovable(True)
         self.tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        inputs_scroll = QScrollArea()
+        inputs_scroll.setWidgetResizable(True)
+        inputs_scroll.setFrameShape(QScrollArea.NoFrame)
+        inputs_scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.inputs_page = InputsConfigPage()
+        inputs_scroll.setWidget(self.inputs_page)
+        self.tabs.addTab(inputs_scroll, "Inputs")
         self.channel_widgets = []
         for index in range(CHANNEL_COUNT):
             scroll = QScrollArea()
@@ -575,10 +1025,13 @@ class ConfigTab(QWidget):
             scroll.setFrameShape(QScrollArea.NoFrame)
             scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             page = ChannelConfigPage(index)
+            page.logic_page.set_sensor_source_provider(self.inputs_page.get_sensor_sources)
             self.channel_widgets.append(page)
             scroll.setWidget(page)
             self.tabs.addTab(scroll, f"Channel {index + 1}")
         layout.addWidget(self.tabs, 1)
+
+        self.inputs_page.inputsChanged.connect(self._refresh_logic_sensor_sources)
 
         transfer_box = QGroupBox("Transfer status")
         transfer_box.setStyleSheet(TRANSFER_GROUP_STYLE)
@@ -613,6 +1066,12 @@ class ConfigTab(QWidget):
         for index, channel_data in enumerate(channels[: len(self.channel_widgets)]):
             if isinstance(channel_data, dict):
                 self.channel_widgets[index].apply_dict(channel_data)
+
+        self._refresh_logic_sensor_sources()
+
+    def _refresh_logic_sensor_sources(self):
+        for channel_widget in self.channel_widgets:
+            channel_widget.logic_page.refresh_sensor_sources()
 
     def _build_binary_payload(self):
         # STM32 expects a raw array of packed channel structs with no file header.
