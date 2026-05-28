@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QCheckBox,
     QComboBox,
+    QFrame,
     QFileDialog,
     QFormLayout,
     QGroupBox,
@@ -352,6 +353,7 @@ class ChannelConfigPage(QWidget):
         self.combo_after_error_behavior.addItem("LATCH", OUT_ERR_BEH_LATCH)
         self.combo_after_error_behavior.addItem("TIME_LATCH", OUT_ERR_BEH_TIME_LATCH)
         self.combo_after_error_behavior.addItem("RETRY", OUT_ERR_BEH_RETRY)
+        self.combo_after_error_behavior.setCurrentIndex(self.combo_after_error_behavior.findData(OUT_ERR_BEH_LATCH))
         self.edit_after_error_latch_time = _make_spinbox(0, 2147483647, 0, " ms")
         safety_form.addRow(FIELD_LABELS["safety"]["after_error_behavior"], self.combo_after_error_behavior)
         safety_form.addRow(FIELD_LABELS["safety"]["after_error_latch_time"], self.edit_after_error_latch_time)
@@ -616,6 +618,8 @@ class ChannelConfigPage(QWidget):
 
 
 class LogicChannelPage(QWidget):
+    logicChanged = pyqtSignal()
+
     def __init__(self, channel_index, parent=None):
         super().__init__(parent)
         self.channel_index = channel_index
@@ -712,9 +716,19 @@ class LogicChannelPage(QWidget):
         self.combo_operator.currentIndexChanged.connect(self._sync_logic_operator_state)
         self.combo_input1_type.currentIndexChanged.connect(lambda *_: self._sync_input_row(self.combo_input1_type, self.edit_input1_value))
         self.combo_input2_type.currentIndexChanged.connect(lambda *_: self._sync_input_row(self.combo_input2_type, self.edit_input2_value))
-        self.combo_input1_source.currentIndexChanged.connect(lambda *_: None)
-        self.combo_input2_source.currentIndexChanged.connect(lambda *_: None)
+        self.combo_input1_source.currentIndexChanged.connect(self._emit_logic_changed)
+        self.combo_input2_source.currentIndexChanged.connect(self._emit_logic_changed)
         self.check_always_on.toggled.connect(self._on_always_on_toggled)
+
+        self.check_used.toggled.connect(self._emit_logic_changed)
+        self.combo_operator.currentIndexChanged.connect(self._emit_logic_changed)
+        self.combo_input1_type.currentIndexChanged.connect(self._emit_logic_changed)
+        self.combo_input2_type.currentIndexChanged.connect(self._emit_logic_changed)
+        self.combo_input1_bool.currentIndexChanged.connect(self._emit_logic_changed)
+        self.combo_input2_bool.currentIndexChanged.connect(self._emit_logic_changed)
+        self.edit_input1_value.textChanged.connect(self._emit_logic_changed)
+        self.edit_input2_value.textChanged.connect(self._emit_logic_changed)
+        self.check_always_on.toggled.connect(self._emit_logic_changed)
 
         self._sync_logic_operator_state()
         self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
@@ -762,6 +776,9 @@ class LogicChannelPage(QWidget):
             except Exception:
                 return 0
         return 0
+
+    def _emit_logic_changed(self, *_args):
+        self.logicChanged.emit()
 
     def apply_dict(self, data):
         if not isinstance(data, dict):
@@ -967,6 +984,15 @@ class LogicChannelPage(QWidget):
 class InputsConfigPage(QWidget):
     inputsChanged = pyqtSignal()
 
+    @staticmethod
+    def _make_column_separator():
+        separator = QFrame()
+        separator.setFrameShape(QFrame.VLine)
+        separator.setFrameShadow(QFrame.Plain)
+        separator.setLineWidth(1)
+        separator.setStyleSheet("color: #444444;")
+        return separator
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setStyleSheet(PAGE_LABEL_STYLE)
@@ -988,17 +1014,25 @@ class InputsConfigPage(QWidget):
         physical_layout.setHorizontalSpacing(10)
         physical_layout.setVerticalSpacing(8)
         physical_layout.addWidget(QLabel("Input"), 0, 0)
-        physical_layout.addWidget(QLabel("Interpretation"), 0, 1)
+        physical_layout.addWidget(self._make_column_separator(), 0, 1)
+        physical_layout.addWidget(QLabel("Used by outputs"), 0, 2)
+        physical_layout.addWidget(self._make_column_separator(), 0, 3)
+        physical_layout.addWidget(QLabel("Interpretation"), 0, 4)
 
         self.physical_rows = []
         for index in range(8):
             label = QLabel(f"Physical input {index + 1}")
             combo = QComboBox()
+            usage = QLabel("-")
+            usage.setWordWrap(True)
             for option_label, option_value in INPUT_INTERPRETATION_LABELS:
                 combo.addItem(option_label, option_value)
             physical_layout.addWidget(label, index + 1, 0)
-            physical_layout.addWidget(combo, index + 1, 1)
-            self.physical_rows.append({"label": label, "interpretation": combo})
+            physical_layout.addWidget(self._make_column_separator(), index + 1, 1)
+            physical_layout.addWidget(usage, index + 1, 2)
+            physical_layout.addWidget(self._make_column_separator(), index + 1, 3)
+            physical_layout.addWidget(combo, index + 1, 4)
+            self.physical_rows.append({"label": label, "interpretation": combo, "usage": usage})
             combo.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
 
         outer.addWidget(physical_group)
@@ -1009,12 +1043,20 @@ class InputsConfigPage(QWidget):
         can_layout.setHorizontalSpacing(10)
         can_layout.setVerticalSpacing(8)
         can_layout.addWidget(QLabel("Input"), 0, 0)
-        can_layout.addWidget(QLabel("Used"), 0, 1)
-        can_layout.addWidget(QLabel("CAN instance"), 0, 2)
-        can_layout.addWidget(QLabel("CAN ID"), 0, 3)
-        can_layout.addWidget(QLabel("Offset"), 0, 4)
-        can_layout.addWidget(QLabel("Data type"), 0, 5)
-        can_layout.addWidget(QLabel("Interpretation"), 0, 6)
+        can_layout.addWidget(self._make_column_separator(), 0, 1)
+        can_layout.addWidget(QLabel("Used"), 0, 2)
+        can_layout.addWidget(self._make_column_separator(), 0, 3)
+        can_layout.addWidget(QLabel("Used by outputs"), 0, 4)
+        can_layout.addWidget(self._make_column_separator(), 0, 5)
+        can_layout.addWidget(QLabel("CAN instance"), 0, 6)
+        can_layout.addWidget(self._make_column_separator(), 0, 7)
+        can_layout.addWidget(QLabel("CAN ID"), 0, 8)
+        can_layout.addWidget(self._make_column_separator(), 0, 9)
+        can_layout.addWidget(QLabel("Offset"), 0, 10)
+        can_layout.addWidget(self._make_column_separator(), 0, 11)
+        can_layout.addWidget(QLabel("Data type"), 0, 12)
+        can_layout.addWidget(self._make_column_separator(), 0, 13)
+        can_layout.addWidget(QLabel("Interpretation"), 0, 14)
 
         self.can_rows = []
         for index in range(16):
@@ -1040,14 +1082,24 @@ class InputsConfigPage(QWidget):
             combo_interpretation = QComboBox()
             for option_label, option_value in INPUT_INTERPRETATION_LABELS:
                 combo_interpretation.addItem(option_label, option_value)
+            usage = QLabel("-")
+            usage.setWordWrap(True)
 
             can_layout.addWidget(label, index + 1, 0)
-            can_layout.addWidget(check_used, index + 1, 1)
-            can_layout.addWidget(combo_instance, index + 1, 2)
-            can_layout.addWidget(spin_can_id, index + 1, 3)
-            can_layout.addWidget(spin_offset, index + 1, 4)
-            can_layout.addWidget(combo_data_type, index + 1, 5)
-            can_layout.addWidget(combo_interpretation, index + 1, 6)
+            can_layout.addWidget(self._make_column_separator(), index + 1, 1)
+            can_layout.addWidget(check_used, index + 1, 2)
+            can_layout.addWidget(self._make_column_separator(), index + 1, 3)
+            can_layout.addWidget(usage, index + 1, 4)
+            can_layout.addWidget(self._make_column_separator(), index + 1, 5)
+            can_layout.addWidget(combo_instance, index + 1, 6)
+            can_layout.addWidget(self._make_column_separator(), index + 1, 7)
+            can_layout.addWidget(spin_can_id, index + 1, 8)
+            can_layout.addWidget(self._make_column_separator(), index + 1, 9)
+            can_layout.addWidget(spin_offset, index + 1, 10)
+            can_layout.addWidget(self._make_column_separator(), index + 1, 11)
+            can_layout.addWidget(combo_data_type, index + 1, 12)
+            can_layout.addWidget(self._make_column_separator(), index + 1, 13)
+            can_layout.addWidget(combo_interpretation, index + 1, 14)
 
             self.can_rows.append(
                 {
@@ -1058,6 +1110,7 @@ class InputsConfigPage(QWidget):
                     "offset": spin_offset,
                     "data_type": combo_data_type,
                     "interpretation": combo_interpretation,
+                    "usage": usage,
                 }
             )
             check_used.toggled.connect(lambda *_: self.inputsChanged.emit())
@@ -1068,6 +1121,17 @@ class InputsConfigPage(QWidget):
             combo_interpretation.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
 
         outer.addWidget(can_group)
+
+    def set_usage_by_input(self, usage_by_input):
+        usage_by_input = usage_by_input or {}
+
+        for index, row in enumerate(self.physical_rows):
+            outputs = usage_by_input.get(index, [])
+            row["usage"].setText(", ".join(outputs) if outputs else "-")
+
+        for index, row in enumerate(self.can_rows):
+            outputs = usage_by_input.get(8 + index, [])
+            row["usage"].setText(", ".join(outputs) if outputs else "-")
 
     def _packed_input_mode(self, interpretation_combo):
         output = interpretation_combo.currentData()
@@ -1198,6 +1262,7 @@ class ConfigTab(QWidget):
     send_binary_requested = pyqtSignal(object)
     send_reset_requested = pyqtSignal()
     request_config_requested = pyqtSignal()
+    can_frames_changed = pyqtSignal(object)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1275,12 +1340,17 @@ class ConfigTab(QWidget):
             scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             page = ChannelConfigPage(index)
             page.logic_page.set_sensor_source_provider(self.inputs_page.get_sensor_sources)
+            page.logic_page.logicChanged.connect(self._refresh_input_usage_summary)
+            page.edit_name.textChanged.connect(self._refresh_input_usage_summary)
             self.channel_widgets.append(page)
             scroll.setWidget(page)
             self.tabs.addTab(scroll, f"Channel {index + 1}")
         layout.addWidget(self.tabs, 1)
 
         self.inputs_page.inputsChanged.connect(self._refresh_logic_sensor_sources)
+        self.inputs_page.inputsChanged.connect(self._emit_can_frames_changed)
+        self._refresh_logic_sensor_sources()
+        self._emit_can_frames_changed()
 
         transfer_box = QGroupBox("Transfer status")
         transfer_box.setStyleSheet(TRANSFER_GROUP_STYLE)
@@ -1335,10 +1405,61 @@ class ConfigTab(QWidget):
                         self.channel_widgets[index].logic_page.apply_dict(logic_item)
 
         self._refresh_logic_sensor_sources()
+        self._emit_can_frames_changed()
+
+    def get_defined_can_frame_options(self):
+        # Build a unique list of arbitration IDs from enabled CAN input rows.
+        options = []
+        seen_ids = set()
+        for index, row in enumerate(self.inputs_page.can_rows):
+            if not row["used"].isChecked():
+                continue
+            can_id = int(row["can_id"].value())
+            if can_id in seen_ids:
+                continue
+            seen_ids.add(can_id)
+            instance = int(row["instance"].currentData()) + 1
+            options.append((f"CAN input {index + 1} (inst {instance}, 0x{can_id:03X})", can_id))
+        return options
+
+    def _emit_can_frames_changed(self):
+        self.can_frames_changed.emit(self.get_defined_can_frame_options())
 
     def _refresh_logic_sensor_sources(self):
         for channel_widget in self.channel_widgets:
             channel_widget.logic_page.refresh_sensor_sources()
+        self._refresh_input_usage_summary()
+
+    def _refresh_input_usage_summary(self):
+        usage_by_input = {}
+
+        for output_index, channel_widget in enumerate(self.channel_widgets):
+            logic_data = channel_widget.logic_page.to_dict()
+            if not logic_data.get("isUsed"):
+                continue
+
+            output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
+            output_label = f"CH{output_index + 1}:{output_name}"
+
+            exp = logic_data.get("exp", {}) or {}
+            for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
+                if exp.get(type_key) != LOGIC_INPUT_TYPE_SENSOR:
+                    continue
+
+                source_id = exp.get(id_key)
+                if source_id is None:
+                    continue
+                try:
+                    source_id = int(source_id)
+                except Exception:
+                    continue
+
+                if source_id not in usage_by_input:
+                    usage_by_input[source_id] = []
+                if output_label not in usage_by_input[source_id]:
+                    usage_by_input[source_id].append(output_label)
+
+        self.inputs_page.set_usage_by_input(usage_by_input)
 
     def _build_output_payload(self):
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)

@@ -1,9 +1,11 @@
 import multiprocessing
+import time
 import sys
 from pathlib import Path
 
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPixmap
+from PyQt5.QtWidgets import QSplashScreen
 from PyQt5.QtWidgets import (
     QApplication,
     QComboBox,
@@ -57,6 +59,7 @@ class MainWindow(QMainWindow):
 
         self.worker_process = None
         self.worker_started = False
+        self.last_frame_rx_time = 0.0
 
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
         self.latest_ch = [
@@ -80,6 +83,10 @@ class MainWindow(QMainWindow):
         self.plot_timer = QTimer(self)
         self.plot_timer.timeout.connect(self.update_plots)
         self.plot_timer.start(PLOT_UPDATE_MS)
+
+        self.hb_timer = QTimer(self)
+        self.hb_timer.timeout.connect(self.update_heartbeat_status)
+        self.hb_timer.start(200)
 
         QTimer.singleShot(0, self.start_can_worker)
 
@@ -119,6 +126,10 @@ class MainWindow(QMainWindow):
         sys_grid.addWidget(QLabel("Total I Avg:"), 4, 0)
         self.lbl_total_i = QLabel("- mA")
         sys_grid.addWidget(self.lbl_total_i, 4, 1)
+        sys_grid.addWidget(QLabel("Invalid logic:"), 5, 0)
+        self.lbl_logic_valid_mask = QLabel("-")
+        self.lbl_logic_valid_mask.setWordWrap(True)
+        sys_grid.addWidget(self.lbl_logic_valid_mask, 5, 1)
         top_panel.addWidget(sys_box, stretch=2)
 
         tx_box = QGroupBox("Send CAN Frame")
@@ -126,7 +137,7 @@ class MainWindow(QMainWindow):
         self.combo_tx_id = QComboBox()
         self.combo_tx_id.setEditable(True)
         for name, cid in IDS.items():
-            self.combo_tx_id.addItem(f"{name} (0x{cid:03X})")
+            self.combo_tx_id.addItem(f"{name} (0x{cid:03X})", cid)
         self.combo_tx_id.setCurrentText("SYS_STATUS (0x401)")
         tx_layout.addWidget(self.combo_tx_id, 0, 0, 1, 2)
         tx_layout.addWidget(QLabel("Data (hex):"), 1, 0)
@@ -184,7 +195,54 @@ class MainWindow(QMainWindow):
         self.config_tab.send_binary_requested.connect(self.send_isotp_config)
         self.config_tab.send_reset_requested.connect(self.send_reset_device)
         self.config_tab.request_config_requested.connect(self.request_config_from_device)
+        self.config_tab.can_frames_changed.connect(self._refresh_tx_frame_options)
         tabs.addTab(self.config_tab, "Configuration")
+        self._refresh_tx_frame_options(self.config_tab.get_defined_can_frame_options())
+
+        hb_corner = QWidget()
+        hb_corner_layout = QHBoxLayout(hb_corner)
+        hb_corner_layout.setContentsMargins(8, 0, 8, 0)
+        hb_corner_layout.setSpacing(6)
+        hb_corner_layout.addStretch(1)
+        self.lbl_hb_dot = QLabel("●")
+        self.lbl_hb_dot.setStyleSheet("color: #FF8A80; font-size: 14px; font-weight: bold;")
+        self.lbl_hb_status = QLabel("Disconnected")
+        self.lbl_hb_status.setStyleSheet("color: #FF8A80; font-weight: bold;")
+        hb_corner_layout.addWidget(self.lbl_hb_dot)
+        hb_corner_layout.addWidget(self.lbl_hb_status)
+        tabs.setCornerWidget(hb_corner, Qt.TopRightCorner)
+
+    def _refresh_tx_frame_options(self, options):
+        current_data = self.combo_tx_id.currentData()
+        current_text = self.combo_tx_id.currentText()
+
+        self.combo_tx_id.blockSignals(True)
+        self.combo_tx_id.clear()
+
+        if options:
+            for label, can_id in options:
+                self.combo_tx_id.addItem(label, can_id)
+        else:
+            for name, cid in IDS.items():
+                self.combo_tx_id.addItem(f"{name} (0x{cid:03X})", cid)
+
+        restored = False
+        if current_data is not None:
+            idx = self.combo_tx_id.findData(current_data)
+            if idx >= 0:
+                self.combo_tx_id.setCurrentIndex(idx)
+                restored = True
+
+        if not restored and current_text:
+            idx = self.combo_tx_id.findText(current_text)
+            if idx >= 0:
+                self.combo_tx_id.setCurrentIndex(idx)
+                restored = True
+
+        if not restored and self.combo_tx_id.count() > 0:
+            self.combo_tx_id.setCurrentIndex(0)
+
+        self.combo_tx_id.blockSignals(False)
 
     def send_isotp_config(self, payload):
         self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
@@ -198,8 +256,12 @@ class MainWindow(QMainWindow):
     def send_selected_frame(self):
         tx_id_text = self.combo_tx_id.currentText()
         try:
-            cleaned = tx_id_text.split(" (")[0]
-            arbitration_id = IDS[cleaned] if cleaned in IDS else int(cleaned, 0)
+            current_data = self.combo_tx_id.currentData()
+            if current_data is not None:
+                arbitration_id = int(current_data)
+            else:
+                cleaned = tx_id_text.split(" (")[0]
+                arbitration_id = IDS[cleaned] if cleaned in IDS else int(cleaned, 0)
         except Exception:
             QMessageBox.critical(self, "CAN Field Error", "Invalid Target Arbitration Identifier")
             return
@@ -242,6 +304,7 @@ class MainWindow(QMainWindow):
                 self.latest_phy = packet["phy"]
                 self.latest_frames = packet.get("frames", [])
                 self.plot_panel.update_from_packet(packet)
+                self.last_frame_rx_time = time.time()
                 updated = True
             except Exception:
                 break
@@ -254,6 +317,14 @@ class MainWindow(QMainWindow):
         self.lbl_temp.setText(f"{self.latest_sys['core_temp']:.1f} °C")
         self.lbl_safety.setText(str(self.latest_sys["safety"]))
         self.lbl_total_i.setText(f"{self.latest_sys['total_current']:.1f} mA")
+        logic_valid_mask = int(self.latest_sys.get("logicValidMask", 0))
+        invalid_outputs = [str(index + 1) for index in range(CHANNEL_COUNT) if not (logic_valid_mask & (1 << index))]
+        if invalid_outputs:
+            self.lbl_logic_valid_mask.setText(", ".join(invalid_outputs))
+            self.lbl_logic_valid_mask.setStyleSheet("color: #FF8A80; font-weight: bold;")
+        else:
+            self.lbl_logic_valid_mask.setText("None")
+            self.lbl_logic_valid_mask.setStyleSheet("")
 
         for i, ch in enumerate(self.latest_ch):
             bg_hex, text_hex = get_row_colors(ch["state"], ch["status"])
@@ -294,6 +365,25 @@ class MainWindow(QMainWindow):
             if freq_item.text() != freq_text:
                 freq_item.setText(freq_text)
 
+        self.update_heartbeat_status()
+
+    def update_heartbeat_status(self):
+        if self.last_frame_rx_time <= 0:
+            self.lbl_hb_status.setText("Disconnected")
+            self.lbl_hb_status.setStyleSheet("color: #FF8A80; font-weight: bold;")
+            self.lbl_hb_dot.setStyleSheet("color: #FF8A80; font-size: 14px; font-weight: bold;")
+            return
+
+        age_s = time.time() - self.last_frame_rx_time
+        if age_s > 1.0:
+            self.lbl_hb_status.setText(f"Disconnected ({age_s:.1f}s)")
+            self.lbl_hb_status.setStyleSheet("color: #FF8A80; font-weight: bold;")
+            self.lbl_hb_dot.setStyleSheet("color: #FF8A80; font-size: 14px; font-weight: bold;")
+        else:
+            self.lbl_hb_status.setText(f"Connected ({age_s:.1f}s)")
+            self.lbl_hb_status.setStyleSheet("color: #81C784; font-weight: bold;")
+            self.lbl_hb_dot.setStyleSheet("color: #81C784; font-size: 14px; font-weight: bold;")
+
     def update_plots(self):
         if not self.plotting_enabled:
             return
@@ -318,6 +408,24 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyleSheet(build_dark_stylesheet(CHECKBOX_TICK_PATH))
     app.setWindowIcon(QIcon("assets/pdms.ico"))
+    # Show a splash/loading screen during application bring-up
+    splash_pix_path = Path(__file__).resolve().parent / "assets" / "pdms_splash.png"
+    if splash_pix_path.exists():
+        pix = QPixmap(str(splash_pix_path))
+    else:
+        # Fallback: small blank pixmap with icon if no splash image available
+        pix = QPixmap(480, 300)
+        pix.fill(QColor('#2D2D2D'))
+
+    splash = QSplashScreen(pix)
+    splash.showMessage("Loading PDMS...", Qt.AlignBottom | Qt.AlignHCenter, QColor("#FFFFFF"))
+    splash.show()
+    app.processEvents()
+
     window = MainWindow()
     window.show()
+
+    # Finish the splash after the main window is visible (short delay to let init finish)
+    QTimer.singleShot(600, lambda: splash.finish(window))
+
     sys.exit(app.exec_())

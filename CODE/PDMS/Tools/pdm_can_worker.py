@@ -352,7 +352,7 @@ def can_isolated_process(pipe_conn, tx_queue):
         for _ in range(CHANNEL_COUNT)
     ]
     phy_inputs = [0] * PHY_INPUT_COUNT
-    sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
+    sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0, "logicValidMask": 0}
     name_parts = defaultdict(dict)
     current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
 
@@ -449,8 +449,14 @@ def can_isolated_process(pipe_conn, tx_queue):
         frame_last_seen[cid] = t_now
 
         if cid == IDS["SYS_STATUS"]:
-            status, batt_voltage, core_temp, safety_line_state = parse_system_status(d)
-            sys_status.update({"status": status, "batt": batt_voltage, "core_temp": core_temp, "safety": safety_line_state})
+            status, batt_voltage, core_temp, safety_line_state, logic_valid_mask = parse_system_status(d)
+            sys_status.update({
+                "status": status,
+                "batt": batt_voltage,
+                "core_temp": core_temp,
+                "safety": safety_line_state,
+                "logicValidMask": logic_valid_mask,
+            })
         elif cid == IDS["STATUS_1_8"]:
             for i in range(min(8, len(d))):
                 channels[i]["status"] = d[i]

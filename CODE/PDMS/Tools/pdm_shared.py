@@ -104,4 +104,7 @@ def parse_system_status(data):
     batt_voltage = data[1] | (data[2] << 8)
     core_temp_raw = struct.unpack_from("<h", data, 3)[0]
     safety_line_state = "OK" if len(data) > 5 and data[5] == 1 else "FAULT"
-    return status, batt_voltage, core_temp_raw / 10.0, safety_line_state
+    logic_valid_mask = 0
+    if len(data) >= 8:
+        logic_valid_mask = data[6] | (data[7] << 8)
+    return status, batt_voltage, core_temp_raw / 10.0, safety_line_state, logic_valid_mask
