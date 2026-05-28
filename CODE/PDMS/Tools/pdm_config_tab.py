@@ -1070,7 +1070,11 @@ class InputsConfigPage(QWidget):
         outer.addWidget(can_group)
 
     def _packed_input_mode(self, interpretation_combo):
-        return IN_MODE_SCHMITT if interpretation_combo.currentData() == 0x00 else IN_MODE_ANALOG
+        output = interpretation_combo.currentData()
+        return IN_MODE_SCHMITT if output == 0x00 else IN_MODE_ANALOG
+
+    def _unpacked_input_mode(self, interpretation_value):
+        return 0x00 if interpretation_value == IN_MODE_SCHMITT else 0x01
 
     def to_dict(self):
         return {
@@ -1105,9 +1109,10 @@ class InputsConfigPage(QWidget):
         for index, row_data in enumerate(physical[: len(self.physical_rows)]):
             if not isinstance(row_data, dict):
                 continue
-            mode_index = self.physical_rows[index]["interpretation"].findData(
-                IN_MODE_SCHMITT if int(row_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else 0x01
-            )
+            mode_index = self._unpacked_input_mode(row_data.get("mode", self._packed_input_mode(self.physical_rows[index]["interpretation"]))   )
+            # mode_index = self.physical_rows[index]["interpretation"].findData(
+            #     IN_MODE_SCHMITT if int(row_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else 0x01
+            # )
             if mode_index >= 0:
                 self.physical_rows[index]["interpretation"].setCurrentIndex(mode_index)
 
@@ -1124,9 +1129,10 @@ class InputsConfigPage(QWidget):
             data_type_index = self.can_rows[index]["data_type"].findData(row_data.get("dataType", self.can_rows[index]["data_type"].currentData()))
             if data_type_index >= 0:
                 self.can_rows[index]["data_type"].setCurrentIndex(data_type_index)
-            mode_index = self.can_rows[index]["interpretation"].findData(
-                IN_MODE_SCHMITT if int(row_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else 0x01
-            )
+            mode_index = self._unpacked_input_mode(row_data.get("mode", self._packed_input_mode(self.can_rows[index]["interpretation"])))
+            # mode_index = self.can_rows[index]["interpretation"].findData(
+            #     IN_MODE_SCHMITT if int(row_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else 0x01
+            # )
             if mode_index >= 0:
                 self.can_rows[index]["interpretation"].setCurrentIndex(mode_index)
 
@@ -1624,7 +1630,21 @@ class ConfigTab(QWidget):
             )
             offset += LOGIC_RECORD_SIZE
 
-        self.apply_config({"channels": channels, "inputs": {"can": can_inputs, "physical": inputs[:8]}, "logic": logic})
+        # Merge mode information from the parsed `inputs` records into the CAN entries
+        # so the viewport interpretation can be updated correctly for CAN inputs.
+        merged_can = []
+        for i, can_entry in enumerate(can_inputs[:CAN_INPUT_COUNT]):
+            mode_val = None
+            # inputs contains physical (first 8) then CAN entries
+            can_input_index = 8 + i
+            if can_input_index < len(inputs):
+                mode_val = inputs[can_input_index].get("mode")
+            entry = dict(can_entry)
+            if mode_val is not None:
+                entry["mode"] = mode_val
+            merged_can.append(entry)
+
+        self.apply_config({"channels": channels, "inputs": {"can": merged_can, "physical": inputs[:8]}, "logic": logic})
 
     def export_binary(self):
         default_name = str(CONFIG_DIR / "pdm_output_config.bin")
