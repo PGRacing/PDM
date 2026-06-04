@@ -1153,6 +1153,7 @@ static void OUT_DIAG_OnErrorFallback(T_OUT_ID id)
   case OUT_ERR_BEH_NO:
     break;
 
+  case OUT_ERR_BEH_TIME_LATCH: // Not implemented
   case OUT_ERR_BEH_LATCH:
     // Latch channel in off state till device reset
     OUT_SetState(id, OUT_STATE_ERR_LATCH);

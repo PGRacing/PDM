@@ -144,7 +144,7 @@ static bool LOGIC_IsExpValid( T_LOGIC_EXPRESSION exp )
   }
   else if(relation.allowedSecond == LOGIC_VAR_TYPE_ANY)
   {
-    res = TRUE;
+    res &= TRUE;
   }
   else
   {
@@ -161,13 +161,6 @@ static bool LOGIC_EvaluateExpression (T_LOGIC_EXPRESSION exp)
   uint32_t r_data1 = 0;
   uint32_t r_data2 = 0;
   bool result = FALSE;
-
-  // Validate expression 
-  if( LOGIC_IsExpValid( exp ) == FALSE )
-  {
-    LOG_WARN("LOGIC: Logic expression invalid!");
-    ASSERT( FALSE );
-  }
 
   // Acquire data for first part of expression
   if(exp.input1Type == LOGIC_INPUT_TYPE_SENSOR)
@@ -350,23 +343,49 @@ T_LOGIC_CFG logicCfg[POWER_OUT_COUNT] =
   }
 };
 
-bool logicReg[POWER_OUT_COUNT] = {FALSE};
+T_LOGIC_REG logicReg[POWER_OUT_COUNT] = {};
 
-bool* LOGIC_Evaluate(void)
+T_LOGIC_REG* LOGIC_Evaluate(void)
 {
   for( uint8_t i = 0; i < POWER_OUT_COUNT; i++)
   {
     if( logicCfg[i].isUsed )
     {
-      logicReg[i] = LOGIC_EvaluateExpression(logicCfg[i].exp);
+      // Validate expression 
+      if( LOGIC_IsExpValid( logicCfg[i].exp ) == FALSE )
+      {
+        logicReg[i].state = FALSE;
+        logicReg[i].valid = FALSE;
+        LOG_WARN("LOGIC: Logic expression invalid!");
+        ASSERT( FALSE );
+      }else
+      {
+        logicReg[i].state = LOGIC_EvaluateExpression(logicCfg[i].exp);
+        logicReg[i].valid = TRUE;
+      }
     }
     else
     {
-      logicReg[i] = FALSE;
+      logicReg[i].state = FALSE;
+      logicReg[i].valid = TRUE;
     }
   }
   
   return logicReg;
+}
+
+uint16_t LOGIC_GetValid(void)
+{
+  uint16_t resMask = 0x00;
+  for(uint8_t i = 0; i < POWER_OUT_COUNT; i++)
+  {
+    if( logicReg[i].valid == TRUE)
+    {
+      resMask |= (1 << i);
+    }
+  }
+  
+  return resMask;
 }
 
 // void testTaskEntry(void *argument)

@@ -23,14 +23,14 @@
 
 /// CONFIG
 #define POWER_OUT_COUNT 16
-#define USE_PDM_ASSERT 1
+//#define USE_PDM_ASSERT 0
 
 void assert_failed_pdm(uint8_t *file, uint32_t line);
 
 #ifdef USE_PDM_ASSERT
 #define ASSERT(expr) ((expr) ? (void)0U : assert_failed_pdm((uint8_t *)__FILE__, __LINE__))
 #else
-#define ASSERT(...)
+#define ASSERT(expr) ((void)0U)
 #endif
 
 typedef enum

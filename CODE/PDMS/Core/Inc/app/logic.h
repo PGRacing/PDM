@@ -62,6 +62,12 @@ typedef struct
   T_LOGIC_EXPRESSION exp;
 } T_LOGIC_CFG;
 
+typedef struct _T_LOGIC_REG
+{
+  bool state;
+  bool valid;
+}T_LOGIC_REG;
+
 /// @brief Logic module configuration
 extern T_LOGIC_CFG logicCfg[POWER_OUT_COUNT];
 
@@ -69,6 +75,10 @@ extern T_LOGIC_CFG logicCfg[POWER_OUT_COUNT];
 
 /// @brief Evaluate logic expressions controling all outputs
 /// @return Array of evaluated results
-bool* LOGIC_Evaluate(void);
+T_LOGIC_REG* LOGIC_Evaluate(void);
+
+/// @brief Get bitmask of valid logic outputs
+/// @return Bitmask of valid logic outputs, bit i is set if output i is valid
+uint16_t LOGIC_GetValid(void);
 
 #endif

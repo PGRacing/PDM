@@ -43,6 +43,7 @@ typedef struct __packed _T_CANH_SYSTEM_STATUS
     uint16_t battVoltage;
     int16_t coreTemp;
     uint8_t  safetyLineState;
+    uint16_t logicValidMask; // Bitmask of valid logic outputs, bit i is set if output i is valid
 }T_CANH_SYSTEM_STATUS;
 
 typedef struct __packed _T_CANH_TX_STATUS_8CH
@@ -123,7 +124,7 @@ void CANH_Send_TxStatus9_16(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, ui
 
 void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16]);
 
-void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyLineStatus);
+void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyLineStatus, uint16_t logicValidMask);
 
 void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7]);
 

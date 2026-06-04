@@ -445,12 +445,13 @@ void CANH_Send_TxCurrent13_16(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2
     CANH_PushToTxQueue(instance, CANH_TxCurrent13_16);
 }
 
-void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyState)
+void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyState, uint16_t logicValidMask)
 {
     CANH_TxSysStatus.data.system_status.status = sysStatus;
     CANH_TxSysStatus.data.system_status.battVoltage = battVoltage;
     CANH_TxSysStatus.data.system_status.coreTemp = coreTemp;
     CANH_TxSysStatus.data.system_status.safetyLineState = safetyState;
+    CANH_TxSysStatus.data.system_status.logicValidMask = logicValidMask;
 
     CANH_PushToTxQueue(instance, CANH_TxSysStatus);
 }

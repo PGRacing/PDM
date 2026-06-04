@@ -7,6 +7,7 @@
 #include "string.h"
 #include "cmsis_os2.h"
 #include "semphr.h"
+#include "logic.h"
 
 #define TELEM_OUT_NAME_PART 7
 
@@ -50,7 +51,7 @@ static void TELEM_SendStatusByCan(T_CANH_INSTANCE canInstance)
 
 static void TELEM_SendSystemDataByCan(T_CANH_INSTANCE canInstance)
 {
-    CANH_Send_SysStatus(canInstance, (uint8_t)PDM_GetSysStatus(), (uint16_t)VMUX_GetBattValueEma(), (int16_t)VMUX_GetTempValue(), (uint8_t)PDM_GetSafetyState());
+    CANH_Send_SysStatus(canInstance, (uint8_t)PDM_GetSysStatus(), (uint16_t)VMUX_GetBattValueEma(), (int16_t)VMUX_GetTempValue(), (uint8_t)PDM_GetSafetyState(), LOGIC_GetValid());
 }
 
 static void TELEM_SendStateByCan(T_CANH_INSTANCE canInstance)

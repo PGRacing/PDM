@@ -25,12 +25,6 @@
 
 extern void RTOS_SoftLimpHomeMode(void);
 
-T_PDM_SYS_STATUS PDM_GetSysStatus(void)
-{
-    // TODO Add status handlers CAN status etc...
-    return PDM_SYS_STATUS_OK;
-}
-
 volatile T_PDM_CFG pdmCfg =
 {
     // Platform protections
@@ -87,6 +81,11 @@ static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] =
 static const uint8_t resetGatewayPattern[PDM_RESET_GATEWAY_PATTERN_SIZE][8] = {{0xae, 0x3a, 0x3e, 0x2b, 0x07, 0x17, 0xc8, 0x4c}, 
                                                   {0x2d, 0x72, 0x88, 0x04, 0x9f, 0xea, 0xda, 0xc7}, 
                                                   {0x44, 0x8e, 0x0e, 0xd9, 0x56, 0xa1, 0x35, 0x0f}};
+
+T_PDM_SYS_STATUS PDM_GetSysStatus(void)
+{
+    return pdmReg.status;
+}
 
 static void PDM_OutConfig(void)
 {
@@ -329,10 +328,17 @@ void pdmTaskStart(void *argument)
     LOG_INFO("PDM:: Task start");
     for(;;)
     {
-        bool* logicReg = LOGIC_Evaluate();
+        T_LOGIC_REG* logicReg = LOGIC_Evaluate();
         for(uint8_t i = 0; i < OUT_ID_MAX; i++)
         {
-            OUT_SetState(i, logicReg[i]);
+            if(FALSE == outsCfg->safety.actOnSafety)
+            {
+                OUT_SetState(i, logicReg[i].state);
+            }
+            else
+            {
+                OUT_SetState(i, logicReg[i].state && pdmReg.safetyState);
+            }
         }
         PDM_CheckSafety();
 
