@@ -10951,7 +10951,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.862 67.056) (xy 165.862 70.866)
+			(xy 165.862 67.056) (xy 165.862 70.358)
 		)
 		(stroke
 			(width 0)
@@ -14461,7 +14461,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.862 76.708) (xy 165.862 75.946)
+			(xy 165.862 76.708) (xy 165.862 75.438)
 		)
 		(stroke
 			(width 0)
@@ -14700,6 +14700,17 @@
 		)
 		(uuid "29b2b83b-a9dd-4c7c-af1d-3fb24a55a68c")
 	)
+	(text "(160Hz cutoff)"
+		(exclude_from_sim no)
+		(at 133.604 44.196 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(color 255 0 255 1)
+			)
+		)
+		(uuid "37ec1294-8e52-416f-a81a-a633ec87ec75")
+	)
 	(text "->INPUT_SELECTION "
 		(exclude_from_sim no)
 		(at 195.707 172.212 0)
@@ -14711,9 +14722,9 @@
 		)
 		(uuid "49733ba9-8290-475f-8116-d184820f346f")
 	)
-	(text "ILSB0603ER2R7K"
+	(text "2.7uH 120Ohm@100Mhz\nAlt:\nFCM 1608KF-601T03"
 		(exclude_from_sim no)
-		(at 267.97 129.54 0)
+		(at 271.78 128.524 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -18623,8 +18634,8 @@
 				)
 			)
 		)
-		(property "Value" "NA"
-			(at 144.78 27.686 90)
+		(property "Value" "10k"
+			(at 145.542 27.686 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21410,7 +21421,7 @@
 	)
 	(symbol
 		(lib_id "Device:C_Small")
-		(at 165.862 73.406 0)
+		(at 165.862 72.898 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -21418,7 +21429,7 @@
 		(dnp no)
 		(uuid "3d0c1346-cccc-483b-9e3a-d920dee837ee")
 		(property "Reference" "C128"
-			(at 167.894 72.39 0)
+			(at 167.894 71.882 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21426,8 +21437,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NA"
-			(at 168.148 74.422 0)
+		(property "Value" "100nF"
+			(at 168.148 73.914 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21436,7 +21447,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 165.862 73.406 0)
+			(at 165.862 72.898 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21445,7 +21456,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 165.862 73.406 0)
+			(at 165.862 72.898 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21454,7 +21465,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 165.862 73.406 0)
+			(at 165.862 72.898 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -23106,7 +23117,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NA"
+		(property "Value" "100nF"
 			(at 141.986 34.544 0)
 			(effects
 				(font
@@ -26065,7 +26076,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "2.32k"
+		(property "Value" "2k"
 			(at 190.5 38.862 90)
 			(effects
 				(font
@@ -26200,7 +26211,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "4u7"
+		(property "Value" "4.7uF"
 			(at 219.075 104.14 0)
 			(effects
 				(font
@@ -27331,7 +27342,7 @@
 		(fields_autoplaced yes)
 		(uuid "d49d1632-e080-4e34-845d-0b3bb82ccf44")
 		(property "Reference" "J7"
-			(at 153.924 260.8579 0)
+			(at 154.94 260.8579 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27339,8 +27350,8 @@
 				(justify right)
 			)
 		)
-		(property "Value" "Conn_01x03_Pin"
-			(at 153.924 263.3979 0)
+		(property "Value" "ONE_WIRE"
+			(at 154.94 263.3979 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -28354,8 +28365,8 @@
 				)
 			)
 		)
-		(property "Value" "2u7 120m"
-			(at 265.43 130.175 90)
+		(property "Value" "ILSB0603ER2R7K"
+			(at 269.748 130.302 90)
 			(effects
 				(font
 					(size 0.9 0.9)

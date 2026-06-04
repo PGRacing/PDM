@@ -2479,8 +2479,8 @@
 				)
 			)
 		)
-		(property "Value" "Fuse"
-			(at 114.046 87.884 90)
+		(property "Value" "40A"
+			(at 114.046 87.376 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3837,7 +3837,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10nF"
+		(property "Value" "100nF"
 			(at 45.466 56.515 0)
 			(effects
 				(font

@@ -2084,7 +2084,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "1536d611-5404-4cfc-b5da-294b5909d9fe")
 		(property "Reference" "R178"
 			(at 126.365 49.53 90)
@@ -2220,7 +2220,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "2d2a47ac-f59d-42f2-9a95-d802adc7c807")
 		(property "Reference" "J6"
@@ -2582,7 +2582,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "699f24eb-c9cf-4159-8e26-cd2e353270a4")
 		(property "Reference" "R180"
 			(at 45.085 57.785 90)
@@ -2651,7 +2651,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "6dd9cf1f-dbd5-4d22-b8c5-985a6c1f5dd0")
 		(property "Reference" "R173"
 			(at 44.45 97.79 90)
@@ -2720,7 +2720,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "7f51cc6c-2d89-42ac-9175-ff66b0ad958b")
 		(property "Reference" "U12"
 			(at 43.815 74.93 0)
@@ -3130,7 +3130,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "975b0eb8-f53c-48f1-9af7-c4a5acdeea27")
 		(property "Reference" "R179"
 			(at 45.085 53.975 90)
@@ -3199,7 +3199,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "aeeebd10-bb30-4569-ac5a-654e89f02dda")
 		(property "Reference" "R176"
 			(at 74.295 89.535 90)
@@ -3335,7 +3335,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "cc08841c-15c5-4825-a9bd-3a7e61d7941e")
 		(property "Reference" "R177"
 			(at 79.375 49.53 90)
@@ -3404,7 +3404,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "d84c21ea-4d6a-4ede-b4a7-79b6b744c0a3")
 		(property "Reference" "R174"
 			(at 45.085 89.535 90)
@@ -3473,7 +3473,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "f43bb44c-904d-4652-845a-4a99a14df56c")
 		(property "Reference" "R175"
 			(at 81.28 97.79 90)

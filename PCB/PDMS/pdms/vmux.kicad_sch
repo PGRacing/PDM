@@ -3576,6 +3576,17 @@
 		)
 		(uuid "929bc8f9-23e5-4737-9525-2aac66011448")
 	)
+	(text "(3.3kHz cut-off)"
+		(exclude_from_sim no)
+		(at 35.56 41.656 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(color 255 0 255 1)
+			)
+		)
+		(uuid "9edb64ca-2754-4953-9041-ad8ff8c434bf")
+	)
 	(label "HP_MOS_DIV7"
 		(at 87.63 65.786 0)
 		(fields_autoplaced yes)
@@ -5720,7 +5731,7 @@
 				)
 			)
 		)
-		(property "Value" "NA"
+		(property "Value" "1k"
 			(at 41.656 23.876 90)
 			(effects
 				(font
@@ -7260,7 +7271,7 @@
 		(dnp no)
 		(uuid "b13d3f67-8f42-4c5e-a54c-27dee7b28db5")
 		(property "Reference" "C107"
-			(at 38.862 32.004 0)
+			(at 38.862 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7268,8 +7279,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NA"
-			(at 38.862 29.718 0)
+		(property "Value" "47nF"
+			(at 38.862 31.242 0)
 			(effects
 				(font
 					(size 1.27 1.27)

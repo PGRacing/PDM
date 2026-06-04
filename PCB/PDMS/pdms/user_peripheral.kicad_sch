@@ -1763,6 +1763,17 @@
 		)
 		(uuid "3043ebb1-39fc-4a4a-b698-9e7fae66623a")
 	)
+	(text "ADD PUD HERE"
+		(exclude_from_sim no)
+		(at 167.386 62.23 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(color 255 153 0 1)
+			)
+		)
+		(uuid "9768c21f-b189-42a5-8489-2d2ddc6be550")
+	)
 	(text "Temperature sensors\n"
 		(exclude_from_sim no)
 		(at 21.59 24.13 0)

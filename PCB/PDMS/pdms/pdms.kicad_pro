@@ -59,53 +59,7 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [
-        "clearance|104804600|133693528|250ecad5-0add-4417-8dfc-b210584b3210|50ade8d6-c1f2-4972-8432-542be8470d60",
-        "clearance|104804600|134643528|250ecad5-0add-4417-8dfc-b210584b3210|b1f5be4c-c369-4766-a285-428fc2509754",
-        "clearance|106504600|132443528|250ecad5-0add-4417-8dfc-b210584b3210|48861117-a62b-4b74-8b45-041740833850",
-        "clearance|106504600|133393528|250ecad5-0add-4417-8dfc-b210584b3210|45734991-b549-4a64-a409-236d9abbeca0",
-        "clearance|106504600|134343528|250ecad5-0add-4417-8dfc-b210584b3210|2245d82e-6d4c-4e70-b74b-6312a8dc2902",
-        "clearance|108758011|59910400|506db41e-9d4e-4fe6-a573-61fb9bb481d1|e5529f07-d7d0-4593-9c12-110f7c2cb4b4",
-        "clearance|109708011|59910400|506db41e-9d4e-4fe6-a573-61fb9bb481d1|d8a9e633-c45e-4840-beb7-4c273278f3e5",
-        "clearance|109708011|61610400|506db41e-9d4e-4fe6-a573-61fb9bb481d1|437187d2-badb-49f9-85b4-32cb0415d9b8",
-        "clearance|110658011|59910400|506db41e-9d4e-4fe6-a573-61fb9bb481d1|f253072f-da3d-4cf4-9fe5-a55b85c6f3ea",
-        "clearance|110658011|61610400|506db41e-9d4e-4fe6-a573-61fb9bb481d1|de425460-6483-4252-b7d9-9a837b739b24",
-        "clearance|114055617|59910400|cda406f7-a69a-4272-aa12-f74312c5df2b|ce5165b5-c00e-4701-8f66-3882fdc89053",
-        "clearance|115005617|59910400|cda406f7-a69a-4272-aa12-f74312c5df2b|deb01efc-f444-4a12-9cd2-b517140c5fc3",
-        "clearance|115005617|61610400|cda406f7-a69a-4272-aa12-f74312c5df2b|16c2a0e5-f942-48f4-bf02-807d40272a3c",
-        "clearance|115955617|59910400|cda406f7-a69a-4272-aa12-f74312c5df2b|a0b65a44-8574-4a0c-bcdd-1b47dea1acfd",
-        "clearance|115955617|61610400|cda406f7-a69a-4272-aa12-f74312c5df2b|7a27f71f-1932-4cf3-9d5d-722facfc7013",
-        "clearance|63949400|130194900|a05087eb-1009-4548-8f86-10547f3d7a92|a6284393-b78b-40d5-a1c1-050f720220cd",
-        "clearance|64087322|132023700|3b488d24-c998-4634-8b32-49f4e033fd80|d9f804b8-81e8-4ddc-9875-185547346161",
-        "clearance|64442922|130194900|a6284393-b78b-40d5-a1c1-050f720220cd|abd8548d-76a7-4fda-bfaf-cd5c05b4716f",
-        "clearance|64580844|132023700|1ece9d43-216f-485c-be3b-48e2efe7769d|3b488d24-c998-4634-8b32-49f4e033fd80",
-        "clearance|64936444|130194900|abd8548d-76a7-4fda-bfaf-cd5c05b4716f|159482c5-2142-40f8-8be8-15903a4169a5",
-        "clearance|65074366|132023700|023fd3b7-4285-4dcb-a33f-8dc37d44a3bf|1ece9d43-216f-485c-be3b-48e2efe7769d",
-        "clearance|65429966|130194900|159482c5-2142-40f8-8be8-15903a4169a5|493d18d2-ab8e-462f-9aed-f90ef342f79a",
-        "clearance|65567888|129407500|18fa21eb-8758-49f4-861e-5ba7b04df0d6|493d18d2-ab8e-462f-9aed-f90ef342f79a",
-        "clearance|65567888|132023700|9ede8185-de85-4374-986c-b78d74f4ee58|023fd3b7-4285-4dcb-a33f-8dc37d44a3bf",
-        "clearance|65923488|130194900|493d18d2-ab8e-462f-9aed-f90ef342f79a|7805ff6e-2270-48d3-81ee-66d509af3223",
-        "clearance|66061410|132023700|5bd3d91d-c6f3-43fb-9432-726ace5472ff|9ede8185-de85-4374-986c-b78d74f4ee58",
-        "clearance|66417010|130194900|7805ff6e-2270-48d3-81ee-66d509af3223|a67134ed-4bc5-4150-b6a2-4552714efa3d",
-        "clearance|66554932|132023700|7d4e2f49-bb40-46ca-bf2d-e2d6ac86351e|5bd3d91d-c6f3-43fb-9432-726ace5472ff",
-        "clearance|66910532|130194900|a67134ed-4bc5-4150-b6a2-4552714efa3d|cfe7f927-82e7-4657-a264-fb0b8988655e",
-        "clearance|67048200|129407500|6b5b024c-0aff-4b18-a46c-3c533c22d637|cfe7f927-82e7-4657-a264-fb0b8988655e",
-        "clearance|67048200|132023700|48db5a8e-f999-41db-a7c8-0cd479e0ee05|7d4e2f49-bb40-46ca-bf2d-e2d6ac86351e",
-        "courtyards_overlap|102043509|70552871|3f7be003-ea73-4eb5-9b46-44a256aab81d|4af1a39f-8203-42d5-9c4c-75f7110159b1",
-        "courtyards_overlap|103525000|57055000|45515e16-d2d2-4346-b320-31e7b3f0af9d|4af1a39f-8203-42d5-9c4c-75f7110159b1",
-        "courtyards_overlap|27823000|57026485|36b88534-3374-43ba-a948-46da187d3440|4af1a39f-8203-42d5-9c4c-75f7110159b1",
-        "courtyards_overlap|32753509|63092871|1828ed34-6699-446c-ae20-038d1ced5247|4af1a39f-8203-42d5-9c4c-75f7110159b1",
-        "courtyards_overlap|32883509|68762871|25c65833-6949-4a94-85ae-cece30943365|4af1a39f-8203-42d5-9c4c-75f7110159b1",
-        "courtyards_overlap|53763509|70552871|4af1a39f-8203-42d5-9c4c-75f7110159b1|670f302c-2e2c-46f3-b077-b9d2189f3719",
-        "courtyards_overlap|65973509|70552871|4af1a39f-8203-42d5-9c4c-75f7110159b1|ccc9e671-c699-4935-b217-5500c2bd4dfc",
-        "courtyards_overlap|76133509|70552871|4af1a39f-8203-42d5-9c4c-75f7110159b1|8663e12a-98e6-4455-9bc6-381b09b7cc44",
-        "courtyards_overlap|89943509|70552871|2ca48c3e-5a64-4cc6-9200-60f9e284ec58|4af1a39f-8203-42d5-9c4c-75f7110159b1",
-        "silk_over_copper|63140000|100240000|340fe00b-0f32-4207-9950-194bbac91303|00000000-0000-0000-0000-000000000000",
-        "silk_over_copper|67630000|104940000|d8a73e8f-06ad-4178-8c5c-44600534a287|00000000-0000-0000-0000-000000000000",
-        "silk_over_copper|67630000|95940000|b7960361-8f61-42c2-9c4d-269f503f2f5d|00000000-0000-0000-0000-000000000000",
-        "silk_over_copper|72140000|100240000|02a73398-6eb5-4bd4-9a4c-7f1b4550eaa0|00000000-0000-0000-0000-000000000000",
-        "silk_overlap|76872500|147010414|a8b92678-e282-4e22-88b5-40762e866fc3|55e785d9-1ba1-4a2d-9936-ff0c1a25dfd5"
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -665,7 +619,7 @@
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "pdms_v4.2_2024.step",
+      "step": "3D_MODELS/pdms_v4.3_2025.step",
       "svg": "",
       "vrml": "pdms.wrl"
     },
@@ -673,13 +627,13 @@
   },
   "schematic": {
     "annotate_start_num": 0,
-    "bom_export_filename": "",
+    "bom_export_filename": "BOMS_DOCS\\pdms_v4.3_bom.csv",
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
-      "field_delimiter": ",",
+      "field_delimiter": ";",
       "keep_line_breaks": false,
       "keep_tabs": false,
-      "name": "CSV",
+      "name": "---",
       "ref_delimiter": ",",
       "ref_range_delimiter": "",
       "string_delimiter": "\""
@@ -723,11 +677,131 @@
           "label": "DNP",
           "name": "${DNP}",
           "show": true
+        },
+        {
+          "group_by": false,
+          "label": "#",
+          "name": "${ITEM_NUMBER}",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Arrow Part Number",
+          "name": "Arrow Part Number",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Arrow Price/Stock",
+          "name": "Arrow Price/Stock",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Comment",
+          "name": "Comment",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Datasheet_1",
+          "name": "Datasheet_1",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Footprint_1",
+          "name": "Footprint_1",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Height",
+          "name": "Height",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "MANUFACTURER",
+          "name": "MANUFACTURER",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "MAXIMUM_PACKAGE_HEIGHT",
+          "name": "MAXIMUM_PACKAGE_HEIGHT",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Manufacturer_Name",
+          "name": "Manufacturer_Name",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Manufacturer_Part_Number",
+          "name": "Manufacturer_Part_Number",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Mouser Part Number",
+          "name": "Mouser Part Number",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Mouser Price/Stock",
+          "name": "Mouser Price/Stock",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Mouser Testing Part Number",
+          "name": "Mouser Testing Part Number",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Mouser Testing Price/Stock",
+          "name": "Mouser Testing Price/Stock",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "PARTREV",
+          "name": "PARTREV",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Reference_1",
+          "name": "Reference_1",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "STANDARD",
+          "name": "STANDARD",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Value_1",
+          "name": "Value_1",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Description",
+          "name": "Description",
+          "show": false
         }
       ],
       "filter_string": "",
       "group_symbols": true,
-      "name": "Grouped By Value",
+      "name": "",
       "sort_asc": true,
       "sort_field": "Reference"
     },

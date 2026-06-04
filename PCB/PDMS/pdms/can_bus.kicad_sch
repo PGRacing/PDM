@@ -1698,6 +1698,16 @@
 		)
 		(uuid "fc6074c3-8800-4ec9-b605-1206ec47864c")
 	)
+	(text "For commercial application this should be changed to \nsolution that can persist at least 250mA continous short current"
+		(exclude_from_sim no)
+		(at 147.828 64.77 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "4dfc05bc-35a2-4f81-84a0-012551e1a95b")
+	)
 	(text "CAN1"
 		(exclude_from_sim no)
 		(at 16.51 20.32 0)
@@ -3395,7 +3405,7 @@
 			(at 143.51 34.29 0)
 			(effects
 				(font
-					(size 0.8 0.8)
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -3403,7 +3413,7 @@
 			(at 143.51 36.83 0)
 			(effects
 				(font
-					(size 0.8 0.8)
+					(size 1.27 1.27)
 				)
 			)
 		)
