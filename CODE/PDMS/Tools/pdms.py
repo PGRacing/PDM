@@ -32,6 +32,7 @@ from pdm_plot_tab import PlotPanel
 from pdm_shared import (
     CHANNEL_COUNT,
     build_dark_stylesheet,
+    CAN_CHANNEL,
     GUI_UPDATE_MS,
     IDS,
     OUT_STATE_MAP,
@@ -39,6 +40,7 @@ from pdm_shared import (
     PHY_INPUT_COUNT,
     PLOT_UPDATE_MS,
     get_row_colors,
+    get_asset_path,
 )
 
 import ctypes
@@ -46,7 +48,7 @@ import ctypes
 myappid = 'mycompany.myproduct.subproduct.version' 
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
-CHECKBOX_TICK_PATH = (Path(__file__).resolve().parent / "assets" / "checkbox-tick.svg").as_posix()
+CHECKBOX_TICK_PATH = get_asset_path("assets/checkbox-tick.svg")
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -59,6 +61,7 @@ class MainWindow(QMainWindow):
 
         self.worker_process = None
         self.worker_started = False
+        self.serial_device_ready = False
         self.last_frame_rx_time = 0.0
 
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
@@ -93,6 +96,7 @@ class MainWindow(QMainWindow):
     def start_can_worker(self):
         if self.worker_started:
             return
+        self.serial_device_ready = False
         self.worker_process = multiprocessing.Process(
             target=can_isolated_process, args=(self.pipe_worker, self.tx_queue), daemon=True
         )
@@ -212,6 +216,11 @@ class MainWindow(QMainWindow):
         hb_corner_layout.addWidget(self.lbl_hb_status)
         tabs.setCornerWidget(hb_corner, Qt.TopRightCorner)
 
+    def _set_heartbeat_status(self, text, color_hex):
+        self.lbl_hb_status.setText(text)
+        self.lbl_hb_status.setStyleSheet(f"color: {color_hex}; font-weight: bold;")
+        self.lbl_hb_dot.setStyleSheet(f"color: {color_hex}; font-size: 14px; font-weight: bold;")
+
     def _refresh_tx_frame_options(self, options):
         current_data = self.combo_tx_id.currentData()
         current_text = self.combo_tx_id.currentText()
@@ -294,6 +303,9 @@ class MainWindow(QMainWindow):
                         self.config_tab.load_binary_payload(packet["isotp_config_payload"])
                         self.config_tab.set_isotp_state(100, "Config received and loaded", busy=False)
                     continue
+                if packet.get("serial_ready"):
+                    self.serial_device_ready = True
+                    continue
                 if "error" in packet:
                     if self.config_tab is not None:
                         self.config_tab.set_isotp_state(0, f"Error: {packet['error']}", busy=False)
@@ -368,21 +380,25 @@ class MainWindow(QMainWindow):
         self.update_heartbeat_status()
 
     def update_heartbeat_status(self):
+        worker_alive = self.worker_process is not None and self.worker_process.is_alive()
+
+        if not worker_alive:
+            self._set_heartbeat_status("Disconnected", "#FF8A80")
+            return
+
+        if not self.serial_device_ready:
+            self._set_heartbeat_status("Disconnected", "#FF8A80")
+            return
+
         if self.last_frame_rx_time <= 0:
-            self.lbl_hb_status.setText("Disconnected")
-            self.lbl_hb_status.setStyleSheet("color: #FF8A80; font-weight: bold;")
-            self.lbl_hb_dot.setStyleSheet("color: #FF8A80; font-size: 14px; font-weight: bold;")
+            self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
             return
 
         age_s = time.time() - self.last_frame_rx_time
         if age_s > 1.0:
-            self.lbl_hb_status.setText(f"Disconnected ({age_s:.1f}s)")
-            self.lbl_hb_status.setStyleSheet("color: #FF8A80; font-weight: bold;")
-            self.lbl_hb_dot.setStyleSheet("color: #FF8A80; font-size: 14px; font-weight: bold;")
+            self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
         else:
-            self.lbl_hb_status.setText(f"Connected ({age_s:.1f}s)")
-            self.lbl_hb_status.setStyleSheet("color: #81C784; font-weight: bold;")
-            self.lbl_hb_dot.setStyleSheet("color: #81C784; font-size: 14px; font-weight: bold;")
+            self._set_heartbeat_status(f"Connected ({age_s:.1f}s)", "#81C784")
 
     def update_plots(self):
         if not self.plotting_enabled:
@@ -407,11 +423,11 @@ if __name__ == "__main__":
     multiprocessing.freeze_support()
     app = QApplication(sys.argv)
     app.setStyleSheet(build_dark_stylesheet(CHECKBOX_TICK_PATH))
-    app.setWindowIcon(QIcon("assets/pdms.ico"))
+    app.setWindowIcon(QIcon(get_asset_path("assets/pdms.ico")))
     # Show a splash/loading screen during application bring-up
-    splash_pix_path = Path(__file__).resolve().parent / "assets" / "pdms_splash.png"
-    if splash_pix_path.exists():
-        pix = QPixmap(str(splash_pix_path))
+    splash_pix_path = get_asset_path("assets/pdms_splash.png")
+    if Path(splash_pix_path).exists():
+        pix = QPixmap(splash_pix_path)
     else:
         # Fallback: small blank pixmap with icon if no splash image available
         pix = QPixmap(480, 300)

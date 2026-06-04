@@ -25,10 +25,10 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from pdm_shared import CHANNEL_COUNT
+from pdm_shared import CHANNEL_COUNT, get_asset_path, get_runtime_base_dir
 
 BASE_DIR = Path(__file__).resolve().parent
-CONFIG_DIR = BASE_DIR / "config"
+CONFIG_DIR = get_runtime_base_dir() / "config"
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 
 OUT_TYPE_BTS500 = 0x00
@@ -67,8 +67,8 @@ FIELD_LABELS = {
         "after_error_behavior": "After error behavior:",
         "after_error_latch_time": "After error latch time:",
         "act_on_safety": "Act on safety line open:",
-        "err_retry_threshold": "Error retry threshold:",
-        "retry_timer_interval": "Retry timer interval:",
+        "err_retry_threshold": "Allowed retries:",
+        "retry_timer_interval": "Retry interval:",
     },
     "soc": {
         "use_soc": "Use overcurrent (SOC) protection",
@@ -79,7 +79,7 @@ FIELD_LABELS = {
         "inrush_time_threshold": "Inrush time threshold:",
     },
     "i2t": {
-        "use_i2t": "Use I2T protection",
+        "use_i2t": "(UNUSED) Use I2T protection",
         "nominal_current": "Nominal current:",
         "nominal_current_sq": "Nominal current squared:",
         "time_threshold": "Time threshold:",
@@ -197,10 +197,36 @@ SPOC_MAPPING_LABELS = {
 }
 
 SPINBOX_STYLE = (
-    "QSpinBox { background-color: #2D2D2D; border: 1px solid #444444; border-radius: 4px; padding: 4px; color: #FFFFFF; }"
+    "QSpinBox:enabled, QDoubleSpinBox:enabled {"
+    "    background-color: #2D2D2D;"
+    "    border: 1px solid #444444;"
+    "    border-radius: 6px;"
+    "    padding: 4px 0px 4px 0px;"
+    "    color: #FFFFFF;"
+    "}"
+    "QSpinBox:enabled QLineEdit, QDoubleSpinBox:enabled QLineEdit {"
+    "    background-color: #2D2D2D;"
+    "    color: #FFFFFF;"
+    "    selection-background-color: #BB86FC;"
+    "    selection-color: #FFFFFF;"
+    "    border: none;"
+    "}"
+    
+    "QSpinBox:disabled, QDoubleSpinBox:disabled {"
+    "    background-color: #2D2D2D;"
+    "    border: 1px solid #333333;"
+    "    border-radius: 6px;"
+    "    padding: 4px 0px 4px 0px;"
+    "    color: #6A6A6A;"
+    "}"
+    "QSpinBox:disabled QLineEdit, QDoubleSpinBox:disabled QLineEdit {"
+    "    background-color: #2D2D2D;"
+    "    color: #6A6A6A;"
+    "    border: none;"
+    "}"
 )
 
-CHECKBOX_TICK_PATH = (Path(__file__).resolve().parent / "assets" / "checkbox-tick.svg").as_posix()
+CHECKBOX_TICK_PATH = get_asset_path("assets/checkbox-tick.svg")
 CHECKBOX_STYLE = (
     "QCheckBox { color: #E0E0E0; background-color: none; padding: 4px; } "
     "QCheckBox::indicator { width: 14px; height: 14px; background-color: #2D2D2D; border: 1px solid #444444; border-radius: 3px; } "
@@ -351,10 +377,11 @@ class ChannelConfigPage(QWidget):
         self.combo_after_error_behavior = QComboBox()
         self.combo_after_error_behavior.addItem("NO", OUT_ERR_BEH_NO)
         self.combo_after_error_behavior.addItem("LATCH", OUT_ERR_BEH_LATCH)
-        self.combo_after_error_behavior.addItem("TIME_LATCH", OUT_ERR_BEH_TIME_LATCH)
+        self.combo_after_error_behavior.addItem("(UNUSED) TIME_LATCH", OUT_ERR_BEH_TIME_LATCH)
         self.combo_after_error_behavior.addItem("RETRY", OUT_ERR_BEH_RETRY)
         self.combo_after_error_behavior.setCurrentIndex(self.combo_after_error_behavior.findData(OUT_ERR_BEH_LATCH))
         self.edit_after_error_latch_time = _make_spinbox(0, 2147483647, 0, " ms")
+        # initial state will be synced by _sync_after_error_state
         safety_form.addRow(FIELD_LABELS["safety"]["after_error_behavior"], self.combo_after_error_behavior)
         safety_form.addRow(FIELD_LABELS["safety"]["after_error_latch_time"], self.edit_after_error_latch_time)
 
@@ -403,6 +430,7 @@ class ChannelConfigPage(QWidget):
 
         self.i2t_enable = QCheckBox(FIELD_LABELS["i2t"]["use_i2t"])
         self.i2t_enable.setChecked(False)
+        self.i2t_enable.setEnabled(False)
         outer.addWidget(self.i2t_enable)
 
         self.i2t_box = QGroupBox("I2T")
@@ -410,25 +438,29 @@ class ChannelConfigPage(QWidget):
         self.edit_nominal_current = _make_spinbox(0, 65535, 0, " mA", 100)
         self.edit_nominal_current_sq = QLineEdit("0")
         self.edit_nominal_current_sq.setReadOnly(True)
+        self.edit_nominal_current_sq.setVisible(False)
         self.edit_time_threshold = _make_spinbox(0, 2147483647, 0, " ms")
         self.edit_i2t_threshold = QLineEdit("0")
         self.edit_i2t_threshold.setReadOnly(True)
         i2t_form.addRow(FIELD_LABELS["i2t"]["nominal_current"], self.edit_nominal_current)
-        i2t_form.addRow(FIELD_LABELS["i2t"]["nominal_current_sq"], self.edit_nominal_current_sq)
+        #i2t_form.addRow(FIELD_LABELS["i2t"]["nominal_current_sq"], self.edit_nominal_current_sq)
         i2t_form.addRow(FIELD_LABELS["i2t"]["time_threshold"], self.edit_time_threshold)
         i2t_form.addRow(FIELD_LABELS["i2t"]["i2t_threshold"], self.edit_i2t_threshold)
         outer.addWidget(self.i2t_box)
 
         self.soc_enable.toggled.connect(self._sync_soc_state)
         self.i2t_enable.toggled.connect(self._sync_i2t_state)
+        self.check_allow_inrush.toggled.connect(self._sync_soc_inrush_state)
         self.edit_nominal_current.valueChanged.connect(self._update_i2t_fields)
         self.edit_time_threshold.valueChanged.connect(self._update_i2t_fields)
         self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
+        self.combo_after_error_behavior.currentIndexChanged.connect(self._sync_after_error_state)
 
         self._apply_spoc_mapping()
         self._sync_soc_state()
         self._sync_i2t_state()
         self._sync_inrush_window_state()
+        self._sync_after_error_state()
         self._update_i2t_fields()
 
     def _apply_spoc_mapping(self):
@@ -456,6 +488,20 @@ class ChannelConfigPage(QWidget):
         for widget in (
             self.edit_nominal_threshold,
             self.check_allow_inrush,
+            # self.edit_inrush_window_from_start,
+            # self.check_inrush_window_infinite,
+            # self.label_inrush_window_infinite,
+            # self.edit_inrush_threshold,
+            # self.edit_inrush_time_threshold,
+        ):
+            widget.setEnabled(enabled)
+        self.check_allow_inrush.setChecked(enabled)
+        self._sync_soc_inrush_state()
+        self._sync_inrush_window_state()
+
+    def _sync_soc_inrush_state(self):
+        enabled = self.check_allow_inrush.isChecked()
+        for widget in (
             self.edit_inrush_window_from_start,
             self.check_inrush_window_infinite,
             self.label_inrush_window_infinite,
@@ -463,9 +509,8 @@ class ChannelConfigPage(QWidget):
             self.edit_inrush_time_threshold,
         ):
             widget.setEnabled(enabled)
-            widget.setStyleSheet("" if enabled else "color: #222222;")
+        ##self.check_allow_inrush.setChecked(enabled)
         self.soc_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
-        self._sync_inrush_window_state()
 
     def _sync_i2t_state(self):
         enabled = self.i2t_enable.isChecked()
@@ -476,15 +521,14 @@ class ChannelConfigPage(QWidget):
             self.edit_i2t_threshold,
         ):
             widget.setEnabled(enabled)
-            widget.setStyleSheet("" if enabled else "color: #222222;")
         self.i2t_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
 
     def _sync_inrush_window_state(self):
         infinite = self.check_inrush_window_infinite.isChecked()
         self.edit_inrush_window_from_start.setVisible(not infinite)
         self.label_inrush_window_infinite.setVisible(infinite)
-        self.edit_inrush_window_from_start.setEnabled(self.soc_enable.isChecked() and not infinite)
-        self.check_inrush_window_infinite.setEnabled(self.soc_enable.isChecked())
+        self.edit_inrush_window_from_start.setEnabled(self.soc_enable.isChecked() and self.check_allow_inrush.isChecked() and not infinite)
+        self.check_inrush_window_infinite.setEnabled(self.soc_enable.isChecked() and self.check_allow_inrush.isChecked())
 
     def _set_inrush_window_from_start(self, value):
         value = int(value)
@@ -505,7 +549,22 @@ class ChannelConfigPage(QWidget):
         nominal_current_sq = nominal_current * nominal_current
         i2t_threshold = nominal_current_sq * time_threshold
         self.edit_nominal_current_sq.setText(str(nominal_current_sq))
+        self.edit_nominal_current_sq.setVisible(False)
         self.edit_i2t_threshold.setText(str(i2t_threshold))
+    def _sync_after_error_state(self):
+        behavior = self.combo_after_error_behavior.currentData()
+        # Enable latch time only for TIME_LATCH behavior
+        latch_enabled = behavior == OUT_ERR_BEH_TIME_LATCH
+        self.edit_after_error_latch_time.setEnabled(latch_enabled)
+        if not latch_enabled:
+            self.edit_after_error_latch_time.setToolTip("Unused")
+        else:
+            self.edit_after_error_latch_time.setToolTip("")
+
+        # Enable retry fields only when behavior == RETRY
+        retry_enabled = behavior == OUT_ERR_BEH_RETRY
+        for widget in (self.edit_err_retry_threshold, self.edit_retry_timer_interval):
+            widget.setEnabled(retry_enabled)
 
     def apply_dict(self, data):
         mode_value = data.get("mode", OUT_MODE_UNUSED)
@@ -540,6 +599,7 @@ class ChannelConfigPage(QWidget):
         self.edit_time_threshold.setValue(int(i2t.get("timeThreshold", self.edit_time_threshold.value())))
 
         self._sync_soc_state()
+        self._sync_soc_inrush_state()
         self._sync_i2t_state()
         self._update_i2t_fields()
 
@@ -740,25 +800,59 @@ class LogicChannelPage(QWidget):
         self.refresh_sensor_sources()
 
     def refresh_sensor_sources(self):
-        sources = list(self._sensor_source_provider())
-        if not sources:
-            sources = [("No used inputs available", None)]
+        # Determine allowed var types set by the operator logic (SCHMITT/ANALOG/ANY)
+        first_allowed_var = getattr(self, "_allowed_first_var", None)
+        second_allowed_var = getattr(self, "_allowed_second_var", None)
 
-        for combo in (self.combo_input1_source, self.combo_input2_source):
-            current_value = combo.currentData()
-            combo.blockSignals(True)
-            combo.clear()
-            for label, value in sources:
-                combo.addItem(label, value)
-            if current_value is not None:
-                current_index = combo.findData(current_value)
-                if current_index >= 0:
-                    combo.setCurrentIndex(current_index)
-                else:
-                    combo.setCurrentIndex(0)
+        try:
+            sources_first = list(self._sensor_source_provider(first_allowed_var))
+        except TypeError:
+            # provider may not accept an argument; call without and fall back
+            sources_first = list(self._sensor_source_provider())
+
+        try:
+            sources_second = list(self._sensor_source_provider(second_allowed_var))
+        except TypeError:
+            sources_second = list(self._sensor_source_provider())
+
+        if not sources_first:
+            sources_first = [("No used inputs available", None)]
+        if not sources_second:
+            sources_second = [("No used inputs available", None)]
+
+        # Populate input1 source combo
+        current_value = self.combo_input1_source.currentData()
+        combo = self.combo_input1_source
+        combo.blockSignals(True)
+        combo.clear()
+        for label, value in sources_first:
+            combo.addItem(label, value)
+        if current_value is not None:
+            current_index = combo.findData(current_value)
+            if current_index >= 0:
+                combo.setCurrentIndex(current_index)
             else:
                 combo.setCurrentIndex(0)
-            combo.blockSignals(False)
+        else:
+            combo.setCurrentIndex(0)
+        combo.blockSignals(False)
+
+        # Populate input2 source combo
+        current_value = self.combo_input2_source.currentData()
+        combo = self.combo_input2_source
+        combo.blockSignals(True)
+        combo.clear()
+        for label, value in sources_second:
+            combo.addItem(label, value)
+        if current_value is not None:
+            current_index = combo.findData(current_value)
+            if current_index >= 0:
+                combo.setCurrentIndex(current_index)
+            else:
+                combo.setCurrentIndex(0)
+        else:
+            combo.setCurrentIndex(0)
+        combo.blockSignals(False)
         self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
         self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
 
@@ -954,6 +1048,15 @@ class LogicChannelPage(QWidget):
         self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
         self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
 
+        # Store allowed var types for sensor source filtering (SCHMITT/ANALOG/ANY)
+        self._allowed_first_var = allowed_first_var
+        self._allowed_second_var = allowed_second_var
+        # Refresh available sensor sources to reflect new allowed var filters
+        try:
+            self.refresh_sensor_sources()
+        except Exception:
+            pass
+
         second_enabled = allowed_second_var != 0x03
         self.combo_input2_type.setEnabled(second_enabled)
         self.edit_input2_value.setEnabled(second_enabled and self.combo_input2_type.currentData() != 0x03)
@@ -1028,9 +1131,6 @@ class InputsConfigPage(QWidget):
             for option_label, option_value in INPUT_INTERPRETATION_LABELS:
                 combo.addItem(option_label, option_value)
             physical_layout.addWidget(label, index + 1, 0)
-            physical_layout.addWidget(self._make_column_separator(), index + 1, 1)
-            physical_layout.addWidget(usage, index + 1, 2)
-            physical_layout.addWidget(self._make_column_separator(), index + 1, 3)
             physical_layout.addWidget(combo, index + 1, 4)
             self.physical_rows.append({"label": label, "interpretation": combo, "usage": usage})
             combo.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
@@ -1237,14 +1337,45 @@ class InputsConfigPage(QWidget):
             )
         return b"".join(payload)
 
-    def get_sensor_sources(self):
+    def get_sensor_sources(self, allowed_var=None):
+        """
+        Return a list of available sensor sources as (label, id) tuples.
+        If allowed_var is provided (0x00 SCHMITT, 0x01 ANALOG, 0x02 ANY), filter
+        physical and CAN inputs to only those matching the requested interpretation.
+        """
         sources = []
+
         for index in range(8):
-            sources.append((f"PHY input {index + 1}", index))
+            # interpretation currentData: 0x00 = Digital (Schmitt), 0x01 = Analog
+            interp = self.physical_rows[index]["interpretation"].currentData()
+            if allowed_var is None or allowed_var == 0x02:
+                include = True
+            elif allowed_var == 0x00:
+                include = interp == 0x00
+            elif allowed_var == 0x01:
+                include = interp == 0x01
+            else:
+                include = True
+
+            if include:
+                sources.append((f"PHY input {index + 1}", index))
 
         for index, row in enumerate(self.can_rows):
             if not row["used"].isChecked():
                 continue
+            interp = row["interpretation"].currentData()
+            if allowed_var is None or allowed_var == 0x02:
+                include = True
+            elif allowed_var == 0x00:
+                include = interp == 0x00
+            elif allowed_var == 0x01:
+                include = interp == 0x01
+            else:
+                include = True
+
+            if not include:
+                continue
+
             can_id = row["can_id"].value()
             can_instance = row["instance"].currentData()
             offset = row["offset"].value()
@@ -1297,6 +1428,12 @@ class ConfigTab(QWidget):
         self.btn_export.clicked.connect(self.export_json)
         self.btn_export.setStyleSheet(ACTION_BUTTON_STYLE)
         title_row.addWidget(self.btn_export)
+
+        divider = QFrame()
+        divider.setFrameShape(QFrame.VLine)
+        divider.setFrameShadow(QFrame.Plain)
+        divider.setStyleSheet("color: #2D2D2D; background-color: #111111; max-width: 1px; margin: 0px 15px;")
+        title_row.addWidget(divider)
 
         self.btn_send_binary = QPushButton("Send to device")
         self.btn_send_binary.clicked.connect(self._send_binary)

@@ -1,7 +1,6 @@
 from collections import deque
 
 import pyqtgraph as pg
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QPushButton, QScrollArea, QVBoxLayout, QWidget
 
 from pdm_shared import CHANNEL_COUNT, HISTORY_LEN, TRACK_COLORS

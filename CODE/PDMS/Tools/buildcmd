@@ -1,0 +1,1 @@
+pyinstaller --onedir --noconsole --add-data "assets;assets" --hidden-import=can.interfaces.slcan --icon=assets/pdms.ico pdms.py --upx-dir C:/Users/Karol/Downloads/upx-5.1.1-win64/upx-5.1.1-win64

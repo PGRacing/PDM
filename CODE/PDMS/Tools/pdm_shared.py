@@ -1,11 +1,58 @@
+import json
+import os
 import struct
+import sys
 from pathlib import Path
 
 CHANNEL_COUNT = 16
 PHY_INPUT_COUNT = 8
 BASE_ID = 0x400
+BASE_DIR = Path(__file__).resolve().parent
 
-CAN_CHANNEL = "COM16"
+
+def get_runtime_base_dir():
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return BASE_DIR
+
+
+def get_bundle_base_dir():
+    return Path(getattr(sys, "_MEIPASS", str(BASE_DIR)))
+
+
+CONFIG_DIR = get_runtime_base_dir() / "config"
+APP_CONFIG_PATH = CONFIG_DIR / "app_config.json"
+
+
+def get_asset_path(relative_path):
+    """Get absolute path to a bundled resource, works for dev and PyInstaller."""
+    base_path = Path(getattr(sys, "_MEIPASS", os.path.abspath(".")))
+    return (base_path / relative_path).as_posix()
+
+
+def _load_app_config():
+    candidate_paths = [
+        get_runtime_base_dir() / "config" / "app_config.json",
+        get_runtime_base_dir() / "app_config.json",
+        get_bundle_base_dir() / "config" / "app_config.json",
+        get_bundle_base_dir() / "app_config.json",
+    ]
+
+    for candidate_path in candidate_paths:
+        try:
+            if candidate_path.exists():
+                with candidate_path.open("r", encoding="utf-8") as config_file:
+                    data = json.load(config_file)
+                    if isinstance(data, dict):
+                        return data
+        except Exception:
+            pass
+    return {}
+
+
+_APP_CONFIG = _load_app_config()
+
+CAN_CHANNEL = str(_APP_CONFIG.get("usb_device", "COM16"))
 CAN_BITRATE = 1000000
 SERIAL_BAUD = 115200
 

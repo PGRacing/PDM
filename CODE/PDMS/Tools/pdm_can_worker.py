@@ -5,6 +5,8 @@ from collections import defaultdict, deque
 from pathlib import Path
 
 import can
+import can.interfaces.slcan
+
 from can import Message
 
 from pdm_shared import (
@@ -339,13 +341,16 @@ def _wait_and_reply_fc_after_request(can_bus, pipe_conn, rx_cfg_state, timeout=0
 
 
 def can_isolated_process(pipe_conn, tx_queue):
-    try:
-        can_bus = can.interface.Bus(
-            channel=CAN_CHANNEL, interface="slcan", bitrate=CAN_BITRATE, ttyBaudrate=SERIAL_BAUD
-        )
-    except Exception as exc:
-        pipe_conn.send({"error": f"Link crash: {exc}"})
-        return
+    can_bus = None
+    while can_bus is None:
+        try:
+            can_bus = can.interface.Bus(
+                channel=CAN_CHANNEL, interface="slcan", bitrate=CAN_BITRATE, ttyBaudrate=SERIAL_BAUD
+            )
+        except Exception:
+            time.sleep(1.0)
+
+    pipe_conn.send({"serial_ready": True})
 
     channels = [
         {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0}
