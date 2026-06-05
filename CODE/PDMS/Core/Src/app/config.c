@@ -16,15 +16,21 @@ T_OUT_CFG (*configPtrB)[16] = (T_OUT_CFG (*)[16])0x080F0000; // Pointing to CONF
 #define CONFIGB1_START_SECTOR 0 
 #define CONFIGB2_START_SECTOR 32
 
+#define CONFIG_OUTPUT_SIZE sizeof(outsCfg) // OUTPUT configuration size in bytes (size of outsCfg array - PACKED)
+#define CONFIG_BSP_CAN_SIZE sizeof(bspCanInputsCfg) // BSP CAN INPUT configuration size in bytes (size of bspCanInputsCfg array - PACKED)
+#define CONFIG_INPUT_SIZE sizeof(inputsCfg) // INPUT configuration size in bytes (size of inputsCfg array - PACKED)
+#define CONFIG_LOGIC_SIZE sizeof(logicCfg) // LOGIC configuration size in bytes (size of logicCfg array - PACKED)
+
 //                         [OUTPUT][BSP_CAN][INPUT][LOGIC]
-#define CONFIG_EXPECTED_SIZE 1360 + 144 + 96 + 192
+//#define CONFIG_EXPECTED_SIZE 1360 + 144 + 96 + 192
+#define CONFIG_EXPECTED_SIZE (CONFIG_OUTPUT_SIZE + CONFIG_BSP_CAN_SIZE + CONFIG_INPUT_SIZE + CONFIG_LOGIC_SIZE)
 
 #define CONFIG_EXPECTED_SIZE_IN_SECTOR DIV_CEIL(CONFIG_EXPECTED_SIZE, FLASH_SECTOR_SIZE)
 
 #define CONFIG_OUTCFG_OFFSET  0
-#define CONFIG_CANCFG_OFFSET  1360
-#define CONFIG_INPUTCFG_OFFSET 1504
-#define CONFIG_LOGICCFG_OFFSET 1600
+#define CONFIG_CANCFG_OFFSET  CONFIG_OUTPUT_SIZE
+#define CONFIG_INPUTCFG_OFFSET (CONFIG_CANCFG_OFFSET + CONFIG_BSP_CAN_SIZE)
+#define CONFIG_LOGICCFG_OFFSET (CONFIG_INPUTCFG_OFFSET + CONFIG_INPUT_SIZE)
 
 extern void RTOS_SuspendForConfigChange(void);
 extern void RTOS_ResumeAfterConfigChange(void);
@@ -58,6 +64,12 @@ void CONFIG_LoadConfig(T_CONFIG_SELECTION configSelection)
         memcpy(bspCanInputsCfg, (T_BSP_CANIN_CFG*)((uint8_t*)configPtrB + CONFIG_CANCFG_OFFSET), sizeof(bspCanInputsCfg));
         memcpy(inputsCfg, (T_IN_CFG*)((uint8_t*)configPtrB + CONFIG_INPUTCFG_OFFSET), sizeof(inputsCfg));
         memcpy(logicCfg, (T_LOGIC_CFG*)((uint8_t*)configPtrB + CONFIG_LOGICCFG_OFFSET), sizeof(logicCfg));
+    }
+
+    // Reconfigure all channels
+    for(T_OUT_ID id = 0; id < OUT_ID_MAX; id++)
+    {
+        OUT_Reconfigure(id);
     }
 }
 

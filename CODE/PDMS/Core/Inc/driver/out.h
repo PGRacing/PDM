@@ -6,9 +6,11 @@
 #include "spoc2.h"
 #include "spoc2_definitions.h"
 #include "cmsis_os2.h"
+#include "input.h"
 
 #define OUT_SAFETY_UNLIMITED_RETIRES 0xFFFF
 #define OUT_DIAG_NAME_LEN 32
+#define OUT_PWM_MAP_RESOLUTION 8
 
 #pragma pack(push, 1)
 
@@ -98,6 +100,14 @@ typedef struct _T_OUT_SAFETY_CFG
     T_OUT_SAFETY_I2T_CFG  i2tCfg;                 // I2t configuration
 }T_OUT_SAFETY_CFG; 
 
+typedef struct _T_OUT_PWM_CFG
+{
+    uint8_t baseDuty; // Base duty for PWM mode [0 - 100%]
+    T_INPUT_ID dutyInput; // Input id for duty control (must be analog input)
+    uint16_t inputAxis[OUT_PWM_MAP_RESOLUTION]; // Axis for input value mapping to duty (0 - 5000 mV)
+    uint8_t  dutyAxis[OUT_PWM_MAP_RESOLUTION]; // Axis for duty mapping (corresponding to inputAxis) (0 - 100 %)
+}T_OUT_PWM_CFG;
+
 /// @brief Output channel configuration struct
 typedef struct _T_OUT_CFG
 {
@@ -109,6 +119,7 @@ typedef struct _T_OUT_CFG
     char             name[OUT_DIAG_NAME_LEN]; // Output channel pretty name
     T_OUT_ID         batch;                   // Optional for OUT_MODE_BATCH (BTS500 only)
     T_OUT_SAFETY_CFG safety;                  // Safety configuration
+    T_OUT_PWM_CFG    pwmCfg;                  // PWM configuration (only for PWM mode)
 }T_OUT_CFG;
 
 #pragma pack(pop)
@@ -169,6 +180,10 @@ extern T_OUT_REG outsReg[OUT_ID_MAX];
 /// @param targetMode [UNUSED/STD/PWM/BATCH]
 /// @note Remember this function will reinit even if targetMode == currentMode
 void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode);
+
+/// @brief Reconfigure output using saved mode
+/// @param id 
+void OUT_Reconfigure(T_OUT_ID id);
 
 /// @brief Set state of selected output channel
 /// @param id Output channel id [1..16] T_OUT_ID
@@ -257,6 +272,10 @@ void OUT_DIAG_AllSpoc(void);
 
 /// @brief Reset all output channel registers to default values
 void OUT_ResetRegistersAll(void);
+
+/// @brief Check if output channel is dependent on safety line state
+/// @param id Output channel id [1..16] T_OUT_ID
+bool OUT_IsSafetyLineDependent(T_OUT_ID id);
 
 
 

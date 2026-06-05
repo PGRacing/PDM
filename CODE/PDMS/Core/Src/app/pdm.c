@@ -58,25 +58,25 @@ volatile T_PDM_REG pdmReg =
     .uvloTimer = NULL
 };
 
-static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] = 
-{
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-    OUT_MODE_STD,
-};
+// static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] = 
+// {
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+//     OUT_MODE_STD,
+// };
 
 static const uint8_t resetGatewayPattern[PDM_RESET_GATEWAY_PATTERN_SIZE][8] = {{0xae, 0x3a, 0x3e, 0x2b, 0x07, 0x17, 0xc8, 0x4c}, 
                                                   {0x2d, 0x72, 0x88, 0x04, 0x9f, 0xea, 0xda, 0xc7}, 
@@ -89,9 +89,9 @@ T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 
 static void PDM_OutConfig(void)
 {
-    for(uint8_t i = 0; i < OUT_ID_MAX; i++)
+    for(T_OUT_ID i = 0; i < OUT_ID_MAX; i++)
     {
-        OUT_ChangeMode( i, PDM_OutModeInitTable[i] );
+        OUT_Reconfigure(i);
     }
 }
 
@@ -109,7 +109,7 @@ static void PDM_SoftLimpHomeModeTimerCallback()
 static void PDM_SoftLimpHomeMode(T_PDM_SYS_STATUS status)
 {
     pdmReg.status = status;
-    for(uint8_t id = 0; id < OUT_ID_MAX; id++)
+    for(T_OUT_ID id = 0; id < OUT_ID_MAX; id++)
     {
         OUT_SetState(id, OUT_STATE_ERR_LATCH);
     }
@@ -329,9 +329,9 @@ void pdmTaskStart(void *argument)
     for(;;)
     {
         T_LOGIC_REG* logicReg = LOGIC_Evaluate();
-        for(uint8_t i = 0; i < OUT_ID_MAX; i++)
+        for(T_OUT_ID i = 0; i < OUT_ID_MAX; i++)
         {
-            if(FALSE == outsCfg->safety.actOnSafety)
+            if(FALSE == OUT_IsSafetyLineDependent(i))
             {
                 OUT_SetState(i, logicReg[i].state);
             }

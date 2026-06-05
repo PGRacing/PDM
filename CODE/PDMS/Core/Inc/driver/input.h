@@ -4,6 +4,8 @@
 #include "bsp_caninput.h"
 #include "bsp_phyinput.h"
 
+#define INPUT_ID_UNASSIGNED_VALUE 0xFFFF
+
 typedef uint16_t T_INPUT_ID;
 
 #pragma pack(push, 1)

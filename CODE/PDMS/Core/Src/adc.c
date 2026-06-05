@@ -31,6 +31,9 @@
 #include "pdm.h"
 #include <string.h>
 
+// Required for ADC PWM cowork
+#include "bsp_out.h"
+
 extern SemaphoreHandle_t adc1ConvReadySemaphore;
 extern SemaphoreHandle_t adc2ConvReadySemaphore;
 
@@ -618,6 +621,8 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
 uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
+uint16_t adc1LastValidRawData[ADC1_CHANNEL_COUNT] = {0};
+
 /* Current readout averaging */
 volatile uint16_t adc1MedianCounter = 0;
 
@@ -644,7 +649,24 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 #endif
       for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
       {
-        adc1MedianBuffer[i][adc1MedianCounter] = adc1RawData[i];
+        // WARN Currently ADC channel maps directly to BSP_OUT_ID, so we can use it to check if measurement is valid
+        // If this changes in the future, need to implement separate mapping and validity checking
+        if(BSP_OUT_IsPWM(i) ==  TRUE)
+        {
+          if(BSP_OUT_SenseValid(i) == TRUE)
+          {
+            adc1MedianBuffer[i][adc1MedianCounter] = adc1RawData[i];
+            //adc1LastValidRawData[i] = adc1RawData[i];
+          }
+          else
+          {
+            adc1MedianBuffer[i][adc1MedianCounter] = 0; // Invalid measurement, set to last valid or 0
+          }
+        }
+        else // Std output simple median filter buffer fill
+        {
+          adc1MedianBuffer[i][adc1MedianCounter] = adc1RawData[i];
+        }
       }
       adc1MedianCounter++;
 

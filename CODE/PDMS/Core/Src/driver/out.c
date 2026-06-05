@@ -24,7 +24,7 @@
 #define OUT_DIAG_BTS_TRIP_THRESHOLD 40 // Arbitraty value that needs to be exceeded to trip SOC protection (removing super short local peaks)
 // EMA
 #define OUT_DIAG_EMA_CURRENT_ALPHA 0.2f // Alpha for exponential moving average of current, lower value means smoother readings but longer time to react to changes
-#define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.2f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
+#define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.1f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
@@ -923,6 +923,14 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
   return;
 }
 
+void OUT_Reconfigure(T_OUT_ID id)
+{
+  T_OUT_CFG* cfg = OUT_GetCfgPtr(id);
+  ASSERT( cfg );
+
+  OUT_ChangeMode(id, cfg->mode);
+}
+
 bool OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
 {
   bool res = TRUE;
@@ -943,11 +951,37 @@ bool OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
   }
   else
   {
-    LOG_WARN("To set PWM duty channel must be enabled");
-    res = FALSE;
+    // Set duty for next turn-on
+    reg->prevPwmDuty = duty;
   }
 
-  return res;
+  return res; // Always TRUE
+}
+
+static uint8_t OUT_InterpolatePWM(const uint16_t xAxis[OUT_PWM_MAP_RESOLUTION], const uint8_t yAxis[OUT_PWM_MAP_RESOLUTION], uint16_t x)
+{
+  // Clamp below range
+  if (x <= xAxis[0])
+      return yAxis[0];
+
+  // Clamp above range
+  if (x >= xAxis[OUT_PWM_MAP_RESOLUTION - 1])
+      return yAxis[OUT_PWM_MAP_RESOLUTION - 1];
+
+  // Find segment
+  for (int i = 0; i < OUT_PWM_MAP_RESOLUTION - 1; i++)
+  {
+      if (x <= xAxis[i + 1])
+      {
+          float t = (x - xAxis[i]) /
+                    (xAxis[i + 1] - xAxis[i]);
+
+          return yAxis[i] +
+                t * (yAxis[i + 1] - yAxis[i]);
+      }
+  }
+
+  return yAxis[OUT_PWM_MAP_RESOLUTION - 1];
 }
 
 bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
@@ -1042,9 +1076,13 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
         if(cfg->type == OUT_TYPE_BTS500)
         {
           ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
-
           T_OUT_REG* batchReg = OUT_GETREGPTR(cfg->batch);
 
+          if(OUT_STATE_ON == reqState)
+          {
+            OUT_DIAG_ArmSocProtection(id);
+            OUT_DIAG_ArmSocProtection(cfg->batch);
+          }
           // Use this function to change GPIO register simultaniously for both switches
           BSP_OUT_SetBatchState(id, cfg->batch, reqState);
 
@@ -1061,6 +1099,19 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
 
       default:
         break;
+    }
+  }
+  else if(cfg->mode == OUT_MODE_PWM && reqState == OUT_STATE_ON)
+  {
+    if(cfg->pwmCfg.dutyInput != INPUT_ID_UNASSIGNED_VALUE)
+    {
+      // Set PWM value based on assigned input
+      uint8_t newDuty = OUT_InterpolatePWM(cfg->pwmCfg.inputAxis, cfg->pwmCfg.dutyAxis, IN_GetValueAnalog(cfg->pwmCfg.dutyInput));
+      OUT_SetDutyPWM(id, newDuty);
+    }
+    else
+    {
+      OUT_SetDutyPWM(id, cfg->pwmCfg.baseDuty);
     }
   }
 
@@ -1746,6 +1797,15 @@ void OUT_ResetRegistersAll(void)
     reg->safety.socReg.inrushTripCounter = 0;
     reg->safety.i2tReg.i2tSum = 0;
   }
+}
+
+inline bool OUT_IsSafetyLineDependent(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  const T_OUT_CFG* cfg = OUT_GETCFGPTR(id);
+  ASSERT(cfg);
+
+  return (cfg->safety.actOnSafety == true);
 }
 
 

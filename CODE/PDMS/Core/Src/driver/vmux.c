@@ -291,7 +291,7 @@ static void VMUX_GetAllPooling(void)
         VMUX_SelectInput( VMUX_ReadOrder[sel] );
         // Wait 100us (0.1ms) for VMUX input to settle
         // Dummy loop
-        uint32_t count = 400; 
+        uint32_t count = 100; 
         while(count--)
         {
             __NOP();
@@ -348,7 +348,7 @@ void vmuxTaskStart(void *argument)
         VMUX_GetAllPooling();
         VMUX_ReadLPChannel();
         // TODO Do it faster if possible
-        osDelay(pdMS_TO_TICKS(10));
+        osDelay(pdMS_TO_TICKS(1));
     }
     /* USER CODE END vmuxTaskStart */
 }
