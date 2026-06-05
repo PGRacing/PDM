@@ -2125,6 +2125,30 @@
 		)
 		(uuid "f2586961-26a0-4236-a5f6-e0e5779270fb")
 	)
+	(text_box "IMPORTANT:\n- DEN should be pulsed with IN.\n- DEN should be connected to IN via some resistor.\n- Right now when channel is in PWM mode (duty off part) and DEN enabled, it puts hard fault on output, due to open-circuit detection (till Vout discharges till < Typ. 3V\n- Link to forum"
+		(exclude_from_sim no)
+		(at 20.32 89.535 0)
+		(size 64.135 22.86)
+		(stroke
+			(width 0)
+			(type default)
+			(color 255 0 255 1)
+		)
+		(fill
+			(type none)
+		)
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+				(color 255 0 255 1)
+			)
+			(justify left top)
+			(href "https://community.infineon.com/t5/Smart-Power-Switches/BTS50010-1LUA-Current-Sense/td-p/618180")
+		)
+		(uuid "9c9dcf96-b06c-42f5-afcf-c6b732075276")
+	)
 	(text "Check if RC filter values are correct:\nSense signal filtering\nA time constant (RADC * CSENSE ) longer than 1 μs is recommended"
 		(exclude_from_sim no)
 		(at 27.178 82.042 0)
@@ -2192,6 +2216,19 @@
 			(justify left bottom)
 		)
 		(uuid "a5133727-44c3-4e57-9382-04291a0b1d88")
+	)
+	(text "!"
+		(exclude_from_sim no)
+		(at 17.78 100.965 0)
+		(effects
+			(font
+				(size 10 10)
+				(thickness 0.6)
+				(bold yes)
+				(color 255 0 255 1)
+			)
+		)
+		(uuid "cdf76b43-50ac-4061-beca-29034207b366")
 	)
 	(text "Sense resistor\naccuracy important!"
 		(exclude_from_sim no)

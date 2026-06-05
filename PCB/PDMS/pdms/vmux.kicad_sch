@@ -3533,6 +3533,29 @@
 		)
 		(uuid "41429c82-31b8-466a-9812-2c7491a2f278")
 	)
+	(text_box "IMPORTANT: \nOn top of 2.3k resistors, there is 4.7uF capacitor soldered, to average out PWM from output voltage"
+		(exclude_from_sim no)
+		(at 116.84 20.32 0)
+		(size 64.135 13.335)
+		(stroke
+			(width 0)
+			(type default)
+			(color 255 0 255 1)
+		)
+		(fill
+			(type none)
+		)
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+				(color 255 0 255 1)
+			)
+			(justify left top)
+		)
+		(uuid "5bb9424c-0e4d-4937-92ed-27edc538d025")
+	)
 	(text_box "In case of an reverse polarity situation, there might be an issue that +3.3V line is not powered, but HP_MOS out is, in such situation current should be limited by resistor"
 		(exclude_from_sim no)
 		(at 21.844 119.634 0)
@@ -3575,6 +3598,19 @@
 			(justify left bottom)
 		)
 		(uuid "929bc8f9-23e5-4737-9525-2aac66011448")
+	)
+	(text "!"
+		(exclude_from_sim no)
+		(at 114.935 27.305 0)
+		(effects
+			(font
+				(size 10 10)
+				(thickness 0.6)
+				(bold yes)
+				(color 255 0 255 1)
+			)
+		)
+		(uuid "95e74b02-2204-43a8-adfd-c21834ecbbe0")
 	)
 	(text "(3.3kHz cut-off)"
 		(exclude_from_sim no)
