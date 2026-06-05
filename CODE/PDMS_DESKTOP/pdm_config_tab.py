@@ -38,6 +38,7 @@ OUT_MODE_UNUSED = 0x00
 OUT_MODE_STD = 0x01
 OUT_MODE_PWM = 0x02
 OUT_MODE_BATCH = 0x03
+OUT_PWM_MAP_RESOLUTION = 8
 
 OUT_ERR_BEH_NO = 0x00
 OUT_ERR_BEH_LATCH = 0x01
@@ -84,6 +85,11 @@ FIELD_LABELS = {
         "nominal_current_sq": "Nominal current squared:",
         "time_threshold": "Time threshold:",
         "i2t_threshold": "I2T threshold:",
+    },
+    "pwm": {
+        "base_duty": "Base duty:",
+        "duty_input": "Duty input:",
+        "mapping": "Mapping:",
     },
 }
 
@@ -234,7 +240,7 @@ CHECKBOX_STYLE = (
 )
 
 BINARY_MAGIC = b"PDMB"
-BINARY_VERSION = 1
+BINARY_VERSION = 2
 # Packed record layout for one T_OUT_CFG instance:
 # id:u8, type:u8, mode:u8, spocId:u8, spocChId:u8, name[32], batch:u8,
 # afterErrorCfg.behavior:u8, afterErrorCfg.latchTime:u32, actOnSafety:u8,
@@ -243,8 +249,11 @@ BINARY_VERSION = 1
 # socCfg.inrushWindowFromStart:u32, socCfg.inrushThreshold:u32,
 # socCfg.inrushTimeThreshold:u32,
 # i2tCfg.useI2t:u8, i2tCfg.nominalCurrent:u32, i2tCfg.nominalCurrentSq:u32,
-# i2tCfg.timeThreshold:u32, i2tCfg.i2tThreshold:u32.
-BINARY_RECORD_FORMAT = "<" + "".join(
+# i2tCfg.timeThreshold:u32, i2tCfg.i2tThreshold:u32,
+# pwmCfg.baseDuty:u8, pwmCfg.dutyInput:u16,
+# pwmCfg.inputAxis[OUT_PWM_MAP_RESOLUTION]:u16,
+# pwmCfg.dutyAxis[OUT_PWM_MAP_RESOLUTION]:u8.
+LEGACY_BINARY_RECORD_FORMAT = "<" + "".join(
     [
         "B",
         "B",
@@ -271,12 +280,17 @@ BINARY_RECORD_FORMAT = "<" + "".join(
         "I",
     ]
 )
+LEGACY_BINARY_RECORD_SIZE = struct.calcsize(LEGACY_BINARY_RECORD_FORMAT)
+BINARY_RECORD_FORMAT = LEGACY_BINARY_RECORD_FORMAT + "B" + "H" + ("H" * OUT_PWM_MAP_RESOLUTION) + ("B" * OUT_PWM_MAP_RESOLUTION)
 BINARY_RECORD_SIZE = struct.calcsize(BINARY_RECORD_FORMAT)
 
 OUTPUT_RECORD_FORMAT = BINARY_RECORD_FORMAT
 OUTPUT_RECORD_SIZE = BINARY_RECORD_SIZE
+LEGACY_OUTPUT_RECORD_FORMAT = LEGACY_BINARY_RECORD_FORMAT
+LEGACY_OUTPUT_RECORD_SIZE = LEGACY_BINARY_RECORD_SIZE
 
 OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * OUTPUT_RECORD_SIZE
+LEGACY_OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * LEGACY_OUTPUT_RECORD_SIZE
 
 def _make_spinbox(minimum, maximum, value, suffix="", step = 1):
     spin = QSpinBox()
@@ -355,7 +369,7 @@ class ChannelConfigPage(QWidget):
         self.combo_mode = QComboBox()
         self.combo_mode.addItem("UNUSED", OUT_MODE_UNUSED)
         self.combo_mode.addItem("STD", OUT_MODE_STD)
-        self.combo_mode.addItem("PWM", OUT_MODE_PWM)
+        self.combo_mode.addItem("PWM (BETA)", OUT_MODE_PWM)
         self.combo_mode.addItem("BATCH", OUT_MODE_BATCH)
         self.edit_name = QLineEdit(f"OUT_{channel_index + 1}")
         self.edit_batch = _make_spinbox(0, 16, 0)
@@ -367,6 +381,48 @@ class ChannelConfigPage(QWidget):
         channel_form.addRow(FIELD_LABELS["channel"]["name"], self.edit_name)
         channel_form.addRow(FIELD_LABELS["channel"]["batch"], self.edit_batch)
         outer.addWidget(channel_group)
+
+        self.pwm_box = QGroupBox("PWM")
+        pwm_form = QFormLayout(self.pwm_box)
+        self.pwm_source_provider = lambda allowed_var=None: []
+        self.edit_base_duty = _make_spinbox(0, 100, 0, "%")
+        self.combo_duty_input = QComboBox()
+        self.combo_duty_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.pwm_input_axis = []
+        self.pwm_duty_axis = []
+
+        pwm_form.addRow(FIELD_LABELS["pwm"]["base_duty"], self.edit_base_duty)
+        pwm_form.addRow(FIELD_LABELS["pwm"]["duty_input"], self.combo_duty_input)
+
+        pwm_map_widget = QWidget()
+        pwm_map_layout = QGridLayout(pwm_map_widget)
+        pwm_map_layout.setContentsMargins(0, 0, 0, 0)
+        pwm_map_layout.setHorizontalSpacing(2)
+        pwm_map_layout.setVerticalSpacing(6)
+        # pwm_map_layout.addWidget(QLabel(""), 0, 0)
+        # for column in range(OUT_PWM_MAP_RESOLUTION):
+        #     header = QLabel(str(column + 1))
+        #     header.setAlignment(Qt.AlignCenter)
+        #     pwm_map_layout.addWidget(header, 0, column + 1)
+
+        input_axis_label = QLabel("Input axis [0-5000 mV]")
+        input_axis_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        pwm_map_layout.addWidget(input_axis_label, 1, 0)
+        for column in range(OUT_PWM_MAP_RESOLUTION):
+            spin_box = _make_spinbox(0, 5000, 0, " mV")
+            self.pwm_input_axis.append(spin_box)
+            pwm_map_layout.addWidget(spin_box, 1, column + 1)
+
+        duty_axis_label = QLabel("Duty axis [0-100 %]")
+        duty_axis_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        pwm_map_layout.addWidget(duty_axis_label, 2, 0)
+        for column in range(OUT_PWM_MAP_RESOLUTION):
+            spin_box = _make_spinbox(0, 100, 0, " %")
+            self.pwm_duty_axis.append(spin_box)
+            pwm_map_layout.addWidget(spin_box, 2, column + 1)
+
+        pwm_form.addRow(FIELD_LABELS["pwm"]["mapping"], pwm_map_widget)
+        outer.addWidget(self.pwm_box)
 
         self.logic_page = LogicChannelPage(channel_index)
         outer.addWidget(self.logic_page)
@@ -455,12 +511,15 @@ class ChannelConfigPage(QWidget):
         self.edit_time_threshold.valueChanged.connect(self._update_i2t_fields)
         self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
         self.combo_after_error_behavior.currentIndexChanged.connect(self._sync_after_error_state)
+        self.combo_mode.currentIndexChanged.connect(self._sync_mode_state)
 
         self._apply_spoc_mapping()
+        self.refresh_pwm_sources()
         self._sync_soc_state()
         self._sync_i2t_state()
         self._sync_inrush_window_state()
         self._sync_after_error_state()
+        self._sync_mode_state()
         self._update_i2t_fields()
 
     def _apply_spoc_mapping(self):
@@ -566,6 +625,36 @@ class ChannelConfigPage(QWidget):
         for widget in (self.edit_err_retry_threshold, self.edit_retry_timer_interval):
             widget.setEnabled(retry_enabled)
 
+    def set_pwm_source_provider(self, provider):
+        self.pwm_source_provider = provider or (lambda allowed_var=None: [])
+        self.refresh_pwm_sources()
+
+    def refresh_pwm_sources(self):
+        current_value = self.combo_duty_input.currentData()
+        if current_value is None:
+            current_value = 0xFFFF
+
+        sources = [("Not selected", 0xFFFF)]
+        try:
+            sources.extend(self.pwm_source_provider(0x01))
+        except Exception:
+            pass
+
+        self.combo_duty_input.blockSignals(True)
+        self.combo_duty_input.clear()
+        for label, value in sources:
+            self.combo_duty_input.addItem(label, value)
+
+        selected_index = self.combo_duty_input.findData(current_value)
+        if selected_index < 0:
+            selected_index = self.combo_duty_input.findData(0xFFFF)
+        if selected_index >= 0:
+            self.combo_duty_input.setCurrentIndex(selected_index)
+        self.combo_duty_input.blockSignals(False)
+
+    def _sync_mode_state(self):
+        self.pwm_box.setVisible(self.combo_mode.currentData() == OUT_MODE_PWM)
+
     def apply_dict(self, data):
         mode_value = data.get("mode", OUT_MODE_UNUSED)
         mode_index = self.combo_mode.findData(mode_value)
@@ -574,6 +663,24 @@ class ChannelConfigPage(QWidget):
 
         self.edit_name.setText(str(data.get("name", self.edit_name.text())))
         self.edit_batch.setValue(int(data.get("batch", self.edit_batch.value())))
+
+        pwm = data.get("pwmCfg", {}) or {}
+        self.edit_base_duty.setValue(int(pwm.get("baseDuty", self.edit_base_duty.value())))
+        self.refresh_pwm_sources()
+        duty_input_value = pwm.get("dutyInput", 0xFFFF)
+        duty_input_index = self.combo_duty_input.findData(duty_input_value)
+        if duty_input_index < 0:
+            duty_input_index = self.combo_duty_input.findData(0xFFFF)
+        if duty_input_index >= 0:
+            self.combo_duty_input.setCurrentIndex(duty_input_index)
+        for axis_index, spin_box in enumerate(self.pwm_input_axis):
+            axis_values = pwm.get("inputAxis", []) or []
+            if axis_index < len(axis_values):
+                spin_box.setValue(int(axis_values[axis_index]))
+        for axis_index, spin_box in enumerate(self.pwm_duty_axis):
+            axis_values = pwm.get("dutyAxis", []) or []
+            if axis_index < len(axis_values):
+                spin_box.setValue(int(axis_values[axis_index]))
 
         safety = data.get("safety", {}) or {}
         after_error = safety.get("afterErrorCfg", {}) or {}
@@ -602,6 +709,7 @@ class ChannelConfigPage(QWidget):
         self._sync_soc_inrush_state()
         self._sync_i2t_state()
         self._update_i2t_fields()
+        self._sync_mode_state()
 
     def pack_binary_record(self):
         name_bytes = self.edit_name.text().encode("utf-8")[:32]
@@ -631,6 +739,10 @@ class ChannelConfigPage(QWidget):
             self.edit_nominal_current.value() ** 2,  # nominal_current_sq
             self.edit_time_threshold.value(),  # time_threshold
             self.edit_nominal_current.value() ** 2 * self.edit_time_threshold.value(),  # i2t_threshold
+            self.edit_base_duty.value(),  # base_duty
+            self.combo_duty_input.currentData(),  # duty_input
+            *[spin_box.value() for spin_box in self.pwm_input_axis],  # inputAxis[]
+            *[spin_box.value() for spin_box in self.pwm_duty_axis],  # dutyAxis[]
         )
         return struct.pack(
             BINARY_RECORD_FORMAT,
@@ -650,6 +762,12 @@ class ChannelConfigPage(QWidget):
             "spocChId": spoc_ch_id,
             "name": self.edit_name.text(),
             "batch": self.edit_batch.value(),
+                "pwmCfg": {
+                    "baseDuty": self.edit_base_duty.value(),
+                    "dutyInput": self.combo_duty_input.currentData(),
+                    "inputAxis": [spin_box.value() for spin_box in self.pwm_input_axis],
+                    "dutyAxis": [spin_box.value() for spin_box in self.pwm_duty_axis],
+                },
             "safety": {
                 "afterErrorCfg": {
                     "behavior": self.combo_after_error_behavior.currentData(),
@@ -1477,6 +1595,7 @@ class ConfigTab(QWidget):
             scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             page = ChannelConfigPage(index)
             page.logic_page.set_sensor_source_provider(self.inputs_page.get_sensor_sources)
+            page.set_pwm_source_provider(self.inputs_page.get_sensor_sources)
             page.logic_page.logicChanged.connect(self._refresh_input_usage_summary)
             page.edit_name.textChanged.connect(self._refresh_input_usage_summary)
             self.channel_widgets.append(page)
@@ -1485,8 +1604,10 @@ class ConfigTab(QWidget):
         layout.addWidget(self.tabs, 1)
 
         self.inputs_page.inputsChanged.connect(self._refresh_logic_sensor_sources)
+        self.inputs_page.inputsChanged.connect(self._refresh_pwm_sensor_sources)
         self.inputs_page.inputsChanged.connect(self._emit_can_frames_changed)
         self._refresh_logic_sensor_sources()
+        self._refresh_pwm_sensor_sources()
         self._emit_can_frames_changed()
 
         transfer_box = QGroupBox("Transfer status")
@@ -1519,6 +1640,11 @@ class ConfigTab(QWidget):
         }
 
     def apply_config(self, config):
+        if isinstance(config, dict):
+            inputs_data = config.get("inputs")
+            if isinstance(inputs_data, dict):
+                self.inputs_page.apply_dict(inputs_data)
+
         channels = config.get("channels") if isinstance(config, dict) else config
         if not isinstance(channels, list):
             raise ValueError("Expected a channels list in the JSON file")
@@ -1531,10 +1657,6 @@ class ConfigTab(QWidget):
                     self.channel_widgets[index].logic_page.apply_dict(logic_data)
 
         if isinstance(config, dict):
-            inputs_data = config.get("inputs")
-            if isinstance(inputs_data, dict):
-                self.inputs_page.apply_dict(inputs_data)
-
             logic_data = config.get("logic")
             if isinstance(logic_data, list):
                 for index, logic_item in enumerate(logic_data[: len(self.channel_widgets)]):
@@ -1566,6 +1688,10 @@ class ConfigTab(QWidget):
         for channel_widget in self.channel_widgets:
             channel_widget.logic_page.refresh_sensor_sources()
         self._refresh_input_usage_summary()
+
+    def _refresh_pwm_sensor_sources(self):
+        for channel_widget in self.channel_widgets:
+            channel_widget.refresh_pwm_sources()
 
     def _refresh_input_usage_summary(self):
         usage_by_input = {}
@@ -1687,7 +1813,7 @@ class ConfigTab(QWidget):
             + INPUT_TOTAL_SIZE
             + LOGIC_TOTAL_SIZE
         )
-        legacy_output_size = OUTPUT_CONFIG_TOTAL_SIZE
+        legacy_output_size = LEGACY_OUTPUT_CONFIG_TOTAL_SIZE
         payload = None
         if len(data) == expected_size:
             payload = data
@@ -1713,10 +1839,9 @@ class ConfigTab(QWidget):
 
         if len(payload) == legacy_output_size:
             channels = []
-            for i in range(CHANNEL_COUNT):
-                start = i * BINARY_RECORD_SIZE
-                rec = payload[start : start + BINARY_RECORD_SIZE]
-                tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
+
+        def _build_output_channel_dict(values, include_pwm):
+            if include_pwm:
                 (
                     ch_id,
                     type_v,
@@ -1741,79 +1866,50 @@ class ConfigTab(QWidget):
                     nominal_current_sq,
                     time_threshold,
                     i2t_threshold,
-                ) = tup
-
-                name = name_bytes.split(b"\0", 1)[0].decode("utf-8", errors="replace")
-                ch_dict = {
-                    "id": ch_id,
-                    "type": type_v,
-                    "mode": mode_v,
-                    "spocId": spoc_id,
-                    "spocChId": spoc_ch,
-                    "name": name,
-                    "batch": batch,
-                    "safety": {
-                        "afterErrorCfg": {"behavior": after_err_beh, "latchTime": _clamp(after_err_latch_time, 0, 2147483647)},
-                        "actOnSafety": bool(act_on_safety),
-                        "errRetryThreshold": _clamp(err_retry_threshold, 0, 65535),
-                        "retryTimerInterval": _clamp(retry_timer_interval, 0, 2147483647),
-                        "socCfg": {
-                            "useSoc": bool(use_soc),
-                            "nominalThreshold": _clamp(nominal_threshold, 0, 65535),
-                            "allowInrush": bool(allow_inrush),
-                            "inrushWindowFromStart": _clamp(inrush_window_from_start, 0, UINT32_MAX),
-                            "inrushThreshold": _clamp(inrush_threshold, 0, 2147483647),
-                            "inrushTimeThreshold": _clamp(inrush_time_threshold, 0, 2147483647),
-                        },
-                        "i2tCfg": {
-                            "useI2t": bool(use_i2t),
-                            "nominalCurrent": _clamp(nominal_current, 0, 65535),
-                            "nominalCurrentSq": _clamp(nominal_current_sq, 0, 2147483647),
-                            "timeThreshold": _clamp(time_threshold, 0, 2147483647),
-                            "i2tThreshold": _clamp(i2t_threshold, 0, 2147483647),
-                        },
-                    },
-                }
-                channels.append(ch_dict)
-
-            self.apply_config({"channels": channels})
-            return
-
-        offset = 0
-        channels = []
-        for i in range(CHANNEL_COUNT):
-            start = i * BINARY_RECORD_SIZE
-            rec = payload[offset : offset + BINARY_RECORD_SIZE]
-            tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
-            (
-                ch_id,
-                type_v,
-                mode_v,
-                spoc_id,
-                spoc_ch,
-                name_bytes,
-                batch,
-                after_err_beh,
-                after_err_latch_time,
-                act_on_safety,
-                err_retry_threshold,
-                retry_timer_interval,
-                use_soc,
-                nominal_threshold,
-                allow_inrush,
-                inrush_window_from_start,
-                inrush_threshold,
-                inrush_time_threshold,
-                use_i2t,
-                nominal_current,
-                nominal_current_sq,
-                time_threshold,
-                i2t_threshold,
-            ) = tup
-
+                    base_duty,
+                    duty_input,
+                    *axis_values,
+                ) = values
+                input_axis = [int(axis_values[index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
+                duty_axis = [int(axis_values[OUT_PWM_MAP_RESOLUTION + index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
+            else:
+                (
+                    ch_id,
+                    type_v,
+                    mode_v,
+                    spoc_id,
+                    spoc_ch,
+                    name_bytes,
+                    batch,
+                    after_err_beh,
+                    after_err_latch_time,
+                    act_on_safety,
+                    err_retry_threshold,
+                    retry_timer_interval,
+                    use_soc,
+                    nominal_threshold,
+                    allow_inrush,
+                    inrush_window_from_start,
+                    inrush_threshold,
+                    inrush_time_threshold,
+                    use_i2t,
+                    nominal_current,
+                    nominal_current_sq,
+                    time_threshold,
+                    i2t_threshold,
+                ) = values
+                base_duty = 0
+                duty_input = 0xFFFF
+                input_axis = [0] * OUT_PWM_MAP_RESOLUTION
+                duty_axis = [0] * OUT_PWM_MAP_RESOLUTION
             name = name_bytes.split(b"\0", 1)[0].decode("utf-8", errors="replace")
-
-            ch_dict = {
+            pwm_cfg = {
+                "baseDuty": _clamp(base_duty, 0, 100),
+                "dutyInput": _clamp(duty_input, 0, 0xFFFF),
+                "inputAxis": [_clamp(value, 0, 5000) for value in input_axis],
+                "dutyAxis": [_clamp(value, 0, 100) for value in duty_axis],
+            }
+            return {
                 "id": ch_id,
                 "type": type_v,
                 "mode": mode_v,
@@ -1821,6 +1917,7 @@ class ConfigTab(QWidget):
                 "spocChId": spoc_ch,
                 "name": name,
                 "batch": batch,
+                "pwmCfg": pwm_cfg,
                 "safety": {
                     "afterErrorCfg": {"behavior": after_err_beh, "latchTime": _clamp(after_err_latch_time, 0, 2147483647)},
                     "actOnSafety": bool(act_on_safety),
@@ -1843,9 +1940,25 @@ class ConfigTab(QWidget):
                     },
                 },
             }
-            channels.append(ch_dict)
-            offset += BINARY_RECORD_SIZE
 
+        if len(payload) == legacy_output_size:
+            channels = []
+            for i in range(CHANNEL_COUNT):
+                start = i * LEGACY_BINARY_RECORD_SIZE
+                rec = payload[start : start + LEGACY_BINARY_RECORD_SIZE]
+                tup = struct.unpack(LEGACY_BINARY_RECORD_FORMAT, rec)
+                channels.append(_build_output_channel_dict(tup, False))
+
+            self.apply_config({"channels": channels})
+            return
+
+        offset = 0
+        channels = []
+        for i in range(CHANNEL_COUNT):
+            rec = payload[offset : offset + BINARY_RECORD_SIZE]
+            tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
+            channels.append(_build_output_channel_dict(tup, True))
+            offset += BINARY_RECORD_SIZE
         can_inputs = []
         for index in range(CAN_INPUT_COUNT):
             rec = payload[offset : offset + CAN_INPUT_RECORD_SIZE]
