@@ -141,6 +141,14 @@ const osThreadAttr_t isotpTask_attributes = {
   .priority = (osPriority_t) osPriorityAboveNormal3,
 };
 
+/* Definitions for tmp126Task */
+osThreadId_t tmp126TaskHandle;
+const osThreadAttr_t tmp126Task_attributes = {
+  .name = "tmp126Task",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
@@ -159,6 +167,7 @@ extern void telemTaskStart(void *argument);
 extern void adc2TaskStart(void *argument);
 extern void argbTaskStart(void *argument);
 extern void isotpTaskStart(void *argument);
+extern void tmp126TaskEntry(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -232,6 +241,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of isotpTask */
   isotpTaskHandle = osThreadNew(isotpTaskStart, NULL, &isotpTask_attributes);
+
+  /* creation of tmp126Task */
+  tmp126TaskHandle = osThreadNew(tmp126TaskEntry, NULL, &tmp126Task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

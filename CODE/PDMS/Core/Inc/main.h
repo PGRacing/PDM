@@ -135,6 +135,10 @@ void Error_Handler(void);
 #define PWM_SIG6_GPIO_Port GPIOD
 #define PWM_SIG5_Pin LL_GPIO_PIN_15
 #define PWM_SIG5_GPIO_Port GPIOD
+#define TEMP1_ALERT_Pin LL_GPIO_PIN_5
+#define TEMP1_ALERT_GPIO_Port GPIOG
+#define TEMP1_CS_Pin LL_GPIO_PIN_6
+#define TEMP1_CS_GPIO_Port GPIOG
 #define BUZZ_CTRL_Pin LL_GPIO_PIN_7
 #define BUZZ_CTRL_GPIO_Port GPIOG
 #define PWM_SIG4_Pin LL_GPIO_PIN_6

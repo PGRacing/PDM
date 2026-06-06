@@ -329,7 +329,7 @@ uint32_t VMUX_GetBattValueEma(void)
     return VMUX_BattVoltageEma;
 }
 
-int16_t VMUX_GetTempValue(void)
+int16_t VMUX_GetCoreTempValue(void)
 {
     return VMUX_TempValue;
 }

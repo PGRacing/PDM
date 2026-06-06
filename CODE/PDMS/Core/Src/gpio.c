@@ -66,7 +66,7 @@ void MX_GPIO_Init(void)
                           |LP_CSN2_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(GPIOG, BUZZ_CTRL_Pin|LP_CSN1_Pin);
+  LL_GPIO_ResetOutputPin(GPIOG, TEMP1_CS_Pin|BUZZ_CTRL_Pin|LP_CSN1_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(GPIOC, PWM_SIG4_Pin|PWM_SIG3_Pin|PWM_SIG2_Pin|PWM_SIG1_Pin);
@@ -104,7 +104,13 @@ void MX_GPIO_Init(void)
   LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = BUZZ_CTRL_Pin|LP_CSN1_Pin;
+  GPIO_InitStruct.Pin = TEMP1_ALERT_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(TEMP1_ALERT_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = TEMP1_CS_Pin|BUZZ_CTRL_Pin|LP_CSN1_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;

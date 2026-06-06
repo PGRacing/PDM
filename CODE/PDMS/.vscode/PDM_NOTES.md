@@ -70,3 +70,14 @@ VMUX????
 
 Trzeba zweryfikować czy inputy działają
 Dodać filtr antyalisingowy na dobre wartości
+
+
+05.2026
+--------------------------------
+// [DONE] Check if act-on-safety works
+// [DONE] Check if PWM works
+// [Rather no] Is there a chance for race condition between pdm task and output task
+// [Not now] vPortEnterCritical on OUT_SetState(?)
+// Verify batch working
+// Pull down helps with current on off state
+// DEN should be tied to IN, otherwise it detects OPEN_LOAD fault when Vout > 3V and channel is off -> detect only center of PWM
