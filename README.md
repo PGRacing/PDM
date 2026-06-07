@@ -50,4 +50,3 @@ Rev. 4.1
 | 13. Add MUX for mutlichannel switch | 2 | 2 | DONE - added 16 channel mux |
 | 14. Add CAN software switching | 2 | 2 | DONE |
 | 14. Remove additional header for stlink | 2 | 2 | DONE |
-
