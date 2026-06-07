@@ -121,7 +121,7 @@ class MainWindow(QMainWindow):
         sys_grid.addWidget(QLabel("Battery:"), 1, 0)
         self.lbl_batt = QLabel("- mV")
         sys_grid.addWidget(self.lbl_batt, 1, 1)
-        sys_grid.addWidget(QLabel("Core Temp:"), 2, 0)
+        sys_grid.addWidget(QLabel("Device temp:"), 2, 0)
         self.lbl_temp = QLabel("- °C")
         sys_grid.addWidget(self.lbl_temp, 2, 1)
         sys_grid.addWidget(QLabel("Safety Line:"), 3, 0)

@@ -111,6 +111,28 @@ def _expected_isotp_frames(payload_len):
     return 1 + ((payload_len - 6 + 6) // 7)
 
 
+class FrameRateMeter:
+    """Rolling frame rate meter over a fixed time window (seconds)."""
+    def __init__(self, window=10.0):
+        self.window = float(window)
+        self.timestamps = deque()
+
+    def tick(self, t=None):
+        """Record a frame at time `t` (epoch seconds). Returns current fps."""
+        if t is None:
+            t = time.time()
+        self.timestamps.append(t)
+        cutoff = t - self.window
+        while self.timestamps and self.timestamps[0] < cutoff:
+            self.timestamps.popleft()
+        return self.fps()
+
+    def fps(self):
+        if not self.timestamps:
+            return 0.0
+        return len(self.timestamps) / self.window
+
+
 def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
     if msg.arbitration_id != ISOTP_RX_ID:
         return
@@ -389,6 +411,7 @@ def can_isolated_process(pipe_conn, tx_queue):
     frame_counts = defaultdict(int)
     frame_first_seen = {}
     frame_last_seen = {}
+    frame_rate_meters = defaultdict(lambda: FrameRateMeter(window=10.0))
     rx_cfg_state = {
         "expecting_config": False,
         "active": False,
@@ -452,6 +475,10 @@ def can_isolated_process(pipe_conn, tx_queue):
         frame_counts[cid] += 1
         frame_first_seen.setdefault(cid, t_now)
         frame_last_seen[cid] = t_now
+        try:
+            frame_rate_meters[cid].tick(t_now)
+        except Exception:
+            pass
 
         if cid == IDS["SYS_STATUS"]:
             status, batt_voltage, core_temp, safety_line_state, logic_valid_mask = parse_system_status(d)
@@ -533,7 +560,7 @@ def can_isolated_process(pipe_conn, tx_queue):
                         {
                             "id": fid,
                             "count": frame_counts[fid],
-                            "freq": frame_counts[fid] / max(1e-6, frame_last_seen[fid] - frame_first_seen[fid]),
+                            "freq": round(frame_rate_meters[fid].fps(), 3),
                         }
                         for fid in sorted(frame_counts)
                     ],
