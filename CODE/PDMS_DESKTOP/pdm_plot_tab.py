@@ -1,0 +1,171 @@
+from collections import deque
+
+import pyqtgraph as pg
+from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QPushButton, QScrollArea, QVBoxLayout, QWidget
+
+from pdm_shared import CHANNEL_COUNT, HISTORY_LEN, TRACK_COLORS
+
+
+class PlotPanel(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.hist_v = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+        self.hist_i = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+        self.hist_iavg = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+
+        self.curves_v = {}
+        self.curves_i_inst = {}
+        self.curves_i_avg = {}
+
+        root_layout = QHBoxLayout(self)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+        root_layout.setSpacing(12)
+
+        ch_box = QGroupBox("Output channel:")
+        ch_box.setMinimumWidth(200)
+        # ch_box.setMaximumWidth(260)
+        ch_layout = QVBoxLayout(ch_box)
+        ch_layout.setContentsMargins(10, 12, 10, 10)
+        ch_layout.setSpacing(2)
+        self.channel_checkboxes = []
+        self.channel_scroll = QScrollArea()
+        self.channel_scroll.setWidgetResizable(False)
+        self.channel_scroll.setFrameShape(QScrollArea.NoFrame)
+        channel_content = QWidget()
+        channel_layout = QVBoxLayout(channel_content)
+        channel_layout.setContentsMargins(0, 0, 0, 0)
+        channel_layout.setSpacing(6)
+        channel_layout.addStretch(2)
+        channel_content.setMinimumWidth(150)
+        for i in range(CHANNEL_COUNT):
+            cb = QCheckBox(f"CH{i+1}")
+            cb.setChecked(i == 0)
+            cb.setStyleSheet("QCheckBox { padding: 6px 8px; margin: 2px 0; }")
+            self.channel_checkboxes.append(cb)
+            channel_layout.insertWidget(channel_layout.count() - 1, cb)
+        self.channel_scroll.setWidget(channel_content)
+        ch_layout.addWidget(self.channel_scroll, 1)
+
+        button_row = QVBoxLayout()
+        button_row.setSpacing(6)
+        self.btn_show_all = QPushButton("Show all")
+        self.btn_show_hp = QPushButton("Show HP")
+        self.btn_show_lp = QPushButton("Show LP")
+        self.btn_show_all.clicked.connect(self.toggle_show_all)
+        self.btn_show_hp.clicked.connect(self.toggle_show_hp)
+        self.btn_show_lp.clicked.connect(self.toggle_show_lp)
+        button_row.addWidget(self.btn_show_all)
+        button_row.addWidget(self.btn_show_hp)
+        button_row.addWidget(self.btn_show_lp)
+        ch_layout.addLayout(button_row)
+        root_layout.addWidget(ch_box, stretch=0)
+
+        plots_panel = QWidget()
+        plots_layout = QVBoxLayout(plots_panel)
+        plots_layout.setContentsMargins(0, 0, 0, 0)
+        plots_layout.setSpacing(0)
+
+        self.graph_container = pg.GraphicsLayoutWidget()
+        self.graph_container.setBackground("#1E1E1E")
+        plots_layout.addWidget(self.graph_container)
+        self.graph_container.setToolTip("Click Ctrl + Space to pause the charts")
+        root_layout.addWidget(plots_panel, stretch=3)
+
+        self.plot_v = self.graph_container.addPlot(row=0, col=0)
+        self.plot_i = self.graph_container.addPlot(row=1, col=0)
+
+        self.plot_v.addLegend(offset=(10, 10))
+        self.plot_i.addLegend(offset=(10, 10))
+
+        self.plot_v.setTitle("Voltage", color="#BB86FC", size="11pt")
+        self.plot_v.setLabel("left", "Voltage", units="V")
+        self.plot_v.showGrid(x=True, y=True, alpha=0.15)
+        self.plot_v.setMouseEnabled(x=True, y=True)
+        self.plot_v.getViewBox().setMouseMode(pg.ViewBox.RectMode)
+
+        self.plot_i.setTitle("Current", color="#BB86FC", size="11pt")
+        self.plot_i.setLabel("left", "Current", units="A")
+        self.plot_i.showGrid(x=True, y=True, alpha=0.15)
+        self.plot_i.setMouseEnabled(x=True, y=True)
+        self.plot_i.getViewBox().setMouseMode(pg.ViewBox.RectMode)
+
+        for ch in range(CHANNEL_COUNT):
+            clr = TRACK_COLORS[ch % len(TRACK_COLORS)]
+            self.curves_v[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1.5), name=f"CH{ch+1}")
+            self.plot_v.addItem(self.curves_v[ch])
+            self.curves_i_inst[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1.5), name=f"CH{ch+1}")
+            self.plot_i.addItem(self.curves_i_inst[ch])
+            self.curves_i_avg[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr + "40", width=1), name=f"CH{ch+1}")
+            self.plot_i.addItem(self.curves_i_avg[ch])
+
+    def update_from_packet(self, packet):
+        t_now = packet["time"]
+        for i, ch in enumerate(packet["ch"]):
+            self.hist_v[i].append((t_now, ch["voltage"]))
+            self.hist_i[i].append((t_now, ch["current"]))
+            self.hist_iavg[i].append((t_now, ch["current_avg"]))
+
+    def apply_channel_names(self, channel_names):
+        for i, name in enumerate(channel_names):
+            display_name = f"CH{(i+1):<6} {name.strip()}" if name.strip() else f"CH{i+1}"
+            if self.channel_checkboxes[i].text() != display_name:
+                self.channel_checkboxes[i].setText(display_name)
+
+    def refresh_plots(self):
+        selected_channels = [i for i, cb in enumerate(self.channel_checkboxes) if cb.isChecked()]
+
+        for ch in range(CHANNEL_COUNT):
+            if ch in selected_channels:
+                if len(self.hist_v[ch]) > 1:
+                    t, v = zip(*self.hist_v[ch])
+                    self.curves_v[ch].setData(t, v)
+                else:
+                    self.curves_v[ch].setData([], [])
+
+                if len(self.hist_i[ch]) > 1:
+                    t, c = zip(*self.hist_i[ch])
+                    self.curves_i_inst[ch].setData(t, c)
+                else:
+                    self.curves_i_inst[ch].setData([], [])
+
+                if len(self.hist_iavg[ch]) > 1:
+                    t, c = zip(*self.hist_iavg[ch])
+                    self.curves_i_avg[ch].setData(t, c)
+                else:
+                    self.curves_i_avg[ch].setData([], [])
+            else:
+                self.curves_v[ch].setData([], [])
+                self.curves_i_inst[ch].setData([], [])
+                self.curves_i_avg[ch].setData([], [])
+
+    def _set_channels(self, indices_to_show):
+        visible_indices = set(indices_to_show)
+        for i, cb in enumerate(self.channel_checkboxes):
+            cb.setChecked(i in visible_indices)
+
+    def _all_checked(self, start_index, end_index):
+        return all(self.channel_checkboxes[i].isChecked() for i in range(start_index, end_index))
+
+    def _none_checked(self):
+        return not any(cb.isChecked() for cb in self.channel_checkboxes)
+
+    def toggle_show_all(self):
+        if all(cb.isChecked() for cb in self.channel_checkboxes):
+            self._set_channels([])
+        else:
+            self._set_channels(range(CHANNEL_COUNT))
+
+    def toggle_show_hp(self):
+        hp_range = range(0, 8)
+        if self._all_checked(0, 8) and all(not self.channel_checkboxes[i].isChecked() for i in range(8, CHANNEL_COUNT)):
+            self._set_channels([])
+        else:
+            self._set_channels(hp_range)
+
+    def toggle_show_lp(self):
+        lp_range = range(8, 16)
+        if self._all_checked(8, CHANNEL_COUNT) and all(not self.channel_checkboxes[i].isChecked() for i in range(0, 8)):
+            self._set_channels([])
+        else:
+            self._set_channels(lp_range)

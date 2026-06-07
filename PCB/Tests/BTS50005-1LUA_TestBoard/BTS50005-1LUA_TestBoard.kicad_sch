@@ -922,6 +922,11 @@
     (uuid f272e4a2-f8dc-4e18-b9dd-1f651b95d26b)
   )
 
+  (text "LACKING CURRENT LIMITING RESISTOR ON IS AND CAPACITOR"
+    (at 25.908 69.85 0)
+    (effects (font (size 1.27 1.27) (thickness 0.254) bold italic) (justify left bottom))
+    (uuid b8cffc43-f410-4825-b8e2-7edbace2939b)
+  )
   (text "BTS50010/05-1LUA Evaluation board" (at 101.6 121.92 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid d30687c8-c5ee-4ce5-9ffa-e15a1be90d6f)

@@ -1,0 +1,34 @@
+04-24 01:17:31 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 178:Plugin executed on: 'win32'
+04-24 01:17:31 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 179:Plugin executed with python version: '3.11.5 (main, Nov  3 2024, 06:58:22) [MSC v.1939 64 bit (AMD64)]'
+04-24 01:17:31 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 180:KiCad build version: 8.0.7
+04-24 01:17:31 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 181:Plugin version: 3.0.1
+04-24 01:17:31 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 182:Frame repr: <wx._core.Frame object at 0x000001D8A161B0A0>
+04-24 01:17:31 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 200:Anchor footprint reference is 'U7'
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 209:Save layout chosen
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 453:Working on C:\Users\Karol\Documents\GitHub\PDM\PCB\Tests\MP4322_TestBoard\MP4322_TestBoard.kicad_pcb
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 176:getting a list of all footprints on board
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 458:Saving the current board temporary in order to leave current layout intact
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 464:Saving board as tempfile: C:\Users\Karol\AppData\Local\Temp\temp_board_file_for_save.kicad_pcb
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 469:Loaded temp boardfile: C:\Users\Karol\AppData\Local\Temp\temp_board_file_for_save.kicad_pcb
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 470:Get project schematics and layout data
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 176:getting a list of all footprints on board
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 91:populating the levels with ['File: mp4322.kicad_sch']
+04-24 01:17:32 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 92:populating the levels with ['MP4322']
+04-24 01:17:33 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 100:Clearing highlight
+04-24 01:17:34 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 107:levels_selection 0
+04-24 01:17:34 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 108:levels available ['MP4322']
+04-24 01:17:42 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 256:Saving the layout in 'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\Tests\\MP4322_TestBoard\\test_mp4322.pckl' for level 0
+04-24 01:17:42 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 483:Saving layout for level: ['MP4322']
+04-24 01:17:42 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 484:Calculating hash of the layout schematics
+04-24 01:17:42 com_github_MitjaNemec_SaveRestoreLayout.save_restore_layout 488:Saving hash for files: ['File: mp4322.kicad_sch']
+04-24 01:17:42 com_github_MitjaNemec_SaveRestoreLayout.action_save_restore_layout 265:Fatal error running SaveLayout
+Traceback (most recent call last):
+  File "C:\Users\Karol\Documents\KiCad\8.0\3rdparty\plugins\com_github_MitjaNemec_SaveRestoreLayout\action_save_restore_layout.py", line 258, in Run
+    save_layout.save_layout(save_layout.src_anchor_fp.sheet_id[0:selected_level + 1], data_file,
+  File "C:\Users\Karol\Documents\KiCad\8.0\3rdparty\plugins\com_github_MitjaNemec_SaveRestoreLayout\save_restore_layout.py", line 493, in save_layout
+    md5hash = get_sch_hash(file_path, md5hash)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Karol\Documents\KiCad\8.0\3rdparty\plugins\com_github_MitjaNemec_SaveRestoreLayout\save_restore_layout.py", line 71, in get_sch_hash
+    with open(sch_file, 'rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\Karol\\Documents\\GitHub\\PDM\\PCB\\Tests\\MP4322_TestBoard\\File: mp4322.kicad_sch'

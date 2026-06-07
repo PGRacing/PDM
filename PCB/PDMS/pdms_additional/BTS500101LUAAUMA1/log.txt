@@ -1,0 +1,2 @@
+02:11:06: Failed to copy the file 'C:\Users\Karol\Documents\GitHub\PDM\PCB\PDMS\pdms\_autosave-bts50005-1lua.kicad_sch' to 'C:\Users\Karol\Documents\GitHub\PDM\PCB\PDMS\pdms\bts50005-1lua.kicad_sch' (error 2: Nie można odnaleźć określonego pliku.)
+02:11:06: File 'C:\Users\Karol\Documents\GitHub\PDM\PCB\PDMS\pdms\_autosave-bts50005-1lua.kicad_sch' couldn't be renamed 'C:\Users\Karol\Documents\GitHub\PDM\PCB\PDMS\pdms\bts50005-1lua.kicad_sch' (error 2: Nie można odnaleźć określonego pliku.)

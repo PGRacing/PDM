@@ -1,0 +1,26 @@
+** Drc report for pdms.kicad_pcb **
+** Created on 2025-04-29T20:34:15+0200 **
+
+** Found 6 DRC violations **
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(76,8725 mm, 147,3175 mm): Footprint Text '*' of U7
+    @(76,6425 mm, 147,4038 mm): Segment on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; warning
+    @(76,8725 mm, 147,3175 mm): Footprint Text '*' of U7
+    @(76,6425 mm, 147,4038 mm): Segment on F.Silkscreen
+[copper_sliver]: Copper sliver (F.Cu)
+    Local override; warning
+[copper_sliver]: Copper sliver (F.Cu)
+    Local override; warning
+[copper_sliver]: Copper sliver (F.Cu)
+    Local override; warning
+[copper_sliver]: Copper sliver (B.Cu)
+    Local override; warning
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **

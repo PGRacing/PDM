@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "RP_MPQ5850_Additional")(type "KiCad")(uri "${KIPRJMOD}/Additional/RP_MPQ5850_Additional.kicad_sym")(options "")(descr ""))
+)

@@ -36,7 +36,7 @@
   (pad "4" smd rect (at -0.6 4.97) (size 0.8 2.6) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 446de179-24fb-4c26-ad31-22ec8982ac41))
   (pad "5" smd rect (at 2.4 4.97 90) (size 2.6 4.4) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp d4cbf719-c6a0-49d2-9364-f6407c002bf8))
   (pad "9" smd rect (at 0 -2.565 90) (size 7.41 10) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 2bcba44d-2446-429a-9651-e5340824f207))
-  (model "BTS500101LUAAUMA1.stp"
+  (model "C:/Users/Karol/Documents/GitHub/PDM/PCB/PDMS/pdms_additional/BTS500101LUAAUMA1/BTS500101LUAAUMA1.stp"
     (offset (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))

@@ -1,0 +1,6 @@
+dist/
+winstaller/*
+build/
+__pycache__/
+log/
+!winstaller/pdms.iss

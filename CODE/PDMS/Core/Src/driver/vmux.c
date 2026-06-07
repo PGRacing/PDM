@@ -1,0 +1,354 @@
+#include "main.h"
+#include "stm32l496xx.h"
+#include "stm32l4xx_hal_def.h"
+#include "stm32l4xx_ll_gpio.h"
+#include "typedefs.h"
+#include "logger.h"
+#include "input.h"
+#include "FreeRTOS.h"
+#include "tim.h"
+#include "adc.h"
+#include "out.h"
+#include "cmsis_os2.h"
+#include "spoc2.h"
+#include "pdm.h"
+
+// Platform initialization semaphore
+extern SemaphoreHandle_t platformInitSemaphore;
+
+#define VMUX_SELECTOR_COUNT 4       // Number of selector pins
+#define VMUX_INPUT_COUNT 16         // Number of inputs in multiplexer
+#define VMUX_SELECTOR_MAX_VAL 16    // Maximal value of selector used (16 -> 16 inputs)
+#define VMUX_SELECTOR_PORT GPIOE    // GPIO Port used for mutliplexer
+
+// This assumes that voltage divider is same on all channels
+#define VMUX_STORE_VOLTAGE
+#define VMUX_USED_DIVIDER (2.32 / 12.32)
+//#define VMUX_USED_DIVIDER_INV 5.310344827586207
+//#define VMUX_USED_DIVIDER_INV 5.44853224
+
+#if BOARD_VER == PDMS_V4_2
+#define VMUX_USED_DIVIDER_INV 5.44853224
+#define VMUX_BATT_DIVIDER_INV 5.44853224
+#elif BOARD_VER == PDMS_V4_3
+#define VMUX_BATT_DIVIDER_INV 6.19
+#define VMUX_USED_DIVIDER_INV 5.47
+#endif
+
+#define VMUX_ADC_12BIT_MAX_VALUE 4096
+
+#define VMUX_GET_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_USED_DIVIDER_INV)
+#define VMUX_GET_BATT_VOLTAGE_MV(X) ((X) * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE * VMUX_BATT_DIVIDER_INV)
+
+#define VMUX_BATT_VOLTAGE_EWMA_ALPHA 0.05f // Alpha for exponential moving average of battery voltage, lower value means smoother readings but longer time to react to changes
+
+// Battery voltage 1V at beggining
+volatile uint32_t VMUX_BattVoltage = 1000;
+volatile uint32_t VMUX_BattVoltageEma = 1000;
+
+volatile int16_t VMUX_TempValue = 250; // 25.0 C at beggining
+
+volatile uint16_t VMUX_LP1Voltage[4] = {0};
+
+volatile uint16_t VMUX_LP2Voltage[4] = {0};
+
+volatile uint32_t VMUX_Value[VMUX_INPUT_COUNT] = {0};
+
+static const uint8_t VMUX_ReadOrder[VMUX_INPUT_COUNT] = {2, 4, 3, 5, 6, 7, 0, 1, 8, 9, 10, 11, 12, 13, 14, 15};
+
+static uint16_t tempSensorCal1; // Factory calibration value for 30 degrees C @ 3.0V
+static uint16_t tempSensorCal2; // Factory calibration value for 130 degrees C @ 3.0V
+
+
+static T_IO VMUX_SelectorConfig[VMUX_SELECTOR_COUNT] = 
+{
+    {.port = VOLTAGE_MUX_SEL1_GPIO_Port,
+     .pin  = VOLTAGE_MUX_SEL1_Pin},
+    {.port = VOLTAGE_MUX_SEL2_GPIO_Port,
+     .pin  = VOLTAGE_MUX_SEL2_Pin},
+    {.port = VOLTAGE_MUX_SEL3_GPIO_Port,
+     .pin  = VOLTAGE_MUX_SEL3_Pin},
+    {.port = VOLTAGE_MUX_SEL4_GPIO_Port,
+     .pin  = VOLTAGE_MUX_SEL4_Pin
+    }
+};
+
+void VMUX_Init(void)
+{
+    // Set multiplexer selector pins to output mode
+    LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[0].port, VMUX_SelectorConfig[0].pin);
+    LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[1].port, VMUX_SelectorConfig[1].pin);
+    LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[2].port, VMUX_SelectorConfig[2].pin);
+    LL_GPIO_ResetOutputPin(VMUX_SelectorConfig[3].port, VMUX_SelectorConfig[3].pin);
+
+    GPIO_InitStruct.Pin = VMUX_SelectorConfig[0].pin;
+    GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+    GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+    LL_GPIO_Init(VMUX_SelectorConfig[0].port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = VMUX_SelectorConfig[1].pin;
+    LL_GPIO_Init(VMUX_SelectorConfig[1].port, &GPIO_InitStruct);
+
+    
+    GPIO_InitStruct.Pin = VMUX_SelectorConfig[2].pin;
+    LL_GPIO_Init(VMUX_SelectorConfig[2].port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = VMUX_SelectorConfig[3].pin;
+    LL_GPIO_Init(VMUX_SelectorConfig[3].port, &GPIO_InitStruct);
+}
+
+static void VMUX_SelectInput( uint8_t selector )
+{
+    ASSERT( selector >= 0 );
+    ASSERT( selector < VMUX_SELECTOR_MAX_VAL );
+
+    uint32_t setMask = 0;
+    uint32_t resetMask = 0;
+    
+    for( uint8_t i = 0, j = 0x01; i < VMUX_SELECTOR_COUNT; i++, j *= 2)
+    {
+        if(0 != (selector & j))
+        {
+            setMask |= VMUX_SelectorConfig[i].pin;
+        }
+        else
+        {
+            resetMask |= VMUX_SelectorConfig[i].pin;
+        }
+    }
+    
+    LL_GPIO_SetOutputPin(VMUX_SELECTOR_PORT, setMask);
+    LL_GPIO_ResetOutputPin(VMUX_SELECTOR_PORT, resetMask);
+}
+
+static void VMUX_SelectMuxAdcChannel (void)
+{
+	ADC_ChannelConfTypeDef sConfig = {0};
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_8;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+static void  VMUX_SelectBatteryAdcChannel(void)
+{
+    ADC_ChannelConfTypeDef sConfig = {0};
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_13;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+static void VMUX_SelectTempAdcChannel(void)
+{
+    ADC_ChannelConfTypeDef sConfig = {0};
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+static void  VMUX_SelectLP1AdcChannel(void)
+{
+    ADC_ChannelConfTypeDef sConfig = {0};
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_7;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+static void  VMUX_SelectLP2AdcChannel(void)
+{
+    ADC_ChannelConfTypeDef sConfig = {0};
+    /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+     */
+    sConfig.Channel = ADC_CHANNEL_6;
+    sConfig.Rank = 1;
+    sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
+    sConfig.Offset = 0;
+    sConfig.OffsetNumber = ADC_OFFSET_NONE;
+    sConfig.SingleDiff = ADC_SINGLE_ENDED;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+void VMUX_ReadBattVoltage(void)
+{
+    VMUX_SelectBatteryAdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
+    {   
+        vPortEnterCritical();
+        #ifdef VMUX_STORE_VOLTAGE
+            VMUX_BattVoltage = VMUX_GET_BATT_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+            VMUX_BattVoltageEma = (VMUX_BattVoltage * VMUX_BATT_VOLTAGE_EWMA_ALPHA) + (VMUX_BattVoltageEma * (1 - VMUX_BATT_VOLTAGE_EWMA_ALPHA));
+        #else
+            VMUX_BattVoltage = HAL_ADC_GetValue(&hadc3);
+        #endif
+        vPortExitCritical();
+    }       
+    HAL_ADC_Stop(&hadc3);
+}
+
+void VMUX_ReadTemp(void)
+{
+    VMUX_SelectTempAdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    if(HAL_ADC_PollForConversion(&hadc3, 100) == HAL_OK)
+    {   
+        uint32_t tempRaw = HAL_ADC_GetValue(&hadc3);
+
+        VMUX_TempValue = (int16_t)(((((int64_t)tempRaw * VDD_VALUE / VMUX_ADC_12BIT_MAX_VALUE) - tempSensorCal1) *
+                       (TEMPSENSOR_CAL2_TEMP - TEMPSENSOR_CAL1_TEMP) /
+                       (tempSensorCal2 - tempSensorCal1) + TEMPSENSOR_CAL1_TEMP) * 10);
+    }       
+    HAL_ADC_Stop(&hadc3);
+}
+
+static void VMUX_ReadLPChannel(void)
+{
+    // LP1 Switch readout
+    VMUX_SelectLP1AdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        SPOC2_SelectSenseMux(SPOC2_ID_1, i);
+        osDelay(1);
+        if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
+        {   
+            VMUX_LP1Voltage[i] = HAL_ADC_GetValue(&hadc3);
+        }
+    }
+    HAL_ADC_Stop(&hadc3);  
+
+    // LP2 Switch readout
+    VMUX_SelectLP2AdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        SPOC2_SelectSenseMux(SPOC2_ID_2, i);
+        osDelay(1);
+        if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
+        {   
+            VMUX_LP2Voltage[i] = HAL_ADC_GetValue(&hadc3);
+        }
+    }
+    HAL_ADC_Stop(&hadc3);  
+
+    OUT_DIAG_AllSpoc();
+}
+
+static void VMUX_GetAllPooling(void)
+{
+    VMUX_SelectMuxAdcChannel();
+    HAL_ADC_Start(&hadc3);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+
+    for( uint8_t sel = 0; sel < VMUX_SELECTOR_MAX_VAL; sel++)
+    {
+        VMUX_SelectInput( VMUX_ReadOrder[sel] );
+        // Wait 100us (0.1ms) for VMUX input to settle
+        // Dummy loop
+        uint32_t count = 100; 
+        while(count--)
+        {
+            __NOP();
+        }
+        if(HAL_ADC_PollForConversion(&hadc3, 50) == HAL_OK)
+        {   
+            // Enter critical section for ADC data filling
+            vPortEnterCritical();
+            #ifdef VMUX_STORE_VOLTAGE
+               
+                VMUX_Value[sel] = VMUX_GET_VOLTAGE_MV(HAL_ADC_GetValue(&hadc3));
+            #else
+                VMUX_Value[sel] = HAL_ADC_GetValue(&hadc3);
+            #endif
+            vPortExitCritical();
+        }       
+    }
+
+    HAL_ADC_Stop(&hadc3);
+}
+
+uint32_t VMUX_GetValue(uint8_t index)
+{
+    ASSERT(index < VMUX_INPUT_COUNT);
+    return VMUX_Value[index];
+}
+
+uint32_t VMUX_GetBattValue(void)
+{
+    return VMUX_BattVoltage;
+}
+
+uint32_t VMUX_GetBattValueEma(void)
+{
+    return VMUX_BattVoltageEma;
+}
+
+int16_t VMUX_GetCoreTempValue(void)
+{
+    return VMUX_TempValue;
+}
+
+void vmuxTaskStart(void *argument)
+{
+    /* USER CODE BEGIN vmuxTaskStart */
+    LOG_INFO("VMUX:: Task start");
+    tempSensorCal1 = (*((uint16_t*)TEMPSENSOR_CAL1_ADDR)) * 3000/VDD_VALUE;
+    tempSensorCal2 = (*((uint16_t*)TEMPSENSOR_CAL2_ADDR)) * 3000/VDD_VALUE;
+    /* Infinite loop */
+    for(;;)
+    {
+        VMUX_ReadBattVoltage();
+        VMUX_ReadTemp();
+        VMUX_GetAllPooling();
+        VMUX_ReadLPChannel();
+        // TODO Do it faster if possible
+        osDelay(pdMS_TO_TICKS(1));
+    }
+    /* USER CODE END vmuxTaskStart */
+}

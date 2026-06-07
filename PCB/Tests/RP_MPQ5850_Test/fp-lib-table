@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "RP_MPQ5850_Additional")(type "KiCad")(uri "${KIPRJMOD}/Additional/RP_MPQ5850_Additional.pretty")(options "")(descr ""))
+)

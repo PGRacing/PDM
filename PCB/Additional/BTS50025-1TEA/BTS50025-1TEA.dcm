@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP BTS50025-1TEA
+D 5.8 to 18 V, 60 A High Side Power Switch IC
+K
+F https://www.infineon.com/dgdl/Infineon-BTS50025-1TEA-DataSheet-v01_10-EN.pdf?fileId=5546d4626cb27db2016d4322f14b7d2a
+$ENDCMP
+#
+#End Doc Library

@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name "pdms_additional")(type "KiCad")(uri "C:/Users/Karol/Documents/GitHub/PDM/PCB/PDMS/pdms_additional/pdms_additional.kicad_sym")(options "")(descr ""))
+  (lib (name "BTS500101LUAAUMA1")(type "KiCad")(uri "C:/Users/Karol/Documents/GitHub/PDM/PCB/Tests/BTS50005-1LUA_TestBoard/BTS500101LUAAUMA1.kicad_sym")(options "")(descr ""))
 )

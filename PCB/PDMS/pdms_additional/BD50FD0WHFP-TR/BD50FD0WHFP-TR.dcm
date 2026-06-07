@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP BD50FD0WHFP-TR
+D LDO Voltage Regulators 5V REGULATOR
+K
+F https://fscdn.rohm.com/en/products/databook/datasheet/ic/power/linear_regulator/bdxxfd0xxxx-e.pdf
+$ENDCMP
+#
+#End Doc Library

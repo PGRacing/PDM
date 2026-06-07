@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 74HC4067PW-Q100J
+D 74HC(T)4067-Q100 - 16-channel analog multiplexer/demultiplexer@en-us
+K
+F https://assets.nexperia.com/documents/data-sheet/74HC_HCT4067_Q100.pdf
+$ENDCMP
+#
+#End Doc Library

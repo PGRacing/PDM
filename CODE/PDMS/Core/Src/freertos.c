@@ -25,7 +25,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "iwdg.h"
+#include "tim.h"
+#include "typedefs.h"
+#include "pdm.h"
+#include "buzzer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,7 +39,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -45,7 +48,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -75,12 +77,12 @@ const osThreadAttr_t can2Task_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for adcTask */
-osThreadId_t adcTaskHandle;
-const osThreadAttr_t adcTask_attributes = {
-  .name = "adcTask",
+/* Definitions for adc1Task */
+osThreadId_t adc1TaskHandle;
+const osThreadAttr_t adc1Task_attributes = {
+  .name = "adc1Task",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for testTask */
 osThreadId_t testTaskHandle;
@@ -96,6 +98,56 @@ const osThreadAttr_t vmuxTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for pdmTask */
+osThreadId_t pdmTaskHandle;
+const osThreadAttr_t pdmTask_attributes = {
+  .name = "pdmTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for spoc2CurrTask */
+osThreadId_t spoc2CurrTaskHandle;
+const osThreadAttr_t spoc2CurrTask_attributes = {
+  .name = "spoc2CurrTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for telemTask */
+osThreadId_t telemTaskHandle;
+const osThreadAttr_t telemTask_attributes = {
+  .name = "telemTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for adc2Task */
+osThreadId_t adc2TaskHandle;
+const osThreadAttr_t adc2Task_attributes = {
+  .name = "adc2Task",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal1,
+};
+/* Definitions for argbTask */
+osThreadId_t argbTaskHandle;
+const osThreadAttr_t argbTask_attributes = {
+  .name = "argbTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for isotpTask */
+osThreadId_t isotpTaskHandle;
+const osThreadAttr_t isotpTask_attributes = {
+  .name = "isotpTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal3,
+};
+
+/* Definitions for tmp126Task */
+osThreadId_t tmp126TaskHandle;
+const osThreadAttr_t tmp126Task_attributes = {
+  .name = "tmp126Task",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -106,9 +158,16 @@ void StartDefaultTask(void *argument);
 void statusTaskStart(void *argument);
 extern void can1TaskStart(void *argument);
 extern void can2TaskStart(void *argument);
-extern void adcTaskStart(void *argument);
+extern void adc1TaskStart(void *argument);
 extern void testTaskEntry(void *argument);
 extern void vmuxTaskStart(void *argument);
+extern void pdmTaskStart(void *argument);
+extern void spoc2CurrTaskStart(void *argument);
+extern void telemTaskStart(void *argument);
+extern void adc2TaskStart(void *argument);
+extern void argbTaskStart(void *argument);
+extern void isotpTaskStart(void *argument);
+extern void tmp126TaskEntry(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -127,7 +186,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_MUTEX */
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
+
+  // Create semaphore that will indicate platform initalization
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -140,6 +200,12 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
+
+  /* creation of pdmTask */
+  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
+
+  // First initialize default and peripheral task, then start main (PDM) task
+  // IWDG task
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of statusTask */
@@ -151,14 +217,33 @@ void MX_FREERTOS_Init(void) {
   /* creation of can2Task */
   can2TaskHandle = osThreadNew(can2TaskStart, NULL, &can2Task_attributes);
 
-  /* creation of adcTask */
-  adcTaskHandle = osThreadNew(adcTaskStart, NULL, &adcTask_attributes);
+  /* creation of adc1Task */
+  adc1TaskHandle = osThreadNew(adc1TaskStart, NULL, &adc1Task_attributes);
+
+  /* creation of adc2Task */
+  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
 
   /* creation of testTask */
-  testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
+  // Disabloe test task
+  //testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
 
   /* creation of vmuxTask */
   vmuxTaskHandle = osThreadNew(vmuxTaskStart, NULL, &vmuxTask_attributes);
+
+  /* creation of spoc2CurrTask */
+  spoc2CurrTaskHandle = osThreadNew(spoc2CurrTaskStart, NULL, &spoc2CurrTask_attributes);
+
+  /* creation of telemTask */
+  telemTaskHandle = osThreadNew(telemTaskStart, NULL, &telemTask_attributes);
+
+  /* creation of argbTask */
+  argbTaskHandle = osThreadNew(argbTaskStart, NULL, &argbTask_attributes);
+
+  /* creation of isotpTask */
+  isotpTaskHandle = osThreadNew(isotpTaskStart, NULL, &isotpTask_attributes);
+
+  /* creation of tmp126Task */
+  tmp126TaskHandle = osThreadNew(tmp126TaskEntry, NULL, &tmp126Task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -180,10 +265,13 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+  LOG_INFO("DEFAULT:: Task start");
+
   /* Infinite loop */
   for(;;)
   {
-    osDelay(pdMS_TO_TICKS(100));
+    osDelay(pdMS_TO_TICKS(20));
+    HAL_IWDG_Refresh(&hiwdg);
   }
   /* USER CODE END StartDefaultTask */
 }
@@ -198,6 +286,11 @@ void StartDefaultTask(void *argument)
 void statusTaskStart(void *argument)
 {
   /* USER CODE BEGIN statusTaskStart */
+  LOG_INFO("STATUS:: Task start");
+
+  BUZZER_TurnOn();
+  osDelay(300);
+  BUZZER_TurnOff();
   /* Infinite loop */
     for(;;)
     {
@@ -209,6 +302,50 @@ void statusTaskStart(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+void RTOS_SoftLimpHomeMode(void)
+{
+  vTaskSuspend(spoc2CurrTaskHandle);
+  vTaskSuspend(vmuxTaskHandle);
+  vTaskSuspend(argbTaskHandle);
+  vTaskSuspend(adc1TaskHandle);
+  vTaskSuspend(adc2TaskHandle);
+  vTaskSuspend(pdmTaskHandle);
+  vTaskSuspend(statusTaskHandle);
+  vTaskSuspend(isotpTaskHandle);
+}
 
+void RTOS_HardLimpHomeMode(void)
+{
+  vTaskSuspendAll();
+}
+
+void RTOS_SuspendTelemetry(void)
+{
+  vTaskSuspend(telemTaskHandle);
+}
+
+void RTOS_ResumeTelemetry(void)
+{
+  vTaskResume(telemTaskHandle);
+}
+
+void RTOS_SuspendForConfigChange(void)
+{
+  vTaskSuspend(spoc2CurrTaskHandle);
+  vTaskSuspend(adc1TaskHandle);
+  vTaskSuspend(adc2TaskHandle);
+  vTaskSuspend(pdmTaskHandle);
+  vTaskSuspend(telemTaskHandle);
+}
+
+void RTOS_ResumeAfterConfigChange(void)
+{
+  vTaskResume(spoc2CurrTaskHandle);
+  vTaskResume(adc1TaskHandle);
+  vTaskResume(adc2TaskHandle);
+  vTaskResume(pdmTaskHandle);
+  vTaskResume(telemTaskHandle);
+
+}
 /* USER CODE END Application */
 

@@ -1,0 +1,1633 @@
+[33mcommit ee97325c9a0788daa5e7bff5a44ba786df2723d4[m[33m ([m[1;36mHEAD -> [m[1;32mRev4.0_Spring2025[m[33m, [m[1;31morigin/Rev4.0_Spring2025[m[33m)[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 27 01:41:32 2025 +0200
+
+    PDMS PCB WIP modification - finished LDO layout
+
+[33mcommit 7978852770bb2d34f9e33f690e7e496dec108d86[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Apr 26 23:47:39 2025 +0200
+
+    PDMS PCB WIP modification mp4322 finished layput, cleared USB-C layout, moved OSC32 for better fit
+
+[33mcommit 2517b2e77305de5b114819fc5652e8aac1f8e98f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 24 01:51:49 2025 +0200
+
+    Fixed memory and aux routing, fixed decoupling of MCU, fixed hse oscilator layout, fixed BTS500 input capacitors size and thermal, fixed via stiching on output channels, changed LP mos  traces to thiner ones, WIP mp4322 layout repliacte
+
+[33mcommit 64e9998399c7b1e76848e60fbab15b2949920979[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Apr 23 00:55:19 2025 +0200
+
+    PDMS PCB input modification WIP - no supply
+
+[33mcommit 86795097f571a03973946cd850bf7262332b1c5f[m[33m ([m[1;31morigin/Rev4.0_Late2024[m[33m, [m[1;32mRev4.0_Late2024[m[33m)[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 20 09:59:42 2025 +0200
+
+    Updated output control diagram
+
+[33mcommit 347d395114af2b8011108a1366e6f7116e94c8ca[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 20 09:59:12 2025 +0200
+
+    WIP I2t protection
+
+[33mcommit 8e8716e297dd1ac0464e318e1c6154ea5fc01387[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 20 09:52:07 2025 +0200
+
+    Last board commit before switch to Kicad 8.0.x
+
+[33mcommit 4e161d26343b75e30661bd08602f855b2fe8c814[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 20 09:51:00 2025 +0200
+
+    Bottom case 3d print files
+
+[33mcommit d5a7d4e450937d8ce2a4899cea9284396e8cbb20[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Apr 1 23:49:08 2025 +0200
+
+    Modified retry logic to operate on simple compare, rather than os timers (not tested yet)
+
+[33mcommit f73e1c3f947dd5b452d36b35f93da0f30e3024c5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Mar 31 01:02:33 2025 +0200
+
+    Fix - Added timer delete function on UVLO timer
+
+[33mcommit 2e471bc23f7ac48a658c98244323190e992a3a4a[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Mar 31 01:01:06 2025 +0200
+
+    Changed ADC mode to DiscontinuousConvMode
+
+[33mcommit 0aa4e6347ecf5c97589706eb82173267985519a3[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Mar 31 01:00:11 2025 +0200
+
+    Fixed invalid semaphore give, from wrong place
+
+[33mcommit d92cb9053dd71f9a39ff99e21db849a6bf0bf807[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Mar 30 14:40:21 2025 +0200
+
+    New software oc protection implementation - not tested, not configured; modified out status enum values, modified out config and reg struct
+
+[33mcommit 3a555045d4f7c5e7d1b292b67f69f5e7b2ba9857[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Mar 30 09:40:46 2025 +0200
+
+    WIP New OC strategy refactor
+
+[33mcommit 3ef77afc05a1a947d95ec85ad2dd4da7bdb8c1e5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Mar 30 09:06:04 2025 +0200
+
+    WIP New OC strategy
+
+[33mcommit aee5900ab1708c39ea11c3f696b355f422d7c838[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Mar 27 20:05:15 2025 +0100
+
+    Added BTS500 fault level check based on raw adc data
+
+[33mcommit ecbd0a77ff60e360afe254a48af2ae340c9f2cab[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Mar 27 19:41:50 2025 +0100
+
+    Added PHY peripheral access diagram WIP
+
+[33mcommit bab3e20d9e290fd1fb8b85510b1e9c4a0566da17[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Mar 27 19:41:10 2025 +0100
+
+    Added BSP layer for inputs, changed FW architecture (input value evaluted on ISR)
+
+[33mcommit 231414f83d431ce8541fd27492556ff6e34645b1[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Mar 27 16:51:47 2025 +0100
+
+    Fixed invalid pointer to arrays - mistake with operator precedence
+
+[33mcommit 4b46c7fb8e6e9fd8437207dcb21bf60cfd00e3da[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Mar 23 16:52:36 2025 +0100
+
+    Added config reference to main config in PDM.c
+
+[33mcommit 9417cdd47f49fd823fa026ac11010d70f69b8bb4[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Mar 23 15:53:21 2025 +0100
+
+    Major rebuild of can handler module, added configuration structs to modules
+
+[33mcommit e2afe236eb6403aa61bdb6be38b5b12f144142ef[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 17:37:47 2025 +0100
+
+    Added 100ms back-off on CAN TX startup
+
+[33mcommit 8d928971c286035f1ec890bba987938c5ed9905f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 17:21:47 2025 +0100
+
+    Fixed on-start UVLO handler
+
+[33mcommit 29d5adac35960fa20e94670060ca8c348dba88b3[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 15:59:16 2025 +0100
+
+    Added conditional UVLO assesment
+
+[33mcommit 3ad1b2b565fc605def74f6ed643cf741ae4ac6bf[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 15:54:32 2025 +0100
+
+    Added seperate ADC handler file, moved initialization to init function in PDM file
+
+[33mcommit fc49bce303c6ecc849c38eb281d4b7b047d31f1c[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sat Mar 22 14:40:19 2025 +0100
+
+    Update README.md (fixed installation order)
+
+[33mcommit 07b363c026522c3cda87d45a8b80a0a5107dc8f2[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 14:36:24 2025 +0100
+
+    Fixed unaligned pointer on packed struct warning, updated README.md
+
+[33mcommit b90eaed694033a57aebd159bc4e1373a51823ed9[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 14:25:51 2025 +0100
+
+    Proposed new way of project building via makefile system, created README file including build and debug instructions
+
+[33mcommit 8e1c94dbad04ff4ae5c4e10d2e630914313ee333[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 09:48:49 2025 +0100
+
+    BTS50025 arduino test shield code
+
+[33mcommit 9e8980b8a6c99938a7b1abccafd3f9b6f6e45a45[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 09:47:48 2025 +0100
+
+    Generated production files for RP_MPQ5850 & MP4322 schematic change
+
+[33mcommit 2ac3825045b486b386e7d83848146c01494a4c12[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Mar 22 09:45:13 2025 +0100
+
+    WIP PCB folder structure and schematic clean-up
+
+[33mcommit 164757fa0301306230c8200993e14b5636dccd62[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Mar 20 03:10:02 2025 +0100
+
+    WIP New output channel diagnosing method, changed PWM implementation 175Hz (tested), added UVLO, added minimal voltage to start processing protection, added frequent device restart protection
+
+[33mcommit 0361cedc0fb92a5e790230f5474d17e39aa660a5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Jan 28 20:08:24 2025 +0100
+
+    PDM v4.1 caseing 2024 version
+
+[33mcommit 612d004ae0c267d56e0f5673280863af0c143f8d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Dec 15 17:59:44 2024 +0100
+
+    Added reverse-polarity board gerbers
+
+[33mcommit 70d5de14b5f62af90b49f19f45691d3dda55bc5f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Dec 15 17:58:55 2024 +0100
+
+    Finished MP4322 evaluation board
+
+[33mcommit 70e6ea8c02e4dd96028ac17dac348a0dcbb768b0[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Dec 15 17:57:36 2024 +0100
+
+    Minor changes in overall schematics & MP4322 scheamtics
+
+[33mcommit 8fc003e539f2a5f5dd8efc35b3ea9ecdba67fb00[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Nov 3 23:25:12 2024 +0100
+
+    Created reverse polarity evaluation board
+
+[33mcommit a42fef8f8804c8aa7e8689d7f34b15183474a4c6[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Oct 11 18:45:15 2024 +0200
+
+    MP4322 Initial layout
+
+[33mcommit d51892a4310e0967a6dff314c26179e793cce9bc[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Oct 4 20:26:46 2024 +0200
+
+    Added comments in buzzer header
+
+[33mcommit 621328b86e2bea932b79dadc07fa22f7855fc5e8[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Sep 25 14:22:42 2024 +0200
+
+    Major code rework, fixing macros without proper protections, adding comments and static keywords, void args for empty argument list
+
+[33mcommit b170fb7080633aa2a018e257e9a2fe15f91f6be8[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Sep 24 01:15:41 2024 +0200
+
+    Added safety docs
+
+[33mcommit 117ad1f9e959afc351ea5b78d9b85c52ad82e679[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Sep 24 01:09:46 2024 +0200
+
+    Extensive output module rebuild (WIP) and added comments with extensive TODO's
+
+[33mcommit 053de654b490f68b46222ca5a9a3b7f1316e08d2[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Sep 13 01:29:37 2024 +0200
+
+    Adjusted PWM freq prescaler - not tested!
+
+[33mcommit b518b77b2255ebc2984043afebb6b7638c514cc1[m
+Merge: 469075b 509a73d
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Sep 13 01:27:42 2024 +0200
+
+    Merge branch 'Rev4.0_Late2024' of https://github.com/PGRacing/PDM into Rev4.0_Late2024
+
+[33mcommit 469075bf359883d3e12662a7a1ac4e48a4dedb70[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Sep 13 01:27:33 2024 +0200
+
+    Changed main clock from 16Mhz to 80Mhz, timers, vmux, iwdg adjusted, channels protection and pwm not tested
+
+[33mcommit 509a73d39e3d3b89916060437e951ac984228e28[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Fri Sep 13 00:32:14 2024 +0200
+
+    Update README.md
+
+[33mcommit 9a62cac98f7b395e6053959baf6d6cc17e4074a2[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Sep 12 22:59:26 2024 +0200
+
+    Update README.md
+
+[33mcommit cb06792e5f263a3e3b60ae9ee3460894cd93c65d[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Sep 12 16:50:07 2024 +0200
+
+    Update README.md
+
+[33mcommit 76c89c39246b7018cb8e6ef9685fd512251ba95e[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Sep 12 16:47:58 2024 +0200
+
+    Update README.md
+
+[33mcommit 63007dc6936e5c56e85356c7b34bcde58e8f2d8d[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sun Sep 8 23:15:30 2024 +0200
+
+    Update README.md
+
+[33mcommit ad7a26aba78913e2f6016dbaec472540185739a3[m[33m ([m[1;31morigin/Rev3.0_MP4322[m[33m, [m[1;32mRev3.0_MP4322[m[33m)[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Sep 8 23:05:41 2024 +0200
+
+    Ver 4.2 ready + BTS50025 test board
+
+[33mcommit 7e552bf91a2cfe3efb1f7856994d5c73a15b5e92[m
+Merge: 7909867 dcb8a68
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Sep 8 23:00:29 2024 +0200
+
+    Merge branch 'Rev3.0_MP4322' of https://github.com/PGRacing/PDM into Rev3.0_MP4322
+
+[33mcommit 7909867cde3d80d2cb99a72b9c00cff91b487cc7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Sep 8 23:00:23 2024 +0200
+
+    Project hierarchy rework
+
+[33mcommit dcb8a68f0a0f5fb784b51f04f1dd51d84861f898[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Sep 5 00:21:22 2024 +0200
+
+    Update README.md
+
+[33mcommit b083d972d53edabf47f21d9ccf44fa3f07b545be[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Sep 5 00:14:32 2024 +0200
+
+    Update README.md
+
+[33mcommit 1c8bef9e5a25464f6c6e0eaf16d62673e0d6be74[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Sep 5 00:13:52 2024 +0200
+
+    Update README.md
+
+[33mcommit 98b84723826f65ff3afcb4b68862f7e7846547d5[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Sep 5 00:13:02 2024 +0200
+
+    Update README.md
+
+[33mcommit a4e47bb9dcb636b1d99930d46cf6e3fd52b63a09[m[33m ([m[1;33mtag: v0.1[m[33m)[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Sep 4 22:32:31 2024 +0200
+
+    CODE COMMIT: After all 2024 competitions
+
+[33mcommit 1dc4a3dcb1401dd902e370131b774e8afa98e321[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Jul 26 19:51:53 2024 +0200
+
+    After FSA 2024
+
+[33mcommit faab08a0bb06a09fabaffe40a76a32f431e11339[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jul 11 17:48:09 2024 +0200
+
+    Current version w/ driving vehicle / no telemetry
+
+[33mcommit d8aa3ffc5c9859688cfafba0c3c3981f6810b0d7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Jun 24 01:41:05 2024 +0200
+
+    Added SPOC2 device simple diagnostics
+
+[33mcommit 0b32dabdd24daeffc0c5dd309ae312128ec9a452[m
+Merge: 4de1e57 d27bcb2
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jun 23 00:44:20 2024 +0200
+
+    Merge branch 'Rev3.0_MP4322' of https://github.com/PGRacing/PDM into Rev3.0_MP4322
+
+[33mcommit 4de1e5729df5c4398fe22aa4fe4baf20e083eba1[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jun 23 00:44:11 2024 +0200
+
+    First engine startup
+
+[33mcommit d27bcb21fe3abddcf2c66563a63b56855c1eddbe[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Mon Jun 17 12:25:39 2024 +0200
+
+    Update README.md
+
+[33mcommit 428e6e1903ed37cc23561142239a8b631f59dd76[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Jun 17 00:32:19 2024 +0200
+
+    Added IWDG and retry safety backup method, minor changnes in logic module
+
+[33mcommit 0b60fe5b48264cdd726093daf226ac1eb3214485[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Jun 12 02:06:03 2024 +0200
+
+    Added new simplified logic handler
+
+[33mcommit cd2721f30c9389015950dfa8399f02c881f622dd[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Jun 4 19:57:45 2024 +0200
+
+    FINISHED: Version with fusing and input power filtering
+
+[33mcommit 4e58a43d811efa1bf356cf5c1212d272c2246589[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue May 21 00:13:47 2024 +0200
+
+    Added bigger LDO with lower Rth(ja), TVS suppressor diode
+
+[33mcommit 88facf9880d434d0309e3b42aa2ad9185719bb08[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 19 23:34:26 2024 +0200
+
+    Added fuses to main output channels
+
+[33mcommit 081486c882a53e8f0109e386c9ff0e5f61f66a3d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 19 22:28:11 2024 +0200
+
+    Last commit before adding fuses
+
+[33mcommit 1ebfa32daf4bd00b1798761edc86d50b7d2d73ab[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Apr 22 00:04:08 2024 +0200
+
+    WIP OC protection mechanism
+
+[33mcommit 6a7253b5c3c1af53dfb777685167113c0762391b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 21 23:16:31 2024 +0200
+
+    Added CAN telemetry + modified OC protection
+
+[33mcommit 283f6211b925ac591c55c68eef5716da3cb5497f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Apr 20 13:00:07 2024 +0200
+
+    WIP BTS500 diagnosis - non tested
+
+[33mcommit 26c6ac53c5bbe159752e8864e8780f281717478b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Apr 20 00:23:44 2024 +0200
+
+    WIP Over-current protection
+
+[33mcommit a8a783365901ad067bd544ef9721929a392cd4bb[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Apr 19 22:18:41 2024 +0200
+
+    Typo in macro usage
+
+[33mcommit 9dce7f24d6683a24e367e8f3499f035c70c7510f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Apr 19 22:17:05 2024 +0200
+
+    Caseing files
+
+[33mcommit 5fde2718f315d42c6f633badbfa791a94b37bc64[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Apr 19 22:16:16 2024 +0200
+
+    Working prototype of OCP
+
+[33mcommit 14e367fddf6d2622e857f52ffac9f94838e636db[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Apr 16 01:44:41 2024 +0200
+
+    Working mux on all 16 channels
+
+[33mcommit f21762f19ed482b1d46ee839ff1ee4d1df20286d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Apr 15 18:08:40 2024 +0200
+
+    Working example PCB v4.2
+
+[33mcommit 1247460d556c6a7128809dbf46e2687048152d9f[m[33m ([m[1;31morigin/Board_2024[m[33m, [m[1;32mBoard_2024[m[33m)[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 14 19:37:27 2024 +0200
+
+    Changes after board 4.1 first unit assembly
+
+[33mcommit a760900c34bb3fd9b4bd07f4e894cc73bcfe2684[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Apr 14 19:36:16 2024 +0200
+
+    !!! LAST CODE COMMIT BEFORE PINOUT CHANGE !!!
+
+[33mcommit 14580a57607186266068b7b8ae815486beeb0aa3[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Mar 31 22:26:46 2024 +0200
+
+    Not working version of pooling multiple channel ADC
+
+[33mcommit 80b83d12af326d672d1cbf062d89392998a5be2d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Mar 28 23:53:39 2024 +0100
+
+    Added descriptors for SPOC2 new functions
+
+[33mcommit 0eb022411c26ce23dc97a391b727f86ed0420b20[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Mar 28 19:09:43 2024 +0100
+
+    Working example of multi SPOC2 configuration
+
+[33mcommit 03e49bbdbacc1e03a2121e3edd82c9d164d94d47[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 26 23:35:30 2024 +0100
+
+    Integration of BTS72220 on HAL SPI driver
+
+[33mcommit 321d46ba515f3ad1bba495a5a4f69ccf58dc01d7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Feb 17 18:44:15 2024 +0100
+
+    Clean-up of schematics
+
+[33mcommit 94a1e9ce32da7e7ec52bc91fa0ddf266663c4944[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Feb 15 15:48:04 2024 +0100
+
+    !ORDERED VERSION! - Added stiching on single channel traces
+
+[33mcommit 5562ffeb91497582eb2d1360d60acd7990c3d0db[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Feb 14 04:08:44 2024 +0100
+
+    Finished 2024 version + gerbers
+
+[33mcommit 609083050b2bda64d8db0cfeab82d4fc07a8bb16[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Feb 14 00:10:36 2024 +0100
+
+    Finished layout - w/o stiching
+
+[33mcommit 6a8016ff95cda5d9d27a541aa9886983444b0c52[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 21 14:06:38 2024 +0100
+
+    IMPORTANT! Batching all IS pin to single ADC peripheral
+
+[33mcommit 763095a9bd1d29bd0469f5f2cb62711596f9ba4b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 21 02:28:51 2024 +0100
+
+    PCB - Low power mosf voltage mux
+
+[33mcommit 6a3d7b9f50a5d9a19b18551bbf32e88fb31e5e17[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Jan 13 03:11:11 2024 +0100
+
+    Centered HP section
+
+[33mcommit 557918607adbbbd199a5dc6d8de8a48292ce9f42[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jan 11 02:39:15 2024 +0100
+
+    Added can-bus software switching and major changes in layout
+
+[33mcommit dd2d95ea1bb4dc9dffc2a432472caf0e3895ba21[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Jan 10 02:25:39 2024 +0100
+
+    Major changes with new switch
+
+[33mcommit 5bec1ae241e5058b86a374c72bc899c0bad21ee6[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Dec 28 13:23:36 2023 +0100
+
+    Added fuse output for sensors
+
+[33mcommit e2ecab80d8bcb10335e6bf2863a88c9990295e2a[m[33m ([m[1;32mmain[m[33m)[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Dec 28 12:49:00 2023 +0100
+
+    Minor update
+
+[33mcommit 1b9cc3b131e62e211596ce274ea676735df12803[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Dec 28 12:47:35 2023 +0100
+
+    PWM control tested
+
+[33mcommit 45a89a4fc2134d6d8e11d1beca34f693789b4aa9[m
+Merge: cbf3bb6 b0f0217
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Dec 23 12:45:37 2023 +0100
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit cbf3bb6bde00e60a48006fc4d16010f57f46aba6[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Dec 23 12:45:27 2023 +0100
+
+    PWM control for output's - NT
+
+[33mcommit b0f02173e0565c6cd32c3c9063621475aec29ae8[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sat Dec 23 01:30:20 2023 +0100
+
+    Update README.md
+    
+    Added difficulty and priority to TODO
+
+[33mcommit acb1284f0f4e2ab4789ba38b00389594e2981160[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Dec 21 01:13:43 2023 +0100
+
+    Update README.md
+
+[33mcommit fd962342fcd22706d3635975bea5c7ffae24733f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Dec 13 23:29:21 2023 +0100
+
+    Changed direct io to id reference
+
+[33mcommit 29a9919b24bd23135c69398d4ac6edeedb3f1e0e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Dec 13 22:39:54 2023 +0100
+
+    Simplified output batching
+
+[33mcommit 5bebb859f05d13528512495e3c95c5deeaade157[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Dec 13 21:34:50 2023 +0100
+
+    Changed most of HAL to LL libraries
+
+[33mcommit 5bb6c1e33f2cc508548c36e41a0ecd94a2e42ca0[m
+Merge: 2e577f9 cfa3b3d
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Nov 29 22:33:14 2023 +0100
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit 2e577f98234ceab80134eaa7c77fe51eb85a2db3[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Nov 29 22:33:03 2023 +0100
+
+    Adding SPI driver
+
+[33mcommit cfa3b3dde9829cfed40760f8d9e36595f0310dba[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Fri Nov 24 23:47:11 2023 +0100
+
+    Update README.md
+
+[33mcommit 1e4b78e165f4153447424c4b0fa959071eca0133[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Tue Nov 21 19:25:29 2023 +0100
+
+    Update README.md
+
+[33mcommit 56789d28a1274cf3941f5d6c72cab0f89a1f1f70[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Nov 18 02:09:02 2023 +0100
+
+    Added NTC for evaluation board
+
+[33mcommit 9c8dc190412b55b393fb62a86f710fd426726bf1[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Nov 1 20:01:37 2023 +0100
+
+    Added thermal via for BTS50005 + Gerbers
+
+[33mcommit 693e6e7864d9ba617f30f58ad26f45399a1f0d1a[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Nov 1 19:48:07 2023 +0100
+
+    BTS50005-1LUA Evaluation board
+
+[33mcommit 3489b9b76474eb41fc9c7d84e7e1295749dc037c[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Oct 31 16:49:51 2023 +0100
+
+    Changes in Clion projects
+
+[33mcommit a115d6cd3bc43e124d395352b2abf3048c1df14b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Oct 31 16:49:06 2023 +0100
+
+    Minor changes in annotations
+
+[33mcommit 1775bb394669cc18c3dba9a3721ad17a72c690cc[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Oct 30 23:34:48 2023 +0100
+
+    VMUX after fix
+
+[33mcommit fb540403ef089159f00fedffebae6e168ec68a2c[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 29 15:03:55 2023 +0100
+
+    Working logic + working mux (assert disabled)
+
+[33mcommit c9313df4ac4cdfa67599de3f5fd7d0edc80dab41[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 29 02:51:33 2023 +0100
+
+    Logic form changed + vmux test
+
+[33mcommit 3a8c0cc9b6314093b39fa4571d582b6e554ad6a7[m
+Merge: ce653c9 07a2bef
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 29 00:01:42 2023 +0200
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit ce653c9eae2cbc2679a141307ad52cbf6a1320bc[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 29 00:01:26 2023 +0200
+
+    Voltage multiplexer working solution
+
+[33mcommit 07a2befee9e76a45fe4a97de131e4d9c6cdda7e9[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sat Oct 28 14:54:53 2023 +0200
+
+    Update README.md
+
+[33mcommit f13ad2a0d497e647e59d044ccf1a2eae32dc9d53[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Oct 28 02:58:07 2023 +0200
+
+    Simple voltage multiplexer driver
+
+[33mcommit b70aaf65666d618c8d6bc87235028b46e03aa08a[m
+Merge: 49656c6 bf86cd6
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Oct 28 01:40:16 2023 +0200
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit 49656c654c0b6ca010536d769747f2e6558c1bd4[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Oct 28 01:40:01 2023 +0200
+
+    WIP logic exp
+
+[33mcommit 9e9cbe1bb4d5fb207869bd24f0a85545fc2068a0[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 8 20:40:39 2023 +0200
+
+    Modified E and NE expressions (LOGIC)
+
+[33mcommit bf86cd6959b5fd979978c0751a066bb56a3806de[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sun Oct 8 03:19:32 2023 +0200
+
+    Update README.md
+
+[33mcommit c22df2dd62ca70768117fd3e7d84c1f71511b4c2[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 8 03:05:29 2023 +0200
+
+    WIP: Input -> Logic -> Output working example
+
+[33mcommit 091bb7b22b996a24cc854e1a9f68469337ff8fbf[m
+Merge: d86a83f 64be009
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 8 02:52:23 2023 +0200
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit d86a83f2137a4a35535745e5178c1326b62d7314[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 8 02:52:04 2023 +0200
+
+    WIP: Added logic module
+
+[33mcommit 20fd7583cdb2e9d1bfaddbcff375677b7459c96b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 8 01:44:05 2023 +0200
+
+    WIP on input section
+
+[33mcommit 64be009f91c99fd9b9867ce341c2502d4fa56d6c[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sun Oct 8 01:08:26 2023 +0200
+
+    Update README.md
+
+[33mcommit 97d0dd359f8ae48572516df9f0f6d022fbce4fa1[m
+Merge: 84d4ce0 802ebf9
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 8 00:42:48 2023 +0200
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit 84d4ce0ca5b61860bd25fbc1a543784e89a32d3d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Oct 8 00:42:41 2023 +0200
+
+    Working output1 & current sensing
+
+[33mcommit 802ebf9015fc5e693c7d87ed7f3b29cc75c8dd59[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sun Oct 8 00:24:18 2023 +0200
+
+    Update README.md
+
+[33mcommit 6f6ec142527a0ed281bf224aa6896696a04cff5f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Oct 6 23:45:35 2023 +0200
+
+    Added output handling basics + gitingore build files
+
+[33mcommit 1eadf77371d70c1d3845a65b7c3dd17a3f985ae6[m
+Merge: be41440 0f93f91
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Fri Oct 6 23:16:18 2023 +0200
+
+    Merge pull request #3 from PGRacing/rf_mod
+    
+    Rf mod
+
+[33mcommit 0f93f91cbdbbc5acfde1b40199c3f9cb23d3e7b8[m[33m ([m[1;31morigin/rf_mod[m[33m, [m[1;32mrf_mod[m[33m)[m
+Merge: db37ed3 2fdd860
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Oct 6 23:15:19 2023 +0200
+
+    Merge branch 'rf_mod' of https://github.com/PGRacing/PDM into rf_mod
+
+[33mcommit db37ed32edf7547d29c980fcf99a6f0c4c014339[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Oct 6 23:14:29 2023 +0200
+
+    Minor chnages
+
+[33mcommit 2fdd86092865b28223444b0f14dc54442b3ae5d5[m
+Merge: 48c62ed be41440
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Fri Oct 6 23:13:11 2023 +0200
+
+    Merge pull request #2 from PGRacing/main
+    
+    Merging rf_mod into main
+
+[33mcommit 48c62ed7e15a02adb4c12d96c23179dd0367efde[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Oct 6 23:06:25 2023 +0200
+
+    Working version CLion code (PDMS_STARTER_CODE)
+
+[33mcommit f668fb56d6a0dd6fa8d9988a016584ad34c1d3ee[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri Oct 6 23:05:04 2023 +0200
+
+    Adding project for VS code (PDMS)
+
+[33mcommit be41440039a15895329eb1242ad174ce08d3b39d[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Fri Oct 6 22:23:31 2023 +0200
+
+    Update README.md
+
+[33mcommit 68a6fe1e316a7ede373023868cf44b8ee415e47c[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Wed Jun 21 01:53:05 2023 +0200
+
+    Update README.md
+
+[33mcommit 95148088330950aae1a23d482daeefe4f3133672[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Tue Jun 20 21:27:13 2023 +0200
+
+    Update README.md
+
+[33mcommit d8acb5fe5d494b0c3f325094a9e06891ae31ad3d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jun 1 03:42:05 2023 +0200
+
+    Added BLE module
+
+[33mcommit 2d07e1dbfb198758d07d9922f401301692fc68fd[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jun 1 01:48:28 2023 +0200
+
+    Minor layout changes
+
+[33mcommit 747a0e86c181a1e9c789b29fd1cf8d51ca1d8ce4[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jun 1 01:41:45 2023 +0200
+
+    USB-C symbol changed
+
+[33mcommit 738262aac3fe9ff37242a91a7101590f775940ad[m
+Merge: c491dc2 f278972
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jun 1 00:19:37 2023 +0200
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit c491dc2011aa18e5b21f72484127de02c1bfdc00[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jun 1 00:17:06 2023 +0200
+
+    Changed main power connector, added USB-C, added BLE - not wired yet
+
+[33mcommit f278972b0d7bbacdb12d937aa15a52ca4f84e073[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jun 1 00:17:06 2023 +0200
+
+    Changed main power connector, added USB-C, added BLE - not wired yet
+
+[33mcommit e8e7001a4b1e4c65ddda7bc9f455752c024e10f6[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 28 02:24:43 2023 +0200
+
+    Sitched via side
+
+[33mcommit 98cec395812d6e4e8bb9ecc261ad1a6c7c1045e6[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 27 04:34:50 2023 +0200
+
+    Final touch PDMS
+
+[33mcommit c6f3fe3d6f1fed9da37ca649479dc4ff7f536b2d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 27 03:37:07 2023 +0200
+
+    Via stiching +124 via on 12V plane
+
+[33mcommit e43f6034d5ad5697b5beedab12aa100b2dcc82e5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 27 02:57:13 2023 +0200
+
+    Final touch before PCB order
+
+[33mcommit a59509e32eefa7cc089d0d3e005d7081daa28a0c[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 25 20:25:27 2023 +0200
+
+    Zone size changed + DRC fix
+
+[33mcommit 4ba48dab0acbebcf25274c2c16a899cd30083ee8[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 25 20:19:17 2023 +0200
+
+    PCB finished
+
+[33mcommit 9bfb1c0a2eff3a9113020886bb9760094494eb1a[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 24 19:20:57 2023 +0200
+
+    Safety finished - 53
+
+[33mcommit b262e9d54fedb42597f5087b7cf0134f02155a30[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 24 18:09:18 2023 +0200
+
+    ADC protection refactored - 73
+
+[33mcommit 5e9f3bd1c2a09a3f7ca034b1df60da4106060945[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 24 16:58:18 2023 +0200
+
+    Safety section - 74
+
+[33mcommit 5e3fba2fafcf438475a8ea94bb9ef5ba59b2ea3f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 24 16:13:11 2023 +0200
+
+    Sub 99 tracks left
+
+[33mcommit d363773c405587ea0b60192d9b17d3f3181027f9[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 24 02:29:00 2023 +0200
+
+    PCB clean up
+
+[33mcommit f83d72f7350fa9cdffee497954273a8d79b32c88[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 22:49:21 2023 +0200
+
+    Rotated MCU update
+
+[33mcommit 86ea3dcd53b0a6ea9f0bbb1b96ca896d837a246d[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 21:44:50 2023 +0200
+
+    Partialy finished layout with 90 deg MCU
+
+[33mcommit b0d31f596d6c603c4e2b4eb688f129ade9a4960e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 21:17:13 2023 +0200
+
+    Before MCU layout
+
+[33mcommit 2a9fdb71a2e126d6cae81ffdd0d015dd4f491b50[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 18:30:29 2023 +0200
+
+    Before disaster
+
+[33mcommit 0379bd078ca168c3d85a287ff1b89ac47c175442[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 16:28:41 2023 +0200
+
+    Oscillator layout - whole MCU
+
+[33mcommit 904f38240006f1cd578a8769c566fc480ead7864[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 14:38:48 2023 +0200
+
+    12V radsok connector + flash fix
+
+[33mcommit 0e7b83324c6f3e1bf04e6a6736bef9553c6abe50[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 05:08:09 2023 +0200
+
+    IMU layout - fixed
+
+[33mcommit 5ea3423eb06eb5e17adfb55b0c2c3725d1e8e7ae[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 05:00:45 2023 +0200
+
+    IMU layout
+
+[33mcommit 8c7bf715f0a5a44b2508aab39ea4470ff4fd0d4e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 04:49:47 2023 +0200
+
+    Flash layout
+
+[33mcommit dcdb64f2723a7e155b680aafafe93a1b008a7931[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 02:34:06 2023 +0200
+
+    Steady layout
+
+[33mcommit 066c8c27a566720e57464fee66c1ee9ae55897bb[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 00:33:11 2023 +0200
+
+    Voltage mux finished
+
+[33mcommit 9c80c14165f2e006f90cdcbcaa92de460358a7c7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 21 00:04:48 2023 +0200
+
+    Update commit
+
+[33mcommit a23fd8c48fa0b0c4415f0920c1719589b8ec8eb5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 20 20:08:40 2023 +0200
+
+    DRC fix
+
+[33mcommit 4185637972e6bcfcfcc46ffeb91db642b3a56daa[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 20 19:45:33 2023 +0200
+
+    Iternational update
+
+[33mcommit e346fcd1d1c98ed53b6955fda4cc3b01f1d06dbb[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 20 18:12:52 2023 +0200
+
+    Added Low power traces layout '4mm'
+
+[33mcommit 420cd6a2cad27c1c2b69d87527fd21c352b3f2d2[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 18 18:17:22 2023 +0200
+
+    ADC protection layout
+
+[33mcommit 72397680a1919254b00580d208de244d10607808[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 17 22:22:32 2023 +0200
+
+    Safety and led wiring
+
+[33mcommit cd7b8c41f98fee378664dfc1b55182922b976632[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 17 20:30:38 2023 +0200
+
+    Layout of high current traces to connector changed
+
+[33mcommit 568803b19f4fdf0d0a5e07fe1ea146abe2c86e92[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 17 03:20:46 2023 +0200
+
+    Imported 3.3V section with problematic shitty plugin
+
+[33mcommit ecf41acbb9f1bbcf34292fe91be5ee67de6e1a50[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed May 17 01:55:41 2023 +0200
+
+    Medium power stage layout
+
+[33mcommit af93cac2e4e9ea2a55f7ee8a2315971f545a5f2e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue May 16 23:55:17 2023 +0200
+
+    Added SATURN PCB calculations for trace width and cooper weight
+
+[33mcommit 2894c57fd45c31c6c7c2563b2bd44a91b294ea9e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue May 16 13:17:15 2023 +0200
+
+    Main connector footprint update
+
+[33mcommit 85a8ed4a93c35b5fe59ee45ec5cf256e5c2cb0a7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue May 16 13:12:52 2023 +0200
+
+    Welcome back
+
+[33mcommit 9f6b26cc99f3fd4d525c430d7668760f88c21883[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 11 19:01:06 2023 +0200
+
+    HS section layout
+
+[33mcommit 407a06fe67d2a90200f2b2aacea3ec49267ed1ff[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 11 17:50:47 2023 +0200
+
+    Added voltage mux section & layouting high side - hp
+
+[33mcommit ac4f3104971f4a811e5a179cb8c4828ade9b2aa1[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 11 03:16:16 2023 +0200
+
+    Added connector and more
+
+[33mcommit 87a69f768e630c4795723cc3960c254009042c5a[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 11 02:18:09 2023 +0200
+
+    Crucial fully assigned schematics
+
+[33mcommit 8379a532210cef1cba16e978dcc73d25ed8f3d0b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 11 01:25:36 2023 +0200
+
+    Mostly assigned footprints
+
+[33mcommit 0eb67267c64190488f3b59169786c508e8f5c44f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue May 9 23:42:47 2023 +0200
+
+    Modified initial .ioc
+
+[33mcommit 3f8270e16706cbc45a6b6bc863eece9ef1da9841[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue May 9 23:40:26 2023 +0200
+
+    Added input selection section and fusing
+
+[33mcommit 22d29a808d8dcaebca3345fae115108fdb6913b2[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 7 20:28:36 2023 +0200
+
+    Changed power section symbol library
+
+[33mcommit a36bf1a3f6bce84ca47ebdc7b91ac24725b39cc0[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 7 19:59:23 2023 +0200
+
+    Wired all peripherals
+
+[33mcommit 7beed6f1b54af86c3a298b57b8c015e3b3dbf0ad[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun May 7 00:39:12 2023 +0200
+
+    Assigned powerfets outputs to PWM outputs of MCU
+
+[33mcommit 16036fa18ea5f76ecc36a83f73ce60f65e9985ef[m
+Merge: 2a063e5 15d5da9
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 22:57:07 2023 +0200
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit 2a063e5227d0931084ff5a4823fc1c13a60f274e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 22:56:07 2023 +0200
+
+    Removed backup files 2
+
+[33mcommit 15d5da97244296e977e84e36f01848eca3f374b5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 22:56:07 2023 +0200
+
+    ''
+
+[33mcommit 8085221e89e6494f825aa898548c95eb2915d95a[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 22:54:32 2023 +0200
+
+    Removed backup files
+
+[33mcommit f9ef42a981bdf83bc18fc19bccc283f0824124cc[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 22:50:35 2023 +0200
+
+    Added .gitignore
+
+[33mcommit 4259467944d6ff19eb41b5bc1e31f4ffcd569b71[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 22:49:43 2023 +0200
+
+    Changed symbol and footprint of LM74700
+
+[33mcommit e90fc80dff5d3d3e060bcebb0475402f022f0b7a[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 03:31:11 2023 +0200
+
+    Modified L496 .ioc
+
+[33mcommit d1c8013895d3974c73599e3e2bd8a4755eefd8c9[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 03:30:42 2023 +0200
+
+    Wired IMU on schematics
+
+[33mcommit 42c4575118b882104c425c1d54e015afb9e61a54[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat May 6 03:01:37 2023 +0200
+
+    Changed MCU to L496 & finished powerswitch section
+
+[33mcommit aa1082444f1cb3f036303307614d5ee7cf79d5d2[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri May 5 19:43:24 2023 +0200
+
+    Added NTC section with 8-to-1 multiplexer
+
+[33mcommit feea35688039fb422bf3da64c8c258f8700ea1e3[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Fri May 5 15:18:36 2023 +0200
+
+    Finished powerswitch section
+
+[33mcommit fd967804f663a5b2846e1bf85bea7e2eabf0729c[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 4 21:33:50 2023 +0200
+
+    Added TODO messages:
+
+[33mcommit 2ad6f423ce6d7a896c377e2dafa71498fd35ebf7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 4 14:01:56 2023 +0200
+
+    Modified power switch section - partly finished
+
+[33mcommit 012d11dfac478e330f200c69444c138e43f2b3f9[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu May 4 13:49:11 2023 +0200
+
+    Full imu schematics
+
+[33mcommit e16c2595252f4b4f9b24731d6f20624eda0d419e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon May 1 17:40:45 2023 +0200
+
+    Added IMU needs to be finished
+
+[33mcommit 91cdd4a524ffeec78b08287a6c37195aa1c082c8[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon May 1 16:54:17 2023 +0200
+
+    Added CAN ESD protection
+
+[33mcommit 5b129d15ecd6a902eba2bb93fc9830200b53617e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon May 1 16:45:15 2023 +0200
+
+    Added ADC overvoltage protection
+
+[33mcommit 86e13dd533ca9f0bb86d138273ea90d2747136b1[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon May 1 16:27:27 2023 +0200
+
+    Added reverse polarity section LM74700 based
+
+[33mcommit d0c495f461d976142360f726d8318aceca155ae3[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon May 1 15:38:43 2023 +0200
+
+    Schematic refactoring
+
+[33mcommit 4c88a966b0604d5bc3c5736dc6aedf210fd86915[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 27 02:26:43 2023 +0200
+
+    PDMS schematic update
+
+[33mcommit 9488ca32f0150bbe16efcbc48e3eaa2652beb3e1[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 27 00:57:33 2023 +0200
+
+    Added MCU section
+
+[33mcommit 7f44bfac6540b27f47afa8b5a4eab03cbc1332bd[m
+Merge: b165f3a ebcd5c0
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 27 00:31:55 2023 +0200
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit b165f3a944abfd80181dd1c65fea93fe38666252[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 27 00:29:56 2023 +0200
+
+    Created new simplified version of PDM -> PDMS
+
+[33mcommit ebcd5c02fd92000369c8dfe62180173c58f36961[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 27 00:29:56 2023 +0200
+
+    ''
+
+[33mcommit ff487cdf384f002956ff376346fd5d2659af94fc[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Apr 26 12:31:37 2023 +0200
+
+    Modified L475 and ported to F746
+
+[33mcommit cabb7e68d1a55f089c062260b6d9ba48412cffbb[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Apr 26 12:30:57 2023 +0200
+
+    Modified F746 code - still SPIE error
+
+[33mcommit dd0edce05296c0ecfe079f12a2edbebbff2a4670[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Apr 26 12:29:19 2023 +0200
+
+    ''
+
+[33mcommit ecf84fb0ab5da5e6bd478e49d6f3dac28e319a49[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Apr 17 21:30:07 2023 +0200
+
+    Created new project based on F746ZG Nucleo
+
+[33mcommit 478449da3fccd2d006ec460bc0c31ab2d4888dd7[m
+Merge: 6d81758 4f2e3a8
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Thu Apr 13 00:35:04 2023 +0200
+
+    Merge pull request #1 from PGRacing/detached_p
+    
+    Detached p
+
+[33mcommit 4f2e3a8b52e3798865043a9aeea8e254d0486266[m[33m ([m[1;31morigin/detached_p[m[33m, [m[1;32mdetached_p[m[33m)[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 13 00:34:30 2023 +0200
+
+    Minor changes
+
+[33mcommit 7440f6a8e9b4881e095d992e50dfe7624242abe5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Apr 13 00:28:10 2023 +0200
+
+    Current status - still SPIE problem
+
+[33mcommit 6d817587f6a957c26700bf1d7b5de7e0017ae649[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Mar 29 03:39:35 2023 +0200
+
+    Watchdog satisfied
+
+[33mcommit e484bc4a7ae5d45404b75478b202e4fe70e9860f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Mar 29 03:00:02 2023 +0200
+
+    Watch dog toggled on timer - works ok - problem with unlock
+
+[33mcommit 447929d488142675382ad594f232337c6f98ac48[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Mar 22 23:16:35 2023 +0100
+
+    Added HWLO unlock still not working
+
+[33mcommit aea608d7af0b79feea531f44e2b345c313996649[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Wed Mar 22 00:52:16 2023 +0100
+
+    Added new vnf_unlock - spi signal seems ok\
+
+[33mcommit bf238eb83a3208b7059dd62ebc81fde6f8d67d78[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 19:31:23 2023 +0100
+
+    Debug log
+
+[33mcommit 50f88039b2feb272926b2ceb2bdb56421678f73a[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 19:30:08 2023 +0100
+
+    Changed SPI options
+
+[33mcommit a07b427a649469470d182d31383831c6e47bf8ca[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 18:28:50 2023 +0100
+
+    Added status and error typedef
+
+[33mcommit 2f3be6c1e7890f1c73616da112a72330065d05b6[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 14:00:07 2023 +0100
+
+    Added read rom option -- not tested
+
+[33mcommit b207d6127e1516865306d18bdb4760a7d0fefe8b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 03:16:36 2023 +0100
+
+    Added todo for unlock method
+
+[33mcommit 944946dfd08d23ba9bbbf1e994c6a4b8c472aab2[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 03:15:02 2023 +0100
+
+    Modified VNF1048 read, but SPIERROR bit is HIGH
+
+[33mcommit 3b40fdbe60601dc7d7f05953efa87afac0ec78e8[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 02:01:52 2023 +0100
+
+    Removed crappy test code
+
+[33mcommit 868b7f3045bd84460aaa917bcac3293bc9d791f5[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Mar 21 02:00:12 2023 +0100
+
+    New C-Lion project for L475 evaluation board
+
+[33mcommit 18b318c3b1da90128110b649ddf618a5d031a6bf[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Mar 5 02:57:14 2023 +0100
+
+    Modified layout
+
+[33mcommit 2f0cc1a0fc799bd1e1c32c4836f0e53f2c2f8dc9[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Feb 28 17:20:38 2023 +0100
+
+    Modified ADC protection section
+
+[33mcommit 44a76835155cbd2f431ac449b573dd7ea4c97be9[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Feb 28 16:36:57 2023 +0100
+
+    Added adc protection and HC header radsock
+
+[33mcommit 41889916d50d7312693dea553cfea79131fa87ab[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Feb 11 17:02:43 2023 +0100
+
+    Modfied test board + gerbers
+
+[33mcommit d715736c3e09ff221046ee98766430ae79145370[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Feb 11 17:02:01 2023 +0100
+
+    Modified test board + gerbers
+
+[33mcommit 766419f1e0ac4d2a813703f54d66e3b1817c98c8[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 15 23:11:22 2023 +0100
+
+    Added fuse on each output of hs section - change footprint later!
+
+[33mcommit 06bc1a164177d03bf32ca00b49b4b1a13a99c878[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sun Jan 15 22:57:28 2023 +0100
+
+    Update README.md
+
+[33mcommit b6b0731a4439fcc5a299748004bfb915965c801b[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 15 22:55:41 2023 +0100
+
+    Added TE Superseal 1.0 connector 60 pins
+
+[33mcommit 486d8142968381216d59ba750d231047243b5378[m
+Merge: 9d98117 82e44d2
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 15 22:54:48 2023 +0100
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit 9d981173964e5a8788840fb95fa45d261097c157[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 15 22:54:34 2023 +0100
+
+    Configured PWM_OUT2
+
+[33mcommit 82e44d2ff1f97146cd474f32436551afe667f62c[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Sun Jan 15 22:37:51 2023 +0100
+
+    Added to do list
+
+[33mcommit 819c56110b9197f0a9543fedad58875aeda9586e[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 15 20:06:07 2023 +0100
+
+    VNF1048FTR TestBoard pcb layout change
+
+[33mcommit 5c8e507ccbfe138cb839c9cd9de7a046248525fa[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 15 20:04:17 2023 +0100
+
+    Changed MCP2561 to SN65HVD230 for Q1 and 3.3V supply
+
+[33mcommit a66c2ddd965ecc080095804d6a218b75ae65fbd7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Jan 15 20:01:44 2023 +0100
+
+    Added SN65HVD230-Q1 CAN Transciver symbol and footprint
+
+[33mcommit f4934dbae2d138b47516278379109bfcc8d979e7[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jan 12 02:25:15 2023 +0100
+
+    Minor changes in HS sechmatics
+
+[33mcommit cf423d255fd81b7efcc84ba413428e6f687eb22c[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Jan 12 02:24:25 2023 +0100
+
+    New test board for VNF1048FTR
+
+[33mcommit 39f562ebf679aeb55f04d86f7f06dddfcf256244[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Jan 10 05:34:54 2023 +0100
+
+    Finished high side section & fixed some ERC's errors
+
+[33mcommit a8845debfc75e2169724c76c0d5b689bd8d89c17[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Jan 3 05:01:04 2023 +0100
+
+    Added new type of high side driver based on VNF1048 + STL135
+
+[33mcommit 2b8c3320ef4a034c3dab0ec0075cf1a230b875c3[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Jan 3 05:00:15 2023 +0100
+
+    Added PowerMOS STL135N8F7
+
+[33mcommit 1645b3b7e42e1b3372e3252ad1e2b7a2e9c39675[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Jan 3 04:59:16 2023 +0100
+
+    Added PWM output
+
+[33mcommit 6d3a262d02393ea6aab5af026dfc5fcadccb8c62[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Jan 2 23:19:22 2023 +0100
+
+    Change peripherals setup
+
+[33mcommit 3990849cc9ef0aa83e35637f658006c1d62b46c8[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Mon Jan 2 21:03:06 2023 +0100
+
+    MCU preliminary scheme and qspi flash
+
+[33mcommit fb9a9e94ecbfeef84044a8c68d8f58d7be7c6ec9[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Dec 31 05:10:31 2022 +0100
+
+    Initial PDM mcu configuration after revision
+
+[33mcommit 1e3b6cb6fd2e798c5050c6bcaafe3440546dc4d0[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Dec 31 05:09:40 2022 +0100
+
+    New mockup schematics
+
+[33mcommit d33d78782b98b185a69015e3c2d66c58781fbaf0[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Dec 31 05:08:57 2022 +0100
+
+    New symbols & footprints
+
+[33mcommit 0962c19081553352f901f2291675ffaf4cec21c1[m
+Merge: 3347d85 edd1531
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Dec 31 05:07:44 2022 +0100
+
+    Merge branch 'main' of https://github.com/PGRacing/PDM
+
+[33mcommit 3347d8551f859c689de87db7a85e4b694d6b9fbb[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sat Dec 31 05:07:29 2022 +0100
+
+    Concept revision and MCU section changes
+
+[33mcommit edd15316f8347b415c42770666811927134c0d8e[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Fri Dec 30 17:01:19 2022 +0100
+
+    Update README.md
+
+[33mcommit 7ee1489d8e7bc4e02935542bf446e042dd30b704[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Dec 27 03:08:46 2022 +0100
+
+    Fuck christmas & low side section
+
+[33mcommit 49dd0611b0b47f9a88b987e9b12e404767a20c3f[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Thu Nov 17 17:44:01 2022 +0100
+
+    Added Reverse polarity protection
+
+[33mcommit 605a8cbd08d49941936c50409425cccc0d3d7289[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Tue Nov 15 03:47:53 2022 +0100
+
+    Added another high-side switch 2x7A + 2x4A SPI
+
+[33mcommit 8fa8eda0a55d0e52808a96399571ca128d696efc[m
+Author: rcp444 <kar.pergol@gmail.com>
+Date:   Sun Nov 13 23:07:16 2022 +0100
+
+    Added crucial elements schematics
+
+[33mcommit 2915b646b25f6ef4892ce0c57ed37f98c5f8d7ca[m
+Author: Karol Pergoł <78111197+rcp444@users.noreply.github.com>
+Date:   Tue Oct 25 02:23:14 2022 +0200
+
+    Initial commit
