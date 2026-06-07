@@ -14,7 +14,7 @@
 
 T_TELEM_CFG telemCfg = 
 {
-    .telemInterval = 20, // 20 ms interval
+    .telemInterval = 50, // 50 ms interval
     .canInstance = CANH_INSTANCE_2,
     .sendSystemData = TRUE,
     .sendStatus = TRUE,
@@ -97,6 +97,7 @@ void telemTaskStart(void *argument)
 
     for (;;)
     {
+        BaseType_t start = xTaskGetTickCount();
         if (telemCfg.sendStatus == TRUE)
         {
             if (telemCfg.canInstance == CANH_INSTANCE_1)
@@ -200,7 +201,10 @@ void telemTaskStart(void *argument)
             }
         }
 
-        osDelay(pdMS_TO_TICKS(telemCfg.telemInterval));
+        BaseType_t delta = xTaskGetTickCount() - start;
+        BaseType_t intervalTicks = pdMS_TO_TICKS(telemCfg.telemInterval) - delta;
+        
+        osDelay(intervalTicks > 0 ? intervalTicks : 1);
 
         if (iOffsetCounter == iOffset && telemCfg.sendNames == TRUE)
         {
@@ -221,7 +225,3 @@ void telemTaskStart(void *argument)
         iOffsetCounter++;
     }
 }
-
-/// 
-/// TODO [LOW] Add temperature from sensor on PCB
-///
