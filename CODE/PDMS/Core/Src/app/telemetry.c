@@ -89,6 +89,11 @@ static void TELEM_SendPhyInputsByCan(T_CANH_INSTANCE canInstance)
     CANH_Send_PhyInputs5_8(canInstance, BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_5), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_6), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_7), BSP_PHYIN_GetValueAnalog(IN_PHY_LOC_8));
 }
 
+static void TELEM_SendImuDataByCan(T_CANH_INSTANCE canInstance)
+{
+    
+}
+
 void telemTaskStart(void *argument)
 {
     LOG_INFO("TELEM:: Task start");
