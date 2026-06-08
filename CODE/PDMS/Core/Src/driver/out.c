@@ -22,6 +22,8 @@
 #define OUT_DIAG_BTS_DETECT_OPEN_LOAD TRUE // Is open load detection enabled on BTS channels?
 #define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
 #define OUT_DIAG_BTS_TRIP_THRESHOLD 40 // Arbitraty value that needs to be exceeded to trip SOC protection (removing super short local peaks)
+
+#define OUT_BATCH_ID_IAMFOLLOWER 0xFF // Indicates that this channel follows other channel
 // EMA
 #define OUT_DIAG_EMA_CURRENT_ALPHA 0.2f // Alpha for exponential moving average of current, lower value means smoother readings but longer time to react to changes
 #define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.1f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
@@ -900,16 +902,20 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     {
       LOG_WARN("Batching two inputs!");
 
-      /* Batch shouldn't be out of range */
-      ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
       T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
 
+      if(cfg->mode == OUT_MODE_BATCH 
+        && cfg->batch == OUT_BATCH_ID_IAMFOLLOWER)
+      {
+        break;
+      }
       // LL MODE STD
       BSP_OUT_SetMode(id, OUT_MODE_STD);
       BSP_OUT_SetMode(cfg->batch, OUT_MODE_STD);
       OUT_SetState(cfg->id, OUT_STATE_OFF);
       OUT_SetState(batchCfg->id, OUT_STATE_OFF);
       batchCfg->mode = OUT_MODE_BATCH;
+      batchCfg->batch = OUT_BATCH_ID_IAMFOLLOWER;
       /* From now on actions on batch outputs are performed simultaniously */
       cfg->mode = targetMode;
     }
@@ -1026,7 +1032,8 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
     {
       case OUT_MODE_UNUSED:
       {
-        LOG_WARN("Unable to set state on unused output config");
+        //LOG_WARN("Unable to set state on unused output config");
+        BSP_OUT_SetStdState(id, OUT_STATE_OFF);
         res = FALSE;
       }
       break;
@@ -1075,7 +1082,11 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
       {
         if(cfg->type == OUT_TYPE_BTS500)
         {
-          ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
+          if(cfg->batch == OUT_BATCH_ID_IAMFOLLOWER)
+          {
+            break; // This output follows other output
+          }
+
           T_OUT_REG* batchReg = OUT_GETREGPTR(cfg->batch);
 
           if(OUT_STATE_ON == reqState)
