@@ -88,6 +88,8 @@ typedef enum
     CANH_ID_NAMES           = 0x00D, // Channel of current name,
     CANH_ID_PHY_INPUTS_1_4  = 0x00E, // Physical inputs 1-4
     CANH_ID_PHY_INPUTS_5_8  = 0x00F, // Physical inputs 5-8
+    CANH_ID_IMU_ACC         = 0x010, // IMU acceleration data
+    CANH_ID_IMU_GYRO        = 0x011, // IMU gyroscope data
     CANH_ID_ISOTP_ENTRANCE =  0x050, // Entrance gateway for ISO-TP communication mode
     CANH_ID_ISOTP_TX       =  0x051, // CAN ID used for ISO-TP transmission
     CANH_ID_ISOTP_RX       =  0x052, // CAN ID used for ISO-TP reception
@@ -321,6 +323,34 @@ T_CANH_TX_PACKAGE CANH_TxPhyInputs5_8 =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_TxImuAcc = 
+{
+    .header = 
+    {
+        .DLC = 6,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_IMU_ACC,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+T_CANH_TX_PACKAGE CANH_TxImuGyro = 
+{
+    .header = 
+    {
+        .DLC = 6,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_IMU_GYRO,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
 void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
     CANH_TxStatus1_8.data.status_8ch.status[0] = s1;
@@ -482,6 +512,24 @@ void CANH_Send_PhyInputs5_8(T_CANH_INSTANCE instance, uint16_t i5, uint16_t i6, 
     CANH_TxPhyInputs5_8.data.phy_inputs_4ch.input[3] = i8;
 
     CANH_PushToTxQueue(instance, CANH_TxPhyInputs5_8);
+}
+
+void CANH_Send_ImuAcc(T_CANH_INSTANCE instance, int16_t accX, int16_t accY, int16_t accZ)
+{
+    CANH_TxImuAcc.data.imu_data.d1 = accX;
+    CANH_TxImuAcc.data.imu_data.d2 = accY;
+    CANH_TxImuAcc.data.imu_data.d3 = accZ;
+
+    CANH_PushToTxQueue(instance, CANH_TxImuAcc);
+}
+
+void CANH_Send_ImuRates(T_CANH_INSTANCE instance, int16_t pitch, int16_t roll, int16_t yaw)
+{
+    CANH_TxImuGyro.data.imu_data.d1 = pitch;
+    CANH_TxImuGyro.data.imu_data.d2 = roll;
+    CANH_TxImuGyro.data.imu_data.d3 = yaw;
+
+    CANH_PushToTxQueue(instance, CANH_TxImuGyro);
 }
 
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)

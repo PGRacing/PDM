@@ -71,6 +71,13 @@ typedef struct  __packed _T_CANH_PHY_INPUTS_4CH
     uint16_t input[4]; // Physical inputs passed in mV value (0 - 5000 mV)
 }T_CANH_PHY_INPUTS_4CH;
 
+typedef struct __packed _T_CANH_IMU_DATA
+{
+    int16_t d1;
+    int16_t d2;
+    int16_t d3;
+}T_CANH_IMU_DATA;
+
 typedef union __packed
 {
     uint8_t raw[8];
@@ -80,6 +87,7 @@ typedef union __packed
     T_CANH_TX_VOLTAGE_4CH voltage_4ch;
     T_CANH_TX_CURRENT_4CH current_4ch;
     T_CANH_PHY_INPUTS_4CH phy_inputs_4ch;
+    T_CANH_IMU_DATA imu_data;
 }T_CANH_DATA;
 
 typedef struct T_CANH_TX_PACKAGE 
@@ -130,5 +138,8 @@ void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char st
 
 void CANH_Send_PhyInputs1_4(T_CANH_INSTANCE instance, uint16_t i1, uint16_t i2, uint16_t i3, uint16_t i4);
 void CANH_Send_PhyInputs5_8(T_CANH_INSTANCE instance, uint16_t i5, uint16_t i6, uint16_t i7, uint16_t i8);
+
+void CANH_Send_ImuAcc(T_CANH_INSTANCE instance, int16_t accX, int16_t accY, int16_t accZ);
+void CANH_Send_ImuRates(T_CANH_INSTANCE instance, int16_t pitch, int16_t roll, int16_t yaw);
 
 #endif

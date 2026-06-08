@@ -81,8 +81,8 @@ static void IMU_Configure(T_IMU_HANDLE* handle)
     // Enable Block Data Update
     asm330lhh_block_data_update_set(&(handle->devCtx), PROPERTY_ENABLE);
     // Set Output Data Rate
-    asm330lhh_xl_data_rate_set(&(handle->devCtx), ASM330LHH_XL_ODR_52Hz);
-    asm330lhh_gy_data_rate_set(&(handle->devCtx), ASM330LHH_XL_ODR_52Hz);
+    asm330lhh_xl_data_rate_set(&(handle->devCtx), ASM330LHH_XL_ODR_104Hz);
+    asm330lhh_gy_data_rate_set(&(handle->devCtx), ASM330LHH_GY_ODR_104Hz);
     // Set full scale
     asm330lhh_xl_full_scale_set(&(handle->devCtx), ASM330LHH_8g);
     asm330lhh_gy_full_scale_set(&(handle->devCtx), ASM330LHH_2000dps);

@@ -9,12 +9,14 @@
 #include "semphr.h"
 #include "logic.h"
 #include "tmp126.h"
+#include "imu.h"
 
 #define TELEM_OUT_NAME_PART 7
 
 T_TELEM_CFG telemCfg = 
 {
-    .telemInterval = 50, // 50 ms interval
+    .telemInterval = 40, // 40 ms interval - 25Hz
+    .namesInterval = pdMS_TO_TICKS(10000),
     .canInstance = CANH_INSTANCE_2,
     .sendSystemData = TRUE,
     .sendStatus = TRUE,
@@ -23,6 +25,7 @@ T_TELEM_CFG telemCfg =
     .sendCurrent = TRUE,
     .sendNames = TRUE,
     .sendPhyInputs = TRUE,
+    .sendImu = TRUE
 };
 
 static void TELEM_SendVoltageByCan(T_CANH_INSTANCE canInstance)
@@ -91,14 +94,21 @@ static void TELEM_SendPhyInputsByCan(T_CANH_INSTANCE canInstance)
 
 static void TELEM_SendImuDataByCan(T_CANH_INSTANCE canInstance)
 {
-    
+    T_IMU_DATA_ACC acc;
+    T_IMU_DATA_RATE rates;
+
+    IMU_GetAcceleration(&acc);
+    IMU_GetRates(&rates);
+
+    CANH_Send_ImuAcc(canInstance, (int16_t)acc.x, (int16_t)acc.y, (int16_t)acc.z);
+    CANH_Send_ImuRates(canInstance, (int16_t)rates.pitch, (int16_t)rates.roll, (int16_t)rates.yaw);
 }
 
 void telemTaskStart(void *argument)
 {
     LOG_INFO("TELEM:: Task start");
-    uint8_t iOffsetCounter = 0;
-    const uint8_t iOffset = 5;
+
+    BaseType_t lastNameTs = 0;
 
     for (;;)
     {
@@ -172,6 +182,8 @@ void telemTaskStart(void *argument)
             }
         }
 
+        osDelay(2);
+
         if (telemCfg.sendSystemData == TRUE)
         {
             if (telemCfg.canInstance == CANH_INSTANCE_1)
@@ -188,6 +200,8 @@ void telemTaskStart(void *argument)
                 TELEM_SendSystemDataByCan(CANH_INSTANCE_2);
             }
         }
+
+        osDelay(2);
 
         if(telemCfg.sendPhyInputs == TRUE)
         {
@@ -206,12 +220,26 @@ void telemTaskStart(void *argument)
             }
         }
 
-        BaseType_t delta = xTaskGetTickCount() - start;
-        BaseType_t intervalTicks = pdMS_TO_TICKS(telemCfg.telemInterval) - delta;
-        
-        osDelay(intervalTicks > 0 ? intervalTicks : 1);
+        osDelay(2);
 
-        if (iOffsetCounter == iOffset && telemCfg.sendNames == TRUE)
+        if(telemCfg.sendImu == TRUE)
+        {
+            if (telemCfg.canInstance == CANH_INSTANCE_1)
+            {
+                TELEM_SendImuDataByCan(CANH_INSTANCE_1);
+            }
+            else if (telemCfg.canInstance == CANH_INSTANCE_2)
+            {
+                TELEM_SendImuDataByCan(CANH_INSTANCE_2);
+            }
+            else
+            {
+                TELEM_SendImuDataByCan(CANH_INSTANCE_1);
+                TELEM_SendImuDataByCan(CANH_INSTANCE_2);
+            }
+        }
+
+        if (xTaskGetTickCount() - lastNameTs > telemCfg.namesInterval) 
         {
             if (telemCfg.canInstance == CANH_INSTANCE_1)
             {
@@ -226,7 +254,13 @@ void telemTaskStart(void *argument)
                 TELEM_SendNamesByCan(CANH_INSTANCE_1);
                 TELEM_SendNamesByCan(CANH_INSTANCE_2);
             }
+            lastNameTs = xTaskGetTickCount();
         }
-        iOffsetCounter++;
+
+        BaseType_t delta = xTaskGetTickCount() - start;
+        BaseType_t intervalTicks = pdMS_TO_TICKS(telemCfg.telemInterval) - delta;
+        
+        osDelay(intervalTicks > 0 ? intervalTicks : 1);
+        
     }
 }

@@ -8,6 +8,7 @@
 typedef struct _T_TELEM_CFG
 {
     uint16_t          telemInterval;     // Telemetry reporting interval in ms
+    BaseType_t        namesInterval;     // Names reporting interval in ticks
     T_CANH_INSTANCE   canInstance;       // Reporting can instance (if 0x02 selected then both instances will be used)
     bool              sendSystemData;    // Flag to send system data
     bool              sendStatus;        // Flag to send status information
@@ -16,6 +17,7 @@ typedef struct _T_TELEM_CFG
     bool              sendCurrent;       // Flag to send current data
     bool              sendNames;         // Flag to send names
     bool              sendPhyInputs;     // Flag to send physical inputs data
+    bool              sendImu;     // Flag to send physical inputs data
 } T_TELEM_CFG; 
 
 /// @brief Telemetry module configuration
