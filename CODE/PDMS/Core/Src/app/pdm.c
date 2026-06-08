@@ -10,6 +10,7 @@
 #include "app_isotp.h"
 #include "config.h"
 #include "string.h"
+#include "imu.h"
 
 /* HAL, MX includes */
 #include "iwdg.h"
@@ -159,6 +160,9 @@ void PDM_Init(void)
 
     // Initialize ARGB'S
     WS2812B_Init();
+
+    // Initialize IMU
+    IMU_Init();
 
     /* ===== MODULES INITALIZATION ===== */
     // Initialize output module (set correct mode and state)
