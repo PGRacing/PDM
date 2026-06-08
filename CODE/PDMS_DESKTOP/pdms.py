@@ -70,6 +70,8 @@ class MainWindow(QMainWindow):
             for _ in range(CHANNEL_COUNT)
         ]
         self.latest_phy = [0] * PHY_INPUT_COUNT
+
+        self.lates_imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
         self.latest_frames = []
         self.plotting_enabled = True
         self.config_tab = None
@@ -118,21 +120,52 @@ class MainWindow(QMainWindow):
         sys_grid.addWidget(QLabel("State:"), 0, 0)
         self.lbl_sys_state = QLabel("-")
         sys_grid.addWidget(self.lbl_sys_state, 0, 1)
+
         sys_grid.addWidget(QLabel("Battery:"), 1, 0)
         self.lbl_batt = QLabel("- mV")
         sys_grid.addWidget(self.lbl_batt, 1, 1)
+
         sys_grid.addWidget(QLabel("Device temp:"), 2, 0)
         self.lbl_temp = QLabel("- °C")
         sys_grid.addWidget(self.lbl_temp, 2, 1)
+
         sys_grid.addWidget(QLabel("Safety Line:"), 3, 0)
         self.lbl_safety = QLabel("-")
         sys_grid.addWidget(self.lbl_safety, 3, 1)
+
         sys_grid.addWidget(QLabel("Total I Avg:"), 4, 0)
         self.lbl_total_i = QLabel("- mA")
         sys_grid.addWidget(self.lbl_total_i, 4, 1)
+
         sys_grid.addWidget(QLabel("Invalid logic:"), 5, 0)
         self.lbl_logic_valid_mask = QLabel("-")
         self.lbl_logic_valid_mask.setWordWrap(True)
+        
+        sys_grid.addWidget(QLabel("Acc X:"), 0, 2)
+        self.lbl_acc_x = QLabel("- g")
+        sys_grid.addWidget(self.lbl_acc_x, 0, 3)
+
+        sys_grid.addWidget(QLabel("Acc Y:"), 1, 2)
+        self.lbl_acc_y = QLabel("- g")
+        sys_grid.addWidget(self.lbl_acc_y, 1, 3)
+
+        sys_grid.addWidget(QLabel("Acc Z:"), 2, 2)
+        self.lbl_acc_z = QLabel("- g")
+        sys_grid.addWidget(self.lbl_acc_z, 2, 3)
+
+        sys_grid.addWidget(QLabel("Pitch:"), 3, 2)
+        self.lbl_gyro_x = QLabel("- dps")
+        sys_grid.addWidget(self.lbl_gyro_x, 3, 3)
+
+        sys_grid.addWidget(QLabel("Roll:"), 4, 2)
+        self.lbl_gyro_y = QLabel("- dps")
+        sys_grid.addWidget(self.lbl_gyro_y, 4, 3)
+
+        sys_grid.addWidget(QLabel("Yaw:"), 5, 2)
+        self.lbl_gyro_z = QLabel("- dps")
+        sys_grid.addWidget(self.lbl_gyro_z, 5, 3)
+        
+        
         sys_grid.addWidget(self.lbl_logic_valid_mask, 5, 1)
         top_panel.addWidget(sys_box, stretch=2)
 
@@ -314,6 +347,7 @@ class MainWindow(QMainWindow):
                 self.latest_sys = packet["sys"]
                 self.latest_ch = packet["ch"]
                 self.latest_phy = packet["phy"]
+                self.lates_imu = packet["imu"]
                 self.latest_frames = packet.get("frames", [])
                 self.plot_panel.update_from_packet(packet)
                 self.last_frame_rx_time = time.time()
@@ -329,6 +363,16 @@ class MainWindow(QMainWindow):
         self.lbl_temp.setText(f"{self.latest_sys['core_temp']:.1f} °C")
         self.lbl_safety.setText(str(self.latest_sys["safety"]))
         self.lbl_total_i.setText(f"{self.latest_sys['total_current']:.1f} mA")
+
+        # IMU
+        self.lbl_acc_x.setText(f"{self.lates_imu['accX']:.2f} g")
+        self.lbl_acc_y.setText(f"{self.lates_imu['accY']:.2f} g")
+        self.lbl_acc_z.setText(f"{self.lates_imu['accZ']:.2f} g")
+
+        self.lbl_gyro_x.setText(f"{self.lates_imu['pitch']:.2f} dps")
+        self.lbl_gyro_y.setText(f"{self.lates_imu['yaw']:.2f} dps")
+        self.lbl_gyro_z.setText(f"{self.lates_imu['roll']:.2f} dps")
+
         logic_valid_mask = int(self.latest_sys.get("logicValidMask", 0))
         invalid_outputs = [str(index + 1) for index in range(CHANNEL_COUNT) if not (logic_valid_mask & (1 << index))]
         if invalid_outputs:

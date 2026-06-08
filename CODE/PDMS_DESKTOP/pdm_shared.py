@@ -76,6 +76,8 @@ IDS = {
     "NAMES": BASE_ID + 0x00D,
     "PHY_INPUTS_1_4": BASE_ID + 0x00E,
     "PHY_INPUTS_5_8": BASE_ID + 0x00F,
+    "IMU_ACC": BASE_ID + 0x10,
+    "IMU_RATES": BASE_ID + 0x11,
 }
 
 OUT_STATE_MAP = {0: "OFF", 1: "ON", 2: "ERR"}
@@ -155,3 +157,10 @@ def parse_system_status(data):
     if len(data) >= 8:
         logic_valid_mask = data[6] | (data[7] << 8)
     return status, batt_voltage, core_temp_raw / 10.0, safety_line_state, logic_valid_mask
+
+def parse_i16x3(data):
+    if not isinstance(data, (bytes, bytearray)):
+        data = bytes(data)
+    if len(data) < 6:
+        data = data + b"\x00" * (6 - len(data))
+    return struct.unpack("<3h", data[:6])

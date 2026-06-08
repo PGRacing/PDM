@@ -347,6 +347,8 @@ RESET_BUTTON_STYLE = (
 
 
 class ChannelConfigPage(QWidget):
+    batchChanged = pyqtSignal()
+
     def __init__(self, channel_index, parent=None):
         super().__init__(parent)
         self.channel_index = channel_index
@@ -372,11 +374,31 @@ class ChannelConfigPage(QWidget):
         self.combo_mode.addItem("PWM (BETA)", OUT_MODE_PWM)
         self.combo_mode.addItem("BATCH", OUT_MODE_BATCH)
         self.edit_name = QLineEdit(f"OUT_{channel_index + 1}")
-        self.edit_batch = _make_spinbox(0, 16, 0)
+        
+        # self.edit_batch = _make_spinbox(0, 16, 0)
+        self.edit_batch = QComboBox()
+        if channel_index < 4:
+            self.edit_batch.addItem("NONE", channel_index)
+            self.edit_batch.addItem("OUT1", 0)
+            self.edit_batch.addItem("OUT2", 1)
+            self.edit_batch.addItem("OUT3", 2)
+            self.edit_batch.addItem("OUT4", 3)
+            self.edit_batch.removeItem(channel_index + 1)
+        elif channel_index < 8: 
+            self.edit_batch.addItem("NONE", channel_index)
+            self.edit_batch.addItem("OUT5", 4)
+            self.edit_batch.addItem("OUT6", 5)
+            self.edit_batch.addItem("OUT7", 6)
+            self.edit_batch.addItem("OUT8", 7)
+            self.edit_batch.removeItem(channel_index - 4 + 1)
+        else:
+            self.edit_batch.addItem("NOT ALLOWED", 0)
 
         channel_form.addRow(FIELD_LABELS["channel"]["channel_id"], self.label_channel_id)
         channel_form.addRow(FIELD_LABELS["channel"]["type"], self.label_type)
-        channel_form.addRow(FIELD_LABELS["channel"]["spoc_mapping"], self.label_spoc)
+
+        if channel_index >= 8:
+            channel_form.addRow(FIELD_LABELS["channel"]["spoc_mapping"], self.label_spoc)
         channel_form.addRow(FIELD_LABELS["channel"]["mode"], self.combo_mode)
         channel_form.addRow(FIELD_LABELS["channel"]["name"], self.edit_name)
         channel_form.addRow(FIELD_LABELS["channel"]["batch"], self.edit_batch)
@@ -512,6 +534,7 @@ class ChannelConfigPage(QWidget):
         self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
         self.combo_after_error_behavior.currentIndexChanged.connect(self._sync_after_error_state)
         self.combo_mode.currentIndexChanged.connect(self._sync_mode_state)
+        self.edit_batch.currentIndexChanged.connect(self._emit_batch_changed)
 
         self._apply_spoc_mapping()
         self.refresh_pwm_sources()
@@ -654,6 +677,10 @@ class ChannelConfigPage(QWidget):
 
     def _sync_mode_state(self):
         self.pwm_box.setVisible(self.combo_mode.currentData() == OUT_MODE_PWM)
+        self.edit_batch.setEnabled(self.combo_mode.currentData() == OUT_MODE_BATCH)
+
+    def _emit_batch_changed(self, *_args):
+        self.batchChanged.emit()
 
     def apply_dict(self, data):
         mode_value = data.get("mode", OUT_MODE_UNUSED)
@@ -662,7 +689,12 @@ class ChannelConfigPage(QWidget):
             self.combo_mode.setCurrentIndex(mode_index)
 
         self.edit_name.setText(str(data.get("name", self.edit_name.text())))
-        self.edit_batch.setValue(int(data.get("batch", self.edit_batch.value())))
+        # self.edit_batch.setValue(int(data.get("batch", self.edit_batch.value())))
+
+        batch_value = data.get("batch", 0)
+        batch_index = self.edit_batch.findData(batch_value)
+        if mode_index >= 0:
+            self.edit_batch.setCurrentIndex(batch_index)
 
         pwm = data.get("pwmCfg", {}) or {}
         self.edit_base_duty.setValue(int(pwm.get("baseDuty", self.edit_base_duty.value())))
@@ -722,7 +754,7 @@ class ChannelConfigPage(QWidget):
             0 if self.channel_index < 8 else self.spoc_id,  # spoc_id
             0 if self.channel_index < 8 else self.spoc_ch_id,  # spoc_ch_id
             name_bytes,  # name[16]
-            self.edit_batch.value(),  # batch
+            self.edit_batch.currentData(),  # batch
             self.combo_after_error_behavior.currentData(),  # after_error_behavior
             self.edit_after_error_latch_time.value(),  # after_error_latch_time
             1 if self.check_act_on_safety.isChecked() else 0,  # act_on_safety
@@ -816,10 +848,19 @@ class LogicChannelPage(QWidget):
         logic_form.setVerticalSpacing(6)
         logic_form.setHorizontalSpacing(12)
 
+        isused_group = QHBoxLayout()
+        isused_group.setSpacing(0)
         self.check_used = QCheckBox("")
         self.check_used.setStyleSheet(CHECKBOX_STYLE)
         self.check_used.setChecked(False)
-        logic_form.addRow("Channel used:", self.check_used)
+        self.outside_controlled = QLabel("CHANNEL CONTROLLED VIA BATCH")
+        self.outside_controlled.setStyleSheet("color: red; font-weight: bold; font-size: 1.2em;")
+        self.outside_controlled.setVisible(False)
+        
+        isused_group.addWidget(self.check_used)
+        isused_group.addWidget(self.outside_controlled)
+
+        logic_form.addRow("Channel used:", isused_group)
 
         self.check_always_on = QCheckBox("")
         self.check_always_on.setStyleSheet(CHECKBOX_STYLE)
@@ -1030,6 +1071,17 @@ class LogicChannelPage(QWidget):
         )
 
         self._sync_logic_operator_state()
+
+    def disable_logic(self, isDisabled, index):
+        if isDisabled == True:
+            self.check_used.setVisible(False)
+            self.outside_controlled.setText(f"CHANNEL CONTROLLED BATCH WITH OUT_{index + 1}")
+            self.outside_controlled.setVisible(True)
+            self.logic_group.setDisabled(True)
+        else:
+            self.check_used.setVisible(True)
+            self.outside_controlled.setVisible(False)
+            self.logic_group.setDisabled(False)
 
     def to_dict(self):
         return {
@@ -1598,6 +1650,7 @@ class ConfigTab(QWidget):
             page.set_pwm_source_provider(self.inputs_page.get_sensor_sources)
             page.logic_page.logicChanged.connect(self._refresh_input_usage_summary)
             page.edit_name.textChanged.connect(self._refresh_input_usage_summary)
+            page.batchChanged.connect(self._refresh_batch_relations)
             self.channel_widgets.append(page)
             scroll.setWidget(page)
             self.tabs.addTab(scroll, f"Channel {index + 1}")
@@ -1655,7 +1708,7 @@ class ConfigTab(QWidget):
                 logic_data = channel_data.get("logic")
                 if isinstance(logic_data, dict):
                     self.channel_widgets[index].logic_page.apply_dict(logic_data)
-
+                
         if isinstance(config, dict):
             logic_data = config.get("logic")
             if isinstance(logic_data, list):
@@ -1663,6 +1716,7 @@ class ConfigTab(QWidget):
                     if isinstance(logic_item, dict):
                         self.channel_widgets[index].logic_page.apply_dict(logic_item)
 
+        self._refresh_batch_relations()
         self._refresh_logic_sensor_sources()
         self._emit_can_frames_changed()
 
@@ -1723,6 +1777,16 @@ class ConfigTab(QWidget):
                     usage_by_input[source_id].append(output_label)
 
         self.inputs_page.set_usage_by_input(usage_by_input)
+
+    def _refresh_batch_relations(self):
+        batchControlled = [-1] * 16  
+        for index, channel_widget in enumerate(self.channel_widgets):
+            batch = channel_widget.edit_batch.currentData()
+            if batch != -1 and batch != index and index < 8:
+                batchControlled[batch] = index
+            
+        for index, channel_widget in enumerate(self.channel_widgets):
+            self.channel_widgets[index].logic_page.disable_logic(batchControlled[index] != -1, batchControlled[index])
 
     def _build_output_payload(self):
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)

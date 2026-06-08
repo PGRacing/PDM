@@ -18,6 +18,7 @@ from pdm_shared import (
     SERIAL_BAUD,
     parse_system_status,
     parse_u16x4,
+    parse_i16x3,
 )
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -31,7 +32,7 @@ REQUEST_CONFIG_ID = 0x459
 REQUEST_CONFIG_PAYLOAD = bytes((0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
 ISOTP_FLOW_CONTROL_CTS = bytes((0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
 ISOTP_GATEWAY_DELAY_S = 0.05
-ISOTP_FRAME_DELAY_S = 0.01
+ISOTP_FRAME_DELAY_S = 0.001
 # Expected RX config payload size: outputs + CAN inputs + inputs + logic.
 ISOTP_CONFIG_RX_EXPECTED_BYTES = 1360 + 144 + 96 + 192
 ISOTP_GATEWAY_FRAMES = (
@@ -380,6 +381,7 @@ def can_isolated_process(pipe_conn, tx_queue):
     ]
     phy_inputs = [0] * PHY_INPUT_COUNT
     sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0, "logicValidMask": 0}
+    imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
     name_parts = defaultdict(dict)
     current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
 
@@ -535,6 +537,16 @@ def can_isolated_process(pipe_conn, tx_queue):
             vals = parse_u16x4(d)
             for i in range(min(4, PHY_INPUT_COUNT - 4)):
                 phy_inputs[i + 4] = vals[i]
+        elif cid == IDS["IMU_ACC"]:
+            vals = parse_i16x3(d)
+            imu["accX"] = (vals[0] / 1000.0)
+            imu["accY"] = (vals[1] / 1000.0)
+            imu["accZ"] = (vals[2] / 1000.0)
+        elif cid == IDS["IMU_RATES"]:    
+            vals = parse_i16x3(d)
+            imu["pitch"] = (vals[0] / 1000.0)
+            imu["roll"] = (vals[1] / 1000.0)
+            imu["yaw"] = (vals[2] / 1000.0)
 
         if t_now - last_log_time >= 0.05:
             last_log_time = t_now
@@ -556,6 +568,7 @@ def can_isolated_process(pipe_conn, tx_queue):
                     "sys": sys_status.copy(),
                     "ch": [c.copy() for c in channels],
                     "phy": list(phy_inputs),
+                    "imu": imu.copy(),
                     "frames": [
                         {
                             "id": fid,
