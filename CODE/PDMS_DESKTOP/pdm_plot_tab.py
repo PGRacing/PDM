@@ -40,8 +40,8 @@ class PlotPanel(QWidget):
         self.hist_v_filt = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
         self.hist_i_filt = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
 
-        self.kf_v = [Kalman1D(process_noise=0.03, measurement_noise=1.0) for _ in range(CHANNEL_COUNT)]
-        self.kf_i = [Kalman1D(process_noise=0.10, measurement_noise=1.0) for _ in range(CHANNEL_COUNT)]
+        self.kf_v = [Kalman1D(process_noise=0.03, measurement_noise=0.2) for _ in range(CHANNEL_COUNT)]
+        self.kf_i = [Kalman1D(process_noise=0.10, measurement_noise=0.2) for _ in range(CHANNEL_COUNT)]
 
         self.curves_v = {}
         self.curves_i_inst = {}
