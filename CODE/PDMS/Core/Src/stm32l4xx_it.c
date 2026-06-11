@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32l4xx_it.h"
+#include "out.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -92,7 +93,23 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  // Disable all channels
+  OUT_SetState(OUT_ID_1, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_2, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_3, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_4, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_5, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_6, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_7, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_8, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_9, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_10, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_11, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_12, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_13, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_14, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_15, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_16, OUT_STATE_OFF);
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
