@@ -501,7 +501,7 @@ class ChannelConfigPage(QWidget):
 
         self.soc_box = QGroupBox("SOC")
         soc_form = QFormLayout(self.soc_box)
-        self.edit_nominal_threshold = _make_spinbox(0, 65535, 1000, " mA", 100)
+        self.edit_nominal_threshold = _make_spinbox(1000, 65535, 2000, " mA", 100)
         self.check_allow_inrush = QCheckBox()
         self.check_allow_inrush.setStyleSheet(CHECKBOX_STYLE)
         self.check_allow_inrush.setChecked(False)
@@ -601,7 +601,7 @@ class ChannelConfigPage(QWidget):
             # self.edit_inrush_time_threshold,
         ):
             widget.setEnabled(enabled)
-        self.check_allow_inrush.setChecked(enabled)
+        #self.check_allow_inrush.setChecked(enabled)
         self._sync_soc_inrush_state()
         self._sync_inrush_window_state()
 

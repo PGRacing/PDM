@@ -6,6 +6,30 @@ from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QPushButton, QScr
 from pdm_shared import CHANNEL_COUNT, HISTORY_LEN, TRACK_COLORS
 
 
+class Kalman1D:
+    def __init__(self, process_noise=0.01, measurement_noise=1.0, initial_value=None):
+        self.process_noise = float(process_noise)
+        self.measurement_noise = float(measurement_noise)
+        self.estimate = float(initial_value) if initial_value is not None else None
+        self.estimate_error = 1.0
+
+    def reset(self, value=None):
+        self.estimate = float(value) if value is not None else None
+        self.estimate_error = 1.0
+
+    def update(self, measurement):
+        measurement = float(measurement)
+        if self.estimate is None:
+            self.estimate = measurement
+            return self.estimate
+
+        self.estimate_error += self.process_noise
+        kalman_gain = self.estimate_error / (self.estimate_error + self.measurement_noise)
+        self.estimate = self.estimate + kalman_gain * (measurement - self.estimate)
+        self.estimate_error = (1.0 - kalman_gain) * self.estimate_error
+        return self.estimate
+
+
 class PlotPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -13,6 +37,11 @@ class PlotPanel(QWidget):
         self.hist_v = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
         self.hist_i = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
         self.hist_iavg = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+        self.hist_v_filt = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+        self.hist_i_filt = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+
+        self.kf_v = [Kalman1D(process_noise=0.03, measurement_noise=1.0) for _ in range(CHANNEL_COUNT)]
+        self.kf_i = [Kalman1D(process_noise=0.10, measurement_noise=1.0) for _ in range(CHANNEL_COUNT)]
 
         self.curves_v = {}
         self.curves_i_inst = {}
@@ -102,9 +131,14 @@ class PlotPanel(QWidget):
     def update_from_packet(self, packet):
         t_now = packet["time"]
         for i, ch in enumerate(packet["ch"]):
+            filtered_voltage = self.kf_v[i].update(ch["voltage"])
+            filtered_current = self.kf_i[i].update(ch["current"])
+
             self.hist_v[i].append((t_now, ch["voltage"]))
             self.hist_i[i].append((t_now, ch["current"]))
             self.hist_iavg[i].append((t_now, ch["current_avg"]))
+            self.hist_v_filt[i].append((t_now, filtered_voltage))
+            self.hist_i_filt[i].append((t_now, filtered_current))
 
     def apply_channel_names(self, channel_names):
         for i, name in enumerate(channel_names):
@@ -118,13 +152,13 @@ class PlotPanel(QWidget):
         for ch in range(CHANNEL_COUNT):
             if ch in selected_channels:
                 if len(self.hist_v[ch]) > 1:
-                    t, v = zip(*self.hist_v[ch])
+                    t, v = zip(*self.hist_v_filt[ch])
                     self.curves_v[ch].setData(t, v)
                 else:
                     self.curves_v[ch].setData([], [])
 
                 if len(self.hist_i[ch]) > 1:
-                    t, c = zip(*self.hist_i[ch])
+                    t, c = zip(*self.hist_i_filt[ch])
                     self.curves_i_inst[ch].setData(t, c)
                 else:
                     self.curves_i_inst[ch].setData([], [])
