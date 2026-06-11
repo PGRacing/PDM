@@ -90,10 +90,7 @@ T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 
 static void PDM_OutConfig(void)
 {
-    for(T_OUT_ID i = 0; i < OUT_ID_MAX; i++)
-    {
-        OUT_Reconfigure(i);
-    }
+    OUT_ReconfigureAll();
 }
 
 static void PDM_SoftLimpHomeModeTimerCallback()

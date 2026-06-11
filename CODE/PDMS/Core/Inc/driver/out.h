@@ -185,6 +185,10 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode);
 /// @param id 
 void OUT_Reconfigure(T_OUT_ID id);
 
+/// @brief Reconfigure all output channels using saved mode
+/// @param  
+void OUT_ReconfigureAll(void);
+
 /// @brief Set state of selected output channel
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @param reqState Requested output channel state 

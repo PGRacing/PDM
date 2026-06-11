@@ -372,7 +372,89 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
     }
 };
 
-volatile T_BSP_OUT_REG bspOutsReg[OUT_ID_MAX];
+volatile T_BSP_OUT_REG bspOutsReg[OUT_ID_MAX] = 
+{
+    [OUT_ID_1] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_2] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_3] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_4] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_5] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_6] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_7] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_8] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_9] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_10] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_11] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_12] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_13] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_14] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_15] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    },
+    [OUT_ID_16] = 
+    {
+        .isPWM = FALSE,
+        .duty = 0,
+    }
+};
 
 #endif
 
@@ -464,17 +546,6 @@ void BSP_OUT_InitTimers(void)
     LL_TIM_CC_EnableChannel(TIM8, LL_TIM_CHANNEL_CH6);
 
     LL_TIM_EnableIT_UPDATE(TIM8);
-    // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_OCPOLARITY_HIGH);
-
-    // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_OCPOLARITY_HIGH);
-
-    // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH3, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH3, LL_TIM_OCPOLARITY_HIGH);
-
-    // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH4, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH4, LL_TIM_OCPOLARITY_HIGH);
 
     // TIM4
     if(LL_APB1_GRP1_IsEnabledClock(LL_APB1_GRP1_PERIPH_TIM4) == 0)
@@ -502,19 +573,7 @@ void BSP_OUT_InitTimers(void)
     LL_TIM_SetTriggerOutput2(TIM8, LL_TIM_TRGO2_OC6);
     // TIM4 is slave now
     LL_TIM_SetTriggerInput(TIM4, LL_TIM_TS_ITR3);
-    LL_TIM_SetSlaveMode(TIM4, LL_TIM_SLAVEMODE_RESET);
-
-    // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_OCPOLARITY_HIGH);
-
-    // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_OCPOLARITY_HIGH);
-
-    // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH3, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH3, LL_TIM_OCPOLARITY_HIGH);
-
-    // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH4, LL_TIM_OCMODE_PWM1);
-    // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH4, LL_TIM_OCPOLARITY_HIGH);
+    LL_TIM_SetSlaveMode(TIM4, LL_TIM_SLAVEMODE_TRIGGER);
 
     LL_TIM_SetCounter(TIM4, 0);
     LL_TIM_SetCounter(TIM8, 0);
@@ -798,14 +857,28 @@ void BSP_OUT_SetMode(T_OUT_ID id, T_OUT_MODE mode)
 
         case OUT_MODE_PWM:
             LL_GPIO_ResetOutputPin(io.port, io.pin);
-            BSP_OUT_InitPWM(id);
+            
             bspOutsReg[id].isPWM = TRUE;
+            // // Make ADC follow PWM
+            // if(bspOutsReg[id].isPWM == FALSE)
+            // {
+            //     bspOutsReg[id].isPWM = TRUE;
+            //     //BSP_OUT_ConfigureAdcFollowPWM();               
+            // }
+            BSP_OUT_InitPWM(id);
+
         break;
 
         default:
         break;
     }
 
+}
+
+void BSP_OUT_ConfigureAdcFollowPWM(void)
+{
+    ADC1_ConfigureInjected_FollowPWM(bspOutsReg[0].isPWM, bspOutsReg[1].isPWM, bspOutsReg[2].isPWM, bspOutsReg[3].isPWM,
+                                     bspOutsReg[4].isPWM, bspOutsReg[5].isPWM, bspOutsReg[6].isPWM, bspOutsReg[7].isPWM);
 }
 
 uint32_t BSP_OUT_GetCurrentAdcValue(T_OUT_ID id)

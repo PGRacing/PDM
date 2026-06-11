@@ -129,4 +129,8 @@ bool BSP_OUT_IsPWM(T_OUT_ID id);
 /// @param  
 void BSP_OUT_InitTimers(void);
 
+/// @brief Reconfigure BSP to make sure it follows PWM signals correctly
+/// @param  
+void BSP_OUT_ConfigureAdcFollowPWM(void);
+
 #endif

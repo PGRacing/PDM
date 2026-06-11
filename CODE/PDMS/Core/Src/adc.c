@@ -729,6 +729,13 @@ volatile uint16_t* injectedPtrTargetBuffer[4] = {&(defaultInjectedBuffer[0]), &(
 
 void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bool oc5, bool oc6, bool oc7, bool oc8)
 {
+    injectedPtrTargetBuffer[0] = &(defaultInjectedBuffer[0]);
+    injectedPtrTargetBuffer[1] = &(defaultInjectedBuffer[1]);
+    injectedPtrTargetBuffer[1] = &(defaultInjectedBuffer[2]);
+    injectedPtrTargetBuffer[1] = &(defaultInjectedBuffer[3]);
+    
+    HAL_ADCEx_InjectedStop_IT(&hadc1);
+
     ADC_InjectionConfTypeDef sConfigInjected = {0};
 
     uint8_t convNum = (uint8_t)oc1 + (uint8_t)oc2 + (uint8_t)oc3 + (uint8_t)oc4 +
@@ -880,9 +887,6 @@ void ADC1_Init(void)
     /* Start ADC in DMA mode */
     // ADC1 - BSP current sensors
     HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc1RawData, ADC1_CHANNEL_COUNT);
-
-    // TODO Add this to configuration
-    ADC1_ConfigureInjected_FollowPWM(true, true, false, false, false, true, true, true);
 }
 
 void ADC2_Init(void)

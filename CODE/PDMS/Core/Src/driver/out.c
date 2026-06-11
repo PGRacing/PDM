@@ -937,6 +937,17 @@ void OUT_Reconfigure(T_OUT_ID id)
   OUT_ChangeMode(id, cfg->mode);
 }
 
+void OUT_ReconfigureAll(void)
+{
+  for(T_OUT_ID i = 0; i < OUT_ID_MAX; i++)
+  {
+    OUT_ChangeMode(i, outsCfg[i].mode);
+  }
+
+  // Make sure ADC follows PWM correctly
+  BSP_OUT_ConfigureAdcFollowPWM();
+}
+
 bool OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
 {
   bool res = TRUE;

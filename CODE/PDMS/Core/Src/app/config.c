@@ -66,12 +66,6 @@ void CONFIG_LoadConfig(T_CONFIG_SELECTION configSelection)
         memcpy(inputsCfg, (T_IN_CFG*)((uint8_t*)configPtrB + CONFIG_INPUTCFG_OFFSET), sizeof(inputsCfg));
         memcpy(logicCfg, (T_LOGIC_CFG*)((uint8_t*)configPtrB + CONFIG_LOGICCFG_OFFSET), sizeof(logicCfg));
     }
-
-    // Reconfigure all channels
-    for(T_OUT_ID id = 0; id < OUT_ID_MAX; id++)
-    {
-        OUT_Reconfigure(id);
-    }
 }
 
 /// @brief Apply new configuration to the system
@@ -92,6 +86,9 @@ static void CONFIG_ApplyNewConfig(T_CONFIG_SELECTION configSelection)
 /// @param 
 static void CONFIG_PostConfigChange(void)
 {
+    // Reconfigure all channels
+    OUT_ReconfigureAll();
+
     RTOS_ResumeAfterConfigChange();
 }
 
