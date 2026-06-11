@@ -204,7 +204,7 @@ void MX_ADC2_Init(void)
   hadc2.Init.ContinuousConvMode = DISABLE;
   hadc2.Init.NbrOfConversion = 8;
   hadc2.Init.DiscontinuousConvMode = DISABLE;
-  hadc2.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T8_TRGO;
+  hadc2.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T3_TRGO;
   hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc2.Init.DMAContinuousRequests = ENABLE;
   hadc2.Init.Overrun = ADC_OVR_DATA_PRESERVED;
@@ -619,6 +619,8 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
 /* USER CODE BEGIN 1 */
 uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
+volatile uint16_t adc1InjectedRawData[ADC1_CHANNEL_COUNT];
+
 uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
 uint16_t adc1LastValidRawData[ADC1_CHANNEL_COUNT] = {0};
@@ -641,71 +643,52 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
     ASSERT(adc1ConvReadySemaphore);
     ASSERT(adc2ConvReadySemaphore);
-    if(hadc == &hadc1)
+    if (hadc == &hadc1)
     {
 #ifdef DEBUG
-      DWTfastADC1DLT = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME - DWTfastADC1TS);
-      DWTfastADC1TS = DEBUG_ARM_GET_TIME;
+        DWTfastADC1DLT = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME - DWTfastADC1TS);
+        DWTfastADC1TS = DEBUG_ARM_GET_TIME;
 #endif
-      for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
-      {
-        // WARN Currently ADC channel maps directly to BSP_OUT_ID, so we can use it to check if measurement is valid
-        // If this changes in the future, need to implement separate mapping and validity checking
-        if(BSP_OUT_IsPWM(i) ==  TRUE)
+        for (uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
         {
-          if(BSP_OUT_SenseValid(i) == TRUE)
-          {
             adc1MedianBuffer[i][adc1MedianCounter] = adc1RawData[i];
-            //adc1LastValidRawData[i] = adc1RawData[i];
-          }
-          else
-          {
-            adc1MedianBuffer[i][adc1MedianCounter] = 0; // Invalid measurement, set to last valid or 0
-          }
         }
-        else // Std output simple median filter buffer fill
-        {
-          adc1MedianBuffer[i][adc1MedianCounter] = adc1RawData[i];
-        }
-      }
-      adc1MedianCounter++;
+        adc1MedianCounter++;
 
-      // If enough samples collected for oversampling, calculate median and average
-      if(adc1MedianCounter >= ADC1_SW_OVERSAMPLING_RATIO)
-      {
-        adc1MedianCounter = 0;
-        memcpy((void*)adc1MedianBufferShadow, (void*)adc1MedianBuffer, sizeof(adc1MedianBuffer));
-        // Notify task that new ADC1 data is ready
+        // If enough samples collected for oversampling, calculate median and average
+        if (adc1MedianCounter >= ADC1_SW_OVERSAMPLING_RATIO)
+        {
+            adc1MedianCounter = 0;
+            memcpy((void *)adc1MedianBufferShadow, (void *)adc1MedianBuffer, sizeof(adc1MedianBuffer));
+            // Notify task that new ADC1 data is ready
+            portBASE_TYPE xHigherPriorityTaskWoken;
+            xHigherPriorityTaskWoken = pdFALSE;
+            if (adc1ConvReadySemaphore != NULL)
+            {
+#ifdef DEBUG
+                DWTslowADC1DLT = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME - DWTslowADC1TS);
+                DWTslowADC1TS = DEBUG_ARM_GET_TIME;
+#endif
+                xSemaphoreGiveFromISR(adc1ConvReadySemaphore, &xHigherPriorityTaskWoken);
+            }
+            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+        }
+    }
+    else if (hadc == &hadc2)
+    {
         portBASE_TYPE xHigherPriorityTaskWoken;
         xHigherPriorityTaskWoken = pdFALSE;
-        if(adc1ConvReadySemaphore != NULL)
+
+        if (adc2ConvReadySemaphore != NULL)
         {
-#ifdef DEBUG
-          DWTslowADC1DLT = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME - DWTslowADC1TS);
-          DWTslowADC1TS = DEBUG_ARM_GET_TIME;
-#endif
-          xSemaphoreGiveFromISR(adc1ConvReadySemaphore, &xHigherPriorityTaskWoken);
+            xSemaphoreGiveFromISR(adc2ConvReadySemaphore, &xHigherPriorityTaskWoken);
         }
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-      }
-
-    }else if(hadc == &hadc2)
-    {
-      portBASE_TYPE xHigherPriorityTaskWoken;
-      xHigherPriorityTaskWoken = pdFALSE;
-      
-      if(adc2ConvReadySemaphore != NULL)
-      {
-        xSemaphoreGiveFromISR(adc2ConvReadySemaphore, &xHigherPriorityTaskWoken);
-      }
-      portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
-    else if(hadc == &hadc3)
+    else if (hadc == &hadc3)
     {
-
     }
 }
-
 
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 {
@@ -713,38 +696,242 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 }
 
 
+static uint32_t ADC_GetRankFromChannel(uint8_t num)
+{
+    switch (num)
+    {
+    case 0:
+        return ADC_INJECTED_RANK_1;
+        break;
+
+    case 1:
+        return ADC_INJECTED_RANK_2;
+        break;
+
+    case 2:
+        return ADC_INJECTED_RANK_3;
+        break;
+
+    case 3:
+        return ADC_INJECTED_RANK_4;
+        break;
+
+    default:
+        return ADC_INJECTED_RANK_1;
+        break;
+    }
+
+    return ADC_INJECTED_RANK_1;
+}
+
+volatile uint16_t defaultInjectedBuffer[4];
+volatile uint16_t* injectedPtrTargetBuffer[4] = {&(defaultInjectedBuffer[0]), &(defaultInjectedBuffer[1]), &(defaultInjectedBuffer[2]), &(defaultInjectedBuffer[3])};
+
+void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bool oc5, bool oc6, bool oc7, bool oc8)
+{
+    ADC_InjectionConfTypeDef sConfigInjected = {0};
+
+    uint8_t convNum = (uint8_t)oc1 + (uint8_t)oc2 + (uint8_t)oc3 + (uint8_t)oc4 +
+                        (uint8_t)oc5 + (uint8_t)oc6 + (uint8_t)oc7 + (uint8_t)oc8; 
+     
+    // Clamp number of converted channels to 4
+    convNum = convNum > 4 ? 4 : convNum;      
+
+    sConfigInjected.InjectedNbrOfConversion = convNum;
+    uint8_t configuredNum = 0;
+
+    sConfigInjected.InjecOversampling.Ratio = ADC_OVERSAMPLING_RATIO_16;
+    sConfigInjected.InjecOversampling.RightBitShift = ADC_RIGHTBITSHIFT_4;
+
+    sConfigInjected.InjecOversamplingMode = ENABLE;
+
+    sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_12CYCLES_5;
+    sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
+    sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
+    sConfigInjected.InjectedOffset = 0;
+
+    sConfigInjected.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJEC_T8_TRGO2;
+    sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONV_EDGE_RISING;
+
+    sConfigInjected.AutoInjectedConv          = DISABLE; // Driven by PWM TRGO, NOT by regular conversion end
+    sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
+    sConfigInjected.QueueInjectedContext      = DISABLE;
+
+    if(oc1 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_8;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[0]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+    
+    if(oc2 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_7;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[1]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+    
+
+    if(oc3 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_6;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[2]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+
+    if(oc4 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_5;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[3]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+
+    if(oc5 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_4;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[4]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+    
+    if(oc6 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_3;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[5]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+    
+
+    if(oc7 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_2;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[6]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+
+    if(oc8 && configuredNum <= 4)
+    {
+        sConfigInjected.InjectedChannel = ADC_CHANNEL_1;
+        sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
+        injectedPtrTargetBuffer[configuredNum] = &(adc1InjectedRawData[7]);
+
+        if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        configuredNum++;
+    }
+
+   
+    if(HAL_ADCEx_InjectedStart_IT(&hadc1) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
 void ADC1_Init(void)
 { 
     /* Timer 15 configured to execute ADC1 conversion each 0.1ms / 10kHz */
     HAL_TIM_Base_Start(&htim15);
 
+    HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+
     /* Start ADC in DMA mode */
     // ADC1 - BSP current sensors
     HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc1RawData, ADC1_CHANNEL_COUNT);
 
-    // ADC Calibration for better accuracy TODO - not tested
-    // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-    // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-    // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-    // hadc1.State = 0;
-    // hadc2.State = 0;
+    // TODO Add this to configuration
+    ADC1_ConfigureInjected_FollowPWM(true, true, false, false, false, true, true, true);
 }
 
 void ADC2_Init(void)
 {
-    /* Timer 8 configured to execute ADC2 conversion each 5ms */
-    HAL_TIM_Base_Start(&htim8);
+    /* Timer 3 configured to execute ADC2 conversion each 5ms */
+    HAL_TIM_Base_Start(&htim3);
+
+    HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+
     /* Start ADC in DMA mode */
     // ADC2 - BSP inputs
     HAL_ADC_Start_DMA(&hadc2, (uint32_t*)adc2RawData, ADC2_CHANNEL_COUNT);
-
-    // ADC Calibration for better accuracy TODO - not tested
-    // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-    // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-    // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-    // hadc1.State = 0;
-    // hadc2.State = 0;
 }
 
+// volatile uint32_t arr[20];
+// volatile uint32_t arr_count = 0;
+
+void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+    // LL_GPIO_SetOutputPin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+    // volatile uint32_t delay = 1000;
+    // while ((delay--) != 0)
+    // {
+    //     __NOP();
+    // }
+    // LL_GPIO_ResetOutputPin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+    // TODO PWM Fix
+    /*
+    - [DONE] Verify here value of TIM3->CNT
+    - [DONE] Migrate from TIM3 to TIM8 (now ADC2 trigger)
+    - [DONE] Use one of 5,6 channel from TIM6 as dedicated trigger
+    - [DONE] LL_TIM_OC_EnablePreload(TIM8, LL_TIM_CHANNEL_CH1); (enable to not change CCR in flight)
+    - [DONE] Set CCR4 to ARR or something at center of PWM
+    - Consider enabling queue on injected channels
+    - Verify the trigger for TIM4 start and RPT counter
+    - [DONE] Verify that duty cycle high is generated during ARR not 0, there might be need to verify PWM mode and or polarity, and dudty cyclce calculation as 1 - DUTY
+    */
+
+    // arr[arr_count % 99] = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME);
+    // arr_count++;
+
+    if (hadc->Instance == ADC1)
+    {
+        *injectedPtrTargetBuffer[0] = HAL_ADCEx_InjectedGetValue(hadc, ADC_INJECTED_RANK_1);
+        *injectedPtrTargetBuffer[1] = HAL_ADCEx_InjectedGetValue(hadc, ADC_INJECTED_RANK_2);
+        *injectedPtrTargetBuffer[2] = HAL_ADCEx_InjectedGetValue(hadc, ADC_INJECTED_RANK_3);
+        *injectedPtrTargetBuffer[3] = HAL_ADCEx_InjectedGetValue(hadc, ADC_INJECTED_RANK_4);
+    }
+
+}
 
 /* USER CODE END 1 */

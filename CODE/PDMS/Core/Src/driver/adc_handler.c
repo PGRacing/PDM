@@ -84,6 +84,11 @@ void adc1TaskStart(void *argument)
 #endif
             for(uint8_t i = 0; i < ADC1_CHANNEL_COUNT; i++)
             {
+                if(BSP_OUT_IsPWM(i))
+                {
+                    adc1AvgData[i] = adc1InjectedRawData[i];
+                    continue;
+                }
                 // Sort data at first because it will be averaged either way
                 //qsort((uint16_t*)adc1MedianBufferShadow[i], ADC1_SW_OVERSAMPLING_RATIO, sizeof(uint16_t), compareUINT16);
                 insertionSort((uint16_t*)&(adc1MedianBufferShadow[i][0]), ADC1_SW_OVERSAMPLING_RATIO);

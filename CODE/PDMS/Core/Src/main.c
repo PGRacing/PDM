@@ -106,15 +106,15 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   MX_ADC2_Init();
-  MX_TIM8_Init();
   MX_ADC1_Init();
   MX_ADC3_Init();
   MX_SPI2_Init();
   MX_TIM2_Init();
-  // MX_IWDG_Init();
+  MX_IWDG_Init();
   MX_TIM15_Init();
   MX_SPI1_Init();
   MX_I2C2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
  
   // Platform start

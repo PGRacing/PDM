@@ -121,11 +121,12 @@ uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id);
 /// @return TRUE if fault, FALSE if ok
 bool BSP_OUT_IsCurrentFault(T_OUT_ID id);
 
-/// @brief Check if ADC readout from I(sense) pin is valid (not disturbed by PWM switching)
-bool BSP_OUT_SenseValid(T_OUT_ID id);
-
 /// @brief Check if output channel is in PWM mode
 /// @param id Output channel id [1..16] T_OUT_ID
 bool BSP_OUT_IsPWM(T_OUT_ID id);
+
+/// @brief Initialize timers used for handling of BSP outputs
+/// @param  
+void BSP_OUT_InitTimers(void);
 
 #endif

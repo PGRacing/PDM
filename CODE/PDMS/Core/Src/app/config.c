@@ -43,6 +43,7 @@ static void CONFIG_PreConfigChange(void)
     for(T_OUT_ID id = 0; id < OUT_ID_MAX; id++)
     {
         OUT_SetState(id, OUT_STATE_OFF);
+        BSP_OUT_SetMode(id, OUT_MODE_UNUSED);
     }
     OUT_ResetRegistersAll();
 }

@@ -152,6 +152,9 @@ void PDM_Init(void)
     // Initialize ADC acquisition handler
     ADCH_Init();
 
+    // Initialize output timers (PWM)
+    BSP_OUT_InitTimers();
+
     // Initialize CAN communication handling 
     CANH_Init();
 

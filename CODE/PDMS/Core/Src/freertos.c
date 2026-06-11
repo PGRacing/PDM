@@ -138,9 +138,8 @@ osThreadId_t isotpTaskHandle;
 const osThreadAttr_t isotpTask_attributes = {
   .name = "isotpTask",
   .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal3,
+  .priority = (osPriority_t) osPriorityNormal,
 };
-
 /* Definitions for tmp126Task */
 osThreadId_t tmp126TaskHandle;
 const osThreadAttr_t tmp126Task_attributes = {
@@ -148,7 +147,6 @@ const osThreadAttr_t tmp126Task_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-
 /* Definitions for imuTask */
 osThreadId_t imuTaskHandle;
 const osThreadAttr_t imuTask_attributes = {
@@ -156,7 +154,6 @@ const osThreadAttr_t imuTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -210,12 +207,6 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-
-  /* creation of pdmTask */
-  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
-
-  // First initialize default and peripheral task, then start main (PDM) task
-  // IWDG task
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of statusTask */
@@ -230,21 +221,23 @@ void MX_FREERTOS_Init(void) {
   /* creation of adc1Task */
   adc1TaskHandle = osThreadNew(adc1TaskStart, NULL, &adc1Task_attributes);
 
-  /* creation of adc2Task */
-  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
-
   /* creation of testTask */
-  // Disabloe test task
-  //testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
+  testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
 
   /* creation of vmuxTask */
   vmuxTaskHandle = osThreadNew(vmuxTaskStart, NULL, &vmuxTask_attributes);
+
+  /* creation of pdmTask */
+  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
 
   /* creation of spoc2CurrTask */
   spoc2CurrTaskHandle = osThreadNew(spoc2CurrTaskStart, NULL, &spoc2CurrTask_attributes);
 
   /* creation of telemTask */
   telemTaskHandle = osThreadNew(telemTaskStart, NULL, &telemTask_attributes);
+
+  /* creation of adc2Task */
+  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
 
   /* creation of argbTask */
   argbTaskHandle = osThreadNew(argbTaskStart, NULL, &argbTask_attributes);
@@ -307,7 +300,7 @@ void statusTaskStart(void *argument)
   /* Infinite loop */
     for(;;)
     {
-        HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+        //HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
         osDelay(500);
     }
   /* USER CODE END statusTaskStart */
