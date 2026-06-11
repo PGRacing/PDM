@@ -1977,11 +1977,14 @@ class ConfigTab(QWidget):
 
     def load_binary_payload(self, data):
         try:
-            self._load_binary_payload(data)
+            self._load_binary_payload(data, apply=True)
         except Exception as exc:
             QMessageBox.critical(self, "Load failed", f"Could not load binary: {exc}")
 
-    def _load_binary_payload(self, data):
+    def parse_binary_payload(self, data):
+        return self._load_binary_payload(data, apply=False)
+
+    def _load_binary_payload(self, data, apply=True):
         expected_size = (
             OUTPUT_CONFIG_TOTAL_SIZE
             + CAN_INPUT_TOTAL_SIZE
@@ -2139,8 +2142,10 @@ class ConfigTab(QWidget):
                 tup = struct.unpack(LEGACY_BINARY_RECORD_FORMAT, rec)
                 channels.append(_build_output_channel_dict(tup, False))
 
-            self.apply_config({"channels": channels})
-            return
+            config = {"channels": channels}
+            if apply:
+                self.apply_config(config)
+            return config
 
         offset = 0
         channels = []
@@ -2201,11 +2206,16 @@ class ConfigTab(QWidget):
             if can_input_index < len(inputs):
                 mode_val = inputs[can_input_index].get("mode")
             entry = dict(can_entry)
+            entry["location"] = i
+            entry["type"] = IN_TYPE_CAN
             if mode_val is not None:
                 entry["mode"] = mode_val
             merged_can.append(entry)
 
-        self.apply_config({"channels": channels, "inputs": {"can": merged_can, "physical": inputs[:8]}, "logic": logic})
+        config = {"channels": channels, "inputs": {"can": merged_can, "physical": inputs[:8]}, "logic": logic}
+        if apply:
+            self.apply_config(config)
+        return config
 
     def export_binary(self):
         default_name = str(CONFIG_DIR / "pdm_output_config.bin")

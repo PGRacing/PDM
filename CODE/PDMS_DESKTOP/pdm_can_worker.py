@@ -364,26 +364,35 @@ def _wait_and_reply_fc_after_request(can_bus, pipe_conn, rx_cfg_state, timeout=0
 
 
 def can_isolated_process(pipe_conn, tx_queue):
+    def _open_can_bus():
+        return can.interface.Bus(channel=CAN_CHANNEL, interface="slcan", bitrate=CAN_BITRATE, ttyBaudrate=SERIAL_BAUD)
+
+    def _reset_runtime_state():
+        channels = [
+            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0}
+            for _ in range(CHANNEL_COUNT)
+        ]
+        phy_inputs = [0] * PHY_INPUT_COUNT
+        sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0, "logicValidMask": 0}
+        imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
+        name_parts = defaultdict(dict)
+        current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
+        frame_counts = defaultdict(int)
+        frame_first_seen = {}
+        frame_last_seen = {}
+        frame_rate_meters = defaultdict(lambda: FrameRateMeter(window=10.0))
+        return channels, phy_inputs, sys_status, imu, name_parts, current_avg_window, frame_counts, frame_first_seen, frame_last_seen, frame_rate_meters
+
     can_bus = None
+    channels, phy_inputs, sys_status, imu, name_parts, current_avg_window, frame_counts, frame_first_seen, frame_last_seen, frame_rate_meters = _reset_runtime_state()
+
     while can_bus is None:
         try:
-            can_bus = can.interface.Bus(
-                channel=CAN_CHANNEL, interface="slcan", bitrate=CAN_BITRATE, ttyBaudrate=SERIAL_BAUD
-            )
+            can_bus = _open_can_bus()
         except Exception:
             time.sleep(1.0)
 
     pipe_conn.send({"serial_ready": True})
-
-    channels = [
-        {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0}
-        for _ in range(CHANNEL_COUNT)
-    ]
-    phy_inputs = [0] * PHY_INPUT_COUNT
-    sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0, "logicValidMask": 0}
-    imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
-    name_parts = defaultdict(dict)
-    current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
 
     log_file_name = LOG_DIR / f"pdmdisp_{datetime.datetime.now():%Y%m%d-%H%M%S}.csv"
     try:
@@ -410,10 +419,6 @@ def can_isolated_process(pipe_conn, tx_queue):
     last_log_time = time.time()
     acquiring = True
     start_time = time.time()
-    frame_counts = defaultdict(int)
-    frame_first_seen = {}
-    frame_last_seen = {}
-    frame_rate_meters = defaultdict(lambda: FrameRateMeter(window=10.0))
     rx_cfg_state = {
         "expecting_config": False,
         "active": False,
@@ -442,12 +447,29 @@ def can_isolated_process(pipe_conn, tx_queue):
                     can_bus.send(Message(arbitration_id=cid, data=pld, is_extended_id=(cid > 0x7FF)))
                 except Exception as exc:
                     pipe_conn.send({"error": f"TX err: {exc}"})
+                    try:
+                        can_bus.shutdown()
+                    except Exception:
+                        pass
+                    can_bus = None
             elif task.get("cmd") == "ISOTP_SEND":
                 _send_isotp_config(can_bus, pipe_conn, task["payload"])
             elif task.get("cmd") == "RESET_DEVICE":
                 _send_fixed_frames(can_bus, pipe_conn, RESET_DEVICE_ID, RESET_DEVICE_FRAMES, "Sending reset frames")
             elif task.get("cmd") == "REQUEST_CONFIG":
                 _send_config_request(can_bus, pipe_conn, rx_cfg_state)
+
+        if can_bus is None:
+            pipe_conn.send({"error": "CAN device disconnected"})
+            _reset_rx_config_state(rx_cfg_state)
+            channels, phy_inputs, sys_status, imu, name_parts, current_avg_window, frame_counts, frame_first_seen, frame_last_seen, frame_rate_meters = _reset_runtime_state()
+            while can_bus is None:
+                try:
+                    can_bus = _open_can_bus()
+                except Exception:
+                    time.sleep(1.0)
+            pipe_conn.send({"serial_ready": True})
+            continue
 
         if not acquiring:
             time.sleep(0.02)
@@ -457,6 +479,11 @@ def can_isolated_process(pipe_conn, tx_queue):
             msg = can_bus.recv(timeout=0.001)
         except Exception as exc:
             pipe_conn.send({"error": f"Read err: {exc}"})
+            try:
+                can_bus.shutdown()
+            except Exception:
+                pass
+            can_bus = None
             continue
 
         if msg is None:
@@ -473,6 +500,11 @@ def can_isolated_process(pipe_conn, tx_queue):
                 pass
         except Exception as exc:
             pipe_conn.send({"error": f"ISO-TP FC err: {exc}"})
+            try:
+                can_bus.shutdown()
+            except Exception:
+                pass
+            can_bus = None
 
         frame_counts[cid] += 1
         frame_first_seen.setdefault(cid, t_now)

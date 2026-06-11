@@ -1,4 +1,5 @@
 import multiprocessing
+import json
 import time
 import sys
 from pathlib import Path
@@ -62,6 +63,11 @@ class MainWindow(QMainWindow):
         self.worker_process = None
         self.worker_started = False
         self.serial_device_ready = False
+        self._device_config_request_pending = False
+        self._device_config_prompt = None
+        self._pending_device_config = None
+        self._connection_state = "disconnected"
+        self._config_check_suppressed_until = 0.0
         self.last_frame_rx_time = 0.0
 
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
@@ -287,13 +293,215 @@ class MainWindow(QMainWindow):
         self.combo_tx_id.blockSignals(False)
 
     def send_isotp_config(self, payload):
+        self._config_check_suppressed_until = time.time() + 5.0
         self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
 
     def send_reset_device(self):
         self.tx_queue.put({"cmd": "RESET_DEVICE"})
 
     def request_config_from_device(self):
+        if self._device_config_request_pending:
+            return
+        self._device_config_request_pending = True
         self.tx_queue.put({"cmd": "REQUEST_CONFIG"})
+
+    def _request_config_if_needed(self):
+        if self.config_tab is None or self._device_config_request_pending:
+            return
+        if time.time() < self._config_check_suppressed_until:
+            return
+        self.request_config_from_device()
+
+    def _config_signature(self, config):
+        try:
+            return json.dumps(config, sort_keys=True, separators=(",", ":"))
+        except Exception:
+            return None
+
+    def _canonicalize_config(self, config):
+        if not isinstance(config, dict):
+            return config
+
+        result = dict(config)
+
+        inputs = result.get("inputs")
+        if isinstance(inputs, dict):
+            canonical_inputs = {}
+
+            physical_inputs = inputs.get("physical") or []
+            canonical_inputs["physical"] = [
+                {
+                    "location": int(item.get("location", index)) if isinstance(item, dict) else index,
+                    "type": int(item.get("type", 0)) if isinstance(item, dict) else 0,
+                    "mode": int(item.get("mode", 0)) if isinstance(item, dict) else 0,
+                }
+                for index, item in enumerate(physical_inputs)
+            ]
+
+            can_inputs = inputs.get("can") or []
+            canonical_inputs["can"] = [
+                {
+                    "isUsed": bool(item.get("isUsed", False)) if isinstance(item, dict) else False,
+                    "canInstance": int(item.get("canInstance", 0)) if isinstance(item, dict) else 0,
+                    "canId": int(item.get("canId", 0)) if isinstance(item, dict) else 0,
+                    "offset": int(item.get("offset", 0)) if isinstance(item, dict) else 0,
+                    "dataType": int(item.get("dataType", 0)) if isinstance(item, dict) else 0,
+                    "location": int(item.get("location", index)) if isinstance(item, dict) else index,
+                    "type": int(item.get("type", 0)) if isinstance(item, dict) else 0,
+                    "mode": int(item.get("mode", 0)) if isinstance(item, dict) else 0,
+                }
+                for index, item in enumerate(can_inputs)
+            ]
+
+            result["inputs"] = canonical_inputs
+
+        logic = result.get("logic")
+        if isinstance(logic, list):
+            def _canonical_logic_item(item):
+                exp = item.get("exp", {}) if isinstance(item, dict) else {}
+                input1_type = int(exp.get("input1Type", 0))
+                input2_type = int(exp.get("input2Type", 0))
+
+                input1_id = int(exp.get("input1ID", 0)) if input1_type == 0x00 else 0
+                input1_const = int(exp.get("input1Const", 0)) if input1_type != 0x00 else 0
+                input2_id = int(exp.get("input2ID", 0)) if input2_type == 0x00 else 0
+                input2_const = int(exp.get("input2Const", 0)) if input2_type != 0x00 else 0
+
+                return {
+                    "isUsed": bool(item.get("isUsed", False)) if isinstance(item, dict) else False,
+                    "exp": {
+                        "input1Type": input1_type,
+                        "input1ID": input1_id,
+                        "input1Const": input1_const,
+                        "input2Type": input2_type,
+                        "input2ID": input2_id,
+                        "input2Const": input2_const,
+                        "opr": int(exp.get("opr", 0)),
+                    },
+                }
+
+            result["logic"] = [
+                _canonical_logic_item(item)
+                for item in logic
+            ]
+
+        return result
+
+    def _config_diff_summary(self, current_config, device_config):
+        differences = []
+
+        current_channels = current_config.get("channels") or []
+        device_channels = device_config.get("channels") or []
+        channel_diff_indices = [i for i, (current_item, device_item) in enumerate(zip(current_channels, device_channels)) if current_item != device_item]
+        if len(current_channels) != len(device_channels):
+            channel_diff_indices.extend(range(min(len(current_channels), len(device_channels)), max(len(current_channels), len(device_channels))))
+        if channel_diff_indices:
+            channel_text = ", ".join(f"CH{index + 1}" for index in sorted(set(channel_diff_indices)))
+            differences.append(f"CHANNELS ({channel_text})")
+
+        current_inputs = current_config.get("inputs")
+        device_inputs = device_config.get("inputs")
+        if current_inputs != device_inputs:
+            input_parts = []
+            if isinstance(current_inputs, dict) and isinstance(device_inputs, dict):
+                physical_current = current_inputs.get("physical") or []
+                physical_device = device_inputs.get("physical") or []
+                physical_diff_indices = [i for i, (current_item, device_item) in enumerate(zip(physical_current, physical_device)) if current_item != device_item]
+                if len(physical_current) != len(physical_device):
+                    physical_diff_indices.extend(range(min(len(physical_current), len(physical_device)), max(len(physical_current), len(physical_device))))
+                if physical_diff_indices:
+                    input_parts.append("physical " + ", ".join(f"IN{i + 1}" for i in sorted(set(physical_diff_indices))))
+
+                can_current = current_inputs.get("can") or []
+                can_device = device_inputs.get("can") or []
+                can_diff_indices = [i for i, (current_item, device_item) in enumerate(zip(can_current, can_device)) if current_item != device_item]
+                if len(can_current) != len(can_device):
+                    can_diff_indices.extend(range(min(len(can_current), len(can_device)), max(len(can_current), len(can_device))))
+                if can_diff_indices:
+                    input_parts.append("CAN " + ", ".join(f"CAN{i + 1}" for i in sorted(set(can_diff_indices))))
+
+            differences.append("INPUTS" + (f" ({'; '.join(input_parts)})" if input_parts else ""))
+
+        current_logic = current_config.get("logic") or []
+        device_logic = device_config.get("logic") or []
+        logic_diff_rows = []
+        for index, (current_item, device_item) in enumerate(zip(current_logic, device_logic)):
+            if current_item == device_item:
+                continue
+
+            current_exp = current_item.get("exp", {}) if isinstance(current_item, dict) else {}
+            device_exp = device_item.get("exp", {}) if isinstance(device_item, dict) else {}
+            field_names = []
+            for field_name in ("isUsed",):
+                if (current_item.get(field_name) if isinstance(current_item, dict) else None) != (device_item.get(field_name) if isinstance(device_item, dict) else None):
+                    field_names.append(field_name)
+            for field_name in ("input1Type", "input1ID", "input1Const", "input2Type", "input2ID", "input2Const", "opr"):
+                if current_exp.get(field_name) != device_exp.get(field_name):
+                    field_names.append(field_name)
+            logic_diff_rows.append(f"L{index + 1}: {', '.join(field_names)}")
+
+        if len(current_logic) != len(device_logic):
+            logic_diff_rows.extend(
+                f"L{index + 1}: row missing"
+                for index in range(min(len(current_logic), len(device_logic)), max(len(current_logic), len(device_logic)))
+            )
+
+        if logic_diff_rows:
+            differences.append("LOGIC (" + "; ".join(logic_diff_rows) + ")")
+
+        return differences
+
+    def _handle_device_config_payload(self, payload):
+        if self.config_tab is None:
+            return
+
+        try:
+            device_config = self.config_tab.parse_binary_payload(payload)
+        except Exception as exc:
+            self._device_config_request_pending = False
+            QMessageBox.critical(self, "Load failed", f"Could not parse device configuration: {exc}")
+            return
+
+        current_config = self._canonicalize_config(self.config_tab.collect_config())
+        device_config = self._canonicalize_config(device_config)
+        if self._config_signature(current_config) == self._config_signature(device_config):
+            self._device_config_request_pending = False
+            return
+
+        differences = self._config_diff_summary(current_config, device_config)
+        diff_text = "\n".join(f"- {item}" for item in differences) if differences else "- configuration content"
+
+        prompt = QMessageBox(self)
+        prompt.setWindowTitle("Device configuration differs")
+        prompt.setIcon(QMessageBox.Question)
+        prompt.setText(
+            "The configuration stored on the device is different from the one currently shown in the GUI."
+        )
+        prompt.setInformativeText(
+            "Differences detected in:\n"
+            f"{diff_text}\n\n"
+            "Do you want to load the device configuration and replace the current GUI settings?"
+        )
+        prompt.setWindowModality(Qt.NonModal)
+        no_button = prompt.addButton("No, keep current", QMessageBox.RejectRole)
+        yes_button = prompt.addButton("Yes, load device", QMessageBox.AcceptRole)
+        prompt.setDefaultButton(no_button)
+
+        self._device_config_prompt = prompt
+        self._pending_device_config = device_config
+
+        def _handle_prompt_click(clicked_button):
+            try:
+                if clicked_button == yes_button and self._pending_device_config is not None and self.config_tab is not None:
+                    self.config_tab.apply_config(self._pending_device_config)
+                    self.config_tab.set_isotp_state(100, "Device configuration loaded", busy=False)
+            finally:
+                self._pending_device_config = None
+                self._device_config_prompt = None
+                self._device_config_request_pending = False
+
+        prompt.buttonClicked.connect(_handle_prompt_click)
+        prompt.show()
 
     def send_selected_frame(self):
         tx_id_text = self.combo_tx_id.currentText()
@@ -333,13 +541,15 @@ class MainWindow(QMainWindow):
                     continue
                 if "isotp_config_payload" in packet:
                     if self.config_tab is not None:
-                        self.config_tab.load_binary_payload(packet["isotp_config_payload"])
-                        self.config_tab.set_isotp_state(100, "Config received and loaded", busy=False)
+                        self._handle_device_config_payload(packet["isotp_config_payload"])
                     continue
                 if packet.get("serial_ready"):
                     self.serial_device_ready = True
+                    self._connection_state = "serial_ready"
+                    self._request_config_if_needed()
                     continue
                 if "error" in packet:
+                    self._device_config_request_pending = False
                     if self.config_tab is not None:
                         self.config_tab.set_isotp_state(0, f"Error: {packet['error']}", busy=False)
                     continue
@@ -426,23 +636,33 @@ class MainWindow(QMainWindow):
     def update_heartbeat_status(self):
         worker_alive = self.worker_process is not None and self.worker_process.is_alive()
 
+        previous_state = self._connection_state
+
         if not worker_alive:
+            self._connection_state = "disconnected"
             self._set_heartbeat_status("Disconnected", "#FF8A80")
             return
 
         if not self.serial_device_ready:
+            self._connection_state = "disconnected"
             self._set_heartbeat_status("Disconnected", "#FF8A80")
             return
 
         if self.last_frame_rx_time <= 0:
+            self._connection_state = "serial_ready"
             self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
             return
 
         age_s = time.time() - self.last_frame_rx_time
         if age_s > 1.0:
+            self._connection_state = "serial_ready"
             self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
         else:
+            self._connection_state = "connected"
             self._set_heartbeat_status(f"Connected ({age_s:.1f}s)", "#81C784")
+
+        if previous_state != self._connection_state and self._connection_state == "connected":
+            self._request_config_if_needed()
 
     def update_plots(self):
         if not self.plotting_enabled:
