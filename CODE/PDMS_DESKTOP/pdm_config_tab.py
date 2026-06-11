@@ -348,6 +348,7 @@ RESET_BUTTON_STYLE = (
 
 class ChannelConfigPage(QWidget):
     batchChanged = pyqtSignal()
+    modeChanged = pyqtSignal()
 
     def __init__(self, channel_index, parent=None):
         super().__init__(parent)
@@ -377,22 +378,7 @@ class ChannelConfigPage(QWidget):
         
         # self.combo_batch = _make_spinbox(0, 16, 0)
         self.combo_batch = QComboBox()
-        if channel_index < 4:
-            self.combo_batch.addItem("NONE", channel_index)
-            self.combo_batch.addItem("OUT1", 0)
-            self.combo_batch.addItem("OUT2", 1)
-            self.combo_batch.addItem("OUT3", 2)
-            self.combo_batch.addItem("OUT4", 3)
-            self.combo_batch.removeItem(channel_index + 1)
-        elif channel_index < 8: 
-            self.combo_batch.addItem("NONE", channel_index)
-            self.combo_batch.addItem("OUT5", 4)
-            self.combo_batch.addItem("OUT6", 5)
-            self.combo_batch.addItem("OUT7", 6)
-            self.combo_batch.addItem("OUT8", 7)
-            self.combo_batch.removeItem(channel_index - 4 + 1)
-        else:
-            self.combo_batch.addItem("NOT ALLOWED", 0)
+        self.fill_batch_combo(channel_index)
 
         channel_form.addRow(FIELD_LABELS["channel"]["channel_id"], self.label_channel_id)
         channel_form.addRow(FIELD_LABELS["channel"]["type"], self.label_type)
@@ -681,9 +667,25 @@ class ChannelConfigPage(QWidget):
         self.combo_batch.setEnabled(mode == OUT_MODE_BATCH)
         if mode != OUT_MODE_BATCH:
             self.combo_batch.setCurrentIndex(0)
+        self._emit_mode_changed()
 
     def _emit_batch_changed(self, *_args):
         self.batchChanged.emit()
+
+    def _emit_mode_changed(self, *_args):
+        self.modeChanged.emit()
+
+    def fill_batch_combo(self, ch_idx):
+        self.combo_batch.clear()
+        if ch_idx < 8:
+            start_offset = 4 if ch_idx >= 4 else 0
+            self.combo_batch.addItem("NONE", ch_idx)
+            for i in range(start_offset, start_offset + 4):
+                if i != ch_idx:
+                    self.combo_batch.addItem(f"OUT_{i+1}", i)
+        else:
+            # Handles indices 8 and above
+            self.combo_batch.addItem("NOT ALLOWED", 0)
 
     def apply_dict(self, data):
         mode_value = data.get("mode", OUT_MODE_UNUSED)
@@ -696,7 +698,7 @@ class ChannelConfigPage(QWidget):
 
         batch_value = data.get("batch", 0)
         batch_index = self.combo_batch.findData(batch_value)
-        if mode_index >= 0:
+        if batch_index >= 0:
             self.combo_batch.setCurrentIndex(batch_index)
 
         pwm = data.get("pwmCfg", {}) or {}
@@ -796,7 +798,7 @@ class ChannelConfigPage(QWidget):
             "spocId": spoc_id,
             "spocChId": spoc_ch_id,
             "name": self.edit_name.text(),
-            "batch": self.combo_batch.value(),
+            "batch": self.combo_batch.currentData(),
                 "pwmCfg": {
                     "baseDuty": self.edit_base_duty.value(),
                     "dutyInput": self.combo_duty_input.currentData(),
@@ -1654,6 +1656,7 @@ class ConfigTab(QWidget):
             page.logic_page.logicChanged.connect(self._refresh_input_usage_summary)
             page.edit_name.textChanged.connect(self._refresh_input_usage_summary)
             page.batchChanged.connect(self._refresh_batch_relations)
+            page.modeChanged.connect(self._verify_overall_mode_validity)
             self.channel_widgets.append(page)
             scroll.setWidget(page)
             self.tabs.addTab(scroll, f"Channel {index + 1}")
@@ -1790,6 +1793,38 @@ class ConfigTab(QWidget):
             
         for index, channel_widget in enumerate(self.channel_widgets):
             self.channel_widgets[index].logic_page.disable_logic(batchControlled[index] != -1, batchControlled[index])
+
+        for_removal = [item for i, x in enumerate(batchControlled) if x != -1 for item in (i, x)]
+
+        # Update possible batch selections        
+        for index, channel_widget in enumerate(self.channel_widgets):
+            channel_widget.combo_batch.blockSignals(True)
+            scombo = channel_widget.combo_batch.currentData()
+            channel_widget.fill_batch_combo(index)
+            idx = channel_widget.combo_batch.findData(scombo)
+            channel_widget.combo_batch.setCurrentIndex(idx)
+            channel_widget.combo_batch.blockSignals(False)
+
+        # Remove already batched channels from others
+        for index, channel_widget in enumerate(self.channel_widgets):
+            if index not in for_removal:
+                for remove in for_removal:
+                    if index != remove:
+                        rindex = channel_widget.combo_batch.findData(remove)
+                        if rindex >= 0:
+                            channel_widget.combo_batch.removeItem(rindex)
+
+    def _verify_overall_mode_validity(self):
+        channels_in_pwm = []
+        for index, channel_widget in enumerate(self.channel_widgets):
+            mode = channel_widget.combo_mode.currentData()
+            if mode == OUT_MODE_PWM:
+                channels_in_pwm.append(index)
+
+        str_channels_in_pwm = "".join([f"OUT_{x+1}\n" for x in channels_in_pwm])
+        if len(channels_in_pwm) > 4:
+            QMessageBox.critical(self, "PWM setup error", f"Maximum number of channels used for PWM is 4, asked for {len(channels_in_pwm)}.\n List:\n {str_channels_in_pwm}")
+
 
     def _build_output_payload(self):
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)
