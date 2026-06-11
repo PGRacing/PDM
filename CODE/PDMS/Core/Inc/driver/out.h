@@ -49,16 +49,6 @@ typedef enum
     OUT_ERR_BEH_RETRY  = 0x04,  // In case of error output there are few retries before latch
 }T_OUT_ERR_BEHAVIOR;
 
-/// @brief Output channel software over current status
-typedef enum
-{
-    OUT_SAFETY_SOC_PRE_INRUSH       = 0x00,
-    OUT_SAFETY_SOC_INRUSH_WINDOW    = 0x01,
-    OUT_SAFETY_SOC_NORMAL_OPERATION = 0x02,
-    OUT_SAFETY_SOC_TRIGGERED        = 0x03,
-}
-T_OUT_SAFETY_SOC_STATUS;
-
 /// TODO Verify which parameters should be declared as const
 /// @brief Output chhannel after error configuration
 typedef struct _T_OUT_SAFETY_AERR_CFG
@@ -70,11 +60,12 @@ typedef struct _T_OUT_SAFETY_AERR_CFG
 /// @brief Output channel software overcurrent configuration
 typedef struct _T_OUT_SAFETY_SOC_CFG
 {
-    bool               useSoc;                  // Should software over current function be used
+    bool               useSoc;                   // Should software over current function be used
     const uint32_t     nominalThreshold;         // Allowed maximal current during nominal operation [mA]
+    
     // Inrush current capability
-    bool               allowInrush;             // Should inrush current be allowed during SOC operation
-    const uint32_t     inrushWindowFromStart;   // Time window after channel turn-on in which inrush current is allowed
+    const bool         allowInrush;              // Should inrush current be allowed during SOC operation
+    const uint32_t     inrushWindowFromStart;    // Time window after channel turn-on in which inrush current is allowed
     const uint32_t     inrushThreshold;          // Allowed maximal current during inrush operation [mA]
     const uint32_t     inrushTimeThreshold;      // For how long inrush current can be present after first peak [ms] 
 }T_OUT_SAFETY_SOC_CFG;
@@ -100,13 +91,23 @@ typedef struct _T_OUT_SAFETY_CFG
     T_OUT_SAFETY_I2T_CFG  i2tCfg;                 // I2t configuration
 }T_OUT_SAFETY_CFG; 
 
+/// @brief Output channel PWM configuration struct
 typedef struct _T_OUT_PWM_CFG
 {
-    uint8_t baseDuty; // Base duty for PWM mode [0 - 100%]
-    T_INPUT_ID dutyInput; // Input id for duty control (must be analog input)
-    uint16_t inputAxis[OUT_PWM_MAP_RESOLUTION]; // Axis for input value mapping to duty (0 - 5000 mV)
-    uint8_t  dutyAxis[OUT_PWM_MAP_RESOLUTION]; // Axis for duty mapping (corresponding to inputAxis) (0 - 100 %)
+    const uint8_t    baseDuty;                          // Base duty for PWM mode [0 - 100%]
+    const T_INPUT_ID dutyInput;                         // Input id for duty control (must be analog input)
+    const uint16_t   inputAxis[OUT_PWM_MAP_RESOLUTION]; // Axis for input value mapping to duty (0 - 5000 mV)
+    const uint8_t    dutyAxis[OUT_PWM_MAP_RESOLUTION];  // Axis for duty mapping (corresponding to inputAxis) (0 - 100 %)
 }T_OUT_PWM_CFG;
+
+/// @brief Output channel soft-start configuration struct
+typedef struct _T_OUT_SOFTSTART_CFG
+{
+    bool useSoftStart;              // Should soft-start function be used
+    const uint8_t  startDuty;       // Duty at which soft-start starts procedure [0 - 100%]
+    const uint8_t  endDuty;         // Duty at which soft-start ends procedure   [0 - 100%]
+    const uint32_t timeThreshold;   // How long should softstart last [ms]
+}T_OUT_SOFTSTART_CFG;
 
 /// @brief Output channel configuration struct
 typedef struct _T_OUT_CFG
@@ -120,17 +121,29 @@ typedef struct _T_OUT_CFG
     T_OUT_ID         batch;                   // Optional for OUT_MODE_BATCH (BTS500 only)
     T_OUT_SAFETY_CFG safety;                  // Safety configuration
     T_OUT_PWM_CFG    pwmCfg;                  // PWM configuration (only for PWM mode)
+    T_OUT_SOFTSTART_CFG softStart;            // Soft start configuration
 }T_OUT_CFG;
 
 #pragma pack(pop)
 
+/// @brief Output channel software over current status
+typedef enum
+{
+    OUT_SAFETY_SOC_PRE_INRUSH       = 0x00,
+    OUT_SAFETY_SOC_INRUSH_WINDOW    = 0x01,
+    OUT_SAFETY_SOC_NORMAL_OPERATION = 0x02,
+    OUT_SAFETY_SOC_TRIGGERED        = 0x03,
+}
+T_OUT_SAFETY_SOC_STATUS;
+
+
 /// @brief Output channel software overcurrent status register
 typedef struct _T_OUT_SAFETY_SOC_REG
 {
-    T_OUT_SAFETY_SOC_STATUS status;            // Software over-current system status
-    uint32_t                currentThreshold;  // Currently applicable current threshold - can be changed dynamically (Ith) [mA]
-    uint32_t                inrushTripCounter; // Counter incremented when in OUT_SAFETY_SOC_INRUSH_WINDOW
-    uint32_t                timeInPreInrush;   // Couter used to measure time from channel start
+    T_OUT_SAFETY_SOC_STATUS status;                 // Software over-current system status
+    uint32_t                currentThreshold;       // Currently applicable current threshold - can be changed dynamically (Ith) [mA]
+    uint32_t                inrushTripCounter;      // Counter incremented when in OUT_SAFETY_SOC_INRUSH_WINDOW
+    uint32_t                timeInPreInrush;        // Couter used to measure time from channel start
     uint32_t                thresholdExceedCounter; // How many times current threshold was exceeded
 }
 T_OUT_SAFETY_SOC_REG;
@@ -153,20 +166,36 @@ typedef struct _T_OUT_SAFETY_REG
     T_OUT_SAFETY_I2T_REG      i2tReg;            // I2t status register
 }T_OUT_SAFETY_REG;
 
+typedef enum
+{
+    OUT_SOFTSTART_ARMED             = 0x00,
+    OUT_SOFTSTART_ONGOING           = 0x01,
+    OUT_SOFTSTART_FINISHED          = 0x02,
+}T_OUT_SOFTSTART_STATUS;
+
+typedef struct _T_OUT_SOFTSTART_REG
+{
+    T_OUT_SOFTSTART_STATUS status;  // Status of soft-start
+    uint8_t duty;                   // Duty currently applied to channel [0-100%]
+    uint32_t timerCounter;          // Timer counting from start of softstart action
+}T_OUT_SOFTSTART_REG;
+
 /// @brief Output channel state register
 typedef struct _T_OUT_REG
 {
-    T_OUT_STATE      state;       // Output state (ON / OFF)
-    T_OUT_STATUS     status;      // Output status 
-    T_OUT_SAFETY_REG safety;      // Safety status register
+    T_OUT_STATE         state;       // Output state (ON / OFF)
+    T_OUT_STATUS        status;      // Output status 
+    T_OUT_SAFETY_REG    safety;      // Safety status register
     // Acquired from board
-    uint32_t         currentMA;   // Here for ease of debug and code simplification
-    uint32_t         voltageMV; 
-    uint32_t         emaCurrentMA; // Exponential moving average of current for smoother readings
-    uint32_t         emaVoltageMV; // Exponential moving average of voltage for smoother readings   
+    uint32_t            currentMA;    // Here for ease of debug and code simplification
+    uint32_t            voltageMV; 
+    uint32_t            emaCurrentMA; // Exponential moving average of current for smoother readings
+    uint32_t            emaVoltageMV; // Exponential moving average of voltage for smoother readings   
     // PWM mode
-    uint_fast8_t     pwmDuty;      // PWM duty
-    uint_fast8_t     prevPwmDuty; // Previous pwm duty (before last update)
+    uint_fast8_t        pwmDuty;      // PWM duty
+    uint_fast8_t        prevPwmDuty;  // Previous pwm duty (before last update)
+    // Soft-start
+    T_OUT_SOFTSTART_REG softStart;    // Soft-start mode configuration
 }T_OUT_REG;
 
 // Main outputs config

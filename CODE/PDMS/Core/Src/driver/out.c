@@ -39,6 +39,7 @@
 static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
 static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
 static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
+static inline void OUT_DIAG_ArmSoftStart(T_OUT_ID id);
 
 // Get current time in ms
 #define OUT_GET_TIME_MS (pdTICKS_TO_MS( xTaskGetTickCount() ))
@@ -852,7 +853,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
   {
     if(cfg->type == OUT_TYPE_BTS500)
     {
-       if (cfg->mode == OUT_MODE_PWM)
+       if (cfg->mode == OUT_MODE_PWM || cfg->softStart.useSoftStart)
       {
         BSP_OUT_DeInitPWM(id);
       }
@@ -870,11 +871,20 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
   {
     if(cfg->type == OUT_TYPE_BTS500)
     {
-      if (cfg->mode == OUT_MODE_PWM)
+      if (cfg->mode == OUT_MODE_PWM || cfg->softStart.useSoftStart)
       {
         BSP_OUT_DeInitPWM(id);
       }
-      BSP_OUT_SetMode(id, targetMode);
+
+      if(cfg->softStart.useSoftStart)
+      {
+        // Even though on application layer its STD on BSP layer its PWM
+        BSP_OUT_SetMode(id, OUT_MODE_PWM);
+      }
+      else
+      {
+        BSP_OUT_SetMode(id, OUT_MODE_STD);
+      }
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
@@ -1001,6 +1011,19 @@ static uint8_t OUT_InterpolatePWM(const uint16_t xAxis[OUT_PWM_MAP_RESOLUTION], 
   return yAxis[OUT_PWM_MAP_RESOLUTION - 1];
 }
 
+static uint8_t OUT_InterpolateSoftStart(uint8_t startDuty, uint8_t endDuty, uint32_t current, uint32_t target)
+{
+  if (target == 0)
+    return endDuty;
+
+  if (current >= target)
+    return endDuty;
+
+  int32_t delta = (int32_t)endDuty - (int32_t)startDuty;
+
+  return (uint8_t)(startDuty + (delta * (int32_t)current) / (int32_t)target);
+}
+
 bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
 {
   bool res = TRUE;
@@ -1057,8 +1080,21 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
           if(OUT_STATE_ON == reqState)
           {
             OUT_DIAG_ArmSocProtection(id);
+            if(TRUE == cfg->softStart.useSoftStart)
+            {
+              OUT_DIAG_ArmSoftStart(id);
+            }
           }
-          BSP_OUT_SetStdState(id, reqState);
+
+          if(TRUE == cfg->softStart.useSoftStart && reqState == OUT_STATE_OFF)
+          {
+            BSP_OUT_SetDutyPWM(id, 0);
+          }
+          else
+          {
+            BSP_OUT_SetStdState(id, reqState);
+          }
+
         }
         else if(cfg->type == OUT_TYPE_SPOC2)
         {
@@ -1380,6 +1416,71 @@ static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state
  return status;
 }
 
+/// @brief Arm soft-start configuration
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @note Should be performed when changing output state to ON 
+static inline void OUT_DIAG_ArmSoftStart(T_OUT_ID id)
+{
+  // Set soft-start status as armed
+  outsReg[id].softStart.status = OUT_SOFTSTART_ARMED;
+  
+  // Set timer to default and disable channel
+  outsReg[id].softStart.duty = 0;
+  BSP_OUT_SetDutyPWM(id, 0);
+  outsReg[id].softStart.timerCounter = 0;
+}
+
+/// @brief Soft-start processing
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @param state Output channel state [ON/OFF]
+static inline void OUT_DIAG_SoftStart(T_OUT_ID id, T_OUT_STATE state)
+{
+  if(state == OUT_STATE_ON)
+  {
+    // When channel enabled progress
+    switch (outsReg[id].softStart.status)
+    {
+    case OUT_SOFTSTART_ARMED:
+      outsReg[id].softStart.duty = outsCfg[id].softStart.startDuty;
+      BSP_OUT_SetDutyPWM(id, outsReg[id].softStart.duty);
+      outsReg[id].softStart.timerCounter += OUT_DIAG_READ_PERIOD;
+
+      // Progress to on-going
+      outsReg[id].softStart.status = OUT_SOFTSTART_ONGOING;
+      break;
+
+    case OUT_SOFTSTART_ONGOING:
+      outsReg[id].softStart.timerCounter += OUT_DIAG_READ_PERIOD;
+      if (outsReg[id].softStart.timerCounter >= (outsCfg[id].softStart.timeThreshold))
+      {
+        // Progress to finished
+        outsReg[id].softStart.duty = outsCfg[id].softStart.endDuty;
+        BSP_OUT_SetDutyPWM(id, outsReg[id].softStart.duty);
+        outsReg[id].softStart.status = OUT_SOFTSTART_FINISHED;
+      }
+      else
+      {
+        // Calculate next-step value
+        outsReg[id].softStart.duty = OUT_InterpolateSoftStart(outsCfg[id].softStart.startDuty, outsCfg[id].softStart.endDuty, outsReg[id].softStart.timerCounter, outsCfg[id].softStart.timeThreshold);
+        BSP_OUT_SetDutyPWM(id, outsReg[id].softStart.duty);
+      }
+      break;
+
+    case OUT_SOFTSTART_FINISHED:
+      break;
+      
+    default:
+      break;
+    }
+  }
+  else
+  {
+    // Disable channel
+    BSP_OUT_SetDutyPWM(id, 0);
+    outsReg[id].softStart.duty = 0;
+  }
+}
+
 /// @brief Hardware assessment of BTS500 output channel
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @param state Output channel state [ON/OFF]
@@ -1502,7 +1603,6 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   {
     OUT_DIAG_OnErrorFallback(id);
   }
-
   // Perform retry procedure
   if( TRUE == reg->safety.inRetrySequence)
   {
@@ -1516,6 +1616,12 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
 
       outsRetryCallbacks[id]();
     }
+  }
+
+  // If no error and soft-start enabled
+  if(newStatus < OUT_STATUS_PRIORITY_DIV && cfg->softStart.useSoftStart)
+  {
+    OUT_DIAG_SoftStart(id, reg->state);
   }
 
   // Set new channel status
