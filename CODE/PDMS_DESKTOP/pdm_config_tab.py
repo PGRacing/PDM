@@ -91,6 +91,12 @@ FIELD_LABELS = {
         "duty_input": "Duty input:",
         "mapping": "Mapping:",
     },
+    "softstart": {
+        "use_softstart": "Use soft-start",
+        "start_duty": "Start duty:",
+        "end_duty": "End duty:",
+        "time_threshold": "Time threshold:",
+    },
 }
 
 LOGIC_OPERATOR_LABELS = [
@@ -240,7 +246,7 @@ CHECKBOX_STYLE = (
 )
 
 BINARY_MAGIC = b"PDMB"
-BINARY_VERSION = 2
+BINARY_VERSION = 3
 # Packed record layout for one T_OUT_CFG instance:
 # id:u8, type:u8, mode:u8, spocId:u8, spocChId:u8, name[32], batch:u8,
 # afterErrorCfg.behavior:u8, afterErrorCfg.latchTime:u32, actOnSafety:u8,
@@ -252,7 +258,11 @@ BINARY_VERSION = 2
 # i2tCfg.timeThreshold:u32, i2tCfg.i2tThreshold:u32,
 # pwmCfg.baseDuty:u8, pwmCfg.dutyInput:u16,
 # pwmCfg.inputAxis[OUT_PWM_MAP_RESOLUTION]:u16,
-# pwmCfg.dutyAxis[OUT_PWM_MAP_RESOLUTION]:u8.
+# pwmCfg.dutyAxis[OUT_PWM_MAP_RESOLUTION]:u8,
+# softStart.useSoftStart:u8,
+# softStart.startDuty:u8,
+# softStart.endDuty:u8,
+# softStart.timeThreshold:u32.
 LEGACY_BINARY_RECORD_FORMAT = "<" + "".join(
     [
         "B",
@@ -281,7 +291,17 @@ LEGACY_BINARY_RECORD_FORMAT = "<" + "".join(
     ]
 )
 LEGACY_BINARY_RECORD_SIZE = struct.calcsize(LEGACY_BINARY_RECORD_FORMAT)
-BINARY_RECORD_FORMAT = LEGACY_BINARY_RECORD_FORMAT + "B" + "H" + ("H" * OUT_PWM_MAP_RESOLUTION) + ("B" * OUT_PWM_MAP_RESOLUTION)
+BINARY_RECORD_FORMAT = (
+    LEGACY_BINARY_RECORD_FORMAT
+    + "B"
+    + "H"
+    + ("H" * OUT_PWM_MAP_RESOLUTION)
+    + ("B" * OUT_PWM_MAP_RESOLUTION)
+    + "B"
+    + "B"
+    + "B"
+    + "I"
+)
 BINARY_RECORD_SIZE = struct.calcsize(BINARY_RECORD_FORMAT)
 
 OUTPUT_RECORD_FORMAT = BINARY_RECORD_FORMAT
@@ -460,15 +480,31 @@ class ChannelConfigPage(QWidget):
         safety_form.addRow(FIELD_LABELS["safety"]["act_on_safety"], self.check_act_on_safety)
         outer.addWidget(safety_group)
 
+
+        self.softstart_enable = QCheckBox(FIELD_LABELS["softstart"]["use_softstart"])
+        self.softstart_enable.setChecked(False)
+        outer.addWidget(self.softstart_enable)
+
+        self.softstart_box = QGroupBox("Soft-start")
+        softstart_form = QFormLayout(self.softstart_box)
+        self.edit_softstart_start_duty = _make_spinbox(0, 100, 30, "%")
+        self.edit_softstart_end_duty = _make_spinbox(0, 100, 100, "%")
+        self.edit_softstart_time_threshold = _make_spinbox(0, 2147483647, 5000, " ms")
+        softstart_form.addRow(FIELD_LABELS["softstart"]["start_duty"], self.edit_softstart_start_duty)
+        softstart_form.addRow(FIELD_LABELS["softstart"]["end_duty"], self.edit_softstart_end_duty)
+        softstart_form.addRow(FIELD_LABELS["softstart"]["time_threshold"], self.edit_softstart_time_threshold)
+        outer.addWidget(self.softstart_box)
+
         self.soc_enable = QCheckBox(FIELD_LABELS["soc"]["use_soc"])
         self.soc_enable.setChecked(True)
         outer.addWidget(self.soc_enable)
 
         self.soc_box = QGroupBox("SOC")
         soc_form = QFormLayout(self.soc_box)
-        self.edit_nominal_threshold = _make_spinbox(0, 65535, 0, " mA", 100)
+        self.edit_nominal_threshold = _make_spinbox(0, 65535, 1000, " mA", 100)
         self.check_allow_inrush = QCheckBox()
         self.check_allow_inrush.setStyleSheet(CHECKBOX_STYLE)
+        self.check_allow_inrush.setChecked(False)
         self.edit_inrush_window_from_start = _make_spinbox(0, 2147483647, 0, " ms")
         self.check_inrush_window_infinite = QCheckBox("Infinite")
         self.check_inrush_window_infinite.setStyleSheet(CHECKBOX_STYLE)
@@ -520,6 +556,7 @@ class ChannelConfigPage(QWidget):
         self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
         self.combo_after_error_behavior.currentIndexChanged.connect(self._sync_after_error_state)
         self.combo_mode.currentIndexChanged.connect(self._sync_mode_state)
+        self.softstart_enable.toggled.connect(self._sync_softstart_state)
         self.combo_batch.currentIndexChanged.connect(self._emit_batch_changed)
 
         self._apply_spoc_mapping()
@@ -529,6 +566,7 @@ class ChannelConfigPage(QWidget):
         self._sync_inrush_window_state()
         self._sync_after_error_state()
         self._sync_mode_state()
+        self._sync_softstart_state()
         self._update_i2t_fields()
 
     def _apply_spoc_mapping(self):
@@ -667,7 +705,24 @@ class ChannelConfigPage(QWidget):
         self.combo_batch.setEnabled(mode == OUT_MODE_BATCH)
         if mode != OUT_MODE_BATCH:
             self.combo_batch.setCurrentIndex(0)
+        softstart_allowed = mode == OUT_MODE_STD
+        self.softstart_enable.setVisible(softstart_allowed)
+        if not softstart_allowed and self.softstart_enable.isChecked():
+            self.softstart_enable.blockSignals(True)
+            self.softstart_enable.setChecked(False)
+            self.softstart_enable.blockSignals(False)
+        self._sync_softstart_state()
         self._emit_mode_changed()
+
+    def _sync_softstart_state(self):
+        enabled = self.combo_mode.currentData() == OUT_MODE_STD and self.softstart_enable.isChecked()
+        self.softstart_box.setVisible(enabled)
+        for widget in (
+            self.edit_softstart_start_duty,
+            self.edit_softstart_end_duty,
+            self.edit_softstart_time_threshold,
+        ):
+            widget.setEnabled(enabled)
 
     def _emit_batch_changed(self, *_args):
         self.batchChanged.emit()
@@ -745,6 +800,12 @@ class ChannelConfigPage(QWidget):
         self._sync_soc_state()
         self._sync_soc_inrush_state()
         self._sync_i2t_state()
+        self.softstart_enable.setChecked(bool(data.get("softStart", {}).get("useSoftStart", self.softstart_enable.isChecked())))
+        softstart = data.get("softStart", {}) or {}
+        self.edit_softstart_start_duty.setValue(int(softstart.get("startDuty", self.edit_softstart_start_duty.value())))
+        self.edit_softstart_end_duty.setValue(int(softstart.get("endDuty", self.edit_softstart_end_duty.value())))
+        self.edit_softstart_time_threshold.setValue(int(softstart.get("timeThreshold", self.edit_softstart_time_threshold.value())))
+        self._sync_softstart_state()
         self._update_i2t_fields()
         self._sync_mode_state()
 
@@ -780,6 +841,10 @@ class ChannelConfigPage(QWidget):
             self.combo_duty_input.currentData(),  # duty_input
             *[spin_box.value() for spin_box in self.pwm_input_axis],  # inputAxis[]
             *[spin_box.value() for spin_box in self.pwm_duty_axis],  # dutyAxis[]
+            1 if self.softstart_enable.isChecked() else 0,  # use_softstart
+            self.edit_softstart_start_duty.value(),  # start_duty
+            self.edit_softstart_end_duty.value(),  # end_duty
+            self.edit_softstart_time_threshold.value(),  # time_threshold
         )
         return struct.pack(
             BINARY_RECORD_FORMAT,
@@ -804,6 +869,12 @@ class ChannelConfigPage(QWidget):
                     "dutyInput": self.combo_duty_input.currentData(),
                     "inputAxis": [spin_box.value() for spin_box in self.pwm_input_axis],
                     "dutyAxis": [spin_box.value() for spin_box in self.pwm_duty_axis],
+                },
+                "softStart": {
+                    "useSoftStart": self.softstart_enable.isChecked(),
+                    "startDuty": self.edit_softstart_start_duty.value(),
+                    "endDuty": self.edit_softstart_end_duty.value(),
+                    "timeThreshold": self.edit_softstart_time_threshold.value(),
                 },
             "safety": {
                 "afterErrorCfg": {
@@ -1753,6 +1824,49 @@ class ConfigTab(QWidget):
         for channel_widget in self.channel_widgets:
             channel_widget.refresh_pwm_sources()
 
+    def _refresh_batch_relations(self):
+        batch_controlled = [-1] * 16
+        for index, channel_widget in enumerate(self.channel_widgets):
+            batch = channel_widget.combo_batch.currentData()
+            if batch != -1 and batch != index and index < 8:
+                batch_controlled[batch] = index
+
+        for index, channel_widget in enumerate(self.channel_widgets):
+            channel_widget.logic_page.disable_logic(batch_controlled[index] != -1, batch_controlled[index])
+
+        for_removal = [item for i, x in enumerate(batch_controlled) if x != -1 for item in (i, x)]
+
+        for index, channel_widget in enumerate(self.channel_widgets):
+            channel_widget.combo_batch.blockSignals(True)
+            current_batch = channel_widget.combo_batch.currentData()
+            channel_widget.fill_batch_combo(index)
+            batch_index = channel_widget.combo_batch.findData(current_batch)
+            channel_widget.combo_batch.setCurrentIndex(batch_index)
+            channel_widget.combo_batch.blockSignals(False)
+
+        for index, channel_widget in enumerate(self.channel_widgets):
+            if index not in for_removal:
+                for remove in for_removal:
+                    if index != remove:
+                        remove_index = channel_widget.combo_batch.findData(remove)
+                        if remove_index >= 0:
+                            channel_widget.combo_batch.removeItem(remove_index)
+
+    def _verify_overall_mode_validity(self):
+        channels_in_pwm = []
+        for index, channel_widget in enumerate(self.channel_widgets):
+            mode = channel_widget.combo_mode.currentData()
+            if mode == OUT_MODE_PWM:
+                channels_in_pwm.append(index)
+
+        if len(channels_in_pwm) > 4:
+            str_channels_in_pwm = "".join([f"OUT_{x + 1}\n" for x in channels_in_pwm])
+            QMessageBox.critical(
+                self,
+                "PWM setup error",
+                f"Maximum number of channels used for PWM is 4, asked for {len(channels_in_pwm)}.\n List:\n {str_channels_in_pwm}",
+            )
+
     def _refresh_input_usage_summary(self):
         usage_by_input = {}
 
@@ -1783,48 +1897,6 @@ class ConfigTab(QWidget):
                     usage_by_input[source_id].append(output_label)
 
         self.inputs_page.set_usage_by_input(usage_by_input)
-
-    def _refresh_batch_relations(self):
-        batchControlled = [-1] * 16  
-        for index, channel_widget in enumerate(self.channel_widgets):
-            batch = channel_widget.combo_batch.currentData()
-            if batch != -1 and batch != index and index < 8:
-                batchControlled[batch] = index
-            
-        for index, channel_widget in enumerate(self.channel_widgets):
-            self.channel_widgets[index].logic_page.disable_logic(batchControlled[index] != -1, batchControlled[index])
-
-        for_removal = [item for i, x in enumerate(batchControlled) if x != -1 for item in (i, x)]
-
-        # Update possible batch selections        
-        for index, channel_widget in enumerate(self.channel_widgets):
-            channel_widget.combo_batch.blockSignals(True)
-            scombo = channel_widget.combo_batch.currentData()
-            channel_widget.fill_batch_combo(index)
-            idx = channel_widget.combo_batch.findData(scombo)
-            channel_widget.combo_batch.setCurrentIndex(idx)
-            channel_widget.combo_batch.blockSignals(False)
-
-        # Remove already batched channels from others
-        for index, channel_widget in enumerate(self.channel_widgets):
-            if index not in for_removal:
-                for remove in for_removal:
-                    if index != remove:
-                        rindex = channel_widget.combo_batch.findData(remove)
-                        if rindex >= 0:
-                            channel_widget.combo_batch.removeItem(rindex)
-
-    def _verify_overall_mode_validity(self):
-        channels_in_pwm = []
-        for index, channel_widget in enumerate(self.channel_widgets):
-            mode = channel_widget.combo_mode.currentData()
-            if mode == OUT_MODE_PWM:
-                channels_in_pwm.append(index)
-
-        str_channels_in_pwm = "".join([f"OUT_{x+1}\n" for x in channels_in_pwm])
-        if len(channels_in_pwm) > 4:
-            QMessageBox.critical(self, "PWM setup error", f"Maximum number of channels used for PWM is 4, asked for {len(channels_in_pwm)}.\n List:\n {str_channels_in_pwm}")
-
 
     def _build_output_payload(self):
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)
@@ -1971,6 +2043,10 @@ class ConfigTab(QWidget):
                     base_duty,
                     duty_input,
                     *axis_values,
+                    use_softstart,
+                    softstart_start_duty,
+                    softstart_end_duty,
+                    softstart_time_threshold,
                 ) = values
                 input_axis = [int(axis_values[index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
                 duty_axis = [int(axis_values[OUT_PWM_MAP_RESOLUTION + index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
@@ -2004,12 +2080,22 @@ class ConfigTab(QWidget):
                 duty_input = 0xFFFF
                 input_axis = [0] * OUT_PWM_MAP_RESOLUTION
                 duty_axis = [0] * OUT_PWM_MAP_RESOLUTION
+                use_softstart = 0
+                softstart_start_duty = 0
+                softstart_end_duty = 0
+                softstart_time_threshold = 0
             name = name_bytes.split(b"\0", 1)[0].decode("utf-8", errors="replace")
             pwm_cfg = {
                 "baseDuty": _clamp(base_duty, 0, 100),
                 "dutyInput": _clamp(duty_input, 0, 0xFFFF),
                 "inputAxis": [_clamp(value, 0, 5000) for value in input_axis],
                 "dutyAxis": [_clamp(value, 0, 100) for value in duty_axis],
+            }
+            softstart_cfg = {
+                "useSoftStart": bool(use_softstart),
+                "startDuty": _clamp(softstart_start_duty, 0, 100),
+                "endDuty": _clamp(softstart_end_duty, 0, 100),
+                "timeThreshold": _clamp(softstart_time_threshold, 0, 2147483647),
             }
             return {
                 "id": ch_id,
@@ -2020,6 +2106,7 @@ class ConfigTab(QWidget):
                 "name": name,
                 "batch": batch,
                 "pwmCfg": pwm_cfg,
+                "softStart": softstart_cfg,
                 "safety": {
                     "afterErrorCfg": {"behavior": after_err_beh, "latchTime": _clamp(after_err_latch_time, 0, 2147483647)},
                     "actOnSafety": bool(act_on_safety),
