@@ -375,24 +375,24 @@ class ChannelConfigPage(QWidget):
         self.combo_mode.addItem("BATCH", OUT_MODE_BATCH)
         self.edit_name = QLineEdit(f"OUT_{channel_index + 1}")
         
-        # self.edit_batch = _make_spinbox(0, 16, 0)
-        self.edit_batch = QComboBox()
+        # self.combo_batch = _make_spinbox(0, 16, 0)
+        self.combo_batch = QComboBox()
         if channel_index < 4:
-            self.edit_batch.addItem("NONE", channel_index)
-            self.edit_batch.addItem("OUT1", 0)
-            self.edit_batch.addItem("OUT2", 1)
-            self.edit_batch.addItem("OUT3", 2)
-            self.edit_batch.addItem("OUT4", 3)
-            self.edit_batch.removeItem(channel_index + 1)
+            self.combo_batch.addItem("NONE", channel_index)
+            self.combo_batch.addItem("OUT1", 0)
+            self.combo_batch.addItem("OUT2", 1)
+            self.combo_batch.addItem("OUT3", 2)
+            self.combo_batch.addItem("OUT4", 3)
+            self.combo_batch.removeItem(channel_index + 1)
         elif channel_index < 8: 
-            self.edit_batch.addItem("NONE", channel_index)
-            self.edit_batch.addItem("OUT5", 4)
-            self.edit_batch.addItem("OUT6", 5)
-            self.edit_batch.addItem("OUT7", 6)
-            self.edit_batch.addItem("OUT8", 7)
-            self.edit_batch.removeItem(channel_index - 4 + 1)
+            self.combo_batch.addItem("NONE", channel_index)
+            self.combo_batch.addItem("OUT5", 4)
+            self.combo_batch.addItem("OUT6", 5)
+            self.combo_batch.addItem("OUT7", 6)
+            self.combo_batch.addItem("OUT8", 7)
+            self.combo_batch.removeItem(channel_index - 4 + 1)
         else:
-            self.edit_batch.addItem("NOT ALLOWED", 0)
+            self.combo_batch.addItem("NOT ALLOWED", 0)
 
         channel_form.addRow(FIELD_LABELS["channel"]["channel_id"], self.label_channel_id)
         channel_form.addRow(FIELD_LABELS["channel"]["type"], self.label_type)
@@ -401,7 +401,7 @@ class ChannelConfigPage(QWidget):
             channel_form.addRow(FIELD_LABELS["channel"]["spoc_mapping"], self.label_spoc)
         channel_form.addRow(FIELD_LABELS["channel"]["mode"], self.combo_mode)
         channel_form.addRow(FIELD_LABELS["channel"]["name"], self.edit_name)
-        channel_form.addRow(FIELD_LABELS["channel"]["batch"], self.edit_batch)
+        channel_form.addRow(FIELD_LABELS["channel"]["batch"], self.combo_batch)
         outer.addWidget(channel_group)
 
         self.pwm_box = QGroupBox("PWM")
@@ -534,7 +534,7 @@ class ChannelConfigPage(QWidget):
         self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
         self.combo_after_error_behavior.currentIndexChanged.connect(self._sync_after_error_state)
         self.combo_mode.currentIndexChanged.connect(self._sync_mode_state)
-        self.edit_batch.currentIndexChanged.connect(self._emit_batch_changed)
+        self.combo_batch.currentIndexChanged.connect(self._emit_batch_changed)
 
         self._apply_spoc_mapping()
         self.refresh_pwm_sources()
@@ -676,8 +676,11 @@ class ChannelConfigPage(QWidget):
         self.combo_duty_input.blockSignals(False)
 
     def _sync_mode_state(self):
-        self.pwm_box.setVisible(self.combo_mode.currentData() == OUT_MODE_PWM)
-        self.edit_batch.setEnabled(self.combo_mode.currentData() == OUT_MODE_BATCH)
+        mode = self.combo_mode.currentData() 
+        self.pwm_box.setVisible(mode == OUT_MODE_PWM)
+        self.combo_batch.setEnabled(mode == OUT_MODE_BATCH)
+        if mode != OUT_MODE_BATCH:
+            self.combo_batch.setCurrentIndex(0)
 
     def _emit_batch_changed(self, *_args):
         self.batchChanged.emit()
@@ -689,12 +692,12 @@ class ChannelConfigPage(QWidget):
             self.combo_mode.setCurrentIndex(mode_index)
 
         self.edit_name.setText(str(data.get("name", self.edit_name.text())))
-        # self.edit_batch.setValue(int(data.get("batch", self.edit_batch.value())))
+        # self.combo_batch.setValue(int(data.get("batch", self.combo_batch.value())))
 
         batch_value = data.get("batch", 0)
-        batch_index = self.edit_batch.findData(batch_value)
+        batch_index = self.combo_batch.findData(batch_value)
         if mode_index >= 0:
-            self.edit_batch.setCurrentIndex(batch_index)
+            self.combo_batch.setCurrentIndex(batch_index)
 
         pwm = data.get("pwmCfg", {}) or {}
         self.edit_base_duty.setValue(int(pwm.get("baseDuty", self.edit_base_duty.value())))
@@ -754,7 +757,7 @@ class ChannelConfigPage(QWidget):
             0 if self.channel_index < 8 else self.spoc_id,  # spoc_id
             0 if self.channel_index < 8 else self.spoc_ch_id,  # spoc_ch_id
             name_bytes,  # name[16]
-            self.edit_batch.currentData(),  # batch
+            self.combo_batch.currentData(),  # batch
             self.combo_after_error_behavior.currentData(),  # after_error_behavior
             self.edit_after_error_latch_time.value(),  # after_error_latch_time
             1 if self.check_act_on_safety.isChecked() else 0,  # act_on_safety
@@ -793,7 +796,7 @@ class ChannelConfigPage(QWidget):
             "spocId": spoc_id,
             "spocChId": spoc_ch_id,
             "name": self.edit_name.text(),
-            "batch": self.edit_batch.value(),
+            "batch": self.combo_batch.value(),
                 "pwmCfg": {
                     "baseDuty": self.edit_base_duty.value(),
                     "dutyInput": self.combo_duty_input.currentData(),
@@ -1781,7 +1784,7 @@ class ConfigTab(QWidget):
     def _refresh_batch_relations(self):
         batchControlled = [-1] * 16  
         for index, channel_widget in enumerate(self.channel_widgets):
-            batch = channel_widget.edit_batch.currentData()
+            batch = channel_widget.combo_batch.currentData()
             if batch != -1 and batch != index and index < 8:
                 batchControlled[batch] = index
             
