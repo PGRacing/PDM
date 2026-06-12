@@ -135,6 +135,7 @@ static void PDM_ExitSoftLimpHomeMode(void)
         osTimerStop(pdmReg.softLimpTimer);
         osTimerDelete(pdmReg.softLimpTimer);
         pdmReg.softLimpTimer = NULL;
+        pdmReg.status = PDM_SYS_STATUS_OK;
     }
 
     RTOS_ExitSoftLimpHomeMode();
