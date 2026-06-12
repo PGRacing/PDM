@@ -912,13 +912,12 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     {
       LOG_WARN("Batching two inputs!");
 
-      T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
-
       if(cfg->mode == OUT_MODE_BATCH 
         && cfg->batch == OUT_BATCH_ID_IAMFOLLOWER)
       {
         break;
       }
+      T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
       // LL MODE STD
       BSP_OUT_SetMode(id, OUT_MODE_STD);
       BSP_OUT_SetMode(cfg->batch, OUT_MODE_STD);

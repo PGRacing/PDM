@@ -58,6 +58,7 @@ typedef struct
     uint32_t         uvloLoCounter;   // Undervoltage LO protection counter
     uint32_t         uvloHiCounter;   // Undervoltage HI protection counter
     osTimerId_t      uvloTimer;       // Undervoltage protection timer
+    osTimerId_t      softLimpTimer;   // Soft limp home mode timer
     uint32_t         resetGwCounter;  // Counter for reset gateway asks
 }T_PDM_REG;
 

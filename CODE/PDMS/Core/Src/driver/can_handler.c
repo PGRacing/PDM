@@ -486,10 +486,11 @@ void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t b
     CANH_PushToTxQueue(instance, CANH_TxSysStatus);
 }
 
-void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7])
+void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7], uint32_t fragSize)
 {
     CANH_TxNames.data.raw[0] = (part << 4) + (id & 0x0F); 
-    memcpy(&(CANH_TxNames.data.raw[1]), str, 7);
+    memset(&(CANH_TxNames.data.raw[1]), 0x00, 7);
+    memcpy(&(CANH_TxNames.data.raw[1]), str, fragSize);
 
     CANH_PushToTxQueue(instance, CANH_TxNames);
 }

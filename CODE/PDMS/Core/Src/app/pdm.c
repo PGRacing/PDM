@@ -24,7 +24,8 @@
 
 #define PDM_RESET_GATEWAY_PATTERN_SIZE 3
 
-extern void RTOS_SoftLimpHomeMode(void);
+extern void RTOS_EnterSoftLimpHomeMode(void);
+extern void RTOS_ExitSoftLimpHomeMode(void);
 
 volatile T_PDM_CFG pdmCfg =
 {
@@ -96,27 +97,27 @@ static void PDM_OutConfig(void)
 static void PDM_SoftLimpHomeModeTimerCallback()
 {
     VMUX_ReadBattVoltage();
-    HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
-    BUZZER_TurnOn();
-    osDelay(2000);
-    BUZZER_TurnOff();
-    HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+    BUZZER_Toggle();
 }
 
 // Soft limp home mode with active telemetry (can bus)
-static void PDM_SoftLimpHomeMode(T_PDM_SYS_STATUS status)
+static void PDM_EnterSoftLimpHomeMode(T_PDM_SYS_STATUS status)
 {
+    // Disable all tasks except can handlers
+    RTOS_EnterSoftLimpHomeMode();
+
     pdmReg.status = status;
     for(T_OUT_ID id = 0; id < OUT_ID_MAX; id++)
     {
-        OUT_SetState(id, OUT_STATE_ERR_LATCH);
+        OUT_SetState(id, OUT_STATE_OFF);
     }
 
     // Check battery voltage manually each 30 seconds
-    pdmReg.uvloTimer = osTimerNew((osTimerFunc_t)PDM_SoftLimpHomeModeTimerCallback, osTimerPeriodic, NULL, NULL);
-    if(pdmReg.uvloTimer)
+    pdmReg.softLimpTimer = osTimerNew((osTimerFunc_t)PDM_SoftLimpHomeModeTimerCallback, osTimerPeriodic, NULL, NULL);
+    if(pdmReg.softLimpTimer)
     {
-        osTimerStart(pdmReg.uvloTimer, pdMS_TO_TICKS(30000));
+        osTimerStart(pdmReg.softLimpTimer, pdMS_TO_TICKS(30000));
     }
     else
     {
@@ -125,9 +126,18 @@ static void PDM_SoftLimpHomeMode(T_PDM_SYS_STATUS status)
     
     // Disable all leds
     WS2812B_DisableAll();
+}
 
-    // Disable all tasks except can handlers
-    RTOS_SoftLimpHomeMode();
+static void PDM_ExitSoftLimpHomeMode(void)
+{
+    if(pdmReg.softLimpTimer != NULL)
+    {
+        osTimerStop(pdmReg.softLimpTimer);
+        osTimerDelete(pdmReg.softLimpTimer);
+        pdmReg.softLimpTimer = NULL;
+    }
+
+    RTOS_ExitSoftLimpHomeMode();
 }
 
 // Platform start
@@ -245,12 +255,13 @@ static void PDM_UVLOCallback()
         if(pdmReg.uvloHiCounter > (pdmCfg.uvloTimeThreshold / (UVLO_TIMER_PERIOD * pdmCfg.uvloRetainDivider)))
         {
             osTimerStop(pdmReg.uvloTimer);
+            osTimerDelete(pdmReg.uvloTimer);
             pdmReg.uvloTimer = NULL;
             pdmReg.uvloAssessment = FALSE;
             pdmReg.uvloHiCounter = 0;
             pdmReg.uvloLoCounter = 0;
             LOG_INFO("PDM:: UVLO Battery voltage retained, returing to normal operation");
-            osTimerDelete(pdmReg.uvloTimer);
+            PDM_ExitSoftLimpHomeMode();
             return;
         }
     }
@@ -259,13 +270,11 @@ static void PDM_UVLOCallback()
         pdmReg.uvloLoCounter++;
         if(pdmReg.uvloLoCounter > (pdmCfg.uvloTimeThreshold / UVLO_TIMER_PERIOD))
         {
-            osTimerStop(pdmReg.uvloTimer);
-            pdmReg.uvloTimer = NULL;
             pdmReg.uvloAssessment = FALSE;
             pdmReg.uvloHiCounter = 0;
             pdmReg.uvloLoCounter = 0;
             LOG_ERR("PDM:: UVLO detected turning off!");
-            PDM_SoftLimpHomeMode(PDM_SYS_STATUS_UVLO);
+            PDM_EnterSoftLimpHomeMode(PDM_SYS_STATUS_UVLO);
             return;
         }
     }

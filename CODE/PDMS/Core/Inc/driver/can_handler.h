@@ -134,7 +134,7 @@ void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16]);
 
 void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyLineStatus, uint16_t logicValidMask);
 
-void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7]);
+void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7], uint32_t fragSize);
 
 void CANH_Send_PhyInputs1_4(T_CANH_INSTANCE instance, uint16_t i1, uint16_t i2, uint16_t i3, uint16_t i4);
 void CANH_Send_PhyInputs5_8(T_CANH_INSTANCE instance, uint16_t i5, uint16_t i6, uint16_t i7, uint16_t i8);

@@ -149,8 +149,9 @@ void IMU_ReadDataPolling(T_IMU_HANDLE* handle)
 static int32_t IMU_PlatformWrite(void *handle, uint8_t reg, const uint8_t *bufp,
                               uint16_t len)
 {
-    HAL_I2C_Mem_Write(handle, ASM330LHH_I2C_ADD_H, reg, I2C_MEMADD_SIZE_8BIT, (uint8_t*) bufp, len, 1000);
-    return 0;
+    HAL_StatusTypeDef status = HAL_OK;
+    status = HAL_I2C_Mem_Write(handle, ASM330LHH_I2C_ADD_H, reg, I2C_MEMADD_SIZE_8BIT, (uint8_t*) bufp, len, 1000);
+    return (status == HAL_OK) ? 0 : -1;
 }
 
 /// @brief Read generic device register (platform dependent)
@@ -161,8 +162,9 @@ static int32_t IMU_PlatformWrite(void *handle, uint8_t reg, const uint8_t *bufp,
 static int32_t IMU_PlatfromRead(void *handle, uint8_t reg, uint8_t *bufp,
                              uint16_t len)
 {
-    HAL_I2C_Mem_Read(handle, ASM330LHH_I2C_ADD_H, reg, I2C_MEMADD_SIZE_8BIT, bufp, len, 1000);
-    return 0;
+    HAL_StatusTypeDef status = HAL_OK;
+    status = HAL_I2C_Mem_Read(handle, ASM330LHH_I2C_ADD_H, reg, I2C_MEMADD_SIZE_8BIT, bufp, len, 1000);
+    return (status == HAL_OK) ? 0 : -1;
 }
 
 /// @brief Platform dependent delay

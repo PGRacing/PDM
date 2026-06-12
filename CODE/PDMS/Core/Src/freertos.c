@@ -308,16 +308,28 @@ void statusTaskStart(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-void RTOS_SoftLimpHomeMode(void)
+void RTOS_EnterSoftLimpHomeMode(void)
 {
   vTaskSuspend(spoc2CurrTaskHandle);
-  vTaskSuspend(vmuxTaskHandle);
+  //vTaskSuspend(vmuxTaskHandle);
   vTaskSuspend(argbTaskHandle);
   vTaskSuspend(adc1TaskHandle);
   vTaskSuspend(adc2TaskHandle);
   vTaskSuspend(pdmTaskHandle);
   vTaskSuspend(statusTaskHandle);
   vTaskSuspend(isotpTaskHandle);
+}
+
+void RTOS_ExitSoftLimpHomeMode(void)
+{
+  vTaskResume(spoc2CurrTaskHandle);
+  //vTaskResume(vmuxTaskHandle);
+  vTaskResume(argbTaskHandle);
+  vTaskResume(adc1TaskHandle);
+  vTaskResume(adc2TaskHandle);
+  vTaskResume(pdmTaskHandle);
+  vTaskResume(statusTaskHandle);
+  vTaskResume(isotpTaskHandle);
 }
 
 void RTOS_HardLimpHomeMode(void)

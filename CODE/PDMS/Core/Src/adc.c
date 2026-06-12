@@ -731,8 +731,8 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
 {
     injectedPtrTargetBuffer[0] = &(defaultInjectedBuffer[0]);
     injectedPtrTargetBuffer[1] = &(defaultInjectedBuffer[1]);
-    injectedPtrTargetBuffer[1] = &(defaultInjectedBuffer[2]);
-    injectedPtrTargetBuffer[1] = &(defaultInjectedBuffer[3]);
+    injectedPtrTargetBuffer[2] = &(defaultInjectedBuffer[2]);
+    injectedPtrTargetBuffer[3] = &(defaultInjectedBuffer[3]);
     
     HAL_ADCEx_InjectedStop_IT(&hadc1);
 
@@ -764,7 +764,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
     sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
     sConfigInjected.QueueInjectedContext      = DISABLE;
 
-    if(oc1 && configuredNum <= 4)
+    if(oc1 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_8;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -777,7 +777,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
         configuredNum++;
     }
     
-    if(oc2 && configuredNum <= 4)
+    if(oc2 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_7;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -791,7 +791,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
     }
     
 
-    if(oc3 && configuredNum <= 4)
+    if(oc3 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_6;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -804,7 +804,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
         configuredNum++;
     }
 
-    if(oc4 && configuredNum <= 4)
+    if(oc4 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_5;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -817,7 +817,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
         configuredNum++;
     }
 
-    if(oc5 && configuredNum <= 4)
+    if(oc5 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_4;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -830,7 +830,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
         configuredNum++;
     }
     
-    if(oc6 && configuredNum <= 4)
+    if(oc6 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_3;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -844,7 +844,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
     }
     
 
-    if(oc7 && configuredNum <= 4)
+    if(oc7 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_2;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -857,7 +857,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
         configuredNum++;
     }
 
-    if(oc8 && configuredNum <= 4)
+    if(oc8 && configuredNum < 4)
     {
         sConfigInjected.InjectedChannel = ADC_CHANNEL_1;
         sConfigInjected.InjectedRank = ADC_GetRankFromChannel(configuredNum);
@@ -870,10 +870,12 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
         configuredNum++;
     }
 
-   
-    if(HAL_ADCEx_InjectedStart_IT(&hadc1) != HAL_OK)
+    if(convNum > 0)
     {
-        Error_Handler();
+      if(HAL_ADCEx_InjectedStart_IT(&hadc1) != HAL_OK)
+      {
+          Error_Handler();
+      }
     }
 }
 

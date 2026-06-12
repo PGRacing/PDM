@@ -1,7 +1,7 @@
 #include "bsp_flash.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_flash.h"
-#include "freertos.h"
+#include "FreeRTOS.h"
 #include <string.h>
 
 static FLASH_EraseInitTypeDef eraseInitStruct;
@@ -118,6 +118,8 @@ int32_t BSP_FLASH_Prog(uint32_t sector, uint32_t offset, uint8_t* buffer, size_t
 
     if((addr + size) > FLASH_USER_END_ADDR )
     {
+        HAL_FLASH_Lock();
+        vPortExitCritical();
         return -1;
     }
 

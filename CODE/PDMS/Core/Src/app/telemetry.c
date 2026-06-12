@@ -77,10 +77,15 @@ static void TELEM_SendNamesByCan(T_CANH_INSTANCE canInstance)
         size_t namelen = strlen(name);
         if( namelen != 0)
         {
-            uint8_t parts = (namelen / TELEM_OUT_NAME_PART) + 1;
+            uint8_t parts = DIV_CEIL(namelen,TELEM_OUT_NAME_PART);
             for(uint8_t i = 0; i < parts; i++)
             {
-                CANH_Send_Names(canInstance, id, i, (name + i * TELEM_OUT_NAME_PART));
+                uint32_t offset = i * TELEM_OUT_NAME_PART;
+                uint32_t fragSize = namelen - offset;
+
+                fragSize = (fragSize > TELEM_OUT_NAME_PART) ? TELEM_OUT_NAME_PART : fragSize;
+                
+                CANH_Send_Names(canInstance, id, i, (name + i * TELEM_OUT_NAME_PART), fragSize);
             }
         }
     }
