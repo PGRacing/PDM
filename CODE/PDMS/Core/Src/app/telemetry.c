@@ -38,10 +38,12 @@ static void TELEM_SendVoltageByCan(T_CANH_INSTANCE canInstance)
 
 static void TELEM_SendCurrentByCan(T_CANH_INSTANCE canInstance)
 {
-    CANH_Send_TxCurrent1_4(canInstance, OUT_DIAG_GetEmaCurrent_pA(OUT_ID_1), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_2), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_3), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_4));
-    CANH_Send_TxCurrent5_8(canInstance, OUT_DIAG_GetEmaCurrent_pA(OUT_ID_5), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_6), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_7), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_8));
-    CANH_Send_TxCurrent9_12(canInstance, OUT_DIAG_GetEmaCurrent_pA(OUT_ID_9), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_10), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_11), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_12));
-    CANH_Send_TxCurrent13_16(canInstance, OUT_DIAG_GetEmaCurrent_pA(OUT_ID_13), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_14), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_15), OUT_DIAG_GetEmaCurrent_pA(OUT_ID_16));
+    CANH_Send_TxCurrent1_4(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_1), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_2), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_3), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_4));
+    CANH_Send_TxCurrent5_8(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_5), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_6), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_7), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_8));
+    CANH_Send_TxCurrentRMS1_4(canInstance, OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_1), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_2), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_3), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_4));
+    CANH_Send_TxCurrentRMS5_8(canInstance, OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_5), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_6), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_7), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_8));
+    CANH_Send_TxCurrent9_12(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_9), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_10), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_11), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_12));
+    CANH_Send_TxCurrent13_16(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_13), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_14), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_15), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_16));
 }
 
 static void TELEM_SendStatusByCan(T_CANH_INSTANCE canInstance)

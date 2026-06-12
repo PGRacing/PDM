@@ -39,6 +39,7 @@
 static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
 static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
 static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
+static inline void OUT_DIAG_ArmI2tProtection(T_OUT_ID id);
 static inline void OUT_DIAG_ArmSoftStart(T_OUT_ID id);
 
 // Get current time in ms
@@ -885,13 +886,17 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
       {
         BSP_OUT_SetMode(id, OUT_MODE_STD);
       }
+
+      // Arm I2t
+      OUT_DIAG_ArmI2tProtection(id);
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
       // TODO [LOW] Add handler
       // SPOC2_SetMode(id, targetMode);
     }
-    OUT_SetState(cfg->id, OUT_STATE_OFF);
+
+    OUT_SetState(id, OUT_STATE_OFF);
     cfg->mode = targetMode;
     break;
   }
@@ -902,6 +907,10 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
       BSP_OUT_SetMode(id, targetMode);
       // Set PWM duty to 0%
       OUT_SetDutyPWM(id, 0);
+      
+      // Arm I2t
+      OUT_DIAG_ArmI2tProtection(id);
+      
       cfg->mode = targetMode;
     }
     break;
@@ -921,8 +930,13 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
       // LL MODE STD
       BSP_OUT_SetMode(id, OUT_MODE_STD);
       BSP_OUT_SetMode(cfg->batch, OUT_MODE_STD);
-      OUT_SetState(cfg->id, OUT_STATE_OFF);
+      OUT_SetState(id, OUT_STATE_OFF);
       OUT_SetState(batchCfg->id, OUT_STATE_OFF);
+
+      // Only once per update
+      OUT_DIAG_ArmI2tProtection(id);
+      OUT_DIAG_ArmI2tProtection(batchCfg->id);
+
       batchCfg->mode = OUT_MODE_BATCH;
       batchCfg->batch = OUT_BATCH_ID_IAMFOLLOWER;
       /* From now on actions on batch outputs are performed simultaniously */
@@ -1388,7 +1402,12 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
   return status;
 }
 
-static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentMA)
+static inline void OUT_DIAG_ArmI2tProtection(T_OUT_ID id)
+{
+  outsReg[id].safety.i2tReg.sum = 0;
+}
+
+static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentRMS_MA)
 {
   /*
   1. If current over target add to sum current * current
@@ -1398,18 +1417,23 @@ static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state
 
   T_OUT_STATUS status = OUT_STATUS_OK;
 
-  // We need to scale down the resolution to fit in int32  
-  int32_t iPart = (currentMA / 10) * (currentMA / 10) - (outsCfg[id].safety.i2tCfg.nominalCurrentSq);
-  // TODO Convert to float and ceil(iPart);
-  
-  if(outsReg[id].safety.i2tReg.i2tSum > 0)
+  if (TRUE == outsCfg[id].safety.i2tCfg.useI2t)
   {
-    outsReg[id].safety.i2tReg.i2tSum += iPart;
-  }
-  
-  if(outsReg[id].safety.i2tReg.i2tSum >= outsCfg[id].safety.i2tCfg.i2tThreshold)
-  {
-    status = OUT_STATUS_I2T_FAULT;
+    const int32_t i_cA = currentRMS_MA / 10;
+
+    int32_t iPart = (i_cA * i_cA) - (outsCfg[id].safety.i2tCfg.nominalCurrentSq_cA);
+    
+    outsReg[id].safety.i2tReg.sum += (iPart * OUT_DIAG_READ_PERIOD);
+
+    if(outsReg[id].safety.i2tReg.sum < 0)
+    {
+      outsReg[id].safety.i2tReg.sum = 0;
+    }
+    
+    if(outsReg[id].safety.i2tReg.sum >= (int_fast64_t)(outsCfg[id].safety.i2tCfg.i2tThreshold))
+    {
+      status = OUT_STATUS_I2T_FAULT;
+    }
   }
   
  return status;
@@ -1478,6 +1502,15 @@ static inline void OUT_DIAG_SoftStart(T_OUT_ID id, T_OUT_STATE state)
     BSP_OUT_SetDutyPWM(id, 0);
     outsReg[id].softStart.duty = 0;
   }
+}
+
+/// @brief Calculate EMA for given output
+/// @param reg Pointer to register of output to calculate EMA for
+static inline void OUT_DIAG_BtsCalcEma(T_OUT_REG* reg)
+{
+  reg->emaCurrentMA     = (reg->currentMA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentMA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
+  reg->emaCurrentRMS_MA = (reg->currentRMS_MA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentRMS_MA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
+  reg->emaVoltageMV     = (reg->voltageMV * OUT_DIAG_EMA_VOLTAGE_ALPHA) + (reg->emaVoltageMV * (1 - OUT_DIAG_EMA_VOLTAGE_ALPHA));
 }
 
 /// @brief Hardware assessment of BTS500 output channel
@@ -1566,26 +1599,30 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   if(OUT_STATE_ON == reg->state)
   {
     // If channel is ON calculate current
-    reg->currentMA = BSP_OUT_CalcCurrent(id);
-    reg->emaCurrentMA = (reg->currentMA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentMA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
+    BSP_OUT_CalcCurrentPlusRMS(id, &(reg->currentMA), &(reg->currentRMS_MA));
   }
   else
   {
     // If channel is OFF override current to 0
     reg->currentMA = 0;
-    reg->emaCurrentMA = (1 - OUT_DIAG_EMA_CURRENT_ALPHA) * reg->emaCurrentMA;
+    reg->currentRMS_MA = 0;
   }
   bool inFault = BSP_OUT_IsCurrentFault(id);
   
   // Get channel voltage from voltage multiplexer ADC data (already calculated)
   reg->voltageMV = VMUX_GetValue(id);
-  reg->emaVoltageMV = (reg->voltageMV * OUT_DIAG_EMA_VOLTAGE_ALPHA) + (reg->emaVoltageMV * (1 - OUT_DIAG_EMA_VOLTAGE_ALPHA));
 
   // Check for hardware issues and state changes
   T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA, inFault);
 
   // Check for software overcurrent
-  T_OUT_STATUS swStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
+  T_OUT_STATUS socStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
+
+  // Check for I2t protection
+  T_OUT_STATUS i2tStatus = OUT_DIAG_I2tProtection(id, reg->state, reg->voltageMV, reg->currentRMS_MA);
+
+  // Software status SoC + I2t
+  T_OUT_STATUS swStatus = OUT_STATUS_GET_HIGHER_PRIORITY(socStatus, i2tStatus);
 
   // Check safety line
   T_OUT_STATUS safetyStatus = OUT_STATUS_OK;
@@ -1622,6 +1659,9 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   {
     OUT_DIAG_SoftStart(id, reg->state);
   }
+
+  // EMA used only for telemetry so can be calculated later in scope
+  OUT_DIAG_BtsCalcEma(reg);
 
   // Set new channel status
   reg->status = newStatus;
@@ -1847,16 +1887,22 @@ uint32_t OUT_DIAG_GetCurrent(T_OUT_ID id)
   return OUT_GETREGPTR(id)->currentMA;
 }
 
-uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id)
+uint16_t OUT_DIAG_GetCurrent_cA(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETREGPTR(id)->currentMA / 10;
 }
 
-uint16_t OUT_DIAG_GetEmaCurrent_pA(T_OUT_ID id)
+uint16_t OUT_DIAG_GetEmaCurrent_cA(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETREGPTR(id)->emaCurrentMA / 10;
+}
+
+uint16_t OUT_DIAG_GetEmaCurrentRMS_cA(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->emaCurrentRMS_MA / 10;
 }
 
 uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id)
@@ -1912,8 +1958,10 @@ void OUT_ResetRegistersAll(void)
     reg->state = OUT_STATE_OFF;
     reg->status = OUT_STATUS_OK;
     reg->currentMA = 0;
+    reg->currentRMS_MA = 0;
     reg->voltageMV = 0;
     reg->emaCurrentMA = 0;
+    reg->emaCurrentRMS_MA = 0;
     reg->emaVoltageMV = 0;
     reg->safety.inRetrySequence = FALSE;
     reg->safety.errRetryCounter = 0;
@@ -1922,7 +1970,7 @@ void OUT_ResetRegistersAll(void)
     reg->safety.socReg.currentThreshold = 0;
     reg->safety.socReg.timeInPreInrush = 0;
     reg->safety.socReg.inrushTripCounter = 0;
-    reg->safety.i2tReg.i2tSum = 0;
+    reg->safety.i2tReg.sum = 0;
   }
 }
 

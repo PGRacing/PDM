@@ -116,6 +116,12 @@ uint32_t BSP_OUT_GetFaultLevel(T_OUT_ID id);
 /// @return Output current in [mA]
 uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id);
 
+/// @brief Calculate load RMS current of output channel
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @param [in] pInstCurrent Pointer where instantenious current will be set
+/// @param [in] pRmsCurrent  Pointer where RMS current will be set
+void BSP_OUT_CalcCurrentPlusRMS(T_OUT_ID id, uint32_t* pInstCurrentMA, uint32_t* pRmsCurrentMA);
+
 /// @brief Check if voltage on Is pin is above fault level
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @return TRUE if fault, FALSE if ok

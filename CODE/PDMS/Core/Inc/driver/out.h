@@ -74,10 +74,10 @@ typedef struct _T_OUT_SAFETY_SOC_CFG
 typedef struct _T_OUT_SAFETY_I2T_CFG
 {
     bool               useI2t;                  // Should software I2t function be used
-    const uint32_t     nominalCurrent;          // I2t nominal current [mA/10] eg. 12A = 1200 ; 3.3A = 330 0.1A = 10 (max value 40A)
-    const uint32_t     nominalCurrentSq;        // I2t nominal current squared (fill in via nominal current)
+    const uint32_t     nominalCurrent_cA;       // I2t nominal current centi-ampere [mA/10] eg. 12A = 1200 ; 3.3A = 330 0.1A = 10 (max value 40A)
+    const uint32_t     nominalCurrentSq_cA;     // I2t nominal current squared (fill in via nominal current) [mA/10^2]
     const uint32_t     timeThreshold;           // I2t time value
-    const uint32_t     i2tThreshold;            // I2t threshold (nominalCurrentSq * timeThreshold)
+    const uint32_t     i2tThreshold;            // I2t threshold (nominalCurrentSq_cA * timeThreshold)
 }T_OUT_SAFETY_I2T_CFG;
 
 /// @brief Output channel safety configuration struct
@@ -152,7 +152,7 @@ T_OUT_SAFETY_SOC_REG;
 /// @brief Output channel I2t status register
 typedef struct _T_OUT_SAFETY_I2T_REG
 {
-    int_fast64_t i2tSum;
+    int_fast64_t sum;
 }
 T_OUT_SAFETY_I2T_REG;
 
@@ -183,19 +183,22 @@ typedef struct _T_OUT_SOFTSTART_REG
 /// @brief Output channel state register
 typedef struct _T_OUT_REG
 {
-    T_OUT_STATE         state;       // Output state (ON / OFF)
-    T_OUT_STATUS        status;      // Output status 
-    T_OUT_SAFETY_REG    safety;      // Safety status register
+    T_OUT_STATE         state;             // Output state (ON / OFF)
+    T_OUT_STATUS        status;            // Output status 
+    T_OUT_SAFETY_REG    safety;            // Safety status register
     // Acquired from board
-    uint32_t            currentMA;    // Here for ease of debug and code simplification
+    uint32_t            currentMA;         // Here for ease of debug and code simplification
+    uint32_t            currentRMS_MA;     // Calculated RMS current for PWM out
     uint32_t            voltageMV; 
-    uint32_t            emaCurrentMA; // Exponential moving average of current for smoother readings
-    uint32_t            emaVoltageMV; // Exponential moving average of voltage for smoother readings   
+
+    uint32_t            emaCurrentMA;      // Exponential moving average of current for smoother readings
+    uint32_t            emaCurrentRMS_MA;  // Exponential moving average of current for smoother readings
+    uint32_t            emaVoltageMV;      // Exponential moving average of voltage for smoother readings   
     // PWM mode
-    uint_fast8_t        pwmDuty;      // PWM duty
-    uint_fast8_t        prevPwmDuty;  // Previous pwm duty (before last update)
+    uint_fast8_t        pwmDuty;           // PWM duty
+    uint_fast8_t        prevPwmDuty;       // Previous pwm duty (before last update)
     // Soft-start
-    T_OUT_SOFTSTART_REG softStart;    // Soft-start mode configuration
+    T_OUT_SOFTSTART_REG softStart;         // Soft-start mode register
 }T_OUT_REG;
 
 // Main outputs config
@@ -265,15 +268,20 @@ uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id);
 /// @return Electrical voltage value [mV]
 uint32_t OUT_DIAG_GetEmaVoltage(T_OUT_ID id);
 
-/// @brief Get output channel current value in pA range
+/// @brief Get output channel current value in cA (cenit-ampere) range
 /// @param id Output channel id [1..16] T_OUT_ID
-/// @return Electrical current value [pA]
-uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id);
+/// @return Electrical current value [cA]
+uint16_t OUT_DIAG_GetCurrent_cA(T_OUT_ID id);
 
-/// @brief Get output channel current value in pA range from EMA
+/// @brief Get output channel current value in cA (cenit-ampere) range from EMA
 /// @param id Output channel id [1..16] T_OUT_ID
-/// @return Electrical current value [pA]
-uint16_t OUT_DIAG_GetEmaCurrent_pA(T_OUT_ID id);
+/// @return Electrical current value [cA]
+uint16_t OUT_DIAG_GetEmaCurrent_cA(T_OUT_ID id);
+
+/// @brief Get output channel RMS current value in cA (cenit-ampere) range from EMA
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Electrical current value [cA]
+uint16_t OUT_DIAG_GetEmaCurrentRMS_cA(T_OUT_ID id);
 
 /// @brief Get output channel status value
 /// @param id Output channel id [1..16] T_OUT_ID

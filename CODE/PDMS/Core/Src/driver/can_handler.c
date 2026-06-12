@@ -72,29 +72,31 @@ static CAN_FilterTypeDef canAllowAllFilter =
 /// @brief All used CAN bus ID's
 typedef enum
 {
-    CANH_ID_PNP             = 0x000, // Header sent on device power-up
-    CANH_ID_SYS_STATUS      = 0x001, // System status
-    CANH_ID_STATUS_1_8      = 0x002, // Status of channels 1-8 (default value)
-    CANH_ID_STATUS_9_16     = 0x003, // Status of channels 9-16 (default value)
-    CANH_ID_STATE_1_16      = 0x004, // State of channels 1-16 (default value)
-    CANH_ID_VOLTAGE_1_4     = 0x005, // Voltage of channels 1-4 (default value)
-    CANH_ID_VOLTAGE_5_8     = 0x006, // Voltage of channels 5-8 (default value)
-    CANH_ID_VOLTAGE_9_12    = 0x007, // Voltage of channels 9-12 (default value)
-    CANH_ID_VOLTAGE_13_16   = 0x008, // Voltage of channels 13-16 (default value)
-    CANH_ID_CURRENT_1_4     = 0x009, // Current of channels 1-4 (default value)
-    CANH_ID_CURRENT_5_8     = 0x00A, // Current of channels 5-8 (default value)
-    CANH_ID_CURRENT_9_12    = 0x00B, // Current of channels 9-12 (default value)
-    CANH_ID_CURRENT_13_16   = 0x00C, // Current of channels 13-16 (default value)
-    CANH_ID_NAMES           = 0x00D, // Channel of current name,
-    CANH_ID_PHY_INPUTS_1_4  = 0x00E, // Physical inputs 1-4
-    CANH_ID_PHY_INPUTS_5_8  = 0x00F, // Physical inputs 5-8
-    CANH_ID_IMU_ACC         = 0x010, // IMU acceleration data
-    CANH_ID_IMU_GYRO        = 0x011, // IMU gyroscope data
-    CANH_ID_ISOTP_ENTRANCE =  0x050, // Entrance gateway for ISO-TP communication mode
-    CANH_ID_ISOTP_TX       =  0x051, // CAN ID used for ISO-TP transmission
-    CANH_ID_ISOTP_RX       =  0x052, // CAN ID used for ISO-TP reception
-    CANH_ID_CONFIG_REQ     =  0x059, // CAN ID used for configuration request (eg. to send current config or request config update)
-    CANH_ID_FORCE_RESET    =  0x0AF, // Force reset command, if specific pattern is sent to CAN with this ID then device will reset  
+    CANH_ID_PNP               = 0x000,  // Header sent on device power-up
+    CANH_ID_SYS_STATUS        = 0x001,  // System status
+    CANH_ID_STATUS_1_8        = 0x002,  // Status of channels 1-8 (default value)
+    CANH_ID_STATUS_9_16       = 0x003,  // Status of channels 9-16 (default value)
+    CANH_ID_STATE_1_16        = 0x004,  // State of channels 1-16 (default value)
+    CANH_ID_VOLTAGE_1_4       = 0x005,  // Voltage of channels 1-4 (default value)
+    CANH_ID_VOLTAGE_5_8       = 0x006,  // Voltage of channels 5-8 (default value)
+    CANH_ID_VOLTAGE_9_12      = 0x007,  // Voltage of channels 9-12 (default value)
+    CANH_ID_VOLTAGE_13_16     = 0x008,  // Voltage of channels 13-16 (default value)
+    CANH_ID_CURRENT_1_4       = 0x009,  // Current of channels 1-4 (default value)
+    CANH_ID_CURRENT_5_8       = 0x00A,  // Current of channels 5-8 (default value)
+    CANH_ID_CURRENT_9_12      = 0x00B,  // Current of channels 9-12 (default value)
+    CANH_ID_CURRENT_13_16     = 0x00C,  // Current of channels 13-16 (default value)
+    CANH_ID_NAMES             = 0x00D,  // Channel of current name,
+    CANH_ID_PHY_INPUTS_1_4    = 0x00E,  // Physical inputs 1-4
+    CANH_ID_PHY_INPUTS_5_8    = 0x00F,  // Physical inputs 5-8
+    CANH_ID_IMU_ACC           = 0x010,  // IMU acceleration data
+    CANH_ID_IMU_GYRO          = 0x011,  // IMU gyroscope data
+    CANH_ID_CURRENT_RMS_1_4   = 0x012,  // RMS Current of channels 1-4 (default value)
+    CANH_ID_CURRENT_RMS_5_8   = 0x013,  // RMS Current of channels 1-4 (default value)
+    CANH_ID_ISOTP_ENTRANCE    = 0x050,  // Entrance gateway for ISO-TP communication mode
+    CANH_ID_ISOTP_TX          = 0x051,  // CAN ID used for ISO-TP transmission
+    CANH_ID_ISOTP_RX          = 0x052,  // CAN ID used for ISO-TP reception
+    CANH_ID_CONFIG_REQ        = 0x059,  // CAN ID used for configuration request (eg. to send current config or request config update)
+    CANH_ID_FORCE_RESET       = 0x0AF,  // Force reset command, if specific pattern is sent to CAN with this ID then device will reset  
 }T_CANH_ID;
 
 /// @brief [pnpTxMsg] Message sent on device power-up
@@ -351,6 +353,34 @@ T_CANH_TX_PACKAGE CANH_TxImuGyro =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_TxCurrentRMS1_4 = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_CURRENT_RMS_1_4,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+T_CANH_TX_PACKAGE CANH_TxCurrentRMS5_8 = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_CURRENT_RMS_5_8,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
 void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
     CANH_TxStatus1_8.data.status_8ch.status[0] = s1;
@@ -531,6 +561,26 @@ void CANH_Send_ImuRates(T_CANH_INSTANCE instance, int16_t pitch, int16_t roll, i
     CANH_TxImuGyro.data.imu_data.d3 = yaw;
 
     CANH_PushToTxQueue(instance, CANH_TxImuGyro);
+}
+
+void CANH_Send_TxCurrentRMS1_4(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
+{
+    CANH_TxCurrentRMS1_4.data.current_4ch.current[0] = c1;
+    CANH_TxCurrentRMS1_4.data.current_4ch.current[1] = c2;
+    CANH_TxCurrentRMS1_4.data.current_4ch.current[2] = c3;
+    CANH_TxCurrentRMS1_4.data.current_4ch.current[3] = c4;
+
+    CANH_PushToTxQueue(instance, CANH_TxCurrentRMS1_4);
+}
+
+void CANH_Send_TxCurrentRMS5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4)
+{
+    CANH_TxCurrentRMS5_8.data.current_4ch.current[0] = c1;
+    CANH_TxCurrentRMS5_8.data.current_4ch.current[1] = c2;
+    CANH_TxCurrentRMS5_8.data.current_4ch.current[2] = c3;
+    CANH_TxCurrentRMS5_8.data.current_4ch.current[3] = c4;
+
+    CANH_PushToTxQueue(instance, CANH_TxCurrentRMS5_8);
 }
 
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)

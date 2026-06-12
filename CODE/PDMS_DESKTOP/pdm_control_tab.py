@@ -521,7 +521,7 @@ class ControlValueCell(QWidget):
                 self.toggle.blockSignals(False)
             else:
                 self.toggle.blockSignals(True)
-                self.toggle.setChecked(mvolts >= 2500)
+                self.toggle.setChecked(mvolts >= 4800)
                 self.toggle.blockSignals(False)
         else:
             try:
