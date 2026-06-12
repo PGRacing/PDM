@@ -252,22 +252,22 @@ static void BSP_CANIN_EvaluateValue(T_IN_CAN_LOC loc)
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_UINT16)
     {
         const uint16_t value = *((uint16_t*)(&bspCanInputsReg[loc].rawValue));
-        bspCanInputsReg[loc].voltageValue = value * 5000 / 65535; // Scale to 0-5000 mV
+        bspCanInputsReg[loc].voltageValue = (value/65535.0) * 5000; // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_INT16)
     {
         const int16_t value = *((int16_t*)(&bspCanInputsReg[loc].rawValue));
-        bspCanInputsReg[loc].voltageValue = value * 5000 / 32767; // Scale to 0-5000 mV
+        bspCanInputsReg[loc].voltageValue = (value/32767.0) * 5000; // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_UINT32)
     {
         const uint32_t value = *((uint32_t*)(&bspCanInputsReg[loc].rawValue));
-        bspCanInputsReg[loc].voltageValue = value * 5000 / 4294967295; // Scale to 0-5000 mV
+        bspCanInputsReg[loc].voltageValue = (value/4294967295.0) * 5000;  // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_INT32)
     {
         const int32_t value = *((int32_t*)(&bspCanInputsReg[loc].rawValue));
-        bspCanInputsReg[loc].voltageValue = value * 5000 / 2147483647; // Scale to 0-5000 mV
+        bspCanInputsReg[loc].voltageValue = (value/2147483647.0) * 5000; // Scale to 0-5000 mV
     }
     else if(bspCanInputsCfg[loc].dataType == CAN_INPUT_TYPE_FLOAT)
     {
