@@ -319,8 +319,6 @@ class MainWindow(QMainWindow):
         self.tx_queue.put({"cmd": "TX", "id": int(arbitration_id), "payload": payload})
 
     def _refresh_control_tab(self):
-        return 
-
         if self.control_tab is None or self.config_tab is None:
             return
 
@@ -352,6 +350,24 @@ class MainWindow(QMainWindow):
                 usage_by_input.setdefault(source_id, [])
                 if output_label not in usage_by_input[source_id]:
                     usage_by_input[source_id].append(output_label)
+
+        for output_index, channel_widget in enumerate(self.config_tab.channel_widgets):
+            channel_data = channel_widget.to_dict()
+            pwm_cfg = channel_data.get("pwmCfg", {}) or {}
+            duty_input = pwm_cfg.get("dutyInput", 0xFFFF)
+            if duty_input in (None, 0xFFFF):
+                continue
+
+            try:
+                duty_input = int(duty_input)
+            except Exception:
+                continue
+
+            output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
+            pwm_label = {"index": output_index, "name": f"{output_name} (PWM)"}
+            usage_by_input.setdefault(duty_input, [])
+            if pwm_label not in usage_by_input[duty_input]:
+                usage_by_input[duty_input].append(pwm_label)
 
         self.control_tab.refresh_controls(can_inputs, usage_by_input)
 
