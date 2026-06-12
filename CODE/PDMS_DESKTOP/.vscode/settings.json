@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^python -m py_compile \"C:\\\\Users\\\\Karol\\\\Documents\\\\GitHub\\\\PDM\\\\CODE\\\\PDMS_DESKTOP\\\\pdms\\.py\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

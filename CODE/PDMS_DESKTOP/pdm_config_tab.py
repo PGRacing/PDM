@@ -3,6 +3,7 @@ import struct
 from pathlib import Path
 
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -18,6 +19,7 @@ from PyQt5.QtWidgets import (
     QProgressBar,
     QGridLayout,
     QScrollArea,
+    QSlider,
     QSpinBox,
     QTabWidget,
     QSizePolicy,
@@ -196,6 +198,57 @@ CAN_INPUT_DATA_TYPE_LABELS = [
     ("CAN_INPUT_TYPE_INT32", 0x04),
     ("CAN_INPUT_TYPE_FLOAT", 0x05),
 ]
+
+CAN_INPUT_DATA_TYPE_SIZES = {
+    0x00: 1,
+    0x01: 2,
+    0x02: 4,
+    0x03: 2,
+    0x04: 4,
+    0x05: 4,
+}
+
+
+def _clamp_int(value, minimum, maximum):
+    try:
+        ivalue = int(value)
+    except Exception:
+        return minimum
+    if ivalue < minimum:
+        return minimum
+    if ivalue > maximum:
+        return maximum
+    return ivalue
+
+
+def _pack_can_input_value(data_type, value):
+    if data_type == 0x00:
+        return bytes((1 if bool(value) else 0,))
+    if data_type == 0x01:
+        return struct.pack("<H", _clamp_int(value, 0, 0xFFFF))
+    if data_type == 0x02:
+        return struct.pack("<I", _clamp_int(value, 0, 0xFFFFFFFF))
+    if data_type == 0x03:
+        return struct.pack("<h", _clamp_int(value, -0x8000, 0x7FFF))
+    if data_type == 0x04:
+        return struct.pack("<i", _clamp_int(value, -0x80000000, 0x7FFFFFFF))
+    if data_type == 0x05:
+        try:
+            return struct.pack("<f", float(value))
+        except Exception:
+            return struct.pack("<f", 0.0)
+    return struct.pack("<H", _clamp_int(value, 0, 0xFFFF))
+
+
+def _build_can_control_payload(arbitration_id, offset, data_type, value):
+    payload = bytearray(8)
+    encoded_value = _pack_can_input_value(data_type, value)
+    start = _clamp_int(offset, 0, 7)
+    end = start + len(encoded_value)
+    if end > len(payload):
+        raise ValueError("Control value does not fit into an 8-byte CAN frame at the selected offset")
+    payload[start:end] = encoded_value
+    return int(arbitration_id), bytes(payload)
 
 SPOC_MAPPING_LABELS = {
     8: "SPOC2_ID_1 / SPOC2_CH_ID_1",
@@ -557,6 +610,7 @@ class ChannelConfigPage(QWidget):
         self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
         self.combo_after_error_behavior.currentIndexChanged.connect(self._sync_after_error_state)
         self.combo_mode.currentIndexChanged.connect(self._sync_mode_state)
+        self.combo_duty_input.currentIndexChanged.connect(self._emit_mode_changed)
         self.softstart_enable.toggled.connect(self._sync_softstart_state)
         self.combo_batch.currentIndexChanged.connect(self._emit_batch_changed)
 
@@ -1331,6 +1385,296 @@ class LogicChannelPage(QWidget):
             value_edit.setPlaceholderText("Unused")
 
 
+class ControlCanInputRow(QGroupBox):
+    valueChanged = pyqtSignal(object, object)
+
+    def __init__(self, input_data, parent=None):
+        title = f"CAN input {int(input_data.get('location', 0)) + 1}"
+        super().__init__(title, parent)
+        self.input_data = dict(input_data or {})
+        self._updating = False
+        self._current_value = 0
+        self._usage_labels = []
+
+        self.setStyleSheet(PAGE_LABEL_STYLE)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(10, 12, 10, 10)
+        layout.setSpacing(8)
+
+        self.description_label = QLabel("")
+        self.description_label.setWordWrap(True)
+        layout.addWidget(self.description_label)
+
+        control_row = QWidget()
+        control_layout = QHBoxLayout(control_row)
+        control_layout.setContentsMargins(0, 0, 0, 0)
+        control_layout.setSpacing(8)
+
+        self.toggle_button = QPushButton("OFF")
+        self.toggle_button.setCheckable(True)
+        self.toggle_button.setFixedWidth(100)
+        self.toggle_button.clicked.connect(self._on_toggle_clicked)
+        control_layout.addWidget(self.toggle_button)
+
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(0, 5000)
+        self.slider.valueChanged.connect(self._on_slider_changed)
+        self.slider.setVisible(False)
+        control_layout.addWidget(self.slider, 1)
+
+        self.value_edit = QLineEdit("0")
+        self.value_edit.setFixedWidth(96)
+        self.value_edit.setValidator(QIntValidator(0, 5000, self))
+        self.value_edit.editingFinished.connect(self._on_editing_finished)
+        self.value_edit.setVisible(False)
+        control_layout.addWidget(self.value_edit)
+
+        control_layout.addStretch(1)
+        layout.addWidget(control_row)
+
+        self.outputs_label = QLabel("Controlled outputs: -")
+        self.outputs_label.setWordWrap(True)
+        layout.addWidget(self.outputs_label)
+
+        self._sync_description()
+        self._sync_mode_widgets()
+
+    def _data_type_label(self, value):
+        return {
+            0x00: "BOOL",
+            0x01: "UINT16",
+            0x02: "UINT32",
+            0x03: "INT16",
+            0x04: "INT32",
+            0x05: "FLOAT",
+        }.get(int(value), str(value))
+
+    def _sync_description(self):
+        mode_label = "Digital" if int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else "Analog"
+        can_instance = int(self.input_data.get("canInstance", 0)) + 1
+        can_id = int(self.input_data.get("canId", 0))
+        offset = int(self.input_data.get("offset", 0))
+        data_type = self._data_type_label(self.input_data.get("dataType", 0))
+        self.description_label.setText(
+            f"{mode_label} control, CAN{can_instance}, ID 0x{can_id:03X}, offset {offset}, type {data_type}"
+        )
+
+    def _sync_mode_widgets(self):
+        is_digital = int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT
+        self.toggle_button.setVisible(is_digital)
+        self.slider.setVisible(not is_digital)
+        self.value_edit.setVisible(not is_digital)
+
+    def set_usage_labels(self, usage_labels):
+        self._usage_labels = list(usage_labels or [])
+
+    def set_live_channels(self, channels):
+        if not self._usage_labels:
+            self.outputs_label.setText("Controlled outputs: -")
+            return
+
+        channels = channels or []
+        parts = []
+        for label in self._usage_labels:
+            channel_index = None
+            if isinstance(label, dict):
+                channel_index = label.get("index")
+                channel_name = label.get("name") or f"OUT_{int(channel_index) + 1 if channel_index is not None else 0}"
+            else:
+                channel_name = str(label)
+
+            voltage_text = "- mV"
+            if channel_index is not None:
+                try:
+                    channel_index = int(channel_index)
+                    if 0 <= channel_index < len(channels):
+                        voltage_text = f"{int(channels[channel_index].get('voltage', 0))} mV"
+                except Exception:
+                    voltage_text = "- mV"
+
+            parts.append(f"{channel_name}: {voltage_text}")
+
+        self.outputs_label.setText("Controlled outputs: " + (" | ".join(parts) if parts else "-"))
+
+    def set_value(self, value, emit=False):
+        value = int(bool(value)) if int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else int(value)
+        if value == self._current_value and not emit:
+            return
+
+        self._current_value = value
+        self._updating = True
+        try:
+            if int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT:
+                self.toggle_button.blockSignals(True)
+                self.toggle_button.setChecked(bool(value))
+                self.toggle_button.setText("ON" if value else "OFF")
+                self.toggle_button.blockSignals(False)
+            else:
+                self.slider.blockSignals(True)
+                self.value_edit.blockSignals(True)
+                self.slider.setValue(max(0, min(5000, int(value))))
+                self.value_edit.setText(str(max(0, min(5000, int(value)))))
+                self.slider.blockSignals(False)
+                self.value_edit.blockSignals(False)
+        finally:
+            self._updating = False
+
+        if emit:
+            self.valueChanged.emit(self.input_data, self._current_value)
+
+    def current_value(self):
+        return self._current_value
+
+    def _on_toggle_clicked(self, checked):
+        if self._updating:
+            return
+        value = 1 if checked else 0
+        self.toggle_button.setText("ON" if checked else "OFF")
+        if value != self._current_value:
+            self._current_value = value
+            self.valueChanged.emit(self.input_data, value)
+
+    def _on_slider_changed(self, value):
+        if self._updating:
+            return
+        self._updating = True
+        try:
+            self.value_edit.blockSignals(True)
+            self.value_edit.setText(str(int(value)))
+            self.value_edit.blockSignals(False)
+        finally:
+            self._updating = False
+        if int(value) != self._current_value:
+            self._current_value = int(value)
+            self.valueChanged.emit(self.input_data, self._current_value)
+
+    def _on_editing_finished(self):
+        if self._updating:
+            return
+        try:
+            value = int(self.value_edit.text())
+        except Exception:
+            value = self._current_value
+        value = max(0, min(5000, value))
+        if value == self._current_value:
+            self.value_edit.setText(str(value))
+            return
+        self._updating = True
+        try:
+            self.slider.blockSignals(True)
+            self.slider.setValue(value)
+            self.slider.blockSignals(False)
+            self.value_edit.setText(str(value))
+        finally:
+            self._updating = False
+        self._current_value = value
+        self.valueChanged.emit(self.input_data, value)
+
+
+class ControlConfigPage(QWidget):
+    can_frame_requested = pyqtSignal(int, object)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setStyleSheet(PAGE_LABEL_STYLE)
+        self._rows = []
+        self._usage_by_input = {}
+        self._latest_channels = []
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(20, 20, 20, 20)
+        outer.setSpacing(8)
+        outer.setAlignment(Qt.AlignTop)
+
+        summary = QLabel(
+            "Controls are created from enabled CAN inputs. Digital inputs use a toggle; analog inputs use a 0-5000 mV slider and text field."
+        )
+        summary.setWordWrap(True)
+        outer.addWidget(summary)
+
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setFrameShape(QScrollArea.NoFrame)
+        self.scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.container = QWidget()
+        self.container_layout = QVBoxLayout(self.container)
+        self.container_layout.setContentsMargins(0, 0, 0, 0)
+        self.container_layout.setSpacing(8)
+        self.container_layout.setAlignment(Qt.AlignTop)
+        self.scroll.setWidget(self.container)
+        outer.addWidget(self.scroll, 1)
+
+        self.empty_label = QLabel("No enabled CAN inputs.")
+        self.empty_label.setStyleSheet("QLabel { color: #B0B0B0; font-style: italic; }")
+        self.container_layout.addWidget(self.empty_label)
+
+    def _clear_rows(self):
+        while self.container_layout.count():
+            item = self.container_layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                if widget is self.empty_label:
+                    self.container_layout.removeWidget(widget)
+                    widget.setParent(None)
+                    widget.hide()
+                else:
+                    widget.deleteLater()
+        self._rows = []
+
+    def refresh_controls(self, can_inputs, usage_by_input=None):
+        self._usage_by_input = usage_by_input or {}
+        previous_values = {}
+        for row in self._rows:
+            input_index = int(row.input_data.get("location", 0))
+            previous_values[input_index] = row.current_value()
+
+        self._clear_rows()
+
+        visible_rows = []
+        for input_data in can_inputs or []:
+            if not isinstance(input_data, dict) or not input_data.get("isUsed"):
+                continue
+
+            row_widget = ControlCanInputRow(input_data)
+            input_index = int(input_data.get("location", 0))
+            usage_entries = self._usage_by_input.get(input_index, [])
+            row_widget.set_usage_labels(usage_entries)
+            if input_index in previous_values:
+                row_widget.set_value(previous_values[input_index], emit=False)
+            row_widget.valueChanged.connect(self._handle_value_changed)
+            self.container_layout.addWidget(row_widget)
+            visible_rows.append(row_widget)
+
+        self._rows = visible_rows
+        if not self._rows:
+            self.container_layout.addWidget(self.empty_label)
+            self.empty_label.show()
+        else:
+            self.empty_label.hide()
+
+        self.set_live_channels(self._latest_channels)
+
+    def set_live_channels(self, channels):
+        self._latest_channels = list(channels or [])
+        for row in self._rows:
+            row.set_live_channels(self._latest_channels)
+
+    def _handle_value_changed(self, input_data, value):
+        try:
+            arbitration_id, payload = _build_can_control_payload(
+                int(input_data.get("canId", 0)),
+                int(input_data.get("offset", 0)),
+                int(input_data.get("dataType", 0)),
+                value,
+            )
+        except Exception as exc:
+            QMessageBox.critical(self, "Control send failed", str(exc))
+            return
+
+        self.can_frame_requested.emit(arbitration_id, payload)
+
+
 class InputsConfigPage(QWidget):
     inputsChanged = pyqtSignal()
 
@@ -1472,13 +1816,24 @@ class InputsConfigPage(QWidget):
     def set_usage_by_input(self, usage_by_input):
         usage_by_input = usage_by_input or {}
 
+        def _format_usage(entries):
+            formatted = []
+            for entry in entries:
+                if isinstance(entry, dict):
+                    name = str(entry.get("name", "")).strip()
+                    if name:
+                        formatted.append(name)
+                else:
+                    formatted.append(str(entry))
+            return ", ".join(formatted) if formatted else "-"
+
         for index, row in enumerate(self.physical_rows):
             outputs = usage_by_input.get(index, [])
-            row["usage"].setText(", ".join(outputs) if outputs else "-")
+            row["usage"].setText(_format_usage(outputs))
 
         for index, row in enumerate(self.can_rows):
             outputs = usage_by_input.get(8 + index, [])
-            row["usage"].setText(", ".join(outputs) if outputs else "-")
+            row["usage"].setText(_format_usage(outputs))
 
     def _packed_input_mode(self, interpretation_combo):
         output = interpretation_combo.currentData()
@@ -1641,9 +1996,11 @@ class ConfigTab(QWidget):
     send_reset_requested = pyqtSignal()
     request_config_requested = pyqtSignal()
     can_frames_changed = pyqtSignal(object)
+    can_frame_requested = pyqtSignal(int, object)
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._bulk_loading = False
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1728,6 +2085,7 @@ class ConfigTab(QWidget):
             page.logic_page.logicChanged.connect(self._refresh_input_usage_summary)
             page.edit_name.textChanged.connect(self._refresh_input_usage_summary)
             page.batchChanged.connect(self._refresh_batch_relations)
+            page.modeChanged.connect(self._refresh_input_usage_summary)
             page.modeChanged.connect(self._verify_overall_mode_validity)
             self.channel_widgets.append(page)
             scroll.setWidget(page)
@@ -1771,31 +2129,39 @@ class ConfigTab(QWidget):
         }
 
     def apply_config(self, config):
-        if isinstance(config, dict):
-            inputs_data = config.get("inputs")
-            if isinstance(inputs_data, dict):
-                self.inputs_page.apply_dict(inputs_data)
+        self._bulk_loading = True
+        self.setUpdatesEnabled(False)
+        try:
+            if isinstance(config, dict):
+                inputs_data = config.get("inputs")
+                if isinstance(inputs_data, dict):
+                    self.inputs_page.apply_dict(inputs_data)
 
-        channels = config.get("channels") if isinstance(config, dict) else config
-        if not isinstance(channels, list):
-            raise ValueError("Expected a channels list in the JSON file")
+            channels = config.get("channels") if isinstance(config, dict) else config
+            if not isinstance(channels, list):
+                raise ValueError("Expected a channels list in the JSON file")
 
-        for index, channel_data in enumerate(channels[: len(self.channel_widgets)]):
-            if isinstance(channel_data, dict):
-                self.channel_widgets[index].apply_dict(channel_data)
-                logic_data = channel_data.get("logic")
-                if isinstance(logic_data, dict):
-                    self.channel_widgets[index].logic_page.apply_dict(logic_data)
-                
-        if isinstance(config, dict):
-            logic_data = config.get("logic")
-            if isinstance(logic_data, list):
-                for index, logic_item in enumerate(logic_data[: len(self.channel_widgets)]):
-                    if isinstance(logic_item, dict):
-                        self.channel_widgets[index].logic_page.apply_dict(logic_item)
+            for index, channel_data in enumerate(channels[: len(self.channel_widgets)]):
+                if isinstance(channel_data, dict):
+                    self.channel_widgets[index].apply_dict(channel_data)
+                    logic_data = channel_data.get("logic")
+                    if isinstance(logic_data, dict):
+                        self.channel_widgets[index].logic_page.apply_dict(logic_data)
+
+            if isinstance(config, dict):
+                logic_data = config.get("logic")
+                if isinstance(logic_data, list):
+                    for index, logic_item in enumerate(logic_data[: len(self.channel_widgets)]):
+                        if isinstance(logic_item, dict):
+                            self.channel_widgets[index].logic_page.apply_dict(logic_item)
+        finally:
+            self.setUpdatesEnabled(True)
+            self._bulk_loading = False
 
         self._refresh_batch_relations()
+        self._refresh_pwm_sensor_sources()
         self._refresh_logic_sensor_sources()
+        self._verify_overall_mode_validity()
         self._emit_can_frames_changed()
 
     def get_defined_can_frame_options(self):
@@ -1814,18 +2180,73 @@ class ConfigTab(QWidget):
         return options
 
     def _emit_can_frames_changed(self):
+        if self._bulk_loading:
+            return
         self.can_frames_changed.emit(self.get_defined_can_frame_options())
 
     def _refresh_logic_sensor_sources(self):
+        if self._bulk_loading:
+            return
         for channel_widget in self.channel_widgets:
             channel_widget.logic_page.refresh_sensor_sources()
         self._refresh_input_usage_summary()
 
     def _refresh_pwm_sensor_sources(self):
+        if self._bulk_loading:
+            return
         for channel_widget in self.channel_widgets:
             channel_widget.refresh_pwm_sources()
 
+    def _refresh_control_page(self):
+        if self._bulk_loading:
+            return
+        if not hasattr(self, "control_page"):
+            return
+
+        can_inputs = self.inputs_page.to_dict().get("can", [])
+        usage_by_input = {}
+
+        for output_index, channel_widget in enumerate(self.channel_widgets):
+            logic_data = channel_widget.logic_page.to_dict()
+            output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
+            output_label = {"index": output_index, "name": output_name}
+
+            if logic_data.get("isUsed"):
+                exp = logic_data.get("exp", {}) or {}
+                for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
+                    if exp.get(type_key) != LOGIC_INPUT_TYPE_SENSOR:
+                        continue
+
+                    source_id = exp.get(id_key)
+                    if source_id is None:
+                        continue
+                    try:
+                        source_id = int(source_id)
+                    except Exception:
+                        continue
+
+                    usage_by_input.setdefault(source_id, [])
+                    if output_label not in usage_by_input[source_id]:
+                        usage_by_input[source_id].append(output_label)
+
+            if channel_widget.combo_mode.currentData() == OUT_MODE_PWM:
+                duty_input = channel_widget.combo_duty_input.currentData()
+                if duty_input is not None and int(duty_input) != 0xFFFF:
+                    pwm_label = {"index": output_index, "name": f"{output_name} (PWM)"}
+                    duty_source_id = int(duty_input)
+                    usage_by_input.setdefault(duty_source_id, [])
+                    if pwm_label not in usage_by_input[duty_source_id]:
+                        usage_by_input[duty_source_id].append(pwm_label)
+
+        self.control_page.refresh_controls(can_inputs, usage_by_input)
+
+    def set_live_channel_data(self, channels):
+        if hasattr(self, "control_page"):
+            self.control_page.set_live_channels(channels)
+
     def _refresh_batch_relations(self):
+        if self._bulk_loading:
+            return
         batch_controlled = [-1] * 16
         for index, channel_widget in enumerate(self.channel_widgets):
             batch = channel_widget.combo_batch.currentData()
@@ -1854,6 +2275,8 @@ class ConfigTab(QWidget):
                             channel_widget.combo_batch.removeItem(remove_index)
 
     def _verify_overall_mode_validity(self):
+        if self._bulk_loading:
+            return
         channels_in_pwm = []
         for index, channel_widget in enumerate(self.channel_widgets):
             mode = channel_widget.combo_mode.currentData()
@@ -1869,35 +2292,46 @@ class ConfigTab(QWidget):
             )
 
     def _refresh_input_usage_summary(self):
+        if self._bulk_loading:
+            return
         usage_by_input = {}
 
         for output_index, channel_widget in enumerate(self.channel_widgets):
             logic_data = channel_widget.logic_page.to_dict()
-            if not logic_data.get("isUsed"):
-                continue
-
             output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
             output_label = f"CH{output_index + 1}:{output_name}"
 
-            exp = logic_data.get("exp", {}) or {}
-            for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
-                if exp.get(type_key) != LOGIC_INPUT_TYPE_SENSOR:
-                    continue
+            if logic_data.get("isUsed"):
+                exp = logic_data.get("exp", {}) or {}
+                for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
+                    if exp.get(type_key) != LOGIC_INPUT_TYPE_SENSOR:
+                        continue
 
-                source_id = exp.get(id_key)
-                if source_id is None:
-                    continue
-                try:
-                    source_id = int(source_id)
-                except Exception:
-                    continue
+                    source_id = exp.get(id_key)
+                    if source_id is None:
+                        continue
+                    try:
+                        source_id = int(source_id)
+                    except Exception:
+                        continue
 
-                if source_id not in usage_by_input:
-                    usage_by_input[source_id] = []
-                if output_label not in usage_by_input[source_id]:
-                    usage_by_input[source_id].append(output_label)
+                    if source_id not in usage_by_input:
+                        usage_by_input[source_id] = []
+                    if output_label not in usage_by_input[source_id]:
+                        usage_by_input[source_id].append(output_label)
+
+            if channel_widget.combo_mode.currentData() == OUT_MODE_PWM:
+                duty_input = channel_widget.combo_duty_input.currentData()
+                if duty_input is not None and int(duty_input) != 0xFFFF:
+                    pwm_label = f"{output_name} (PWM)"
+                    duty_source_id = int(duty_input)
+                    if duty_source_id not in usage_by_input:
+                        usage_by_input[duty_source_id] = []
+                    if pwm_label not in usage_by_input[duty_source_id]:
+                        usage_by_input[duty_source_id].append(pwm_label)
 
         self.inputs_page.set_usage_by_input(usage_by_input)
+        self._refresh_control_page()
 
     def _build_output_payload(self):
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)

@@ -28,6 +28,7 @@ from PyQt5.QtWidgets import (
 )
 
 from pdm_can_worker import can_isolated_process
+from pdm_control_tab import ControlConfigPage
 from pdm_config_tab import ConfigTab
 from pdm_plot_tab import PlotPanel
 from pdm_shared import (
@@ -81,6 +82,7 @@ class MainWindow(QMainWindow):
         self.latest_frames = []
         self.plotting_enabled = True
         self.config_tab = None
+        self.control_tab = None
 
         self.init_ui()
 
@@ -239,8 +241,16 @@ class MainWindow(QMainWindow):
         self.config_tab.send_reset_requested.connect(self.send_reset_device)
         self.config_tab.request_config_requested.connect(self.request_config_from_device)
         self.config_tab.can_frames_changed.connect(self._refresh_tx_frame_options)
+        self.config_tab.inputs_page.inputsChanged.connect(self._refresh_control_tab)
+        for channel_widget in self.config_tab.channel_widgets:
+            channel_widget.logic_page.logicChanged.connect(self._refresh_control_tab)
+            channel_widget.edit_name.textChanged.connect(self._refresh_control_tab)
         tabs.addTab(self.config_tab, "Configuration")
+        self.control_tab = ControlConfigPage()
+        self.control_tab.can_frame_requested.connect(self.send_can_frame)
+        tabs.addTab(self.control_tab, "Control")
         self._refresh_tx_frame_options(self.config_tab.get_defined_can_frame_options())
+        self._refresh_control_tab()
 
         hb_corner = QWidget()
         hb_corner_layout = QHBoxLayout(hb_corner)
@@ -304,6 +314,46 @@ class MainWindow(QMainWindow):
             return
         self._device_config_request_pending = True
         self.tx_queue.put({"cmd": "REQUEST_CONFIG"})
+
+    def send_can_frame(self, arbitration_id, payload):
+        self.tx_queue.put({"cmd": "TX", "id": int(arbitration_id), "payload": payload})
+
+    def _refresh_control_tab(self):
+        return 
+
+        if self.control_tab is None or self.config_tab is None:
+            return
+
+        self.control_tab.set_physical_inputs(self.config_tab.inputs_page.to_dict().get("physical", []))
+        can_inputs = self.config_tab.inputs_page.to_dict().get("can", [])
+        usage_by_input = {}
+
+        for output_index, channel_widget in enumerate(self.config_tab.channel_widgets):
+            logic_data = channel_widget.logic_page.to_dict()
+            if not logic_data.get("isUsed"):
+                continue
+
+            output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
+            output_label = {"index": output_index, "name": output_name}
+
+            exp = logic_data.get("exp", {}) or {}
+            for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
+                if exp.get(type_key) != 0x00:
+                    continue
+
+                source_id = exp.get(id_key)
+                if source_id is None:
+                    continue
+                try:
+                    source_id = int(source_id)
+                except Exception:
+                    continue
+
+                usage_by_input.setdefault(source_id, [])
+                if output_label not in usage_by_input[source_id]:
+                    usage_by_input[source_id].append(output_label)
+
+        self.control_tab.refresh_controls(can_inputs, usage_by_input)
 
     def _request_config_if_needed(self):
         if self.config_tab is None or self._device_config_request_pending:
@@ -494,6 +544,8 @@ class MainWindow(QMainWindow):
             try:
                 if clicked_button == yes_button and self._pending_device_config is not None and self.config_tab is not None:
                     self.config_tab.apply_config(self._pending_device_config)
+                    # if self.control_tab is not None:
+                    #     #self._refresh_control_tab()
                     self.config_tab.set_isotp_state(100, "Device configuration loaded", busy=False)
             finally:
                 self._pending_device_config = None
@@ -522,7 +574,7 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Payload Hex Parse Error", f"Failed parsing byte context: {exc}")
             return
 
-        self.tx_queue.put({"cmd": "TX", "id": arbitration_id, "payload": payload})
+        self.send_can_frame(arbitration_id, payload)
 
     def process_gui_refresh(self):
         updated = False
@@ -546,7 +598,6 @@ class MainWindow(QMainWindow):
                 if packet.get("serial_ready"):
                     self.serial_device_ready = True
                     self._connection_state = "serial_ready"
-                    self._request_config_if_needed()
                     continue
                 if "error" in packet:
                     self._device_config_request_pending = False
@@ -559,6 +610,9 @@ class MainWindow(QMainWindow):
                 self.latest_phy = packet["phy"]
                 self.lates_imu = packet["imu"]
                 self.latest_frames = packet.get("frames", [])
+                if self.control_tab is not None:
+                    self.control_tab.set_live_channels(self.latest_ch)
+                    self.control_tab.set_live_physical_values(self.latest_phy)
                 self.plot_panel.update_from_packet(packet)
                 self.last_frame_rx_time = time.time()
                 updated = True
@@ -580,8 +634,8 @@ class MainWindow(QMainWindow):
         self.lbl_acc_z.setText(f"{self.lates_imu['accZ']:.2f} g")
 
         self.lbl_gyro_x.setText(f"{self.lates_imu['pitch']:.2f} dps")
-        self.lbl_gyro_y.setText(f"{self.lates_imu['yaw']:.2f} dps")
-        self.lbl_gyro_z.setText(f"{self.lates_imu['roll']:.2f} dps")
+        self.lbl_gyro_y.setText(f"{self.lates_imu['roll']:.2f} dps")
+        self.lbl_gyro_z.setText(f"{self.lates_imu['yaw']:.2f} dps")
 
         logic_valid_mask = int(self.latest_sys.get("logicValidMask", 0))
         invalid_outputs = [str(index + 1) for index in range(CHANNEL_COUNT) if not (logic_valid_mask & (1 << index))]
@@ -661,7 +715,7 @@ class MainWindow(QMainWindow):
             self._connection_state = "connected"
             self._set_heartbeat_status(f"Connected ({age_s:.1f}s)", "#81C784")
 
-        if previous_state != self._connection_state and self._connection_state == "connected":
+        if self._connection_state == "connected" and previous_state != self._connection_state:
             self._request_config_if_needed()
 
     def update_plots(self):
