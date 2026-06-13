@@ -65,6 +65,7 @@ def _pack_can_input_value(data_type, value):
         voltage_chart = SparklineWidget("mV")
         current_chart = SparklineWidget("mA")
         outputs = list(self._usage_by_input.get(source_id, []))
+        print(outputs)
         return {
             "kind": kind,
             "index": index,
@@ -294,7 +295,7 @@ class SparklineWidget(QWidget):
         self.unit = unit
         self._series = {}
         self._colors = {}
-        self.setMinimumHeight(76)
+        self.setMinimumHeight(56)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
     def clear(self):
@@ -400,8 +401,8 @@ class ControlValueCell(QWidget):
 
         self.setStyleSheet("QWidget { background-color: #1E1E1E; }")
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(6, 2, 6, 2)
-        layout.setSpacing(8)
+        layout.setContentsMargins(3, 1, 3, 1)
+        layout.setSpacing(3)
 
         self.value_label = QLabel("-")
         self.value_label.setStyleSheet("QLabel { color: #E0E0E0; }")
@@ -521,7 +522,7 @@ class ControlValueCell(QWidget):
                 self.toggle.blockSignals(False)
             else:
                 self.toggle.blockSignals(True)
-                self.toggle.setChecked(mvolts >= 4800)
+                self.toggle.setChecked(mvolts >= 2750)
                 self.toggle.blockSignals(False)
         else:
             try:
@@ -569,7 +570,7 @@ class ControlConfigPage(QWidget):
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(20, 20, 20, 20)
-        outer.setSpacing(10)
+        outer.setSpacing(4)
 
         summary = QLabel(
             "One row per input. Physical rows are display-only. CAN rows expose a toggle for digital inputs or a slider for analog inputs."
@@ -594,7 +595,8 @@ class ControlConfigPage(QWidget):
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setWordWrap(True)
         self.table.verticalHeader().setVisible(False)
-        self.table.verticalHeader().setDefaultSectionSize(84)
+        self.table.verticalHeader().setDefaultSectionSize(68)
+        self.table.verticalHeader().setMinimumSectionSize(60)
         self.table.horizontalHeader().setStretchLastSection(False)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
@@ -604,6 +606,7 @@ class ControlConfigPage(QWidget):
         self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
         self.table.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
         self.table.setColumnWidth(4, 260)
+        self.table.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         outer.addWidget(self.table, 1)
 
     def set_physical_inputs(self, physical_inputs):
@@ -695,7 +698,7 @@ class ControlConfigPage(QWidget):
         self._rows = rows
         self.table.setRowCount(len(rows))
         for row_index, row in enumerate(rows):
-            self.table.setRowHeight(row_index, 84)
+            self.table.setRowHeight(row_index, 68)
             self._apply_row(row_index, row)
 
         self.set_live_physical_values(self._latest_physical_values)

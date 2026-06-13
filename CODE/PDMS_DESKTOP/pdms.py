@@ -73,7 +73,7 @@ class MainWindow(QMainWindow):
 
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
         self.latest_ch = [
-            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0}
+            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0, "current_rms": 0}
             for _ in range(CHANNEL_COUNT)
         ]
         self.latest_phy = [0] * PHY_INPUT_COUNT
@@ -198,15 +198,19 @@ class MainWindow(QMainWindow):
 
         out_table_box = QGroupBox("PDM Output Channel Bus Matrix")
         out_table_vbox = QVBoxLayout(out_table_box)
-        self.table_channels = QTableWidget(CHANNEL_COUNT, 6)
-        self.table_channels.setHorizontalHeaderLabels(["Name", "Status", "State", "V [mV]", "I inst [mA]", "I avg [mA]"])
+        self.table_channels = QTableWidget(CHANNEL_COUNT, 7)
+        self.table_channels.setHorizontalHeaderLabels(["Name", "Status", "State", "V [mV]", "I inst [mA]", "I avg [mA]", "Irms [mA]"])
         self.table_channels.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_channels.verticalHeader().setDefaultSectionSize(22)
+        self.table_channels.verticalHeader().setMinimumSectionSize(18)
+        self.table_channels.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         for row in range(CHANNEL_COUNT):
-            for col in range(6):
+            for col in range(7):
                 item = QTableWidgetItem("")
                 if col > 2:
                     item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
                 self.table_channels.setItem(row, col, item)
+            self.table_channels.setRowHeight(row, 22)
         out_table_vbox.addWidget(self.table_channels)
         tables_layout.addWidget(out_table_box, stretch=5)
 
@@ -216,11 +220,15 @@ class MainWindow(QMainWindow):
         self.table_phy.setHorizontalHeaderLabels(["Input Line", "Input voltage [mV]"])
         self.table_phy.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table_phy.horizontalHeader().setStretchLastSection(True)
+        self.table_phy.verticalHeader().setDefaultSectionSize(22)
+        self.table_phy.verticalHeader().setMinimumSectionSize(18)
+        self.table_phy.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         for row in range(PHY_INPUT_COUNT):
             self.table_phy.setItem(row, 0, QTableWidgetItem(f"Physical Input {row + 1}"))
             num_item = QTableWidgetItem("0")
             num_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.table_phy.setItem(row, 1, num_item)
+            self.table_phy.setRowHeight(row, 22)
         phy_table_vbox.addWidget(self.table_phy)
         tables_layout.addWidget(phy_table_box, stretch=2)
 
@@ -229,6 +237,9 @@ class MainWindow(QMainWindow):
         self.table_frames = QTableWidget(0, 2)
         self.table_frames.setHorizontalHeaderLabels(["Frame ID", "Frequency [Hz]"])
         self.table_frames.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_frames.verticalHeader().setDefaultSectionSize(20)
+        self.table_frames.verticalHeader().setMinimumSectionSize(18)
+        self.table_frames.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         frames_vbox.addWidget(self.table_frames)
         tables_layout.addWidget(frames_box, stretch=2)
 
@@ -241,6 +252,7 @@ class MainWindow(QMainWindow):
         self.config_tab.send_reset_requested.connect(self.send_reset_device)
         self.config_tab.request_config_requested.connect(self.request_config_from_device)
         self.config_tab.can_frames_changed.connect(self._refresh_tx_frame_options)
+        self.config_tab.config_applied.connect(self._refresh_control_tab)
         self.config_tab.inputs_page.inputsChanged.connect(self._refresh_control_tab)
         for channel_widget in self.config_tab.channel_widgets:
             channel_widget.logic_page.logicChanged.connect(self._refresh_control_tab)
@@ -250,6 +262,9 @@ class MainWindow(QMainWindow):
         self.control_tab.can_frame_requested.connect(self.send_can_frame)
         tabs.addTab(self.control_tab, "Control")
         self._refresh_tx_frame_options(self.config_tab.get_defined_can_frame_options())
+        self._default_config_signature = self._config_signature(
+            self._canonicalize_config(self.config_tab.collect_config())
+        )
         self._refresh_control_tab()
 
         hb_corner = QWidget()
@@ -304,6 +319,7 @@ class MainWindow(QMainWindow):
 
     def send_isotp_config(self, payload):
         self._config_check_suppressed_until = time.time() + 5.0
+        self._refresh_control_tab()
         self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
 
     def send_reset_device(self):
@@ -324,51 +340,7 @@ class MainWindow(QMainWindow):
 
         self.control_tab.set_physical_inputs(self.config_tab.inputs_page.to_dict().get("physical", []))
         can_inputs = self.config_tab.inputs_page.to_dict().get("can", [])
-        usage_by_input = {}
-
-        for output_index, channel_widget in enumerate(self.config_tab.channel_widgets):
-            logic_data = channel_widget.logic_page.to_dict()
-            if not logic_data.get("isUsed"):
-                continue
-
-            output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
-            output_label = {"index": output_index, "name": output_name}
-
-            exp = logic_data.get("exp", {}) or {}
-            for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
-                if exp.get(type_key) != 0x00:
-                    continue
-
-                source_id = exp.get(id_key)
-                if source_id is None:
-                    continue
-                try:
-                    source_id = int(source_id)
-                except Exception:
-                    continue
-
-                usage_by_input.setdefault(source_id, [])
-                if output_label not in usage_by_input[source_id]:
-                    usage_by_input[source_id].append(output_label)
-
-        for output_index, channel_widget in enumerate(self.config_tab.channel_widgets):
-            channel_data = channel_widget.to_dict()
-            pwm_cfg = channel_data.get("pwmCfg", {}) or {}
-            duty_input = pwm_cfg.get("dutyInput", 0xFFFF)
-            if duty_input in (None, 0xFFFF):
-                continue
-
-            try:
-                duty_input = int(duty_input)
-            except Exception:
-                continue
-
-            output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
-            pwm_label = {"index": output_index, "name": f"{output_name} (PWM)"}
-            usage_by_input.setdefault(duty_input, [])
-            if pwm_label not in usage_by_input[duty_input]:
-                usage_by_input[duty_input].append(pwm_label)
-
+        usage_by_input = self.config_tab.build_usage_by_input()
         self.control_tab.refresh_controls(can_inputs, usage_by_input)
 
     def _request_config_if_needed(self):
@@ -389,6 +361,29 @@ class MainWindow(QMainWindow):
             return config
 
         result = dict(config)
+
+        def _normalize_i2t_cfg(i2t_cfg):
+            if not isinstance(i2t_cfg, dict):
+                return {
+                    "useI2t": False,
+                    "nominalCurrent": 0,
+                    "nominalCurrentSq": 0,
+                    "timeThreshold": 0,
+                    "i2tThreshold": 0,
+                }
+
+            nominal_current = int(i2t_cfg.get("nominalCurrent", 0))
+            nominal_current = max(0, (nominal_current // 10) * 10)
+            time_threshold = int(i2t_cfg.get("timeThreshold", 0))
+            nominal_current_sq = nominal_current * nominal_current
+            i2t_threshold = nominal_current_sq * time_threshold
+            return {
+                "useI2t": bool(i2t_cfg.get("useI2t", False)),
+                "nominalCurrent": nominal_current,
+                "nominalCurrentSq": nominal_current_sq,
+                "timeThreshold": time_threshold,
+                "i2tThreshold": i2t_threshold,
+            }
 
         inputs = result.get("inputs")
         if isinstance(inputs, dict):
@@ -420,6 +415,22 @@ class MainWindow(QMainWindow):
             ]
 
             result["inputs"] = canonical_inputs
+
+        channels = result.get("channels")
+        if isinstance(channels, list):
+            canonical_channels = []
+            for item in channels:
+                if not isinstance(item, dict):
+                    canonical_channels.append(item)
+                    continue
+
+                channel_item = dict(item)
+                safety = dict(channel_item.get("safety") or {})
+                safety["i2tCfg"] = _normalize_i2t_cfg(safety.get("i2tCfg"))
+                channel_item["safety"] = safety
+                canonical_channels.append(channel_item)
+
+            result["channels"] = canonical_channels
 
         logic = result.get("logic")
         if isinstance(logic, list):
@@ -504,7 +515,7 @@ class MainWindow(QMainWindow):
             for field_name in ("input1Type", "input1ID", "input1Const", "input2Type", "input2ID", "input2Const", "opr"):
                 if current_exp.get(field_name) != device_exp.get(field_name):
                     field_names.append(field_name)
-            logic_diff_rows.append(f"L{index + 1}: {', '.join(field_names)}")
+            logic_diff_rows.append(f"L{index + 1}")
 
         if len(current_logic) != len(device_logic):
             logic_diff_rows.extend(
@@ -530,6 +541,12 @@ class MainWindow(QMainWindow):
 
         current_config = self._canonicalize_config(self.config_tab.collect_config())
         device_config = self._canonicalize_config(device_config)
+        if self._config_signature(current_config) == self._default_config_signature:
+            self.config_tab.apply_config(device_config)
+            self.config_tab.set_isotp_state(100, "Device configuration loaded", busy=False)
+            self._device_config_request_pending = False
+            return
+
         if self._config_signature(current_config) == self._config_signature(device_config):
             self._device_config_request_pending = False
             return
@@ -560,8 +577,7 @@ class MainWindow(QMainWindow):
             try:
                 if clicked_button == yes_button and self._pending_device_config is not None and self.config_tab is not None:
                     self.config_tab.apply_config(self._pending_device_config)
-                    # if self.control_tab is not None:
-                    #     #self._refresh_control_tab()
+                    self._refresh_control_tab()
                     self.config_tab.set_isotp_state(100, "Device configuration loaded", busy=False)
             finally:
                 self._pending_device_config = None
@@ -666,7 +682,8 @@ class MainWindow(QMainWindow):
             bg_hex, text_hex = get_row_colors(ch["state"], ch["status"])
             status_str = OUT_STATUS_MAP.get(ch["status"], str(ch["status"]))
             state_str = OUT_STATE_MAP.get(ch["state"], str(ch["state"]))
-            vals = (ch["name"], status_str, state_str, str(ch["voltage"]), str(ch["current"]), f"{ch['current_avg']:.1f}")
+            irms_text = str(ch.get("current_rms", 0)) if i < 8 else "-"
+            vals = (ch["name"], status_str, state_str, str(ch["voltage"]), str(ch["current"]), f"{ch['current_avg']:.1f}", irms_text)
 
             for col_idx, text in enumerate(vals):
                 item = self.table_channels.item(i, col_idx)
@@ -700,6 +717,7 @@ class MainWindow(QMainWindow):
                 self.table_frames.setItem(row, 1, freq_item)
             if freq_item.text() != freq_text:
                 freq_item.setText(freq_text)
+            self.table_frames.setRowHeight(row, 20)
 
         self.update_heartbeat_status()
 

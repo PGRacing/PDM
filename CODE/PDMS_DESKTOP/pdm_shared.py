@@ -78,6 +78,8 @@ IDS = {
     "PHY_INPUTS_5_8": BASE_ID + 0x00F,
     "IMU_ACC": BASE_ID + 0x10,
     "IMU_RATES": BASE_ID + 0x11,
+    "IRMS_1_4": BASE_ID + 0x12,
+    "IRMS_5_8": BASE_ID + 0x13,
 }
 
 OUT_STATE_MAP = {0: "OFF", 1: "ON", 2: "ERR"}

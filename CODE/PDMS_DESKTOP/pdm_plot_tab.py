@@ -31,6 +31,9 @@ class Kalman1D:
 
 
 class PlotPanel(QWidget):
+    MIN_VOLTAGE_RANGE_MV = 10000
+    MIN_CURRENT_RANGE_MA = 3000
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -64,7 +67,7 @@ class PlotPanel(QWidget):
         channel_content = QWidget()
         channel_layout = QVBoxLayout(channel_content)
         channel_layout.setContentsMargins(0, 0, 0, 0)
-        channel_layout.setSpacing(6)
+        channel_layout.setSpacing(1)
         channel_layout.addStretch(2)
         channel_content.setMinimumWidth(150)
         for i in range(CHANNEL_COUNT):
@@ -108,13 +111,13 @@ class PlotPanel(QWidget):
         self.plot_i.addLegend(offset=(10, 10))
 
         self.plot_v.setTitle("Voltage", color="#BB86FC", size="11pt")
-        self.plot_v.setLabel("left", "Voltage", units="V")
+        self.plot_v.setLabel("left", "Voltage", units="mV")
         self.plot_v.showGrid(x=True, y=True, alpha=0.15)
         self.plot_v.setMouseEnabled(x=True, y=True)
         self.plot_v.getViewBox().setMouseMode(pg.ViewBox.RectMode)
 
         self.plot_i.setTitle("Current", color="#BB86FC", size="11pt")
-        self.plot_i.setLabel("left", "Current", units="A")
+        self.plot_i.setLabel("left", "Current", units="mA")
         self.plot_i.showGrid(x=True, y=True, alpha=0.15)
         self.plot_i.setMouseEnabled(x=True, y=True)
         self.plot_i.getViewBox().setMouseMode(pg.ViewBox.RectMode)
@@ -127,6 +130,8 @@ class PlotPanel(QWidget):
             self.plot_i.addItem(self.curves_i_inst[ch])
             self.curves_i_avg[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr + "40", width=1), name=f"CH{ch+1}")
             self.plot_i.addItem(self.curves_i_avg[ch])
+
+        self._apply_minimum_axis_ranges()
 
     def update_from_packet(self, packet):
         t_now = packet["time"]
@@ -172,6 +177,28 @@ class PlotPanel(QWidget):
                 self.curves_v[ch].setData([], [])
                 self.curves_i_inst[ch].setData([], [])
                 self.curves_i_avg[ch].setData([], [])
+
+        self._apply_minimum_axis_ranges(selected_channels)
+
+    def _apply_minimum_axis_ranges(self, selected_channels=None):
+        selected_channels = list(range(CHANNEL_COUNT)) if selected_channels is None else list(selected_channels)
+
+        voltage_values = [value for ch in selected_channels for _, value in self.hist_v_filt[ch]]
+        current_values = [value for ch in selected_channels for _, value in self.hist_i_filt[ch]]
+        current_values.extend(value for ch in selected_channels for _, value in self.hist_iavg[ch])
+
+        self._set_minimum_range(self.plot_v, voltage_values, self.MIN_VOLTAGE_RANGE_MV)
+        self._set_minimum_range(self.plot_i, current_values, self.MIN_CURRENT_RANGE_MA)
+
+    @staticmethod
+    def _set_minimum_range(plot_item, values, minimum_range):
+        if values:
+            lower = max(0, min(values))
+            upper = max(max(values), lower + minimum_range)
+        else:
+            lower = 0
+            upper = minimum_range
+        plot_item.setYRange(lower, upper, padding=0)
 
     def _set_channels(self, indices_to_show):
         visible_indices = set(indices_to_show)

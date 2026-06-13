@@ -169,7 +169,7 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
             _pipe_progress(
                 pipe_conn,
                 100,
-                f"RX config frame {rx_cfg_state['frames_received']}/{rx_cfg_state['frames_expected']}",
+                "Config received",
                 done=True,
             )
             pipe_conn.send({"isotp_config_payload": bytes(rx_cfg_state["buffer"][:total_len])})
@@ -194,7 +194,7 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
             _pipe_progress(
                 pipe_conn,
                 100,
-                f"RX config frame {rx_cfg_state['frames_received']}/{rx_cfg_state['frames_expected']}",
+                "Config received",
                 done=True,
             )
             pipe_conn.send({"isotp_config_payload": bytes(rx_cfg_state["buffer"][:total_len])})
@@ -369,7 +369,7 @@ def can_isolated_process(pipe_conn, tx_queue):
 
     def _reset_runtime_state():
         channels = [
-            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0}
+            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0, "current_rms": 0}
             for _ in range(CHANNEL_COUNT)
         ]
         phy_inputs = [0] * PHY_INPUT_COUNT
@@ -408,6 +408,7 @@ def can_isolated_process(pipe_conn, tx_queue):
                 f"ch{n}_voltage_mV",
                 f"ch{n}_i_inst_mA",
                 f"ch{n}_i_avg_mA",
+                f"ch{n}_i_rms_mA",
             ]
         for i in range(PHY_INPUT_COUNT):
             header += [f"phy_in{i+1}"]
@@ -555,6 +556,13 @@ def can_isolated_process(pipe_conn, tx_queue):
                         win.popleft()
                     channels[ch]["current_avg"] = sum(v for _, v in win) / len(win) if win else 0
             sys_status["total_current"] = sum(ch["current_avg"] for ch in channels)
+        elif cid in (IDS["IRMS_1_4"], IDS["IRMS_5_8"]):
+            base = {IDS["IRMS_1_4"]: 0, IDS["IRMS_5_8"]: 4}[cid]
+            vals = parse_u16x4(d)
+            for i in range(4):
+                ch = base + i
+                if ch < CHANNEL_COUNT:
+                    channels[ch]["current_rms"] = vals[i] * 10
         elif cid == IDS["NAMES"]:
             meta = d[0]
             part, ch = (meta >> 4) & 0x0F, meta & 0x0F
@@ -586,7 +594,7 @@ def can_isolated_process(pipe_conn, tx_queue):
                 try:
                     row = [t_now, f"{sys_status['total_current']:.1f}", sys_status["batt"], f"{sys_status['core_temp']:.1f}", sys_status["safety"]]
                     for ch in channels:
-                        row.extend([ch["name"], ch["status"], ch["state"], ch["voltage"], ch["current"], f"{ch['current_avg']:.1f}"])
+                        row.extend([ch["name"], ch["status"], ch["state"], ch["voltage"], ch["current"], f"{ch['current_avg']:.1f}", ch.get("current_rms", 0)])
                     row.extend(phy_inputs)
                     log_writer.writerow(row)
                 except Exception:
