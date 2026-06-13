@@ -447,47 +447,43 @@ class FuseChartWidget(QWidget):
         if plot_rect.width() <= 0 or plot_rect.height() <= 0:
             return
 
-        nominal_current_a = max(0.1, min(100.0, self._nominal_current_ma / 1000.0))
+        nominal_current_a = max(0.01, min(100.0, self._nominal_current_ma / 1000.0))
         i2t_threshold_a2s = max(1e-9, float(self._i2t_threshold)) / 1000000000.0
-        low_overcurrent_delta_a = 0.1
-        low_overload_current_a = nominal_current_a + low_overcurrent_delta_a
-        peak_current_a = max(nominal_current_a * 1.01, 100)
+        low_overcurrent_delta_a = 0.01
 
-        y_over_min = 0.1
-        y_over_max = max(peak_current_a - nominal_current_a, y_over_min * 10.0)
+        # FIX 1: Lock the boundaries directly to the exact axis grid values
+        y_over_min = 0.01
+        y_over_max = 100.0  # Matches the top grid line label precisely
+        
         x_min = 0.0
-
-        # Ensure x_min is a small non-zero value since log(0) is mathematically undefined
         log_x_min = max(0.01, x_min)
-        log_x_max = 1000.0  
+        log_x_max = 10000.0  # Matches the rightmost grid line label precisely
 
         # Clean base-10 logarithmic timeline tick marks
-        x_ticks = [0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
+        x_ticks = [0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0]
         x_ticks = [tick for tick in x_ticks if log_x_min <= tick <= log_x_max]
 
-        # Draw Logarithmic Vertical Grid Lines
+        # Draw Vertical Grid Lines
         painter.setPen(QPen(QColor("#2A2A2A"), 1))
         for tick in x_ticks:
             x = self._log_map(tick, log_x_min, log_x_max, plot_rect.left(), plot_rect.right())
             painter.drawLine(int(x), plot_rect.top(), int(x), plot_rect.bottom())
 
         # Draw Horizontal Grid Lines
-        y_ticks = [0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 99.0]
+        y_ticks = [0.01, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
         y_ticks = [tick for tick in y_ticks if y_over_min <= tick <= y_over_max]
         y_ticks = sorted({round(tick, 6) for tick in y_ticks})
         for tick in y_ticks:
             y = self._log_map(tick, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
             painter.drawLine(plot_rect.left(), int(y), plot_rect.right(), int(y))
 
-        # Outer Border Box & Graph Labels
+        # Borders & Labels
         painter.setPen(QPen(QColor("#8A8A8A"), 1))
         painter.drawRect(plot_rect)
         painter.setPen(QColor("#B8B8B8"))
         painter.drawText(rect.adjusted(10, 2, -10, -2), Qt.AlignTop | Qt.AlignLeft, "Overcurrent (A)")
         painter.drawText(rect.adjusted(10, 2, -10, -2), Qt.AlignBottom | Qt.AlignRight, "Time (s)")
 
-        # Render Axis Labels Numbers
-        painter.setPen(QColor("#B0B0B0"))
         for tick in y_ticks:
             y = self._log_map(tick, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
             painter.drawText(0, int(y) - 7, 54, 14, Qt.AlignRight | Qt.AlignVCenter, self._format_current_label(tick))
@@ -497,40 +493,43 @@ class FuseChartWidget(QWidget):
             painter.drawText(int(x) - 28, plot_rect.bottom() + 14, 56, 16, Qt.AlignHCenter, self._format_time_label(tick))
 
         # =========================================================================
-        # FIXED DYNAMIC TARGET ANCHORS (No longer hardcoded to 2.0)
+        # TARGET TRACKING ANCHOR (Locked to your UI Time threshold entry)
         # =========================================================================
-        target_overcurrent = nominal_current_a  
-        target_time = i2t_threshold_a2s / (target_overcurrent ** 2)
+        import math
+        # Target time matches your 'Time threshold' input box dynamically
+        target_time = i2t_threshold_a2s / (nominal_current_a ** 2)
+        
+        # Calculate the precise overcurrent height where the physics curve hits that time
+        total_current_at_target = math.sqrt(nominal_current_a**2 + (i2t_threshold_a2s / target_time))
+        target_overcurrent = total_current_at_target - nominal_current_a
 
-        # Draw the dynamic yellow crosshair tracking guides
-        if log_x_min <= target_time <= log_x_max and y_over_min <= target_overcurrent <= y_over_max:
-            th_x = self._log_map(target_time, log_x_min, log_x_max, plot_rect.left(), plot_rect.right())
-            th_y = self._log_map(target_overcurrent, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
+        # Draw the yellow crosshair tracking guides
+        # if log_x_min <= target_time <= log_x_max and y_over_min <= target_overcurrent <= y_over_max:
+        #     th_x = self._log_map(target_time, log_x_min, log_x_max, plot_rect.left(), plot_rect.right())
+        #     th_y = self._log_map(target_overcurrent, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
             
-            painter.setPen(QPen(QColor("#F2C94C"), 1, Qt.DashLine))
-            painter.drawLine(plot_rect.left(), int(th_y), int(th_x), int(th_y))
-            painter.drawLine(int(th_x), plot_rect.bottom(), int(th_x), int(th_y))
+        #     painter.setPen(QPen(QColor("#F2C94C"), 1, Qt.DashLine))
+        #     painter.drawLine(plot_rect.left(), int(th_y), int(th_x), int(th_y))
+        #     painter.drawLine(int(th_x), plot_rect.bottom(), int(th_x), int(th_y))
 
-        # PLOT THE CURVE IN LOGARITHMIC SPACE
+        # PLOT THE I2T PROTECTION CURVE
         curve_points = []
         sample_count = 240
         
-        peak_overcurrent_a = y_over_max
-        sample_overcurrent_min = max(0.1, y_over_min, low_overcurrent_delta_a)
-        sample_overcurrent_max = max(peak_overcurrent_a, sample_overcurrent_min * 1.001)
+        sample_overcurrent_min = max(0.01, y_over_min, low_overcurrent_delta_a)
+        sample_overcurrent_max = max(y_over_max, sample_overcurrent_min * 1.001)
 
         for index in range(sample_count):
             ratio = index / max(1, sample_count - 1)
             overcurrent_a = sample_overcurrent_min * ((sample_overcurrent_max / sample_overcurrent_min) ** ratio)
             
-            if overcurrent_a < 0.1:
+            if overcurrent_a < 0.01:
                 continue
                 
-            denominator = overcurrent_a ** 2
+            denominator = (nominal_current_a + overcurrent_a) ** 2 - (nominal_current_a ** 2)
             if denominator <= 0:
                 continue
                 
-            # FIXED: Using real dynamic live threshold data
             time_s = i2t_threshold_a2s / denominator
 
             if time_s < log_x_min or time_s > log_x_max:
@@ -541,18 +540,17 @@ class FuseChartWidget(QWidget):
             
             curve_points.append(QPointF(float(x), float(y)))
 
-        # Sort left-to-right to ensure seamless rendering connection
         curve_points.sort(key=lambda pt: pt.x())
 
         if len(curve_points) >= 2:
             painter.setPen(QPen(QColor("#09BC8A" if self._enabled else "#6C8B82"), 2))
             painter.drawPolyline(QPolygonF(curve_points))
 
-        # Draw solid target point marker directly on top of dynamic intersection
-        if log_x_min <= target_time <= log_x_max and y_over_min <= target_overcurrent <= y_over_max:
-            painter.setBrush(QColor("#F2C94C"))
-            painter.setPen(Qt.NoPen)
-            painter.drawEllipse(QPointF(th_x, th_y), 4.0, 4.0)
+        # # Draw the target center marker point
+        # if log_x_min <= target_time <= log_x_max and y_over_min <= target_overcurrent <= y_over_max:
+        #     painter.setBrush(QColor("#F2C94C"))
+        #     painter.setPen(Qt.NoPen)
+        #     painter.drawEllipse(QPointF(th_x, th_y), 4.0, 4.0)
 
         painter.end()
 
@@ -604,6 +602,17 @@ RESET_BUTTON_STYLE = (
 class ChannelConfigPage(QWidget):
     batchChanged = pyqtSignal()
     modeChanged = pyqtSignal()
+
+    I2T_PRESETS = [
+        ("Custom", None),
+        ("Tefzel 24 AWG (5A / 5s)", {"nominal_current_ma": 5000, "time_threshold_ms": 5000}),
+        ("Tefzel 22 AWG (7A / 8s)", {"nominal_current_ma": 7000, "time_threshold_ms": 8000}),
+        ("Tefzel 20 AWG (10A / 10s)", {"nominal_current_ma": 10000, "time_threshold_ms": 10000}),
+        ("Tefzel 18 AWG (13A / 15s)", {"nominal_current_ma": 13000, "time_threshold_ms": 15000}),
+        ("Tefzel 16 AWG (15A / 25s)", {"nominal_current_ma": 15000, "time_threshold_ms": 25000}),
+        ("Tefzel 14 AWG (20A / 40s)", {"nominal_current_ma": 20000, "time_threshold_ms": 40000}),
+        ("Tefzel 12 AWG (25A / 60set)", {"nominal_current_ma": 25000, "time_threshold_ms": 60000}),
+    ]
 
     def __init__(self, channel_index, parent=None):
         super().__init__(parent)
@@ -794,6 +803,12 @@ class ChannelConfigPage(QWidget):
         self.edit_nominal_current.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.edit_time_threshold.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.edit_i2t_threshold.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.combo_i2t_preset = QComboBox()
+        self.combo_i2t_preset.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        for label, preset in self.I2T_PRESETS:
+            self.combo_i2t_preset.addItem(label, preset)
+        self.combo_i2t_preset.currentIndexChanged.connect(self._apply_i2t_preset)
+        i2t_form.addRow("Preset:", self.combo_i2t_preset)
         i2t_form.addRow(FIELD_LABELS["i2t"]["nominal_current"], self.edit_nominal_current)
         #i2t_form.addRow(FIELD_LABELS["i2t"]["nominal_current_sq"], self.edit_nominal_current_sq)
         i2t_form.addRow(FIELD_LABELS["i2t"]["time_threshold"], self.edit_time_threshold)
@@ -826,6 +841,22 @@ class ChannelConfigPage(QWidget):
         self._sync_after_error_state()
         self._sync_mode_state()
         self._sync_softstart_state()
+        self._update_i2t_fields()
+
+    def _apply_i2t_preset(self, *_args):
+        preset = self.combo_i2t_preset.currentData()
+        if not preset:
+            return
+
+        self.edit_nominal_current.blockSignals(True)
+        self.edit_time_threshold.blockSignals(True)
+        try:
+            self.edit_nominal_current.setValue(int(preset["nominal_current_ma"]))
+            self.edit_time_threshold.setValue(int(preset["time_threshold_ms"]))
+        finally:
+            self.edit_nominal_current.blockSignals(False)
+            self.edit_time_threshold.blockSignals(False)
+
         self._update_i2t_fields()
 
     def _apply_spoc_mapping(self):
@@ -880,6 +911,7 @@ class ChannelConfigPage(QWidget):
     def _sync_i2t_state(self):
         enabled = self.i2t_enable.isChecked()
         for widget in (
+            self.combo_i2t_preset,
             self.edit_nominal_current,
             self.edit_nominal_current_sq,
             self.edit_time_threshold,
@@ -1398,6 +1430,53 @@ class LogicChannelPage(QWidget):
                 return 0
         return 0
 
+    def _apply_always_on_defaults(self):
+        if not self.check_always_on.isChecked():
+            return
+
+        opr_value = 0x08
+        const_digital = 0x01
+        unset_value = 0x03
+
+        widgets = (
+            self.combo_operator,
+            self.combo_input1_type,
+            self.combo_input2_type,
+            self.combo_input1_bool,
+            self.combo_input2_bool,
+            self.edit_input1_value,
+            self.edit_input2_value,
+        )
+        previous_signal_states = {widget: widget.blockSignals(True) for widget in widgets}
+        try:
+            operator_index = self.combo_operator.findData(opr_value)
+            if operator_index >= 0:
+                self.combo_operator.setCurrentIndex(operator_index)
+
+            input1_index = self.combo_input1_type.findData(const_digital)
+            if input1_index >= 0:
+                self.combo_input1_type.setCurrentIndex(input1_index)
+
+            input2_index = self.combo_input2_type.findData(unset_value)
+            if input2_index >= 0:
+                self.combo_input2_type.setCurrentIndex(input2_index)
+
+            self.combo_input1_bool.setCurrentIndex(1)
+            self.combo_input2_bool.setCurrentIndex(0)
+            self.edit_input1_value.setText("1")
+            self.edit_input2_value.setText("0")
+        finally:
+            for widget, previous_state in previous_signal_states.items():
+                widget.blockSignals(previous_state)
+
+        self.combo_operator.setEnabled(False)
+        self.combo_input1_type.setEnabled(False)
+        self.combo_input2_type.setEnabled(False)
+        self.combo_input1_bool.setEnabled(False)
+        self.combo_input2_bool.setEnabled(False)
+        self.edit_input1_value.setEnabled(False)
+        self.edit_input2_value.setEnabled(False)
+
     def _emit_logic_changed(self, *_args):
         self.logicChanged.emit()
 
@@ -1442,11 +1521,16 @@ class LogicChannelPage(QWidget):
         self.edit_input2_value.setText(str(int(input2_const)))
 
         always_on = (
-            self.combo_operator.currentData() == 0x03
+            self.combo_operator.currentData() in (0x03, 0x08)
             and self.combo_input1_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
-            and self.combo_input2_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
             and self.combo_input1_bool.currentData() == 1
-            and self.combo_input2_bool.currentData() == 1
+            and (
+                (
+                    self.combo_input2_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
+                    and self.combo_input2_bool.currentData() == 1
+                )
+                or self.combo_input2_type.currentData() == LOGIC_INPUT_TYPE_UNSET
+            )
         )
         self.check_always_on.setChecked(always_on if self.check_used.isChecked() else False)
 
@@ -1622,6 +1706,7 @@ class LogicChannelPage(QWidget):
             self.label_relation.setText("First: - | Second: -")
             self._allowed_first_var = 0x03
             self._allowed_second_var = 0x03
+            self._apply_always_on_defaults()
             self._sync_always_on_visibility()
             return
 
