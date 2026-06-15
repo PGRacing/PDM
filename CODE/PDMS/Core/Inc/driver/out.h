@@ -77,7 +77,7 @@ typedef struct _T_OUT_SAFETY_I2T_CFG
     const uint32_t     nominalCurrent_cA;       // I2t nominal current centi-ampere [mA/10] eg. 12A = 1200 ; 3.3A = 330 0.1A = 10 (max value 40A)
     const uint32_t     nominalCurrentSq_cA;     // I2t nominal current squared (fill in via nominal current) [mA/10^2]
     const uint32_t     timeThreshold;           // I2t time value
-    const uint32_t     i2tThreshold;            // I2t threshold (nominalCurrentSq_cA * timeThreshold)
+    const uint64_t     i2tThreshold;            // I2t threshold (nominalCurrentSq_cA * timeThreshold)
 }T_OUT_SAFETY_I2T_CFG;
 
 /// @brief Output channel safety configuration struct
@@ -185,6 +185,7 @@ typedef struct _T_OUT_REG
 {
     T_OUT_STATE         state;             // Output state (ON / OFF)
     T_OUT_STATUS        status;            // Output status 
+    T_OUT_STATUS        lastError;         // Output last error status 
     T_OUT_SAFETY_REG    safety;            // Safety status register
     // Acquired from board
     uint32_t            currentMA;         // Here for ease of debug and code simplification

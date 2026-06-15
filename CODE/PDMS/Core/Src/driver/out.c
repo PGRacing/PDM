@@ -590,6 +590,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -603,6 +604,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+      .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -616,6 +618,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -629,6 +632,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -642,6 +646,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -655,6 +660,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -668,6 +674,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -681,6 +688,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -694,6 +702,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -707,6 +716,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -720,6 +730,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -733,6 +744,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -746,6 +758,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -759,6 +772,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -772,6 +786,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -785,6 +800,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -962,6 +978,8 @@ void OUT_Reconfigure(T_OUT_ID id)
 
 void OUT_ReconfigureAll(void)
 {
+  OUT_ResetRegistersAll();
+
   for(T_OUT_ID i = 0; i < OUT_ID_MAX; i++)
   {
     OUT_ChangeMode(i, outsCfg[i].mode);
@@ -1638,6 +1656,7 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   if(newStatus >= OUT_STATUS_PRIORITY_DIV)
   {
     OUT_DIAG_OnErrorFallback(id);
+    reg->lastError = newStatus;
   }
   // Perform retry procedure
   if( TRUE == reg->safety.inRetrySequence)
@@ -1920,6 +1939,10 @@ uint32_t OUT_DIAG_GetEmaVoltage(T_OUT_ID id)
 T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
+  if(OUT_GETREGPTR(id)->state == OUT_STATE_ERR_LATCH)
+  {
+    return OUT_GETREGPTR(id)->lastError;
+  }
   return OUT_GETREGPTR(id)->status;
 }
 
@@ -1957,19 +1980,24 @@ void OUT_ResetRegistersAll(void)
     ASSERT(reg);
     reg->state = OUT_STATE_OFF;
     reg->status = OUT_STATUS_OK;
+    reg->lastError = OUT_STATUS_OK; 
+
     reg->currentMA = 0;
     reg->currentRMS_MA = 0;
     reg->voltageMV = 0;
     reg->emaCurrentMA = 0;
     reg->emaCurrentRMS_MA = 0;
     reg->emaVoltageMV = 0;
+
     reg->safety.inRetrySequence = FALSE;
     reg->safety.errRetryCounter = 0;
     reg->safety.retryTimerCounter = 0;
+
     reg->safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
     reg->safety.socReg.currentThreshold = 0;
     reg->safety.socReg.timeInPreInrush = 0;
     reg->safety.socReg.inrushTripCounter = 0;
+
     reg->safety.i2tReg.sum = 0;
   }
 }
