@@ -52,6 +52,30 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 CHECKBOX_TICK_PATH = get_asset_path("assets/checkbox-tick.svg")
 
+
+def _kpi_label_style(color="#E0E0E0"):
+    return (
+        "QLabel {"
+        f" color: {color};"
+        " font-size: 22px;"
+        " font-weight: bold;"
+        " padding: 8px 12px;"
+        " border: 1px solid #333333;"
+        " border-radius: 8px;"
+        " background-color: #151515;"
+        " }"
+    )
+
+
+def _blend_color(start_hex, end_hex, ratio):
+    ratio = max(0.0, min(1.0, float(ratio)))
+    start = QColor(start_hex)
+    end = QColor(end_hex)
+    red = int(start.red() + (end.red() - start.red()) * ratio)
+    green = int(start.green() + (end.green() - start.green()) * ratio)
+    blue = int(start.blue() + (end.blue() - start.blue()) * ratio)
+    return f"#{red:02X}{green:02X}{blue:02X}"
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -144,6 +168,32 @@ class MainWindow(QMainWindow):
         sys_grid.addWidget(QLabel("Total I Avg:"), 4, 0)
         self.lbl_total_i = QLabel("- mA")
         sys_grid.addWidget(self.lbl_total_i, 4, 1)
+
+        big_kpi_row = QHBoxLayout()
+        big_kpi_row.setSpacing(8)
+
+        self.lbl_itot = QLabel("I<sub>tot</sub>: - A")
+        self.lbl_itot.setTextFormat(Qt.RichText)
+        self.lbl_itot.setAlignment(Qt.AlignCenter)
+        self.lbl_itot.setStyleSheet(_kpi_label_style("#F2C94C"))
+        big_kpi_row.addWidget(self.lbl_itot, stretch=1)
+
+        self.lbl_safety_big = QLabel("Safety Line: -")
+        self.lbl_safety_big.setAlignment(Qt.AlignCenter)
+        self.lbl_safety_big.setStyleSheet(_kpi_label_style("#E0E0E0"))
+        big_kpi_row.addWidget(self.lbl_safety_big, stretch=1)
+
+        self.lbl_big_3 = QLabel("-")
+        self.lbl_big_3.setAlignment(Qt.AlignCenter)
+        self.lbl_big_3.setStyleSheet(_kpi_label_style("#7D7D7D"))
+        big_kpi_row.addWidget(self.lbl_big_3, stretch=1)
+
+        self.lbl_big_4 = QLabel("-")
+        self.lbl_big_4.setAlignment(Qt.AlignCenter)
+        self.lbl_big_4.setStyleSheet(_kpi_label_style("#7D7D7D"))
+        big_kpi_row.addWidget(self.lbl_big_4, stretch=1)
+
+        sys_grid.addLayout(big_kpi_row, 6, 0, 1, 4)
 
         sys_grid.addWidget(QLabel("Invalid logic:"), 5, 0)
         self.lbl_logic_valid_mask = QLabel("-")
@@ -659,6 +709,17 @@ class MainWindow(QMainWindow):
         self.lbl_temp.setText(f"{self.latest_sys['core_temp']:.1f} °C")
         self.lbl_safety.setText(str(self.latest_sys["safety"]))
         self.lbl_total_i.setText(f"{self.latest_sys['total_current']:.1f} mA")
+        total_current_a = float(self.latest_sys["total_current"]) / 1000.0
+        self.lbl_itot.setText(f"I<sub>tot</sub>: {total_current_a:.1f} A")
+        self.lbl_itot.setStyleSheet(_kpi_label_style(_blend_color("#09BC8A", "#E30026", min(1.0, max(0.0, total_current_a / 100.0)))))
+
+        safety_text = str(self.latest_sys.get("safety", "-"))
+        safety_color = "#09BC8A" if safety_text.upper() in ("OK", "ON", "1") else "#E30026"
+        self.lbl_safety_big.setText(f"Safety Line: {safety_text}")
+        self.lbl_safety_big.setStyleSheet(_kpi_label_style(safety_color))
+
+        self.lbl_big_3.setText("Reserve 1")
+        self.lbl_big_4.setText("Reserve 2")
 
         # IMU
         self.lbl_acc_x.setText(f"{self.lates_imu['accX']:.2f} g")

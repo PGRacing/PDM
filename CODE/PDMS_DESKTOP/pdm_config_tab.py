@@ -1,5 +1,4 @@
 import json
-import math
 import struct
 from pathlib import Path
 
@@ -27,6 +26,8 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from i2t_chart import I2TChartWidget
+from i2t_chart_inverted import I2TChartInvertedWidget
 
 from pdm_shared import CHANNEL_COUNT, get_asset_path, get_runtime_base_dir
 
@@ -341,7 +342,7 @@ LEGACY_BINARY_RECORD_FORMAT = "<" + "".join(
         "I",
         "I",
         "I",
-        "I",
+        "q",
     ]
 )
 LEGACY_BINARY_RECORD_SIZE = struct.calcsize(LEGACY_BINARY_RECORD_FORMAT)
@@ -375,185 +376,6 @@ def _make_spinbox(minimum, maximum, value, suffix="", step = 1):
     if suffix:
         spin.setSuffix(suffix)
     return spin
-
-
-class FuseChartWidget(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self._nominal_current_ma = 1000
-        self._i2t_threshold = 10000000
-        self._enabled = True
-        self.setMinimumWidth(320)
-        self.setMaximumWidth(460)
-        self.setMinimumHeight(300)
-        self.setContentsMargins(10, 10, 10, 10)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-    def set_parameters(self, nominal_current_ma, i2t_threshold, enabled=True):
-        self._nominal_current_ma = max(1, int(nominal_current_ma))
-        self._i2t_threshold = max(1, int(i2t_threshold))
-        self._enabled = bool(enabled)
-        self.update()
-
-    @staticmethod
-    def _linear_map(value, minimum, maximum, start, end):
-        minimum = max(1e-9, float(minimum))
-        maximum = max(minimum * 1.0001, float(maximum))
-        value = max(minimum, min(maximum, float(value)))
-        if abs(maximum - minimum) < 1e-9:
-            return float(start)
-        ratio = (value - minimum) / (maximum - minimum)
-        return float(start) + (ratio * (float(end) - float(start)))
-
-    @staticmethod
-    def _log_map(value, minimum, maximum, start, end):
-        minimum = max(1e-9, float(minimum))
-        maximum = max(minimum * 1.0001, float(maximum))
-        value = max(minimum, min(maximum, float(value)))
-        if abs(maximum - minimum) < 1e-9:
-            return float(start)
-        log_min = math.log10(minimum)
-        log_max = math.log10(maximum)
-        if abs(log_max - log_min) < 1e-9:
-            return float(start)
-        ratio = (math.log10(value) - log_min) / (log_max - log_min)
-        return float(start) + (ratio * (float(end) - float(start)))
-
-    @staticmethod
-    def _format_time_label(value_s):
-        rounded = math.ceil(max(0.0, float(value_s)) * 100.0 - 1e-9) / 100.0
-        return f"{rounded:.2f}s"
-
-    @staticmethod
-    def _format_current_label(value_a):
-        if value_a < 10.0:
-            return f"{value_a:.1f}A"
-        if abs(value_a - round(value_a)) > 0.05:
-            return f"{value_a:.1f}A"
-        return f"{value_a:.0f}A"
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing, True)
-
-        rect = self.rect().adjusted(0, 0, -1, -1)
-        painter.fillRect(rect, QColor("#111111"))
-
-        left_margin = 58
-        right_margin = 10
-        top_margin = 40
-        bottom_margin = 42
-        plot_rect = rect.adjusted(left_margin, top_margin, -right_margin, -bottom_margin)
-        if plot_rect.width() <= 0 or plot_rect.height() <= 0:
-            return
-
-        nominal_current_a = max(0.01, min(100.0, self._nominal_current_ma / 1000.0))
-        i2t_threshold_a2s = max(1e-9, float(self._i2t_threshold)) / 1000000000.0
-        low_overcurrent_delta_a = 0.01
-
-        # FIX 1: Lock the boundaries directly to the exact axis grid values
-        y_over_min = 0.01
-        y_over_max = 100.0  # Matches the top grid line label precisely
-        
-        x_min = 0.0
-        log_x_min = max(0.01, x_min)
-        log_x_max = 10000.0  # Matches the rightmost grid line label precisely
-
-        # Clean base-10 logarithmic timeline tick marks
-        x_ticks = [0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0]
-        x_ticks = [tick for tick in x_ticks if log_x_min <= tick <= log_x_max]
-
-        # Draw Vertical Grid Lines
-        painter.setPen(QPen(QColor("#2A2A2A"), 1))
-        for tick in x_ticks:
-            x = self._log_map(tick, log_x_min, log_x_max, plot_rect.left(), plot_rect.right())
-            painter.drawLine(int(x), plot_rect.top(), int(x), plot_rect.bottom())
-
-        # Draw Horizontal Grid Lines
-        y_ticks = [0.01, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
-        y_ticks = [tick for tick in y_ticks if y_over_min <= tick <= y_over_max]
-        y_ticks = sorted({round(tick, 6) for tick in y_ticks})
-        for tick in y_ticks:
-            y = self._log_map(tick, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
-            painter.drawLine(plot_rect.left(), int(y), plot_rect.right(), int(y))
-
-        # Borders & Labels
-        painter.setPen(QPen(QColor("#8A8A8A"), 1))
-        painter.drawRect(plot_rect)
-        painter.setPen(QColor("#B8B8B8"))
-        painter.drawText(rect.adjusted(10, 2, -10, -2), Qt.AlignTop | Qt.AlignLeft, "Overcurrent (A)")
-        painter.drawText(rect.adjusted(10, 2, -10, -2), Qt.AlignBottom | Qt.AlignRight, "Time (s)")
-
-        for tick in y_ticks:
-            y = self._log_map(tick, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
-            painter.drawText(0, int(y) - 7, 54, 14, Qt.AlignRight | Qt.AlignVCenter, self._format_current_label(tick))
-
-        for tick in x_ticks:
-            x = self._log_map(tick, log_x_min, log_x_max, plot_rect.left(), plot_rect.right())
-            painter.drawText(int(x) - 28, plot_rect.bottom() + 14, 56, 16, Qt.AlignHCenter, self._format_time_label(tick))
-
-        # =========================================================================
-        # TARGET TRACKING ANCHOR (Locked to your UI Time threshold entry)
-        # =========================================================================
-        import math
-        # Target time matches your 'Time threshold' input box dynamically
-        target_time = i2t_threshold_a2s / (nominal_current_a ** 2)
-        
-        # Calculate the precise overcurrent height where the physics curve hits that time
-        total_current_at_target = math.sqrt(nominal_current_a**2 + (i2t_threshold_a2s / target_time))
-        target_overcurrent = total_current_at_target - nominal_current_a
-
-        # Draw the yellow crosshair tracking guides
-        # if log_x_min <= target_time <= log_x_max and y_over_min <= target_overcurrent <= y_over_max:
-        #     th_x = self._log_map(target_time, log_x_min, log_x_max, plot_rect.left(), plot_rect.right())
-        #     th_y = self._log_map(target_overcurrent, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
-            
-        #     painter.setPen(QPen(QColor("#F2C94C"), 1, Qt.DashLine))
-        #     painter.drawLine(plot_rect.left(), int(th_y), int(th_x), int(th_y))
-        #     painter.drawLine(int(th_x), plot_rect.bottom(), int(th_x), int(th_y))
-
-        # PLOT THE I2T PROTECTION CURVE
-        curve_points = []
-        sample_count = 240
-        
-        sample_overcurrent_min = max(0.01, y_over_min, low_overcurrent_delta_a)
-        sample_overcurrent_max = max(y_over_max, sample_overcurrent_min * 1.001)
-
-        for index in range(sample_count):
-            ratio = index / max(1, sample_count - 1)
-            overcurrent_a = sample_overcurrent_min * ((sample_overcurrent_max / sample_overcurrent_min) ** ratio)
-            
-            if overcurrent_a < 0.01:
-                continue
-                
-            denominator = (nominal_current_a + overcurrent_a) ** 2 - (nominal_current_a ** 2)
-            if denominator <= 0:
-                continue
-                
-            time_s = i2t_threshold_a2s / denominator
-
-            if time_s < log_x_min or time_s > log_x_max:
-                continue
-            
-            x = self._log_map(time_s, log_x_min, log_x_max, plot_rect.left(), plot_rect.right())
-            y = self._log_map(overcurrent_a, y_over_min, y_over_max, plot_rect.bottom(), plot_rect.top())
-            
-            curve_points.append(QPointF(float(x), float(y)))
-
-        curve_points.sort(key=lambda pt: pt.x())
-
-        if len(curve_points) >= 2:
-            painter.setPen(QPen(QColor("#09BC8A" if self._enabled else "#6C8B82"), 2))
-            painter.drawPolyline(QPolygonF(curve_points))
-
-        # # Draw the target center marker point
-        # if log_x_min <= target_time <= log_x_max and y_over_min <= target_overcurrent <= y_over_max:
-        #     painter.setBrush(QColor("#F2C94C"))
-        #     painter.setPen(Qt.NoPen)
-        #     painter.drawEllipse(QPointF(th_x, th_y), 4.0, 4.0)
-
-        painter.end()
-
 
 
 PAGE_LABEL_STYLE = (
@@ -814,10 +636,14 @@ class ChannelConfigPage(QWidget):
         i2t_form.addRow(FIELD_LABELS["i2t"]["time_threshold"], self.edit_time_threshold)
         i2t_form.addRow(FIELD_LABELS["i2t"]["i2t_threshold"], self.edit_i2t_threshold)
 
-        self.fuse_chart = FuseChartWidget()
-        self.fuse_chart.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.i2t_chart = I2TChartWidget()
+        self.i2t_chart.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         i2t_layout.addWidget(i2t_form_widget, 3)
-        i2t_layout.addWidget(self.fuse_chart, 1)
+        i2t_layout.addWidget(self.i2t_chart, 1)
+
+        self.i2t_chart_inverted = I2TChartInvertedWidget()
+        self.i2t_chart_inverted.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        i2t_layout.addWidget(self.i2t_chart_inverted, 1)
 
         outer.addWidget(self.i2t_box)
 
@@ -881,17 +707,23 @@ class ChannelConfigPage(QWidget):
 
     def _sync_soc_state(self):
         enabled = self.soc_enable.isChecked()
+        self.soc_box.setVisible(enabled)
         for widget in (
             self.edit_nominal_threshold,
             self.check_allow_inrush,
-            # self.edit_inrush_window_from_start,
-            # self.check_inrush_window_infinite,
-            # self.label_inrush_window_infinite,
-            # self.edit_inrush_threshold,
-            # self.edit_inrush_time_threshold,
         ):
             widget.setEnabled(enabled)
-        #self.check_allow_inrush.setChecked(enabled)
+        if not enabled:
+            self.edit_nominal_threshold.setValue(2000)
+            self.check_allow_inrush.blockSignals(True)
+            self.check_allow_inrush.setChecked(False)
+            self.check_allow_inrush.blockSignals(False)
+            self.edit_inrush_window_from_start.setValue(0)
+            self.check_inrush_window_infinite.blockSignals(True)
+            self.check_inrush_window_infinite.setChecked(True)
+            self.check_inrush_window_infinite.blockSignals(False)
+            self.edit_inrush_threshold.setValue(4000)
+            self.edit_inrush_time_threshold.setValue(1000)
         self._sync_soc_inrush_state()
         self._sync_inrush_window_state()
 
@@ -905,11 +737,12 @@ class ChannelConfigPage(QWidget):
             self.edit_inrush_time_threshold,
         ):
             widget.setEnabled(enabled)
-        ##self.check_allow_inrush.setChecked(enabled)
-        self.soc_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
+        if self.soc_enable.isChecked() and enabled:
+            self.soc_box.setVisible(True)
 
     def _sync_i2t_state(self):
         enabled = self.i2t_enable.isChecked()
+        self.i2t_box.setVisible(enabled)
         for widget in (
             self.combo_i2t_preset,
             self.edit_nominal_current,
@@ -918,8 +751,14 @@ class ChannelConfigPage(QWidget):
             self.edit_i2t_threshold,
         ):
             widget.setEnabled(enabled)
-        self.i2t_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
-        self.fuse_chart.setEnabled(enabled)
+        if not enabled:
+            self.combo_i2t_preset.blockSignals(True)
+            self.combo_i2t_preset.setCurrentIndex(0)
+            self.combo_i2t_preset.blockSignals(False)
+            self.edit_nominal_current.setValue(2000)
+            self.edit_time_threshold.setValue(1000)
+        self.i2t_chart.setEnabled(enabled)
+        self.i2t_chart_inverted.setEnabled(enabled)
         self._sync_i2t_chart()
 
     def _sync_inrush_window_state(self):
@@ -964,8 +803,14 @@ class ChannelConfigPage(QWidget):
         self._sync_i2t_chart()
 
     def _sync_i2t_chart(self):
-        if hasattr(self, "fuse_chart"):
-            self.fuse_chart.set_parameters(
+        if hasattr(self, "i2t_chart"):
+            self.i2t_chart.set_parameters(
+                self.edit_nominal_current.value(),
+                self.edit_i2t_threshold.text() or 0,
+                self.i2t_enable.isChecked(),
+            )
+        if hasattr(self, "i2t_chart_inverted"):
+            self.i2t_chart_inverted.set_parameters(
                 self.edit_nominal_current.value(),
                 self.edit_i2t_threshold.text() or 0,
                 self.i2t_enable.isChecked(),
@@ -1038,6 +883,10 @@ class ChannelConfigPage(QWidget):
             self.edit_softstart_time_threshold,
         ):
             widget.setEnabled(enabled)
+        if not enabled:
+            self.edit_softstart_start_duty.setValue(30)
+            self.edit_softstart_end_duty.setValue(100)
+            self.edit_softstart_time_threshold.setValue(5000)
 
     def _emit_batch_changed(self, *_args):
         self.batchChanged.emit()
@@ -1255,6 +1104,7 @@ class LogicChannelPage(QWidget):
         isused_group.addWidget(self.outside_controlled)
 
         logic_form.addRow("Channel used:", isused_group)
+        self._logic_row_channel_used = logic_form.rowCount() - 1
 
         self.check_always_on = QCheckBox("")
         self.check_always_on.setStyleSheet(CHECKBOX_STYLE)
@@ -1352,6 +1202,7 @@ class LogicChannelPage(QWidget):
         self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
         self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
         self._sync_always_on_visibility()
+        self._set_logic_row_visible(self._logic_row_channel_used, False)
         self.refresh_sensor_sources()
 
     def set_sensor_source_provider(self, provider):
@@ -1642,6 +1493,7 @@ class LogicChannelPage(QWidget):
 
     def _sync_always_on_visibility(self):
         used = self.check_used.isChecked()
+        self._set_logic_row_visible(self._logic_row_channel_used, False)
         self._set_logic_row_visible(self._logic_row_always_on, used)
 
         hidden = self.check_always_on.isChecked() or not used

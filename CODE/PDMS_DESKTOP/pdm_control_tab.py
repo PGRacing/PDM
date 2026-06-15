@@ -1,7 +1,7 @@
 from collections import deque
 import struct
 
-from PyQt5.QtCore import QPointF, Qt, QSize, pyqtSignal
+from PyQt5.QtCore import QPointF, Qt, QSize, center, pyqtSignal
 from PyQt5.QtGui import QColor, QPainter, QPen, QPolygonF
 from PyQt5.QtWidgets import (
     QAbstractItemView,
@@ -412,13 +412,14 @@ class ControlValueCell(QWidget):
                 self.toggle = ToggleSwitch()
                 self.toggle.setEnabled(False)
                 self.toggle.setFocusPolicy(Qt.NoFocus)
-                layout.addWidget(self.toggle)
+                layout.addWidget(self.toggle, alignment=Qt.AlignCenter)
             else:
                 self.slider = QSlider(Qt.Horizontal)
                 self.slider.setRange(0, 5000)
                 self.slider.setEnabled(False)
                 self.slider.setFocusPolicy(Qt.NoFocus)
                 self.slider.setFixedHeight(20)
+                self.slider.setFixedWidth(160)
                 self.slider.setStyleSheet(
                     "QSlider::groove:horizontal { background: #2E2E2E; height: 8px; border-radius: 4px; }"
                     "QSlider::sub-page:horizontal { background: #BB86FC; border-radius: 4px; }"
@@ -434,7 +435,7 @@ class ControlValueCell(QWidget):
             self.toggle = ToggleSwitch()
             self.toggle.setEnabled(True)
             self.toggle.setFocusPolicy(Qt.NoFocus)
-            layout.addWidget(self.toggle)
+            layout.addWidget(self.toggle, alignment=Qt.AlignCenter)
         else:
             self.slider = QSlider(Qt.Horizontal)
             self.slider.setRange(0, 5000)
@@ -447,20 +448,21 @@ class ControlValueCell(QWidget):
             self.slider.sliderMoved.connect(self._on_slider_changed)
             self.slider.sliderReleased.connect(self._on_slider_released)
             self.slider.setFixedHeight(20)
+            self.slider.setFixedWidth(150)
             self.slider.setStyleSheet(
                 "QSlider::groove:horizontal { background: #2E2E2E; height: 8px; border-radius: 4px; }"
                 "QSlider::sub-page:horizontal { background: #BB86FC; border-radius: 4px; }"
                 "QSlider::add-page:horizontal { background: #2E2E2E; border-radius: 4px; }"
                 "QSlider::handle:horizontal { background: #FFFFFF; width: 18px; margin: -6px 0; border-radius: 9px; border: 1px solid #7B5FA6; }"
             )
-            layout.addWidget(self.slider, 1)
+            layout.addWidget(self.slider, 1, alignment=Qt.AlignCenter)
 
         if self._editable:
             if self._is_digital:
                 self.toggle.toggled.connect(self._on_toggle_changed)
             else:
                 self.value_label = QLabel("0 mV")
-                self.value_label.setStyleSheet("QLabel { color: #E0E0E0; }")
+                self.value_label.setStyleSheet("QLabel { color: #E0E0E0; background-color: transparent; }")
                 self.value_label.setFixedWidth(82)
                 self.value_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
                 layout.addWidget(self.value_label)

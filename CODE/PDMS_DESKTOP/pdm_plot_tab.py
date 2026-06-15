@@ -42,13 +42,21 @@ class PlotPanel(QWidget):
         self.hist_iavg = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
         self.hist_v_filt = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
         self.hist_i_filt = [deque(maxlen=HISTORY_LEN) for _ in range(CHANNEL_COUNT)]
+        self.hist_sys_v = deque(maxlen=HISTORY_LEN)
+        self.hist_sys_i = deque(maxlen=HISTORY_LEN)
+        self.hist_sys_v_filt = deque(maxlen=HISTORY_LEN)
+        self.hist_sys_i_filt = deque(maxlen=HISTORY_LEN)
 
         self.kf_v = [Kalman1D(process_noise=0.03, measurement_noise=0.2) for _ in range(CHANNEL_COUNT)]
         self.kf_i = [Kalman1D(process_noise=0.10, measurement_noise=0.2) for _ in range(CHANNEL_COUNT)]
+        self.kf_sys_v = Kalman1D(process_noise=0.03, measurement_noise=0.2)
+        self.kf_sys_i = Kalman1D(process_noise=0.10, measurement_noise=0.2)
 
         self.curves_v = {}
         self.curves_i_inst = {}
         self.curves_i_avg = {}
+        self.curves_sys_v = None
+        self.curves_sys_i = None
 
         root_layout = QHBoxLayout(self)
         root_layout.setContentsMargins(0, 0, 0, 0)
@@ -76,6 +84,10 @@ class PlotPanel(QWidget):
             cb.setStyleSheet("QCheckBox { padding: 6px 8px; margin: 2px 0; }")
             self.channel_checkboxes.append(cb)
             channel_layout.insertWidget(channel_layout.count() - 1, cb)
+        self.system_checkbox = QCheckBox("System")
+        self.system_checkbox.setChecked(True)
+        self.system_checkbox.setStyleSheet("QCheckBox { padding: 6px 8px; margin: 2px 0; }")
+        channel_layout.insertWidget(channel_layout.count() - 1, self.system_checkbox)
         self.channel_scroll.setWidget(channel_content)
         ch_layout.addWidget(self.channel_scroll, 1)
 
@@ -131,6 +143,12 @@ class PlotPanel(QWidget):
             self.curves_i_avg[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr + "40", width=1), name=f"CH{ch+1}")
             self.plot_i.addItem(self.curves_i_avg[ch])
 
+        sys_pen = pg.mkPen(color="#F2C94C", width=2)
+        self.curves_sys_v = pg.PlotDataItem(pen=sys_pen, name="System")
+        self.plot_v.addItem(self.curves_sys_v)
+        self.curves_sys_i = pg.PlotDataItem(pen=sys_pen, name="System")
+        self.plot_i.addItem(self.curves_sys_i)
+
         self._apply_minimum_axis_ranges()
 
     def update_from_packet(self, packet):
@@ -144,6 +162,14 @@ class PlotPanel(QWidget):
             self.hist_iavg[i].append((t_now, ch["current_avg"]))
             self.hist_v_filt[i].append((t_now, filtered_voltage))
             self.hist_i_filt[i].append((t_now, filtered_current))
+
+        sys_data = packet.get("sys", {}) or {}
+        filtered_sys_voltage = self.kf_sys_v.update(sys_data.get("batt", 0))
+        filtered_sys_current = self.kf_sys_i.update(sys_data.get("total_current", 0))
+        self.hist_sys_v.append((t_now, sys_data.get("batt", 0)))
+        self.hist_sys_i.append((t_now, sys_data.get("total_current", 0)))
+        self.hist_sys_v_filt.append((t_now, filtered_sys_voltage))
+        self.hist_sys_i_filt.append((t_now, filtered_sys_current))
 
     def apply_channel_names(self, channel_names):
         for i, name in enumerate(channel_names):
@@ -178,6 +204,18 @@ class PlotPanel(QWidget):
                 self.curves_i_inst[ch].setData([], [])
                 self.curves_i_avg[ch].setData([], [])
 
+        if self.system_checkbox.isChecked() and len(self.hist_sys_v_filt) > 1:
+            t, v = zip(*self.hist_sys_v_filt)
+            self.curves_sys_v.setData(t, v)
+        else:
+            self.curves_sys_v.setData([], [])
+
+        if self.system_checkbox.isChecked() and len(self.hist_sys_i_filt) > 1:
+            t, i = zip(*self.hist_sys_i_filt)
+            self.curves_sys_i.setData(t, i)
+        else:
+            self.curves_sys_i.setData([], [])
+
         self._apply_minimum_axis_ranges(selected_channels)
 
     def _apply_minimum_axis_ranges(self, selected_channels=None):
@@ -186,6 +224,10 @@ class PlotPanel(QWidget):
         voltage_values = [value for ch in selected_channels for _, value in self.hist_v_filt[ch]]
         current_values = [value for ch in selected_channels for _, value in self.hist_i_filt[ch]]
         current_values.extend(value for ch in selected_channels for _, value in self.hist_iavg[ch])
+
+        if self.system_checkbox.isChecked():
+            voltage_values.extend(value for _, value in self.hist_sys_v_filt)
+            current_values.extend(value for _, value in self.hist_sys_i_filt)
 
         self._set_minimum_range(self.plot_v, voltage_values, self.MIN_VOLTAGE_RANGE_MV)
         self._set_minimum_range(self.plot_i, current_values, self.MIN_CURRENT_RANGE_MA)
@@ -214,8 +256,10 @@ class PlotPanel(QWidget):
     def toggle_show_all(self):
         if all(cb.isChecked() for cb in self.channel_checkboxes):
             self._set_channels([])
+            self.system_checkbox.setChecked(False)
         else:
             self._set_channels(range(CHANNEL_COUNT))
+            self.system_checkbox.setChecked(True)
 
     def toggle_show_hp(self):
         hp_range = range(0, 8)
