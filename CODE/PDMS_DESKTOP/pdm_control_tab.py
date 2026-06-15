@@ -575,7 +575,7 @@ class ControlConfigPage(QWidget):
         outer.setSpacing(4)
 
         summary = QLabel(
-            "One row per input. Physical rows are display-only. CAN rows expose a toggle for digital inputs or a slider for analog inputs."
+            "Physical rows are display-only. CAN rows expose a toggle for digital inputs or a slider for analog inputs."
         )
         summary.setWordWrap(True)
         outer.addWidget(summary)

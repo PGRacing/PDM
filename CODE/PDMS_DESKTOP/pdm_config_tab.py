@@ -2340,7 +2340,7 @@ class InputsConfigPage(QWidget):
         outer.setAlignment(Qt.AlignTop)
 
         summary = QLabel(
-            "This tab only changes the viewport. Physical inputs expose Analog/Digital selection; CAN inputs add bus and decoding fields."
+            "Here configure inputs that will be used for output control."
         )
         summary.setWordWrap(True)
         outer.addWidget(summary)
