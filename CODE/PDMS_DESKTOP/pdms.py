@@ -76,6 +76,62 @@ def _blend_color(start_hex, end_hex, ratio):
     blue = int(start.blue() + (end.blue() - start.blue()) * ratio)
     return f"#{red:02X}{green:02X}{blue:02X}"
 
+
+SYS_STATUS_MAP = {
+    0: "OK",
+    1: "ERROR",
+    2: "UNDER VOLTAGE LOCK OUT",
+}
+
+
+def _format_voltage_mv(value):
+    try:
+        return f"{float(value) / 1000.0:.1f}V"
+    except Exception:
+        return "-"
+
+
+def _format_channel_error_summary(channels):
+    error_channels = []
+    for index, channel in enumerate(channels or []):
+        try:
+            if int(channel.get("status", 0)) != 0:
+                error_channels.append(str(index + 1))
+        except Exception:
+            continue
+    if not error_channels:
+        return "In error: None", "#09BC8A"
+    return f"In error: {', '.join(error_channels)}", "#E30026"
+
+
+def _battery_kpi_color(voltage_mv):
+    try:
+        voltage_v = float(voltage_mv) / 1000.0
+    except Exception:
+        return "#E30026"
+
+    if voltage_v <= 8.0 or voltage_v >= 18.0:
+        return "#E30026"
+
+    if voltage_v <= 14.5:
+        if voltage_v <= 10.0:
+            ratio = (voltage_v - 8.0) / (10.0 - 8.0)
+            return _blend_color("#E30026", "#F2994A", ratio)
+        if voltage_v <= 12.0:
+            ratio = (voltage_v - 10.0) / (12.0 - 10.0)
+            return _blend_color("#F2994A", "#F2C94C", ratio)
+        ratio = (voltage_v - 12.0) / (14.5 - 12.0)
+        return _blend_color("#F2C94C", "#09BC8A", ratio)
+
+    if voltage_v <= 16.0:
+        ratio = (voltage_v - 14.5) / (16.0 - 14.5)
+        return _blend_color("#09BC8A", "#F2C94C", ratio)
+    if voltage_v <= 17.0:
+        ratio = (voltage_v - 16.0) / (17.0 - 16.0)
+        return _blend_color("#F2C94C", "#F2994A", ratio)
+    ratio = (voltage_v - 17.0) / (18.0 - 17.0)
+    return _blend_color("#F2994A", "#E30026", ratio)
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -172,6 +228,11 @@ class MainWindow(QMainWindow):
         big_kpi_row = QHBoxLayout()
         big_kpi_row.setSpacing(8)
 
+        self.lbl_batt_big = QLabel("Battery: -")
+        self.lbl_batt_big.setAlignment(Qt.AlignCenter)
+        self.lbl_batt_big.setStyleSheet(_kpi_label_style("#4FC3F7"))
+        big_kpi_row.addWidget(self.lbl_batt_big, stretch=1)
+
         self.lbl_itot = QLabel("I<sub>tot</sub>: - A")
         self.lbl_itot.setTextFormat(Qt.RichText)
         self.lbl_itot.setAlignment(Qt.AlignCenter)
@@ -183,15 +244,10 @@ class MainWindow(QMainWindow):
         self.lbl_safety_big.setStyleSheet(_kpi_label_style("#E0E0E0"))
         big_kpi_row.addWidget(self.lbl_safety_big, stretch=1)
 
-        self.lbl_big_3 = QLabel("-")
-        self.lbl_big_3.setAlignment(Qt.AlignCenter)
-        self.lbl_big_3.setStyleSheet(_kpi_label_style("#7D7D7D"))
-        big_kpi_row.addWidget(self.lbl_big_3, stretch=1)
-
-        self.lbl_big_4 = QLabel("-")
-        self.lbl_big_4.setAlignment(Qt.AlignCenter)
-        self.lbl_big_4.setStyleSheet(_kpi_label_style("#7D7D7D"))
-        big_kpi_row.addWidget(self.lbl_big_4, stretch=1)
+        self.lbl_error_big = QLabel("Channels in error: None")
+        self.lbl_error_big.setAlignment(Qt.AlignCenter)
+        self.lbl_error_big.setStyleSheet(_kpi_label_style("#09BC8A"))
+        big_kpi_row.addWidget(self.lbl_error_big, stretch=1)
 
         sys_grid.addLayout(big_kpi_row, 6, 0, 1, 4)
 
@@ -704,7 +760,7 @@ class MainWindow(QMainWindow):
         if not updated:
             return
 
-        self.lbl_sys_state.setText(str(self.latest_sys["status"]))
+        self.lbl_sys_state.setText(SYS_STATUS_MAP.get(int(self.latest_sys["status"]), str(self.latest_sys["status"])))
         self.lbl_batt.setText(f"{self.latest_sys['batt']} mV")
         self.lbl_temp.setText(f"{self.latest_sys['core_temp']:.1f} °C")
         self.lbl_safety.setText(str(self.latest_sys["safety"]))
@@ -713,13 +769,17 @@ class MainWindow(QMainWindow):
         self.lbl_itot.setText(f"I<sub>tot</sub>: {total_current_a:.1f} A")
         self.lbl_itot.setStyleSheet(_kpi_label_style(_blend_color("#09BC8A", "#E30026", min(1.0, max(0.0, total_current_a / 100.0)))))
 
+        self.lbl_batt_big.setText(f"Battery: {_format_voltage_mv(self.latest_sys.get('batt', 0))}")
+        self.lbl_batt_big.setStyleSheet(_kpi_label_style(_battery_kpi_color(self.latest_sys.get('batt', 0))))
+
         safety_text = str(self.latest_sys.get("safety", "-"))
         safety_color = "#09BC8A" if safety_text.upper() in ("OK", "ON", "1") else "#E30026"
         self.lbl_safety_big.setText(f"Safety Line: {safety_text}")
         self.lbl_safety_big.setStyleSheet(_kpi_label_style(safety_color))
 
-        self.lbl_big_3.setText("Reserve 1")
-        self.lbl_big_4.setText("Reserve 2")
+        error_text, error_color = _format_channel_error_summary(self.latest_ch)
+        self.lbl_error_big.setText(error_text)
+        self.lbl_error_big.setStyleSheet(_kpi_label_style(error_color))
 
         # IMU
         self.lbl_acc_x.setText(f"{self.lates_imu['accX']:.2f} g")
