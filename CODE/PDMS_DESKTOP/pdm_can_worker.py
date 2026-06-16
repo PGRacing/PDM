@@ -367,11 +367,24 @@ def can_isolated_process(pipe_conn, tx_queue):
     def _open_can_bus():
         return can.interface.Bus(channel=CAN_CHANNEL, interface="slcan", bitrate=CAN_BITRATE, ttyBaudrate=SERIAL_BAUD)
 
-    def _reset_runtime_state():
-        channels = [
-            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0, "current_rms": 0}
-            for _ in range(CHANNEL_COUNT)
+    def _reset_channel_runtime_fields(channel_count):
+        return [
+            {
+                "name": "",
+                "status": 0,
+                "state": 0,
+                "voltage": 0,
+                "current": 0,
+                "current_avg": 0,
+                "current_rms": 0,
+                "i2t_heat": 0,
+                "soc_threshold": 0,
+            }
+            for _ in range(channel_count)
         ]
+
+    def _reset_runtime_state():
+        channels = _reset_channel_runtime_fields(CHANNEL_COUNT)
         phy_inputs = [0] * PHY_INPUT_COUNT
         sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0, "logicValidMask": 0}
         imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
@@ -409,6 +422,8 @@ def can_isolated_process(pipe_conn, tx_queue):
                 f"ch{n}_i_inst_mA",
                 f"ch{n}_i_avg_mA",
                 f"ch{n}_i_rms_mA",
+                f"ch{n}_i2t_heat_pct",
+                f"ch{n}_soc_threshold_mA",
             ]
         for i in range(PHY_INPUT_COUNT):
             header += [f"phy_in{i+1}"]
@@ -563,6 +578,21 @@ def can_isolated_process(pipe_conn, tx_queue):
                 ch = base + i
                 if ch < CHANNEL_COUNT:
                     channels[ch]["current_rms"] = vals[i] * 10
+        elif cid == IDS["I2T_HEAT_1_8"]:
+            for i in range(min(8, len(d))):
+                if i < CHANNEL_COUNT:
+                    channels[i]["i2t_heat"] = int(d[i])
+        elif cid == IDS["SOC_TRESH_1_4"]:
+            vals = parse_u16x4(d)
+            for i in range(4):
+                if i < CHANNEL_COUNT:
+                    channels[i]["soc_threshold"] = int(vals[i]) * 10
+        elif cid == IDS["SOC_TRESH_5_8"]:
+            vals = parse_u16x4(d)
+            for i in range(4):
+                ch = i + 4
+                if ch < CHANNEL_COUNT:
+                    channels[ch]["soc_threshold"] = int(vals[i]) * 10
         elif cid == IDS["NAMES"]:
             meta = d[0]
             part, ch = (meta >> 4) & 0x0F, meta & 0x0F
@@ -594,7 +624,17 @@ def can_isolated_process(pipe_conn, tx_queue):
                 try:
                     row = [t_now, f"{sys_status['total_current']:.1f}", sys_status["batt"], f"{sys_status['core_temp']:.1f}", sys_status["safety"]]
                     for ch in channels:
-                        row.extend([ch["name"], ch["status"], ch["state"], ch["voltage"], ch["current"], f"{ch['current_avg']:.1f}", ch.get("current_rms", 0)])
+                        row.extend([
+                            ch["name"],
+                            ch["status"],
+                            ch["state"],
+                            ch["voltage"],
+                            ch["current"],
+                            f"{ch['current_avg']:.1f}",
+                            ch.get("current_rms", 0),
+                            ch.get("i2t_heat", 0),
+                            ch.get("soc_threshold", 0),
+                        ])
                     row.extend(phy_inputs)
                     log_writer.writerow(row)
                 except Exception:

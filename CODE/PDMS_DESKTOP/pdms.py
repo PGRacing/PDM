@@ -153,7 +153,17 @@ class MainWindow(QMainWindow):
 
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
         self.latest_ch = [
-            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0, "current_rms": 0}
+            {
+                "name": "",
+                "status": 0,
+                "state": 0,
+                "voltage": 0,
+                "current": 0,
+                "current_avg": 0,
+                "current_rms": 0,
+                "i2t_heat": 0,
+                "soc_threshold": 0,
+            }
             for _ in range(CHANNEL_COUNT)
         ]
         self.latest_phy = [0] * PHY_INPUT_COUNT
@@ -304,14 +314,24 @@ class MainWindow(QMainWindow):
 
         out_table_box = QGroupBox("PDM Output Channel Bus Matrix")
         out_table_vbox = QVBoxLayout(out_table_box)
-        self.table_channels = QTableWidget(CHANNEL_COUNT, 7)
-        self.table_channels.setHorizontalHeaderLabels(["Name", "Status", "State", "V [mV]", "I inst [mA]", "I avg [mA]", "Irms [mA]"])
+        self.table_channels = QTableWidget(CHANNEL_COUNT, 9)
+        self.table_channels.setHorizontalHeaderLabels([
+            "Name",
+            "Status",
+            "State",
+            "V [mV]",
+            "I inst [mA]",
+            "I avg [mA]",
+            "Irms [mA]",
+            "I2T heat [%]",
+            "SOC threshold",
+        ])
         self.table_channels.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.table_channels.verticalHeader().setDefaultSectionSize(22)
         self.table_channels.verticalHeader().setMinimumSectionSize(18)
         self.table_channels.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         for row in range(CHANNEL_COUNT):
-            for col in range(7):
+            for col in range(9):
                 item = QTableWidgetItem("")
                 if col > 2:
                     item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -804,7 +824,19 @@ class MainWindow(QMainWindow):
             status_str = OUT_STATUS_MAP.get(ch["status"], str(ch["status"]))
             state_str = OUT_STATE_MAP.get(ch["state"], str(ch["state"]))
             irms_text = str(ch.get("current_rms", 0)) if i < 8 else "-"
-            vals = (ch["name"], status_str, state_str, str(ch["voltage"]), str(ch["current"]), f"{ch['current_avg']:.1f}", irms_text)
+            heat_text = f"{int(ch.get('i2t_heat', 0))}%" if i < 8 else "-"
+            soc_text = str(int(ch.get('soc_threshold', 0))) if i < 8 else "-"
+            vals = (
+                ch["name"],
+                status_str,
+                state_str,
+                str(ch["voltage"]),
+                str(ch["current"]),
+                f"{ch['current_avg']:.1f}",
+                irms_text,
+                heat_text,
+                soc_text,
+            )
 
             for col_idx, text in enumerate(vals):
                 item = self.table_channels.item(i, col_idx)
