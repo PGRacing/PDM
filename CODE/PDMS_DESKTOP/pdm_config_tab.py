@@ -66,6 +66,7 @@ SPOC2_CH_ID_4 = 0x03
 FIELD_LABELS = {
     "channel": {
         "channel_id": "Channel ID:",
+        "physical_pin": "Physical pin:",
         "type": "Type:",
         "spoc_mapping": "SPOC mapping:",
         "mode": "Mode:",
@@ -190,6 +191,35 @@ LOGIC_TOTAL_SIZE = LOGIC_CONFIG_COUNT * LOGIC_RECORD_SIZE
 INPUT_INTERPRETATION_LABELS = [
     ("Digital (Schmitt)", 0x00),
     ("Analog", 0x01),
+]
+
+PHYSICAL_INPUT_PIN_LABELS = [
+    "B20",
+    "B14",
+    "B21",
+    "B15",
+    "B22",
+    "B16",
+    "B23",
+    "B17",
+]
+OUTPUT_CHANNEL_PIN_LABELS = [
+    "B13/19",
+    "B6/7",
+    "B3/4/5",
+    "B1/2/8",
+    "A9/17",
+    "A5/13",
+    "A1/2",
+    "A18/27",
+    "A34",
+    "A8",
+    "A7",
+    "A6",
+    "A4",
+    "A3",
+    "A10",
+    "A26",
 ]
 
 CAN_INSTANCE_LABELS = [
@@ -802,6 +832,8 @@ class ChannelConfigPage(QWidget):
 
         self.label_channel_id = QLabel(f"OUT_ID_{channel_index + 1}")
         self.label_channel_id.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.label_physical_pin = QLabel(OUTPUT_CHANNEL_PIN_LABELS[channel_index])
+        self.label_physical_pin.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.label_type = QLabel("BTS500" if channel_index < 8 else "SPOC2")
         self.label_type.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.label_spoc = QLabel("n/a")
@@ -818,6 +850,7 @@ class ChannelConfigPage(QWidget):
         self.fill_batch_combo(channel_index)
 
         channel_form.addRow(FIELD_LABELS["channel"]["channel_id"], self.label_channel_id)
+        channel_form.addRow(FIELD_LABELS["channel"]["physical_pin"], self.label_physical_pin)
         channel_form.addRow(FIELD_LABELS["channel"]["type"], self.label_type)
 
         if channel_index >= 8:
@@ -2435,22 +2468,27 @@ class InputsConfigPage(QWidget):
         physical_layout.setVerticalSpacing(8)
         physical_layout.addWidget(QLabel("Input"), 0, 0)
         physical_layout.addWidget(self._make_column_separator(), 0, 1)
-        physical_layout.addWidget(QLabel("Used by outputs"), 0, 2)
+        physical_layout.addWidget(QLabel("Physical pin"), 0, 2)
         physical_layout.addWidget(self._make_column_separator(), 0, 3)
-        physical_layout.addWidget(QLabel("Interpretation"), 0, 4)
+        physical_layout.addWidget(QLabel("Used by outputs"), 0, 4)
+        physical_layout.addWidget(self._make_column_separator(), 0, 5)
+        physical_layout.addWidget(QLabel("Interpretation"), 0, 6)
 
         self.physical_rows = []
         for index in range(8):
             label = QLabel(f"Physical input {index + 1}")
+            pin = QLabel(PHYSICAL_INPUT_PIN_LABELS[index])
+            pin.setTextInteractionFlags(Qt.TextSelectableByMouse)
             combo = QComboBox()
             usage = QLabel("-")
             usage.setWordWrap(True)
             for option_label, option_value in INPUT_INTERPRETATION_LABELS:
                 combo.addItem(option_label, option_value)
             physical_layout.addWidget(label, index + 1, 0)
-            physical_layout.addWidget(usage, index + 1, 2)
-            physical_layout.addWidget(combo, index + 1, 4)
-            self.physical_rows.append({"label": label, "interpretation": combo, "usage": usage})
+            physical_layout.addWidget(pin, index + 1, 2)
+            physical_layout.addWidget(usage, index + 1, 4)
+            physical_layout.addWidget(combo, index + 1, 6)
+            self.physical_rows.append({"label": label, "pin": pin, "interpretation": combo, "usage": usage})
             combo.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
 
         outer.addWidget(physical_group)
