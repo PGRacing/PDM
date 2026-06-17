@@ -1,11 +1,13 @@
 import json
+import re
 import struct
 from pathlib import Path
 
-from PyQt5.QtCore import QPointF, Qt, pyqtSignal
-from PyQt5.QtGui import QColor, QIntValidator, QPainter, QPen, QPolygonF
+from PyQt5.QtCore import QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal
+from PyQt5.QtGui import QColor, QFont, QIntValidator, QPainter, QPen, QPixmap, QPolygonF
 from PyQt5.QtWidgets import (
     QAbstractItemView,
+    QApplication,
     QCheckBox,
     QComboBox,
     QFrame,
@@ -221,6 +223,255 @@ OUTPUT_CHANNEL_PIN_LABELS = [
     "A10",
     "A26",
 ]
+
+HEADER_PIN_COORDS = {
+    "A": {
+        1:  (0.130, 0.405),
+        2:  (0.162, 0.405),
+        3:  (0.201, 0.405),
+        4:  (0.239, 0.405),
+        5:  (0.278, 0.405),
+        6:  (0.323, 0.405),
+        7:  (0.355, 0.405),
+        8:  (0.394, 0.405),
+        9:  (0.432, 0.405),
+        10: (0.143, 0.487),
+        11: (0.182, 0.487),
+        12: (0.220, 0.487),
+        13: (0.259, 0.487),
+        14: (0.298, 0.487),
+        15: (0.336, 0.487),
+        16: (0.375, 0.487),
+        17: (0.413, 0.487),
+        18: (0.143, 0.583),
+        19: (0.182, 0.583),
+        20: (0.221, 0.583),
+        21: (0.259, 0.583),
+        22: (0.298, 0.583),
+        23: (0.337, 0.583),
+        24: (0.376, 0.583),
+        25: (0.413, 0.583),
+        26: (0.124, 0.665),
+        27: (0.162, 0.665),
+        28: (0.201, 0.665),
+        29: (0.239, 0.665),
+        30: (0.278, 0.665),
+        31: (0.317, 0.665),
+        32: (0.356, 0.665),
+        33: (0.394, 0.665),
+        34: (0.433, 0.665),
+    },
+    "B": {
+        1:  (0.644, 0.412),
+        2:  (0.677, 0.412),
+        3:  (0.715, 0.412),
+        4:  (0.755, 0.412),
+        5:  (0.793, 0.412),
+        6:  (0.831, 0.412),
+        7:  (0.875, 0.412),
+        8:  (0.658, 0.493),
+        9:  (0.696, 0.493),
+        10: (0.735, 0.493),
+        11: (0.780, 0.493),
+        12: (0.813, 0.493),
+        13: (0.851, 0.493),
+        14: (0.658, 0.587),
+        15: (0.696, 0.587),
+        16: (0.736, 0.587),
+        17: (0.774, 0.587),
+        18: (0.812, 0.587),
+        19: (0.851, 0.587),
+        20: (0.638, 0.668),
+        21: (0.677, 0.668),
+        22: (0.715, 0.668),
+        23: (0.754, 0.668),
+        24: (0.794, 0.668),
+        25: (0.836, 0.668),
+        26: (0.870, 0.668),
+    },
+}
+
+PIN_ASSIGNMENT_PATTERN = re.compile(r"^([AB])(\d+(?:/\d+)*)$")
+
+
+def _parse_pin_assignment(pin_label):
+    match = PIN_ASSIGNMENT_PATTERN.match((pin_label or "").strip().upper())
+    if not match:
+        return None, []
+
+    connector = match.group(1)
+    pins = [int(value) for value in match.group(2).split("/")]
+    return connector, pins
+
+
+class ClickableValueLabel(QLabel):
+    clicked = pyqtSignal(str, QPoint)
+
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self.setCursor(Qt.PointingHandCursor)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.clicked.emit(self.text(), self.mapToGlobal(event.pos()))
+            event.accept()
+            return
+        super().mousePressEvent(event)
+
+
+class HeaderPinOverlayWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._pixmap = QPixmap(str(get_asset_path("assets/pdms_header.png")))
+        self._selected_assignment = ""
+        self._selected_connector = None
+        self._selected_pins = []
+        self._event_filter_installed = False
+        self._window_filter_target = None
+        self.setWindowFlags(Qt.ToolTip | Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_ShowWithoutActivating)
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.resize(560, 340)
+
+    def set_assignment(self, pin_label, global_pos=None):
+        connector, pins = _parse_pin_assignment(pin_label)
+        self._selected_assignment = (pin_label or "").strip().upper()
+        self._selected_connector = connector
+        self._selected_pins = pins
+        if global_pos is not None:
+            self._ensure_event_filters()
+            self._move_near(global_pos)
+            self.show()
+            self.raise_()
+        self.update()
+
+    def clear_assignment(self):
+        self._selected_assignment = ""
+        self._selected_connector = None
+        self._selected_pins = []
+        self.update()
+
+    def hide_preview(self):
+        self.hide()
+
+    def eventFilter(self, watched, event):
+        if not self.isVisible():
+            return super().eventFilter(watched, event)
+
+        event_type = event.type()
+        if event_type == QEvent.MouseButtonPress:
+            global_pos = event.globalPos()
+            if not self.geometry().contains(global_pos):
+                self.hide_preview()
+        elif event_type == QEvent.KeyPress and event.key() == Qt.Key_Escape:
+            self.hide_preview()
+        elif event_type in (QEvent.ApplicationDeactivate, QEvent.Hide, QEvent.Close):
+            self.hide_preview()
+        elif event_type == QEvent.WindowStateChange and watched is self._window_filter_target:
+            if watched.isMinimized():
+                self.hide_preview()
+        elif event_type == QEvent.Move and watched is self._window_filter_target:
+            self.hide_preview()
+        return super().eventFilter(watched, event)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        try:
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.fillRect(self.rect(), QColor("#111111"))
+            painter.setPen(QPen(QColor("#6B1E8C"), 2))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRoundedRect(self.rect().adjusted(1, 1, -2, -2), 8, 8)
+
+            if self._pixmap.isNull():
+                painter.setPen(QColor("#E0E0E0"))
+                painter.drawText(self.rect(), Qt.AlignCenter, "Header image not available")
+                return
+
+            margin = 12
+            text_height = 28
+            target = QRectF(
+                margin,
+                margin,
+                max(1, self.width() - margin * 2),
+                max(1, self.height() - margin * 2 - text_height),
+            )
+            pixmap_rect = self._fit_rect(self._pixmap.width(), self._pixmap.height(), target)
+            painter.drawPixmap(
+                pixmap_rect,
+                self._pixmap,
+                QRectF(0, 0, self._pixmap.width(), self._pixmap.height()),
+            )
+
+            if self._selected_connector and self._selected_pins:
+                radius = max(12.0, min(pixmap_rect.width(), pixmap_rect.height()) * 0.022)
+                fill = QColor("#FFBDEB")
+                fill.setAlpha(215)
+                outline = QColor("#D0008F")
+                outline.setAlpha(245)
+                painter.setPen(QPen(outline, 2))
+                painter.setBrush(fill)
+
+                for pin in self._selected_pins:
+                    coord = HEADER_PIN_COORDS.get(self._selected_connector, {}).get(pin)
+                    if coord is None:
+                        continue
+                    x_coord, y_coord = coord
+                    point = QPointF(
+                        pixmap_rect.left() + x_coord * pixmap_rect.width(),
+                        pixmap_rect.top() + y_coord * pixmap_rect.height(),
+                    )
+                    painter.drawEllipse(point, radius, radius)
+
+            painter.setPen(QColor("#E0E0E0"))
+            caption = "Click a Physical pin value to highlight its header pins."
+            if self._selected_assignment:
+                caption = f"Selected header pins: {self._selected_assignment}"
+            painter.setFont(QFont(painter.font().family(), 10))
+            caption_rect = QRectF(margin, self.height() - margin - text_height, self.width() - margin * 2, text_height)
+            painter.drawText(caption_rect, Qt.AlignLeft | Qt.AlignVCenter, caption)
+        finally:
+            painter.end()
+
+    def _move_near(self, global_pos):
+        size = self.size()
+        screen = QApplication.screenAt(global_pos)
+        available = screen.availableGeometry() if screen is not None else QApplication.primaryScreen().availableGeometry()
+
+        x = global_pos.x() + 18
+        y = global_pos.y() + 18
+        if x + size.width() > available.right():
+            x = global_pos.x() - size.width() - 18
+        if y + size.height() > available.bottom():
+            y = global_pos.y() - size.height() - 18
+        x = max(available.left(), min(x, available.right() - size.width()))
+        y = max(available.top(), min(y, available.bottom() - size.height()))
+        self.move(x, y)
+
+    def _ensure_event_filters(self):
+        app = QApplication.instance()
+        if app is not None and not self._event_filter_installed:
+            app.installEventFilter(self)
+            self._event_filter_installed = True
+
+        window = self.parentWidget().window() if self.parentWidget() is not None else None
+        if window is not None and window is not self._window_filter_target:
+            if self._window_filter_target is not None:
+                self._window_filter_target.removeEventFilter(self)
+            window.installEventFilter(self)
+            self._window_filter_target = window
+
+    @staticmethod
+    def _fit_rect(source_width, source_height, target_rect):
+        if source_width <= 0 or source_height <= 0:
+            return QRectF(target_rect)
+
+        scale = min(target_rect.width() / source_width, target_rect.height() / source_height)
+        draw_width = source_width * scale
+        draw_height = source_height * scale
+        left = target_rect.left() + (target_rect.width() - draw_width) / 2
+        top = target_rect.top() + (target_rect.height() - draw_height) / 2
+        return QRectF(left, top, draw_width, draw_height)
 
 CAN_INSTANCE_LABELS = [
     ("CANH_INSTANCE_1", 0x00),
@@ -805,6 +1056,7 @@ class ChannelConfigPage(QWidget):
     batchChanged = pyqtSignal()
     modeChanged = pyqtSignal()
     configChanged = pyqtSignal()
+    physicalPinClicked = pyqtSignal(str, QPoint)
 
     I2T_PRESETS = [
         ("Custom", None),
@@ -832,8 +1084,10 @@ class ChannelConfigPage(QWidget):
 
         self.label_channel_id = QLabel(f"OUT_ID_{channel_index + 1}")
         self.label_channel_id.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        self.label_physical_pin = QLabel(OUTPUT_CHANNEL_PIN_LABELS[channel_index])
+        self.label_physical_pin = ClickableValueLabel(OUTPUT_CHANNEL_PIN_LABELS[channel_index])
         self.label_physical_pin.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.label_physical_pin.setToolTip("Click to highlight this pin assignment on the header image")
+        self.label_physical_pin.clicked.connect(self.physicalPinClicked.emit)
         self.label_type = QLabel("BTS500" if channel_index < 8 else "SPOC2")
         self.label_type.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.label_spoc = QLabel("n/a")
@@ -2442,6 +2696,7 @@ class ControlConfigPage(QWidget):
 
 class InputsConfigPage(QWidget):
     inputsChanged = pyqtSignal()
+    physicalPinClicked = pyqtSignal(str, QPoint)
 
     @staticmethod
     def _make_column_separator():
@@ -2477,8 +2732,9 @@ class InputsConfigPage(QWidget):
         self.physical_rows = []
         for index in range(8):
             label = QLabel(f"Physical input {index + 1}")
-            pin = QLabel(PHYSICAL_INPUT_PIN_LABELS[index])
+            pin = ClickableValueLabel(PHYSICAL_INPUT_PIN_LABELS[index])
             pin.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            pin.setToolTip("Click to highlight this pin assignment on the header image")
             combo = QComboBox()
             usage = QLabel("-")
             usage.setWordWrap(True)
@@ -2489,6 +2745,7 @@ class InputsConfigPage(QWidget):
             physical_layout.addWidget(usage, index + 1, 4)
             physical_layout.addWidget(combo, index + 1, 6)
             self.physical_rows.append({"label": label, "pin": pin, "interpretation": combo, "usage": usage})
+            pin.clicked.connect(self.physicalPinClicked.emit)
             combo.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
 
         outer.addWidget(physical_group)
@@ -2822,6 +3079,8 @@ class ConfigTab(QWidget):
         title_row.addWidget(self.btn_reset_device)
         layout.addLayout(title_row)
 
+        self.header_overlay = HeaderPinOverlayWidget(self)
+
         # subtitle = QLabel(
         #     "One tab per channel. Type is display-only and derived from the channel number; channels 1-8 export spoc fields as 0. "
         #     "Use Load JSON to restore a saved configuration or Export binary for a packed little-endian payload."
@@ -2843,6 +3102,7 @@ class ConfigTab(QWidget):
         self.inputs_page = InputsConfigPage()
         inputs_scroll.setWidget(self.inputs_page)
         self.tabs.addTab(inputs_scroll, "Inputs")
+        self.inputs_page.physicalPinClicked.connect(self.header_overlay.set_assignment)
         self.channel_widgets = []
         for index in range(CHANNEL_COUNT):
             scroll = QScrollArea()
@@ -2861,6 +3121,7 @@ class ConfigTab(QWidget):
             page.modeChanged.connect(self._refresh_summary_page)
             page.modeChanged.connect(self._verify_overall_mode_validity)
             page.configChanged.connect(self._refresh_summary_page)
+            page.physicalPinClicked.connect(self.header_overlay.set_assignment)
             self.channel_widgets.append(page)
             scroll.setWidget(page)
             self.tabs.addTab(scroll, f"Channel {index + 1}")
