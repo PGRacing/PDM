@@ -511,6 +511,39 @@ class MainWindow(QMainWindow):
                 "i2tThreshold": i2t_threshold,
             }
 
+        def _normalize_soc_cfg(soc_cfg):
+            if not isinstance(soc_cfg, dict):
+                return {
+                    "useSoc": False,
+                    "nominalThreshold": 0,
+                    "allowInrush": False,
+                    "inrushInput": None,
+                    "inrushWindowFromStart": 0,
+                    "inrushThreshold": 0,
+                    "inrushTimeThreshold": 0,
+                }
+
+            allow_inrush = bool(soc_cfg.get("allowInrush", False))
+            raw_inrush_input = soc_cfg.get("inrushInput")
+            inrush_input = None
+            if allow_inrush and raw_inrush_input is not None:
+                try:
+                    candidate = int(raw_inrush_input)
+                except Exception:
+                    candidate = 0xFFFF
+                if candidate not in (0xFF, 0xFFFF):
+                    inrush_input = candidate
+
+            return {
+                "useSoc": bool(soc_cfg.get("useSoc", False)),
+                "nominalThreshold": int(soc_cfg.get("nominalThreshold", 0)),
+                "allowInrush": allow_inrush,
+                "inrushInput": inrush_input,
+                "inrushWindowFromStart": int(soc_cfg.get("inrushWindowFromStart", 0)),
+                "inrushThreshold": int(soc_cfg.get("inrushThreshold", 0)),
+                "inrushTimeThreshold": int(soc_cfg.get("inrushTimeThreshold", 0)),
+            }
+
         inputs = result.get("inputs")
         if isinstance(inputs, dict):
             canonical_inputs = {}
@@ -552,6 +585,7 @@ class MainWindow(QMainWindow):
 
                 channel_item = dict(item)
                 safety = dict(channel_item.get("safety") or {})
+                safety["socCfg"] = _normalize_soc_cfg(safety.get("socCfg"))
                 safety["i2tCfg"] = _normalize_i2t_cfg(safety.get("i2tCfg"))
                 channel_item["safety"] = safety
                 canonical_channels.append(channel_item)
