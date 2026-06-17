@@ -66,6 +66,12 @@ bool BSP_CANIN_GetValueSchmitt(T_IN_CAN_LOC location);
 /// @note This function should be called only for CAN inputs
 uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location);
 
+/// @brief Override CAN input state (after usage of previous value)
+/// @param location The location of the CAN input
+/// @param state The new state to set
+/// @return TRUE if the override was successful, FALSE otherwise
+bool BSP_CANIN_OverrideValueSchmitt(T_IN_CAN_LOC location, bool state);
+
 extern T_BSP_CANIN_CFG bspCanInputsCfg[IN_CAN_MAX];
 
 #endif // __BSP_CANINPUT_H_

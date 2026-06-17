@@ -65,6 +65,7 @@ typedef struct _T_OUT_SAFETY_SOC_CFG
     
     // Inrush current capability
     const bool         allowInrush;              // Should inrush current be allowed during SOC operation
+    const T_INPUT_ID   inrushInput;              // Input id for inrush current control (must be digital input)
     const uint32_t     inrushWindowFromStart;    // Time window after channel turn-on in which inrush current is allowed
     const uint32_t     inrushThreshold;          // Allowed maximal current during inrush operation [mA]
     const uint32_t     inrushTimeThreshold;      // For how long inrush current can be present after first peak [ms] 
@@ -319,6 +320,14 @@ void OUT_ResetRegistersAll(void);
 /// @param id Output channel id [1..16] T_OUT_ID
 bool OUT_IsSafetyLineDependent(T_OUT_ID id);
 
+/// @brief Get output channel I2t heat value in percentage
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Heat value from 0 to 100% (0 - no heat, 100% - max heat)
+uint8_t OUT_DIAG_GetI2tHeat(T_OUT_ID id);
 
+/// @brief Get output channel software overcurrent threshold value in mA
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return Threshold value in cA (centi-ampere)
+uint16_t OUT_DIAG_GetSocTreshold_cA(T_OUT_ID id);
 
 #endif

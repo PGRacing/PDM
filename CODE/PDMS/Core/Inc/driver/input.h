@@ -47,4 +47,6 @@ void IN_ChangeMode(T_IN_CFG* cfg, T_IN_MODE targetMode);
 
 T_IN_MODE IN_GetMode(T_INPUT_ID id);
 
+bool IN_OverrideCANValueSchmitt(T_INPUT_ID id, bool state);
+
 #endif

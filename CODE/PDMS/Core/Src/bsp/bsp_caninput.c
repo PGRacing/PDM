@@ -307,3 +307,18 @@ uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location)
     ASSERT(location < IN_CAN_MAX);
     return bspCanInputsReg[location].voltageValue;
 }
+
+bool BSP_CANIN_OverrideValueSchmitt(T_IN_CAN_LOC location, bool state)
+{
+    ASSERT(location < IN_CAN_MAX);
+    if(bspCanInputsCfg[location].isUsed == FALSE || bspCanInputsCfg[location].dataType != CAN_INPUT_TYPE_BOOL)
+    {
+        LOG_WARN("BSP_CANIN:: trying to set schmitt value for non boolean input");
+        return FALSE;
+    }
+
+    bspCanInputsReg[location].rawValue = state;
+    bspCanInputsReg[location].voltageValue = state ? 5000 : 0;
+    bspCanInputsReg[location].schmittState = state;
+    return TRUE;
+}

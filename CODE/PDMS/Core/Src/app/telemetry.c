@@ -15,7 +15,8 @@
 
 T_TELEM_CFG telemCfg = 
 {
-    .telemInterval = 40, // 40 ms interval - 25Hz
+    .slowDataInterval = pdMS_TO_TICKS(50), // 50 ms - 20Hz
+    .fastDataInterval = pdMS_TO_TICKS(20), // 20 ms - 50Hz
     .namesInterval = pdMS_TO_TICKS(10000),
     .canInstance = CANH_INSTANCE_2,
     .sendSystemData = TRUE,
@@ -25,32 +26,45 @@ T_TELEM_CFG telemCfg =
     .sendCurrent = TRUE,
     .sendNames = TRUE,
     .sendPhyInputs = TRUE,
-    .sendImu = TRUE
+    .sendImu = TRUE,
+    .sendOutDiag = TRUE
 };
 
-static void TELEM_SendVoltageByCan(T_CANH_INSTANCE canInstance)
+static void TELEM_SendVoltageByCan1_8(T_CANH_INSTANCE canInstance)
 {
     CANH_Send_TxVoltage1_4(canInstance, OUT_DIAG_GetEmaVoltage(OUT_ID_1), OUT_DIAG_GetEmaVoltage(OUT_ID_2), OUT_DIAG_GetEmaVoltage(OUT_ID_3), OUT_DIAG_GetEmaVoltage(OUT_ID_4));
     CANH_Send_TxVoltage5_8(canInstance, OUT_DIAG_GetEmaVoltage(OUT_ID_5), OUT_DIAG_GetEmaVoltage(OUT_ID_6), OUT_DIAG_GetEmaVoltage(OUT_ID_7), OUT_DIAG_GetEmaVoltage(OUT_ID_8));
+}
+
+static void TELEM_SendVoltageByCan9_16(T_CANH_INSTANCE canInstance)
+{
     CANH_Send_TxVoltage9_12(canInstance, OUT_DIAG_GetEmaVoltage(OUT_ID_9), OUT_DIAG_GetEmaVoltage(OUT_ID_10), OUT_DIAG_GetEmaVoltage(OUT_ID_11), OUT_DIAG_GetEmaVoltage(OUT_ID_12));
     CANH_Send_TxVoltage13_16(canInstance, OUT_DIAG_GetEmaVoltage(OUT_ID_13), OUT_DIAG_GetEmaVoltage(OUT_ID_14), OUT_DIAG_GetEmaVoltage(OUT_ID_15), OUT_DIAG_GetEmaVoltage(OUT_ID_16));
 }
 
-static void TELEM_SendCurrentByCan(T_CANH_INSTANCE canInstance)
+static void TELEM_SendCurrentByCan1_8(T_CANH_INSTANCE canInstance)
 {
     CANH_Send_TxCurrent1_4(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_1), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_2), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_3), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_4));
     CANH_Send_TxCurrent5_8(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_5), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_6), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_7), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_8));
     CANH_Send_TxCurrentRMS1_4(canInstance, OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_1), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_2), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_3), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_4));
     CANH_Send_TxCurrentRMS5_8(canInstance, OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_5), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_6), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_7), OUT_DIAG_GetEmaCurrentRMS_cA(OUT_ID_8));
+}
+
+static void TELEM_SendCurrentByCan9_16(T_CANH_INSTANCE canInstance)
+{
+ 
     CANH_Send_TxCurrent9_12(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_9), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_10), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_11), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_12));
     CANH_Send_TxCurrent13_16(canInstance, OUT_DIAG_GetEmaCurrent_cA(OUT_ID_13), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_14), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_15), OUT_DIAG_GetEmaCurrent_cA(OUT_ID_16));
 }
 
-static void TELEM_SendStatusByCan(T_CANH_INSTANCE canInstance)
+static void TELEM_SendStatusByCan1_8(T_CANH_INSTANCE canInstance)
 {
     CANH_Send_TxStatus1_8(canInstance, (uint8_t)OUT_DIAG_GetStatus(OUT_ID_1), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_2), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_3), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_4),
         (uint8_t)OUT_DIAG_GetStatus(OUT_ID_5), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_6), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_7), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_8));
+}
 
+static void TELEM_SendStatusByCan9_16(T_CANH_INSTANCE canInstance)
+{
     CANH_Send_TxStatus9_16(canInstance, (uint8_t)OUT_DIAG_GetStatus(OUT_ID_9), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_10), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_11), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_12),
         (uint8_t)OUT_DIAG_GetStatus(OUT_ID_13), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_14), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_15), (uint8_t)OUT_DIAG_GetStatus(OUT_ID_16));
 }
@@ -111,141 +125,243 @@ static void TELEM_SendImuDataByCan(T_CANH_INSTANCE canInstance)
     CANH_Send_ImuRates(canInstance, (int16_t)rates.pitch, (int16_t)rates.roll, (int16_t)rates.yaw);
 }
 
+static void TELEM_SendI2tDataByCan(T_CANH_INSTANCE canInstance)
+{
+    CANH_Send_I2tHeat1_8(canInstance, OUT_DIAG_GetI2tHeat(OUT_ID_1), OUT_DIAG_GetI2tHeat(OUT_ID_2), OUT_DIAG_GetI2tHeat(OUT_ID_3), OUT_DIAG_GetI2tHeat(OUT_ID_4),
+        OUT_DIAG_GetI2tHeat(OUT_ID_5), OUT_DIAG_GetI2tHeat(OUT_ID_6), OUT_DIAG_GetI2tHeat(OUT_ID_7), OUT_DIAG_GetI2tHeat(OUT_ID_8));
+}
+
+static void TELEM_SendSocTresholdByCan(T_CANH_INSTANCE canInstance)
+{
+    CANH_Send_SocTreshold_1_4(canInstance, OUT_DIAG_GetSocTreshold_cA(OUT_ID_1), OUT_DIAG_GetSocTreshold_cA(OUT_ID_2), OUT_DIAG_GetSocTreshold_cA(OUT_ID_3), OUT_DIAG_GetSocTreshold_cA(OUT_ID_4));
+    CANH_Send_SocTreshold_5_8(canInstance, OUT_DIAG_GetSocTreshold_cA(OUT_ID_5), OUT_DIAG_GetSocTreshold_cA(OUT_ID_6), OUT_DIAG_GetSocTreshold_cA(OUT_ID_7), OUT_DIAG_GetSocTreshold_cA(OUT_ID_8));
+}
+
 void telemTaskStart(void *argument)
 {
     LOG_INFO("TELEM:: Task start");
 
     BaseType_t lastNameTs = 0;
+    BaseType_t lastFastDataTs = 0;
+    BaseType_t lastSlowDataTs = 0;
 
     for (;;)
     {
-        BaseType_t start = xTaskGetTickCount();
-        if (telemCfg.sendStatus == TRUE)
+        //// FAST DATA
+        if(lastFastDataTs == 0 || (xTaskGetTickCount() - lastFastDataTs >= telemCfg.fastDataInterval))
         {
-            if (telemCfg.canInstance == CANH_INSTANCE_1)
+            // VOLTAGE DATA 1-8
+            if (telemCfg.sendVoltage == TRUE)
             {
-                TELEM_SendStatusByCan(CANH_INSTANCE_1);
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendVoltageByCan1_8(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendVoltageByCan1_8(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendVoltageByCan1_8(CANH_INSTANCE_1);
+                    TELEM_SendVoltageByCan1_8(CANH_INSTANCE_2);
+                }
             }
-            else if (telemCfg.canInstance == CANH_INSTANCE_2)
+
+            // CURRENT DATA 1-8
+            if (telemCfg.sendCurrent == TRUE)
             {
-                TELEM_SendStatusByCan(CANH_INSTANCE_2);
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendCurrentByCan1_8(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendCurrentByCan1_8(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendCurrentByCan1_8(CANH_INSTANCE_1);
+                    TELEM_SendCurrentByCan1_8(CANH_INSTANCE_2);
+                }
             }
-            else
+
+            // STATE ALL
+            if(telemCfg.sendState == TRUE)
             {
-                TELEM_SendStatusByCan(CANH_INSTANCE_1);
-                TELEM_SendStatusByCan(CANH_INSTANCE_2);
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendStateByCan(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendStateByCan(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendStateByCan(CANH_INSTANCE_1);
+                    TELEM_SendStateByCan(CANH_INSTANCE_2);
+                }
+            }
+
+            // STATUS 1-8
+            if(telemCfg.sendStatus == TRUE)
+            {
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendStatusByCan1_8(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendStatusByCan1_8(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendStatusByCan1_8(CANH_INSTANCE_1);
+                    TELEM_SendStatusByCan1_8(CANH_INSTANCE_2);
+                }
+            }
+
+            // IMU DATA
+            if(telemCfg.sendImu == TRUE)
+            {
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendImuDataByCan(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendImuDataByCan(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendImuDataByCan(CANH_INSTANCE_1);
+                    TELEM_SendImuDataByCan(CANH_INSTANCE_2);
+                }
+            }
+
+            lastFastDataTs = xTaskGetTickCount();
+
+            // SYSTEM DATA
+            if(telemCfg.sendSystemData == TRUE)
+            {
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendSystemDataByCan(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendSystemDataByCan(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendSystemDataByCan(CANH_INSTANCE_1);
+                    TELEM_SendSystemDataByCan(CANH_INSTANCE_2);
+                }
+            }
+
+            // PHY INPUTS
+            if(telemCfg.sendPhyInputs == TRUE)
+            {
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendPhyInputsByCan(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendPhyInputsByCan(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendPhyInputsByCan(CANH_INSTANCE_1);
+                    TELEM_SendPhyInputsByCan(CANH_INSTANCE_2);
+                }
             }
         }
 
-        if (telemCfg.sendState == TRUE)
+        //// SLOW DATA
+        if(lastSlowDataTs == 0 || (xTaskGetTickCount() - lastSlowDataTs >= telemCfg.slowDataInterval))
         {
+             // VOLTAGE DATA 9-16
+            if (telemCfg.sendVoltage == TRUE)
+            {
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendVoltageByCan9_16(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendVoltageByCan9_16(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendVoltageByCan9_16(CANH_INSTANCE_1);
+                    TELEM_SendVoltageByCan9_16(CANH_INSTANCE_2);
+                }
+            }
 
-            if (telemCfg.canInstance == CANH_INSTANCE_1)
+            // CURRENT DATA 9-16
+            if (telemCfg.sendCurrent == TRUE)
             {
-                TELEM_SendStateByCan(CANH_INSTANCE_1);
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendCurrentByCan9_16(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendCurrentByCan9_16(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendCurrentByCan9_16(CANH_INSTANCE_1);
+                    TELEM_SendCurrentByCan9_16(CANH_INSTANCE_2);
+                }
             }
-            else if (telemCfg.canInstance == CANH_INSTANCE_2)
+
+            // STATUS DATA 9-16
+            if(telemCfg.sendStatus == TRUE)
             {
-                TELEM_SendStateByCan(CANH_INSTANCE_2);
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendStatusByCan9_16(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendStatusByCan9_16(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendStatusByCan9_16(CANH_INSTANCE_1);
+                    TELEM_SendStatusByCan9_16(CANH_INSTANCE_2);
+                }
             }
-            else
+
+            if(telemCfg.sendOutDiag == TRUE)
             {
-                TELEM_SendStateByCan(CANH_INSTANCE_1);
-                TELEM_SendStateByCan(CANH_INSTANCE_2);
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendI2tDataByCan(CANH_INSTANCE_1);
+                    TELEM_SendSocTresholdByCan(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendI2tDataByCan(CANH_INSTANCE_2);
+                    TELEM_SendSocTresholdByCan(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendI2tDataByCan(CANH_INSTANCE_1);
+                    TELEM_SendI2tDataByCan(CANH_INSTANCE_2);
+                    TELEM_SendSocTresholdByCan(CANH_INSTANCE_1);
+                    TELEM_SendSocTresholdByCan(CANH_INSTANCE_2);
+                }
             }
+
+
+            lastSlowDataTs = xTaskGetTickCount();
         }
 
-        if (telemCfg.sendVoltage == TRUE)
-        {
-            if (telemCfg.canInstance == CANH_INSTANCE_1)
-            {
-                TELEM_SendVoltageByCan(CANH_INSTANCE_1);
-            }
-            else if (telemCfg.canInstance == CANH_INSTANCE_2)
-            {
-                TELEM_SendVoltageByCan(CANH_INSTANCE_2);
-            }
-            else
-            {
-                TELEM_SendVoltageByCan(CANH_INSTANCE_1);
-                TELEM_SendVoltageByCan(CANH_INSTANCE_2);
-            }
-        }
-
-        if (telemCfg.sendCurrent == TRUE)
-        {
-            if (telemCfg.canInstance == CANH_INSTANCE_1)
-            {
-                TELEM_SendCurrentByCan(CANH_INSTANCE_1);
-            }
-            else if (telemCfg.canInstance == CANH_INSTANCE_2)
-            {
-                TELEM_SendCurrentByCan(CANH_INSTANCE_2);
-            }
-            else
-            {
-                TELEM_SendCurrentByCan(CANH_INSTANCE_1);
-                TELEM_SendCurrentByCan(CANH_INSTANCE_2);
-            }
-        }
-
-        osDelay(2);
-
-        if (telemCfg.sendSystemData == TRUE)
-        {
-            if (telemCfg.canInstance == CANH_INSTANCE_1)
-            {
-                TELEM_SendSystemDataByCan(CANH_INSTANCE_1);
-            }
-            else if (telemCfg.canInstance == CANH_INSTANCE_2)
-            {
-                TELEM_SendSystemDataByCan(CANH_INSTANCE_2);
-            }
-            else
-            {
-                TELEM_SendSystemDataByCan(CANH_INSTANCE_1);
-                TELEM_SendSystemDataByCan(CANH_INSTANCE_2);
-            }
-        }
-
-        osDelay(2);
-
-        if(telemCfg.sendPhyInputs == TRUE)
-        {
-            if (telemCfg.canInstance == CANH_INSTANCE_1)
-            {
-                TELEM_SendPhyInputsByCan(CANH_INSTANCE_1);
-            }
-            else if (telemCfg.canInstance == CANH_INSTANCE_2)
-            {
-                TELEM_SendPhyInputsByCan(CANH_INSTANCE_2);
-            }
-            else
-            {
-                TELEM_SendPhyInputsByCan(CANH_INSTANCE_1);
-                TELEM_SendPhyInputsByCan(CANH_INSTANCE_2);
-            }
-        }
-
-        osDelay(2);
-
-        if(telemCfg.sendImu == TRUE)
-        {
-            if (telemCfg.canInstance == CANH_INSTANCE_1)
-            {
-                TELEM_SendImuDataByCan(CANH_INSTANCE_1);
-            }
-            else if (telemCfg.canInstance == CANH_INSTANCE_2)
-            {
-                TELEM_SendImuDataByCan(CANH_INSTANCE_2);
-            }
-            else
-            {
-                TELEM_SendImuDataByCan(CANH_INSTANCE_1);
-                TELEM_SendImuDataByCan(CANH_INSTANCE_2);
-            }
-        }
-
+        // SEND NAMES
         if (xTaskGetTickCount() - lastNameTs > telemCfg.namesInterval) 
         {
             if (telemCfg.canInstance == CANH_INSTANCE_1)
@@ -264,10 +380,7 @@ void telemTaskStart(void *argument)
             lastNameTs = xTaskGetTickCount();
         }
 
-        BaseType_t delta = xTaskGetTickCount() - start;
-        BaseType_t intervalTicks = pdMS_TO_TICKS(telemCfg.telemInterval) - delta;
         
-        osDelay(intervalTicks > 0 ? intervalTicks : 1);
-        
+        osDelay(pdMS_TO_TICKS(1));
     }
 }

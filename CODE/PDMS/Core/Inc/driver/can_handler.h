@@ -78,6 +78,11 @@ typedef struct __packed _T_CANH_IMU_DATA
     int16_t d3;
 }T_CANH_IMU_DATA;
 
+typedef struct __packed _T_CANH_I2T_HEAT_1_8
+{
+    uint8_t heat[8]; // I2t heat container in [%]
+}T_CANH_I2T_HEAT_1_8;
+
 typedef union __packed
 {
     uint8_t raw[8];
@@ -88,6 +93,7 @@ typedef union __packed
     T_CANH_TX_CURRENT_4CH current_4ch;
     T_CANH_PHY_INPUTS_4CH phy_inputs_4ch;
     T_CANH_IMU_DATA imu_data;
+    T_CANH_I2T_HEAT_1_8 i2t_heat_1_8;
 }T_CANH_DATA;
 
 typedef struct T_CANH_TX_PACKAGE 
@@ -144,5 +150,10 @@ void CANH_Send_PhyInputs5_8(T_CANH_INSTANCE instance, uint16_t i5, uint16_t i6, 
 
 void CANH_Send_ImuAcc(T_CANH_INSTANCE instance, int16_t accX, int16_t accY, int16_t accZ);
 void CANH_Send_ImuRates(T_CANH_INSTANCE instance, int16_t pitch, int16_t roll, int16_t yaw);
+
+/* DIAGNOSTICS */
+void CANH_Send_I2tHeat1_8(T_CANH_INSTANCE instance, uint8_t h1, uint8_t h2, uint8_t h3, uint8_t h4, uint8_t h5, uint8_t h6, uint8_t h7, uint8_t h8);
+void CANH_Send_SocTreshold_1_4(T_CANH_INSTANCE instance, uint16_t oc1, uint16_t oc2, uint16_t oc3, uint16_t oc4);
+void CANH_Send_SocTreshold_5_8(T_CANH_INSTANCE instance, uint16_t oc1, uint16_t oc2, uint16_t oc3, uint16_t oc4);
 
 #endif

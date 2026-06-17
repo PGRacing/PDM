@@ -28,6 +28,9 @@
 #define OUT_DIAG_EMA_CURRENT_ALPHA 0.2f // Alpha for exponential moving average of current, lower value means smoother readings but longer time to react to changes
 #define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.1f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
 
+// I2t 
+#define OUT_MAX_I2T_TRESHOLD (UINT64_MAX-1 / 100)
+
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
 #define OUT_ASSERT_IN_RANGE_CFG(id)  (ASSERT( (id) >= 0 && (id) < ARRAY_COUNT(outsCfg)))
@@ -41,6 +44,7 @@ static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
 static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
 static inline void OUT_DIAG_ArmI2tProtection(T_OUT_ID id);
 static inline void OUT_DIAG_ArmSoftStart(T_OUT_ID id);
+static inline void OUT_DIAG_SocExternalInrushRequest(T_OUT_ID id);
 
 // Get current time in ms
 #define OUT_GET_TIME_MS (pdTICKS_TO_MS( xTaskGetTickCount() ))
@@ -1203,6 +1207,20 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
       OUT_SetDutyPWM(id, cfg->pwmCfg.baseDuty);
     }
   }
+  
+  if(reqState == OUT_STATE_ON 
+        && cfg->safety.socCfg.useSoc == TRUE 
+        && cfg->safety.socCfg.inrushInput != INPUT_ID_UNASSIGNED_VALUE)
+  {
+    // ARM software over current protection
+    if(IN_GetValueSchmitt(cfg->safety.socCfg.inrushInput) == TRUE)
+    {
+      OUT_DIAG_SocExternalInrushRequest(id);
+      
+      // Clear request after acknowledging
+      IN_OverrideCANValueSchmitt(cfg->safety.socCfg.inrushInput, FALSE); 
+    }
+  }
 
   return res;
 }
@@ -1332,6 +1350,18 @@ static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id)
     outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
   }
   
+}
+
+/// @brief Request inrush mode for output channel eg. via CAN or phy input
+/// @param id Output channel id [1..16] T_OUT_ID 
+static inline void OUT_DIAG_SocExternalInrushRequest(T_OUT_ID id)
+{
+  if(outsCfg[id].safety.socCfg.useSoc == TRUE && outsCfg[id].safety.socCfg.allowInrush == TRUE)
+  {
+    outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_INRUSH_WINDOW;
+    outsReg[id].safety.socReg.inrushTripCounter = 0;
+    outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.inrushThreshold;
+  }
 }
 
 /// @brief Software over current protection processing executed in fast loop
@@ -1970,6 +2000,20 @@ T_OUT_MODE OUT_GetMode(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETCFGPTR(id)->mode;
+}
+
+uint8_t OUT_DIAG_GetI2tHeat(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  
+  if (outsCfg[id].safety.i2tCfg.i2tThreshold == 0) return 0;
+  return (outsReg[id].safety.i2tReg.sum * 100) / outsCfg[id].safety.i2tCfg.i2tThreshold;
+}
+
+uint16_t OUT_DIAG_GetSocTreshold_cA(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return (uint16_t)outsReg[id].safety.socReg.currentThreshold / 10;
 }
 
 void OUT_ResetRegistersAll(void)

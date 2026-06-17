@@ -92,6 +92,9 @@ typedef enum
     CANH_ID_IMU_GYRO          = 0x011,  // IMU gyroscope data
     CANH_ID_CURRENT_RMS_1_4   = 0x012,  // RMS Current of channels 1-4 (default value)
     CANH_ID_CURRENT_RMS_5_8   = 0x013,  // RMS Current of channels 1-4 (default value)
+    CANH_ID_I2T_HEAT_1_8      = 0x014,  // I2t heat of channels 1-8
+    CANH_ID_SOC_TRESH_1_4     = 0x015,  // SOC treshold of channels 1-4
+    CANH_ID_SOC_TRESH_5_8     = 0x016,  // SOC treshold of channels 5-8
     CANH_ID_ISOTP_ENTRANCE    = 0x050,  // Entrance gateway for ISO-TP communication mode
     CANH_ID_ISOTP_TX          = 0x051,  // CAN ID used for ISO-TP transmission
     CANH_ID_ISOTP_RX          = 0x052,  // CAN ID used for ISO-TP reception
@@ -381,6 +384,48 @@ T_CANH_TX_PACKAGE CANH_TxCurrentRMS5_8 =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_TxI2tHeat1_8 = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_I2T_HEAT_1_8,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+T_CANH_TX_PACKAGE CANH_TxSOCThreshold1_4 = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_SOC_TRESH_1_4,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+T_CANH_TX_PACKAGE CANH_TxSOCThreshold5_8 = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_SOC_TRESH_5_8,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
 void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
     CANH_TxStatus1_8.data.status_8ch.status[0] = s1;
@@ -583,6 +628,41 @@ void CANH_Send_TxCurrentRMS5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c
     CANH_PushToTxQueue(instance, CANH_TxCurrentRMS5_8);
 }
 
+void CANH_Send_I2tHeat1_8(T_CANH_INSTANCE instance, uint8_t h1, uint8_t h2, uint8_t h3, uint8_t h4, uint8_t h5, uint8_t h6, uint8_t h7, uint8_t h8)
+{
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[0] = h1;
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[1] = h2;
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[2] = h3;
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[3] = h4;
+
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[4] = h5;
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[5] = h6;
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[6] = h7;
+    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[7] = h8;
+
+    CANH_PushToTxQueue(instance, CANH_TxI2tHeat1_8);
+}
+
+void CANH_Send_SocTreshold_1_4(T_CANH_INSTANCE instance, uint16_t oc1, uint16_t oc2, uint16_t oc3, uint16_t oc4)
+{
+    CANH_TxSOCThreshold1_4.data.current_4ch.current[0] = oc1;
+    CANH_TxSOCThreshold1_4.data.current_4ch.current[1] = oc2;
+    CANH_TxSOCThreshold1_4.data.current_4ch.current[2] = oc3;
+    CANH_TxSOCThreshold1_4.data.current_4ch.current[3] = oc4;
+
+    CANH_PushToTxQueue(instance, CANH_TxSOCThreshold1_4);
+}
+
+void CANH_Send_SocTreshold_5_8(T_CANH_INSTANCE instance, uint16_t oc1, uint16_t oc2, uint16_t oc3, uint16_t oc4)
+{
+    CANH_TxSOCThreshold5_8.data.current_4ch.current[0] = oc1;
+    CANH_TxSOCThreshold5_8.data.current_4ch.current[1] = oc2;
+    CANH_TxSOCThreshold5_8.data.current_4ch.current[2] = oc3;
+    CANH_TxSOCThreshold5_8.data.current_4ch.current[3] = oc4;
+
+    CANH_PushToTxQueue(instance, CANH_TxSOCThreshold5_8);
+}
+
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)
 {   
     if(instance == CANH_INSTANCE_1)
@@ -658,7 +738,7 @@ static void CANH_InitModule(T_CANH_INSTANCE instance)
     CANH_SwitchTerminator(instance, cansCfg[instance].terminator);
 
     /* Create queue for CAN TX data*/
-    cansReg[instance].txQueueHandle = xQueueCreate(20, sizeof(T_CANH_TX_PACKAGE));
+    cansReg[instance].txQueueHandle = xQueueCreate(40, sizeof(T_CANH_TX_PACKAGE));
     cansReg[instance].rxQueueHandle = xQueueCreate(10, sizeof(T_CANH_RX_PACKAGE));
 
     // Initialize TX queue
