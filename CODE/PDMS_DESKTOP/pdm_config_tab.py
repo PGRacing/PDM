@@ -726,7 +726,7 @@ class ConfigSummaryPage(QWidget):
             for column, value in enumerate(values):
                 item = QTableWidgetItem(str(value))
                 item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-                item.setTextAlignment(Qt.AlignLeft | Qt.AlignTop)
+                item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
                 self.table.setItem(row, column, item)
 
         self.table.resizeRowsToContents()
