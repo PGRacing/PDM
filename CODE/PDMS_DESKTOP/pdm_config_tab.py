@@ -83,6 +83,7 @@ FIELD_LABELS = {
         "use_soc": "Use overcurrent (SOC) protection",
         "nominal_threshold": "Nominal threshold:",
         "allow_inrush": "Allow inrush:",
+        "inrush_input": "External inrush source:",
         "inrush_window_from_start": "Inrush window from start:",
         "inrush_threshold": "Inrush threshold:",
         "inrush_time_threshold": "Inrush time threshold:",
@@ -305,13 +306,13 @@ CHECKBOX_STYLE = (
 )
 
 BINARY_MAGIC = b"PDMB"
-BINARY_VERSION = 3
+BINARY_VERSION = 4
 # Packed record layout for one T_OUT_CFG instance:
 # id:u8, type:u8, mode:u8, spocId:u8, spocChId:u8, name[32], batch:u8,
 # afterErrorCfg.behavior:u8, afterErrorCfg.latchTime:u32, actOnSafety:u8,
 # errRetryThreshold:u16, retryTimerInterval:u32,
 # socCfg.useSoc:u8, socCfg.nominalThreshold:u32, socCfg.allowInrush:u8,
-# socCfg.inrushWindowFromStart:u32, socCfg.inrushThreshold:u32,
+# socCfg.inrushInput:u8, socCfg.inrushWindowFromStart:u32, socCfg.inrushThreshold:u32,
 # socCfg.inrushTimeThreshold:u32,
 # i2tCfg.useI2t:u8, i2tCfg.nominalCurrent:u32, i2tCfg.nominalCurrentSq:u32,
 # i2tCfg.timeThreshold:u32, i2tCfg.i2tThreshold:u32,
@@ -350,8 +351,48 @@ LEGACY_BINARY_RECORD_FORMAT = "<" + "".join(
     ]
 )
 LEGACY_BINARY_RECORD_SIZE = struct.calcsize(LEGACY_BINARY_RECORD_FORMAT)
-BINARY_RECORD_FORMAT = (
+BINARY_BASE_RECORD_FORMAT = "<" + "".join(
+    [
+        "B",
+        "B",
+        "B",
+        "B",
+        "B",
+        "32s",
+        "B",
+        "B",
+        "I",
+        "B",
+        "H",
+        "I",
+        "B",
+        "I",
+        "B",
+        "H",
+        "I",
+        "I",
+        "I",
+        "B",
+        "I",
+        "I",
+        "I",
+        "q",
+    ]
+)
+BINARY_RECORD_FORMAT_V3 = (
     LEGACY_BINARY_RECORD_FORMAT
+    + "B"
+    + "H"
+    + ("H" * OUT_PWM_MAP_RESOLUTION)
+    + ("B" * OUT_PWM_MAP_RESOLUTION)
+    + "B"
+    + "B"
+    + "B"
+    + "I"
+)
+BINARY_RECORD_SIZE_V3 = struct.calcsize(BINARY_RECORD_FORMAT_V3)
+BINARY_RECORD_FORMAT = (
+    BINARY_BASE_RECORD_FORMAT
     + "B"
     + "H"
     + ("H" * OUT_PWM_MAP_RESOLUTION)
@@ -367,9 +408,12 @@ OUTPUT_RECORD_FORMAT = BINARY_RECORD_FORMAT
 OUTPUT_RECORD_SIZE = BINARY_RECORD_SIZE
 LEGACY_OUTPUT_RECORD_FORMAT = LEGACY_BINARY_RECORD_FORMAT
 LEGACY_OUTPUT_RECORD_SIZE = LEGACY_BINARY_RECORD_SIZE
+V3_OUTPUT_RECORD_FORMAT = BINARY_RECORD_FORMAT_V3
+V3_OUTPUT_RECORD_SIZE = BINARY_RECORD_SIZE_V3
 
 OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * OUTPUT_RECORD_SIZE
 LEGACY_OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * LEGACY_OUTPUT_RECORD_SIZE
+V3_OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * V3_OUTPUT_RECORD_SIZE
 
 def _make_spinbox(minimum, maximum, value, suffix="", step = 1):
     spin = QSpinBox()
@@ -644,6 +688,7 @@ class ConfigSummaryPage(QWidget):
                 soc_lines = [
                     f"Threshold: {channel_widget.edit_nominal_threshold.value()} mA",
                     f"Inrush: {'Yes' if channel_widget.check_allow_inrush.isChecked() else 'No'}",
+                    f"Inrush input: {channel_widget.combo_inrush_input.currentText() if channel_widget.check_allow_inrush.isChecked() else '-'}",
                     f"Window: {self._format_inrush_window(channel_widget._get_inrush_window_from_start())}",
                     f"Inrush threshold: {channel_widget.edit_inrush_threshold.value()} mA",
                     f"Inrush time: {channel_widget.edit_inrush_time_threshold.value()} ms",
@@ -800,6 +845,7 @@ class ChannelConfigPage(QWidget):
         pwm_form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         self.pwm_box.setStyleSheet("QWidget { background-color: transparent; }")
         self.pwm_source_provider = lambda allowed_var=None: []
+        self.inrush_source_provider = lambda allowed_var=None: []
         self.edit_base_duty = _make_spinbox(0, 100, 0, "%")
         self.combo_duty_input = QComboBox()
         self.combo_duty_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -902,6 +948,8 @@ class ChannelConfigPage(QWidget):
         self.check_allow_inrush = QCheckBox()
         self.check_allow_inrush.setStyleSheet(CHECKBOX_STYLE)
         self.check_allow_inrush.setChecked(False)
+        self.combo_inrush_input = QComboBox()
+        self.combo_inrush_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.edit_inrush_window_from_start = _make_spinbox(0, 2147483647, 0, " ms")
         self.check_inrush_window_infinite = QCheckBox("Infinite")
         self.check_inrush_window_infinite.setStyleSheet(CHECKBOX_STYLE)
@@ -922,6 +970,7 @@ class ChannelConfigPage(QWidget):
         self.edit_inrush_time_threshold = _make_spinbox(100, 2147483647, 1000, " ms")
         soc_form.addRow(FIELD_LABELS["soc"]["nominal_threshold"], self.edit_nominal_threshold)
         soc_form.addRow(FIELD_LABELS["soc"]["allow_inrush"], self.check_allow_inrush)
+        soc_form.addRow(FIELD_LABELS["soc"]["inrush_input"], self.combo_inrush_input)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_window_from_start"], inrush_window_row)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_threshold"], self.edit_inrush_threshold)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_time_threshold"], self.edit_inrush_time_threshold)
@@ -1013,6 +1062,7 @@ class ChannelConfigPage(QWidget):
         self.soc_enable.toggled.connect(self._emit_config_changed)
         self.edit_nominal_threshold.valueChanged.connect(self._emit_config_changed)
         self.check_allow_inrush.toggled.connect(self._emit_config_changed)
+        self.combo_inrush_input.currentIndexChanged.connect(self._emit_config_changed)
         self.edit_inrush_window_from_start.valueChanged.connect(self._emit_config_changed)
         self.check_inrush_window_infinite.toggled.connect(self._emit_config_changed)
         self.edit_inrush_threshold.valueChanged.connect(self._emit_config_changed)
@@ -1025,6 +1075,7 @@ class ChannelConfigPage(QWidget):
 
         self._apply_spoc_mapping()
         self.refresh_pwm_sources()
+        self.refresh_inrush_sources()
         self._sync_soc_state()
         self._sync_i2t_state()
         self._sync_inrush_window_state()
@@ -1115,6 +1166,7 @@ class ChannelConfigPage(QWidget):
         for widget in (
             self.edit_nominal_threshold,
             self.check_allow_inrush,
+            self.combo_inrush_input,
         ):
             widget.setEnabled(enabled)
         if not enabled:
@@ -1122,6 +1174,9 @@ class ChannelConfigPage(QWidget):
             self.check_allow_inrush.blockSignals(True)
             self.check_allow_inrush.setChecked(False)
             self.check_allow_inrush.blockSignals(False)
+            inrush_input_index = self.combo_inrush_input.findData(0xFFFF)
+            if inrush_input_index >= 0:
+                self.combo_inrush_input.setCurrentIndex(inrush_input_index)
             self.edit_inrush_window_from_start.setValue(0)
             self.check_inrush_window_infinite.blockSignals(True)
             self.check_inrush_window_infinite.setChecked(True)
@@ -1133,7 +1188,12 @@ class ChannelConfigPage(QWidget):
 
     def _sync_soc_inrush_state(self):
         enabled = self.check_allow_inrush.isChecked()
+        if not enabled:
+            inrush_input_index = self.combo_inrush_input.findData(0xFFFF)
+            if inrush_input_index >= 0:
+                self.combo_inrush_input.setCurrentIndex(inrush_input_index)
         for widget in (
+            self.combo_inrush_input,
             self.edit_inrush_window_from_start,
             self.check_inrush_window_infinite,
             self.label_inrush_window_infinite,
@@ -1239,6 +1299,10 @@ class ChannelConfigPage(QWidget):
         self.pwm_source_provider = provider or (lambda allowed_var=None: [])
         self.refresh_pwm_sources()
 
+    def set_inrush_source_provider(self, provider):
+        self.inrush_source_provider = provider or (lambda allowed_var=None: [])
+        self.refresh_inrush_sources()
+
     def refresh_pwm_sources(self):
         current_value = self.combo_duty_input.currentData()
         if current_value is None:
@@ -1261,6 +1325,29 @@ class ChannelConfigPage(QWidget):
         if selected_index >= 0:
             self.combo_duty_input.setCurrentIndex(selected_index)
         self.combo_duty_input.blockSignals(False)
+
+    def refresh_inrush_sources(self):
+        current_value = self.combo_inrush_input.currentData()
+        if current_value is None:
+            current_value = 0xFFFF
+
+        sources = [("Not selected", 0xFFFF)]
+        try:
+            sources.extend(self.inrush_source_provider(0x00))
+        except Exception:
+            pass
+
+        self.combo_inrush_input.blockSignals(True)
+        self.combo_inrush_input.clear()
+        for label, value in sources:
+            self.combo_inrush_input.addItem(label, value)
+
+        selected_index = self.combo_inrush_input.findData(current_value)
+        if selected_index < 0:
+            selected_index = self.combo_inrush_input.findData(0xFFFF)
+        if selected_index >= 0:
+            self.combo_inrush_input.setCurrentIndex(selected_index)
+        self.combo_inrush_input.blockSignals(False)
 
     def _sync_mode_state(self):
         mode = self.combo_mode.currentData() 
@@ -1361,6 +1448,13 @@ class ChannelConfigPage(QWidget):
         self.soc_enable.setChecked(bool(soc.get("useSoc", self.soc_enable.isChecked())))
         self.edit_nominal_threshold.setValue(int(soc.get("nominalThreshold", self.edit_nominal_threshold.value())))
         self.check_allow_inrush.setChecked(bool(soc.get("allowInrush", self.check_allow_inrush.isChecked())))
+        self.refresh_inrush_sources()
+        inrush_input_value = soc.get("inrushInput", 0xFFFF)
+        inrush_input_index = self.combo_inrush_input.findData(inrush_input_value)
+        if inrush_input_index < 0:
+            inrush_input_index = self.combo_inrush_input.findData(0xFFFF)
+        if inrush_input_index >= 0:
+            self.combo_inrush_input.setCurrentIndex(inrush_input_index)
         self._set_inrush_window_from_start(soc.get("inrushWindowFromStart", self._get_inrush_window_from_start()))
         self.edit_inrush_threshold.setValue(int(soc.get("inrushThreshold", self.edit_inrush_threshold.value())))
         self.edit_inrush_time_threshold.setValue(int(soc.get("inrushTimeThreshold", self.edit_inrush_time_threshold.value())))
@@ -1386,6 +1480,12 @@ class ChannelConfigPage(QWidget):
         name_bytes = self.edit_name.text().encode("utf-8")[:32]
         name_bytes = name_bytes.ljust(32, b"\0")
         type_value = OUT_TYPE_BTS500 if self.channel_index < 8 else OUT_TYPE_SPOC2
+        allow_inrush = self.check_allow_inrush.isChecked()
+        inrush_input = self.combo_inrush_input.currentData()
+        if inrush_input is None or int(inrush_input) == 0xFFFF:
+            inrush_input_u16 = 0xFFFF
+        else:
+            inrush_input_u16 = max(0, min(0xFFFF, int(inrush_input)))
         record_values = (
             self.channel_index,  # channel_id
             type_value,  # type
@@ -1401,7 +1501,8 @@ class ChannelConfigPage(QWidget):
             self.edit_retry_timer_interval.value(),  # retry_timer_interval
             1 if self.soc_enable.isChecked() else 0,  # use_soc
             self.edit_nominal_threshold.value(),  # nominal_threshold
-            1 if self.check_allow_inrush.isChecked() else 0,  # allow_inrush
+            1 if allow_inrush else 0,  # allow_inrush
+            inrush_input_u16 if allow_inrush else 0xFFFF,  # inrush_input
             self._get_inrush_window_from_start(),  # inrush_window_from_start
             self.edit_inrush_threshold.value(),  # inrush_threshold
             self.edit_inrush_time_threshold.value(),  # inrush_time_threshold
@@ -1461,6 +1562,7 @@ class ChannelConfigPage(QWidget):
                     "useSoc": self.soc_enable.isChecked(),
                     "nominalThreshold": self.edit_nominal_threshold.value(),
                     "allowInrush": self.check_allow_inrush.isChecked(),
+                    "inrushInput": self.combo_inrush_input.currentData() if self.check_allow_inrush.isChecked() else None,
                     "inrushWindowFromStart": self._get_inrush_window_from_start(),
                     "inrushThreshold": self.edit_inrush_threshold.value(),
                     "inrushTimeThreshold": self.edit_inrush_time_threshold.value(),
@@ -2731,6 +2833,7 @@ class ConfigTab(QWidget):
             page = ChannelConfigPage(index)
             page.logic_page.set_sensor_source_provider(self.inputs_page.get_sensor_sources)
             page.set_pwm_source_provider(self.inputs_page.get_sensor_sources)
+            page.set_inrush_source_provider(self.inputs_page.get_sensor_sources)
             page.logic_page.logicChanged.connect(self._refresh_input_usage_summary)
             page.edit_name.textChanged.connect(self._refresh_input_usage_summary)
             page.batchChanged.connect(self._refresh_batch_relations)
@@ -2746,10 +2849,12 @@ class ConfigTab(QWidget):
 
         self.inputs_page.inputsChanged.connect(self._refresh_logic_sensor_sources)
         self.inputs_page.inputsChanged.connect(self._refresh_pwm_sensor_sources)
+        self.inputs_page.inputsChanged.connect(self._refresh_inrush_sensor_sources)
         self.inputs_page.inputsChanged.connect(self._emit_can_frames_changed)
         self.inputs_page.inputsChanged.connect(self._refresh_summary_page)
         self._refresh_logic_sensor_sources()
         self._refresh_pwm_sensor_sources()
+        self._refresh_inrush_sensor_sources()
         self._emit_can_frames_changed()
         self._refresh_summary_page()
 
@@ -2827,6 +2932,7 @@ class ConfigTab(QWidget):
 
         self._refresh_batch_relations()
         self._refresh_pwm_sensor_sources()
+        self._refresh_inrush_sensor_sources()
         self._refresh_logic_sensor_sources()
         self._verify_overall_mode_validity()
         self._emit_can_frames_changed()
@@ -2864,6 +2970,12 @@ class ConfigTab(QWidget):
             return
         for channel_widget in self.channel_widgets:
             channel_widget.refresh_pwm_sources()
+
+    def _refresh_inrush_sensor_sources(self):
+        if self._bulk_loading:
+            return
+        for channel_widget in self.channel_widgets:
+            channel_widget.refresh_inrush_sources()
 
     def _refresh_control_page(self, usage_by_input=None):
         if self._bulk_loading:
@@ -3080,15 +3192,23 @@ class ConfigTab(QWidget):
             + INPUT_TOTAL_SIZE
             + LOGIC_TOTAL_SIZE
         )
+        previous_size = (
+            V3_OUTPUT_CONFIG_TOTAL_SIZE
+            + CAN_INPUT_TOTAL_SIZE
+            + INPUT_TOTAL_SIZE
+            + LOGIC_TOTAL_SIZE
+        )
         legacy_output_size = LEGACY_OUTPUT_CONFIG_TOTAL_SIZE
         payload = None
         if len(data) == expected_size:
+            payload = data
+        elif len(data) == previous_size:
             payload = data
         elif len(data) == legacy_output_size:
             payload = data
         elif len(data) >= 5 and data[:4] == BINARY_MAGIC:
             payload = data[5:]
-            if len(payload) not in (expected_size, legacy_output_size):
+            if len(payload) not in (expected_size, previous_size, legacy_output_size):
                 raise ValueError("Binary header found but payload size mismatch")
         else:
             raise ValueError(f"Invalid binary size: {len(data)} bytes")
@@ -3104,43 +3224,87 @@ class ConfigTab(QWidget):
                 return hi
             return iv
 
+        def _sanitize_input_id(v):
+            iv = _clamp(v, 0, 0xFFFF)
+            if iv in (0xFF, 0xFFFF):
+                return 0xFFFF
+            if 0 <= iv < INPUT_CONFIG_COUNT:
+                return iv
+            return 0xFFFF
+
         if len(payload) == legacy_output_size:
             channels = []
 
-        def _build_output_channel_dict(values, include_pwm):
+        def _build_output_channel_dict(values, include_pwm, include_inrush_input):
             if include_pwm:
-                (
-                    ch_id,
-                    type_v,
-                    mode_v,
-                    spoc_id,
-                    spoc_ch,
-                    name_bytes,
-                    batch,
-                    after_err_beh,
-                    after_err_latch_time,
-                    act_on_safety,
-                    err_retry_threshold,
-                    retry_timer_interval,
-                    use_soc,
-                    nominal_threshold,
-                    allow_inrush,
-                    inrush_window_from_start,
-                    inrush_threshold,
-                    inrush_time_threshold,
-                    use_i2t,
-                    nominal_current,
-                    nominal_current_sq,
-                    time_threshold,
-                    i2t_threshold,
-                    base_duty,
-                    duty_input,
-                    *axis_values,
-                    use_softstart,
-                    softstart_start_duty,
-                    softstart_end_duty,
-                    softstart_time_threshold,
-                ) = values
+                if include_inrush_input:
+                    (
+                        ch_id,
+                        type_v,
+                        mode_v,
+                        spoc_id,
+                        spoc_ch,
+                        name_bytes,
+                        batch,
+                        after_err_beh,
+                        after_err_latch_time,
+                        act_on_safety,
+                        err_retry_threshold,
+                        retry_timer_interval,
+                        use_soc,
+                        nominal_threshold,
+                        allow_inrush,
+                        inrush_input,
+                        inrush_window_from_start,
+                        inrush_threshold,
+                        inrush_time_threshold,
+                        use_i2t,
+                        nominal_current,
+                        nominal_current_sq,
+                        time_threshold,
+                        i2t_threshold,
+                        base_duty,
+                        duty_input,
+                        *axis_values,
+                        use_softstart,
+                        softstart_start_duty,
+                        softstart_end_duty,
+                        softstart_time_threshold,
+                    ) = values
+                else:
+                    (
+                        ch_id,
+                        type_v,
+                        mode_v,
+                        spoc_id,
+                        spoc_ch,
+                        name_bytes,
+                        batch,
+                        after_err_beh,
+                        after_err_latch_time,
+                        act_on_safety,
+                        err_retry_threshold,
+                        retry_timer_interval,
+                        use_soc,
+                        nominal_threshold,
+                        allow_inrush,
+                        inrush_window_from_start,
+                        inrush_threshold,
+                        inrush_time_threshold,
+                        use_i2t,
+                        nominal_current,
+                        nominal_current_sq,
+                        time_threshold,
+                        i2t_threshold,
+                        base_duty,
+                        duty_input,
+                        *axis_values,
+                        use_softstart,
+                        softstart_start_duty,
+                        softstart_end_duty,
+                        softstart_time_threshold,
+                    ) = values
+                    inrush_input = 0xFFFF
                 input_axis = [int(axis_values[index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
                 duty_axis = [int(axis_values[OUT_PWM_MAP_RESOLUTION + index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
             else:
@@ -3169,6 +3333,7 @@ class ConfigTab(QWidget):
                     time_threshold,
                     i2t_threshold,
                 ) = values
+                inrush_input = 0xFFFF
                 base_duty = 0
                 duty_input = 0xFFFF
                 input_axis = [0] * OUT_PWM_MAP_RESOLUTION
@@ -3209,6 +3374,7 @@ class ConfigTab(QWidget):
                         "useSoc": bool(use_soc),
                         "nominalThreshold": _clamp(nominal_threshold, 0, 65535),
                         "allowInrush": bool(allow_inrush),
+                        "inrushInput": _sanitize_input_id(inrush_input),
                         "inrushWindowFromStart": _clamp(inrush_window_from_start, 0, UINT32_MAX),
                         "inrushThreshold": _clamp(inrush_threshold, 0, 2147483647),
                         "inrushTimeThreshold": _clamp(inrush_time_threshold, 0, 2147483647),
@@ -3229,7 +3395,7 @@ class ConfigTab(QWidget):
                 start = i * LEGACY_BINARY_RECORD_SIZE
                 rec = payload[start : start + LEGACY_BINARY_RECORD_SIZE]
                 tup = struct.unpack(LEGACY_BINARY_RECORD_FORMAT, rec)
-                channels.append(_build_output_channel_dict(tup, False))
+                channels.append(_build_output_channel_dict(tup, False, False))
 
             config = {"channels": channels}
             if apply:
@@ -3238,11 +3404,18 @@ class ConfigTab(QWidget):
 
         offset = 0
         channels = []
-        for i in range(CHANNEL_COUNT):
-            rec = payload[offset : offset + BINARY_RECORD_SIZE]
-            tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
-            channels.append(_build_output_channel_dict(tup, True))
-            offset += BINARY_RECORD_SIZE
+        if len(payload) == previous_size:
+            for i in range(CHANNEL_COUNT):
+                rec = payload[offset : offset + BINARY_RECORD_SIZE_V3]
+                tup = struct.unpack(BINARY_RECORD_FORMAT_V3, rec)
+                channels.append(_build_output_channel_dict(tup, True, False))
+                offset += BINARY_RECORD_SIZE_V3
+        else:
+            for i in range(CHANNEL_COUNT):
+                rec = payload[offset : offset + BINARY_RECORD_SIZE]
+                tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
+                channels.append(_build_output_channel_dict(tup, True, True))
+                offset += BINARY_RECORD_SIZE
         can_inputs = []
         for index in range(CAN_INPUT_COUNT):
             rec = payload[offset : offset + CAN_INPUT_RECORD_SIZE]

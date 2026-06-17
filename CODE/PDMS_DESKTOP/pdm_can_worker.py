@@ -34,7 +34,7 @@ ISOTP_FLOW_CONTROL_CTS = bytes((0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
 ISOTP_GATEWAY_DELAY_S = 0.05
 ISOTP_FRAME_DELAY_S = 0.003
 # Expected RX config payload size: outputs + CAN inputs + inputs + logic.
-ISOTP_CONFIG_RX_EXPECTED_BYTES = 1360 + 144 + 96 + 192
+ISOTP_CONFIG_RX_EXPECTED_BYTES = 1392 + 144 + 96 + 192
 ISOTP_GATEWAY_FRAMES = (
     bytes((0xFD, 0xF8, 0x0A, 0xF9, 0x66, 0x56, 0x18, 0x78)),
     bytes((0x80, 0x5A, 0xEF, 0xF0, 0x01, 0xF0, 0x70, 0x48)),
