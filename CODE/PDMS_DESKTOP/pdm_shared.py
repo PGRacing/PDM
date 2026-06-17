@@ -8,6 +8,7 @@ CHANNEL_COUNT = 16
 PHY_INPUT_COUNT = 8
 BASE_ID = 0x400
 BASE_DIR = Path(__file__).resolve().parent
+APP_VERSION = "1.2.0"
 
 
 def get_runtime_base_dir():
@@ -52,7 +53,45 @@ def _load_app_config():
 
 _APP_CONFIG = _load_app_config()
 
-CAN_CHANNEL = str(_APP_CONFIG.get("usb_device", "COM16"))
+
+def get_app_config_candidate_paths():
+    return [
+        get_runtime_base_dir() / "app_config.json",
+        get_runtime_base_dir() / "config" / "app_config.json",
+        get_bundle_base_dir() / "app_config.json",
+        get_bundle_base_dir() / "config" / "app_config.json",
+    ]
+
+
+def load_app_config():
+    return dict(_load_app_config())
+
+
+def get_can_channel(default="COM16"):
+    return str(_APP_CONFIG.get("usb_device", default))
+
+
+def set_can_channel_runtime(channel_name):
+    _APP_CONFIG["usb_device"] = str(channel_name)
+    global CAN_CHANNEL
+    CAN_CHANNEL = str(channel_name)
+
+
+def save_usb_device_config(channel_name):
+    data = {"usb_device": str(channel_name)}
+    for candidate_path in get_app_config_candidate_paths():
+        try:
+            candidate_path.parent.mkdir(parents=True, exist_ok=True)
+            with candidate_path.open("w", encoding="utf-8") as config_file:
+                json.dump(data, config_file, indent=2)
+            set_can_channel_runtime(channel_name)
+            return candidate_path
+        except Exception:
+            continue
+    raise OSError("Could not write app_config.json")
+
+
+CAN_CHANNEL = get_can_channel("COM16")
 CAN_BITRATE = 1000000
 SERIAL_BAUD = 115200
 
@@ -107,6 +146,14 @@ def build_dark_stylesheet(checkbox_tick_path=None):
     return (
         "    QMainWindow { background-color: #121212; }\n"
         "    QWidget { background-color: #121212; color: #E0E0E0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; }\n"
+        "    QMenuBar { background-color: #BB86FC; color: #1A1A1A; border-bottom: 1px solid #6C4AA8; spacing: 0px; padding: 0px 8px 4px 8px; }\n"
+        "    QMenuBar::item { background: transparent; padding: 6px 14px; margin: 0px; color: #1A1A1A; border-right: 1px solid #8F5FD6; }\n"
+        "    QMenuBar::item:selected { background-color: #D7B7FD; color: #121212; }\n"
+        "    QMenuBar::item:pressed { background-color: #E5CEFF; color: #121212; }\n"
+        "    QMenu { background-color: #1E1E1E; color: #E0E0E0; border: 1px solid #333333; padding: 4px; }\n"
+        "    QMenu::item { padding: 6px 24px; border-radius: 4px; }\n"
+        "    QMenu::item:selected { background-color: #3C3C3C; color: #FFFFFF; }\n"
+        "    QMenu::separator { height: 1px; background: #333333; margin: 4px 8px; }\n"
         "    QTabWidget::pane { background-color: #121212; border: 1px solid #333333; }\n"
         "    QTabBar::tab { background-color: #1E1E1E; color: #E0E0E0; padding: 6px 10px; border: 1px solid #333333; }\n"
         "    QTabBar::tab:selected { background-color: #2D2D2D; color: #BB86FC; }\n"

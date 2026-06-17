@@ -529,13 +529,6 @@ class ConfigSummaryPage(QWidget):
         outer.setContentsMargins(20, 20, 20, 20)
         outer.setSpacing(10)
 
-        summary = QLabel(
-            ""
-        )
-        summary.setWordWrap(True)
-        summary.setStyleSheet("QLabel { font-size: 11px; color: #D0D0D0; }")
-        outer.addWidget(summary)
-
         self.table = QTableWidget(0, 11)
         self.table.setHorizontalHeaderLabels(
             [
@@ -2331,12 +2324,6 @@ class ControlConfigPage(QWidget):
         outer.setSpacing(8)
         outer.setAlignment(Qt.AlignTop)
 
-        summary = QLabel(
-            "Controls are created from enabled CAN inputs. Digital inputs use a toggle; analog inputs use a 0-5000 mV slider and text field."
-        )
-        summary.setWordWrap(True)
-        outer.addWidget(summary)
-
         self.scroll = QScrollArea()
         self.scroll.setWidgetResizable(True)
         self.scroll.setFrameShape(QScrollArea.NoFrame)
@@ -2440,12 +2427,6 @@ class InputsConfigPage(QWidget):
         outer.setContentsMargins(20, 20, 20, 20)
         outer.setSpacing(12)
         outer.setAlignment(Qt.AlignTop)
-
-        summary = QLabel(
-            "Here configure inputs that will be used for output control."
-        )
-        summary.setWordWrap(True)
-        outer.addWidget(summary)
 
         physical_group = QGroupBox("Physical inputs")
         physical_layout = QGridLayout(physical_group)
@@ -3132,6 +3113,15 @@ class ConfigTab(QWidget):
     def _request_config(self):
         self.set_isotp_state(0, "Preparing config request", busy=True)
         self.request_config_requested.emit()
+
+    def send_binary_to_device(self):
+        self._send_binary()
+
+    def request_device_config(self):
+        self._request_config()
+
+    def reset_device(self):
+        self._send_reset()
 
     def set_isotp_state(self, progress, status=None, busy=None):
         self.progress_send.setValue(max(0, min(100, int(progress))))

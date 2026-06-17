@@ -11,11 +11,11 @@ from can import Message
 
 from pdm_shared import (
     CAN_BITRATE,
-    CAN_CHANNEL,
     CHANNEL_COUNT,
     IDS,
     PHY_INPUT_COUNT,
     SERIAL_BAUD,
+    get_can_channel,
     parse_system_status,
     parse_u16x4,
     parse_i16x3,
@@ -365,7 +365,12 @@ def _wait_and_reply_fc_after_request(can_bus, pipe_conn, rx_cfg_state, timeout=0
 
 def can_isolated_process(pipe_conn, tx_queue):
     def _open_can_bus():
-        return can.interface.Bus(channel=CAN_CHANNEL, interface="slcan", bitrate=CAN_BITRATE, ttyBaudrate=SERIAL_BAUD)
+        return can.interface.Bus(
+            channel=get_can_channel("COM16"),
+            interface="slcan",
+            bitrate=CAN_BITRATE,
+            ttyBaudrate=SERIAL_BAUD,
+        )
 
     def _reset_channel_runtime_fields(channel_count):
         return [

@@ -5,11 +5,13 @@ import sys
 from pathlib import Path
 
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPixmap
+from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPixmap, QPainter, QFont
 from PyQt5.QtWidgets import QSplashScreen
 from PyQt5.QtWidgets import (
+    QAction,
     QApplication,
     QComboBox,
+    QDialog,
     QGridLayout,
     QGroupBox,
     QHeaderView,
@@ -31,10 +33,11 @@ from pdm_can_worker import can_isolated_process
 from pdm_control_tab import ControlConfigPage
 from pdm_config_tab import ConfigTab
 from pdm_plot_tab import PlotPanel
+import pdm_shared
 from pdm_shared import (
+    APP_VERSION,
     CHANNEL_COUNT,
     build_dark_stylesheet,
-    CAN_CHANNEL,
     GUI_UPDATE_MS,
     IDS,
     OUT_STATE_MAP,
@@ -43,6 +46,9 @@ from pdm_shared import (
     PLOT_UPDATE_MS,
     get_row_colors,
     get_asset_path,
+    load_app_config,
+    save_usb_device_config,
+    set_can_channel_runtime,
 )
 
 import ctypes
@@ -51,6 +57,128 @@ myappid = 'mycompany.myproduct.subproduct.version'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 CHECKBOX_TICK_PATH = get_asset_path("assets/checkbox-tick.svg")
+
+
+def _discover_serial_devices():
+    try:
+        from serial.tools import list_ports
+    except Exception:
+        return []
+
+    devices = []
+    try:
+        for port in list_ports.comports():
+            device = str(getattr(port, "device", "") or "").strip()
+            if not device:
+                continue
+            description = str(getattr(port, "description", "") or "Unknown device")
+            devices.append((device, description))
+    except Exception:
+        return []
+
+    devices.sort(key=lambda item: item[0])
+    return devices
+
+
+def _load_saved_usb_device():
+    config = load_app_config()
+    candidate = config.get("usb_device") if isinstance(config, dict) else None
+    if isinstance(candidate, str) and candidate.strip():
+        return candidate.strip()
+    return None
+
+
+class StartupDeviceDialog(QDialog):
+    def __init__(self, devices, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select USB Device")
+        self.setModal(True)
+        self.setMinimumWidth(460)
+        self.selected_device = None
+        self.offline_mode = False
+
+        layout = QVBoxLayout(self)
+        intro = QLabel("No previous selection of USB to CAN interface was found. Choose a SLCAN interface device or continue in offline mode.")
+        intro.setWordWrap(True)
+        layout.addWidget(intro)
+        layout.addSpacing(12)
+
+        self.combo_device = QComboBox()
+        for device, description in devices:
+            self.combo_device.addItem(f"{device} - {description}", device)
+        layout.addWidget(self.combo_device)
+        layout.addSpacing(12)
+
+        button_row = QHBoxLayout()
+        btn_use = QPushButton("Use Device")
+        btn_offline = QPushButton("Offline")
+        btn_cancel = QPushButton("Cancel")
+        button_row.addWidget(btn_use)
+        button_row.addWidget(btn_offline)
+        button_row.addWidget(btn_cancel)
+        layout.addLayout(button_row)
+
+        btn_use.clicked.connect(self._accept_device)
+        btn_offline.clicked.connect(self._accept_offline)
+        btn_cancel.clicked.connect(self.reject)
+
+    def _accept_device(self):
+        device = self.combo_device.currentData()
+        if not device and self.combo_device.currentText():
+            device = self.combo_device.currentText().split(" - ", 1)[0].strip()
+        if not device:
+            QMessageBox.warning(self, "No device selected", "Please select a USB device or choose Offline mode.")
+            return
+        self.selected_device = str(device)
+        self.offline_mode = False
+        self.accept()
+
+    def _accept_offline(self):
+        self.selected_device = None
+        self.offline_mode = True
+        self.accept()
+
+
+def _resolve_startup_transport():
+    saved_device = _load_saved_usb_device()
+    if saved_device:
+        set_can_channel_runtime(saved_device)
+        return {"offline": False, "channel": saved_device}
+
+    devices = _discover_serial_devices()
+    if not devices:
+        answer = QMessageBox.question(
+            None,
+            "No serial devices",
+            "No serial devices were detected and no valid app_config.json exists. Start in offline mode?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        if answer == QMessageBox.Yes:
+            return {"offline": True, "channel": None}
+        return None
+
+    dialog = StartupDeviceDialog(devices)
+    if dialog.exec_() != QDialog.Accepted:
+        return None
+
+    if dialog.offline_mode:
+        return {"offline": True, "channel": None}
+
+    selected_device = dialog.selected_device
+    if not selected_device:
+        return None
+
+    set_can_channel_runtime(selected_device)
+    try:
+        save_usb_device_config(selected_device)
+    except Exception as exc:
+        QMessageBox.warning(
+            None,
+            "Configuration warning",
+            f"Selected device will be used for this session, but app_config.json could not be saved:\n{exc}",
+        )
+    return {"offline": False, "channel": selected_device}
 
 
 def _kpi_label_style(color="#E0E0E0"):
@@ -133,10 +261,11 @@ def _battery_kpi_color(voltage_mv):
     return _blend_color("#F2994A", "#E30026", ratio)
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, offline_mode=False):
         super().__init__()
         self.setWindowTitle("PDMS Control App")
         self.resize(1920, 1280)
+        self.offline_mode = bool(offline_mode)
 
         self.pipe_ui, self.pipe_worker = multiprocessing.Pipe(duplex=False)
         self.tx_queue = multiprocessing.Queue()
@@ -191,20 +320,148 @@ class MainWindow(QMainWindow):
         self.hb_timer.timeout.connect(self.update_heartbeat_status)
         self.hb_timer.start(200)
 
-        QTimer.singleShot(0, self.start_can_worker)
+        if self.offline_mode:
+            self._connection_state = "offline"
+            self._set_heartbeat_status("Offline mode", "#90CAF9")
+        else:
+            QTimer.singleShot(0, self.start_can_worker)
 
     def start_can_worker(self):
         if self.worker_started:
             return
+        self.offline_mode = False
         self.serial_device_ready = False
+        self.last_frame_rx_time = 0.0
         self.worker_process = multiprocessing.Process(
             target=can_isolated_process, args=(self.pipe_worker, self.tx_queue), daemon=True
         )
         self.worker_process.start()
         self.worker_started = True
 
+    def stop_can_worker(self):
+        if not self.worker_started:
+            return
+        try:
+            self.tx_queue.put({"cmd": "EXIT"})
+        except Exception:
+            pass
+        if self.worker_process is not None:
+            try:
+                self.worker_process.join(timeout=0.8)
+            except Exception:
+                pass
+            if self.worker_process.is_alive():
+                try:
+                    self.worker_process.terminate()
+                    self.worker_process.join(timeout=0.5)
+                except Exception:
+                    pass
+        self.worker_process = None
+        self.worker_started = False
+        self.serial_device_ready = False
+        self.last_frame_rx_time = 0.0
+        self._connection_state = "disconnected"
+
+    def _show_transport_dialog(self, force_prompt=False):
+        if not force_prompt:
+            saved_device = _load_saved_usb_device()
+            if saved_device:
+                set_can_channel_runtime(saved_device)
+                return {"offline": False, "channel": saved_device}
+
+        devices = _discover_serial_devices()
+        if not devices:
+            answer = QMessageBox.question(
+                self,
+                "No serial devices",
+                "No serial devices were detected. Switch to offline mode?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes,
+            )
+            if answer == QMessageBox.Yes:
+                return {"offline": True, "channel": None}
+            return None
+
+        dialog = StartupDeviceDialog(devices, self)
+        if dialog.exec_() != QDialog.Accepted:
+            return None
+
+        if dialog.offline_mode:
+            return {"offline": True, "channel": None}
+
+        selected_device = dialog.selected_device
+        if not selected_device:
+            return None
+
+        set_can_channel_runtime(selected_device)
+        try:
+            save_usb_device_config(selected_device)
+        except Exception as exc:
+            QMessageBox.warning(
+                self,
+                "Configuration warning",
+                f"Selected device will be used for this session, but app_config.json could not be saved:\n{exc}",
+            )
+        return {"offline": False, "channel": selected_device}
+
+    def change_usb_device(self):
+        selection = self._show_transport_dialog(force_prompt=True)
+        if selection is None:
+            return
+
+        target_offline = bool(selection.get("offline", False))
+        previous_offline = self.offline_mode
+
+        if target_offline:
+            self.stop_can_worker()
+            self.offline_mode = True
+            self._set_heartbeat_status("Offline mode", "#90CAF9")
+            QMessageBox.information(self, "Connection updated", "Switched to offline mode.")
+            return
+
+        self.stop_can_worker()
+        self.offline_mode = False
+        self.start_can_worker()
+        if previous_offline:
+            QMessageBox.information(
+                self,
+                "Connection updated",
+                f"Switched from offline mode to {pdm_shared.CAN_CHANNEL}.",
+            )
+        else:
+            QMessageBox.information(
+                self,
+                "Connection updated",
+                f"USB device changed to {pdm_shared.CAN_CHANNEL}.",
+            )
+
     def init_ui(self):
+        file_menu = self.menuBar().addMenu("File")
+        self.action_load_binary = QAction("Load binary", self)
+        self.action_export_binary = QAction("Export binary", self)
+        self.action_load_json = QAction("Load JSON", self)
+        self.action_export_json = QAction("Export JSON", self)
+        file_menu.addAction(self.action_load_binary)
+        file_menu.addAction(self.action_export_binary)
+        file_menu.addAction(self.action_load_json)
+        file_menu.addAction(self.action_export_json)
+
+        device_menu = self.menuBar().addMenu("Device")
+        self.action_request_config = QAction("Request config", self)
+        self.action_send_to_device = QAction("Send to device", self)
+        self.action_reset_device = QAction("Reset device", self)
+        device_menu.addAction(self.action_request_config)
+        device_menu.addAction(self.action_send_to_device)
+        device_menu.addAction(self.action_reset_device)
+        device_menu.addSeparator()
+
+        self.action_change_usb = QAction("Change USB device...", self)
+        self.action_change_usb.triggered.connect(self.change_usb_device)
+        device_menu.addAction(self.action_change_usb)
+
         tabs = QTabWidget()
+        tabs.setContentsMargins(0, 6, 0, 0)
+        tabs.setStyleSheet("QTabWidget { margin-top: 5px; }")
         self.setCentralWidget(tabs)
 
         dashboard = QWidget()
@@ -392,6 +649,14 @@ class MainWindow(QMainWindow):
             self._canonicalize_config(self.config_tab.collect_config())
         )
         self._refresh_control_tab()
+
+        self.action_load_binary.triggered.connect(self.config_tab.load_binary)
+        self.action_export_binary.triggered.connect(self.config_tab.export_binary)
+        self.action_load_json.triggered.connect(self.config_tab.load_json)
+        self.action_export_json.triggered.connect(self.config_tab.export_json)
+        self.action_request_config.triggered.connect(self.config_tab.request_device_config)
+        self.action_send_to_device.triggered.connect(self.config_tab.send_binary_to_device)
+        self.action_reset_device.triggered.connect(self.config_tab.reset_device)
 
         hb_corner = QWidget()
         hb_corner_layout = QHBoxLayout(hb_corner)
@@ -909,6 +1174,11 @@ class MainWindow(QMainWindow):
         self.update_heartbeat_status()
 
     def update_heartbeat_status(self):
+        if self.offline_mode:
+            self._connection_state = "offline"
+            self._set_heartbeat_status("Offline mode", "#90CAF9")
+            return
+
         worker_alive = self.worker_process is not None and self.worker_process.is_alive()
 
         previous_state = self._connection_state
@@ -925,13 +1195,13 @@ class MainWindow(QMainWindow):
 
         if self.last_frame_rx_time <= 0:
             self._connection_state = "serial_ready"
-            self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
+            self._set_heartbeat_status(f"Serial ready: {pdm_shared.CAN_CHANNEL}", "#FFD54F")
             return
 
         age_s = time.time() - self.last_frame_rx_time
         if age_s > 1.0:
             self._connection_state = "serial_ready"
-            self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
+            self._set_heartbeat_status(f"Serial ready: {pdm_shared.CAN_CHANNEL}", "#FFD54F")
         else:
             self._connection_state = "connected"
             self._set_heartbeat_status(f"Connected ({age_s:.1f}s)", "#81C784")
@@ -953,9 +1223,27 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         if self.worker_started:
-            self.tx_queue.put({"cmd": "EXIT"})
-            self.worker_process.join(timeout=0.5)
+            self.stop_can_worker()
         super().closeEvent(event)
+
+
+def _build_splash_pixmap(base_pixmap):
+    canvas = QPixmap(base_pixmap)
+    painter = QPainter(canvas)
+    painter.setRenderHint(QPainter.TextAntialiasing, True)
+
+    loading_font = QFont("Segoe UI", 14)
+    painter.setFont(loading_font)
+    painter.setPen(QColor("#FFFFFF"))
+    painter.drawText(canvas.rect().adjusted(0, 0, 0, -12), Qt.AlignHCenter | Qt.AlignBottom, "Loading PDMS...")
+
+    version_font = QFont("Segoe UI", 10)
+    painter.setFont(version_font)
+    painter.setPen(QColor("#E0E0E0"))
+    painter.drawText(canvas.rect().adjusted(0, 0, -12, -8), Qt.AlignRight | Qt.AlignBottom, f"Version {APP_VERSION}")
+
+    painter.end()
+    return canvas
 
 
 if __name__ == "__main__":
@@ -972,12 +1260,16 @@ if __name__ == "__main__":
         pix = QPixmap(480, 300)
         pix.fill(QColor('#2D2D2D'))
 
-    splash = QSplashScreen(pix)
-    splash.showMessage("Loading PDMS...", Qt.AlignBottom | Qt.AlignHCenter, QColor("#FFFFFF"))
+    splash = QSplashScreen(_build_splash_pixmap(pix))
     splash.show()
     app.processEvents()
 
-    window = MainWindow()
+    startup_transport = _resolve_startup_transport()
+    if startup_transport is None:
+        splash.close()
+        sys.exit(0)
+
+    window = MainWindow(offline_mode=startup_transport.get("offline", False))
     window.show()
 
     # Finish the splash after the main window is visible (short delay to let init finish)
