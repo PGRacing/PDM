@@ -30,6 +30,7 @@
 
 // I2t 
 #define OUT_MAX_I2T_TRESHOLD (UINT64_MAX-1 / 100)
+#define OUT_DIAG_I2T_KCOOL 0.1f // Cooling constant for I2t calculation, higher value means faster cooling [Recommended 0.01f]
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
@@ -1216,7 +1217,7 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
     if(IN_GetValueSchmitt(cfg->safety.socCfg.inrushInput) == TRUE)
     {
       OUT_DIAG_SocExternalInrushRequest(id);
-      
+
       // Clear request after acknowledging
       IN_OverrideCANValueSchmitt(cfg->safety.socCfg.inrushInput, FALSE); 
     }
@@ -1470,14 +1471,15 @@ static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state
     const int32_t i_cA = currentRMS_MA / 10;
 
     int32_t iPart = (i_cA * i_cA) - (outsCfg[id].safety.i2tCfg.nominalCurrentSq_cA);
-    
+    iPart = (iPart < 0 ? iPart * OUT_DIAG_I2T_KCOOL : iPart);
+
     outsReg[id].safety.i2tReg.sum += (iPart * OUT_DIAG_READ_PERIOD);
 
     if(outsReg[id].safety.i2tReg.sum < 0)
     {
       outsReg[id].safety.i2tReg.sum = 0;
     }
-    
+  
     if(outsReg[id].safety.i2tReg.sum >= (int_fast64_t)(outsCfg[id].safety.i2tCfg.i2tThreshold))
     {
       status = OUT_STATUS_I2T_FAULT;
