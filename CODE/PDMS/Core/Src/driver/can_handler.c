@@ -10,6 +10,13 @@
 #include "config.h"
 #include "tim.h"
 
+#define CANH_FILTER_INSTANCE1_FIRST_BANK 0
+#define CANH_FILTER_INSTANCE1_LAST_BANK 13
+#define CANH_FILTER_INSTANCE2_FIRST_BANK 14
+#define CANH_FILTER_INSTANCE2_LAST_BANK 27
+
+#define CANH_TX_DEFAULT_BYTE 0xAA
+
 T_CANH_CFG cansCfg[CANH_INSTANCE_MAX] = 
 {
     [CANH_INSTANCE_1] = 
@@ -48,7 +55,9 @@ T_CANH_REG cansReg[CANH_INSTANCE_MAX] =
     },
 };
 
-static CAN_FilterTypeDef canAllowAllFilter = 
+// Use only for debug!!!
+#ifdef DEBUG
+__unused static CAN_FilterTypeDef canAllowAllFilter = 
 {
     .FilterBank = 0,
     .FilterMode = CAN_FILTERMODE_IDMASK,
@@ -61,46 +70,55 @@ static CAN_FilterTypeDef canAllowAllFilter =
     .FilterActivation = ENABLE,
     .SlaveStartFilterBank = 14
 };
+#endif
 
 /////////////////////////
 //////// CAN TX /////////
 /////////////////////////
 /* All CAN TX structures should be added here*/
 
-#define CANH_TX_DEFAULT_BYTE 0xAA
-
 /// @brief All used CAN bus ID's
 typedef enum
 {
-    CANH_ID_PNP               = 0x000,  // Header sent on device power-up
-    CANH_ID_SYS_STATUS        = 0x001,  // System status
-    CANH_ID_STATUS_1_8        = 0x002,  // Status of channels 1-8 (default value)
-    CANH_ID_STATUS_9_16       = 0x003,  // Status of channels 9-16 (default value)
-    CANH_ID_STATE_1_16        = 0x004,  // State of channels 1-16 (default value)
-    CANH_ID_VOLTAGE_1_4       = 0x005,  // Voltage of channels 1-4 (default value)
-    CANH_ID_VOLTAGE_5_8       = 0x006,  // Voltage of channels 5-8 (default value)
-    CANH_ID_VOLTAGE_9_12      = 0x007,  // Voltage of channels 9-12 (default value)
-    CANH_ID_VOLTAGE_13_16     = 0x008,  // Voltage of channels 13-16 (default value)
-    CANH_ID_CURRENT_1_4       = 0x009,  // Current of channels 1-4 (default value)
-    CANH_ID_CURRENT_5_8       = 0x00A,  // Current of channels 5-8 (default value)
-    CANH_ID_CURRENT_9_12      = 0x00B,  // Current of channels 9-12 (default value)
-    CANH_ID_CURRENT_13_16     = 0x00C,  // Current of channels 13-16 (default value)
-    CANH_ID_NAMES             = 0x00D,  // Channel of current name,
-    CANH_ID_PHY_INPUTS_1_4    = 0x00E,  // Physical inputs 1-4
-    CANH_ID_PHY_INPUTS_5_8    = 0x00F,  // Physical inputs 5-8
-    CANH_ID_IMU_ACC           = 0x010,  // IMU acceleration data
-    CANH_ID_IMU_GYRO          = 0x011,  // IMU gyroscope data
-    CANH_ID_CURRENT_RMS_1_4   = 0x012,  // RMS Current of channels 1-4 (default value)
-    CANH_ID_CURRENT_RMS_5_8   = 0x013,  // RMS Current of channels 1-4 (default value)
-    CANH_ID_I2T_HEAT_1_8      = 0x014,  // I2t heat of channels 1-8
-    CANH_ID_SOC_TRESH_1_4     = 0x015,  // SOC treshold of channels 1-4
-    CANH_ID_SOC_TRESH_5_8     = 0x016,  // SOC treshold of channels 5-8
-    CANH_ID_ISOTP_ENTRANCE    = 0x050,  // Entrance gateway for ISO-TP communication mode
-    CANH_ID_ISOTP_TX          = 0x051,  // CAN ID used for ISO-TP transmission
-    CANH_ID_ISOTP_RX          = 0x052,  // CAN ID used for ISO-TP reception
-    CANH_ID_CONFIG_REQ        = 0x059,  // CAN ID used for configuration request (eg. to send current config or request config update)
-    CANH_ID_FORCE_RESET       = 0x0AF,  // Force reset command, if specific pattern is sent to CAN with this ID then device will reset  
+    CANH_ID_TX_PNP               = 0x000,  // Header sent on device power-up
+    CANH_ID_TX_SYS_STATUS        = 0x001,  // System status
+    CANH_ID_TX_STATUS_1_8        = 0x002,  // Status of channels 1-8 (default value)
+    CANH_ID_TX_STATUS_9_16       = 0x003,  // Status of channels 9-16 (default value)
+    CANH_ID_TX_STATE_1_16        = 0x004,  // State of channels 1-16 (default value)
+    CANH_ID_TX_VOLTAGE_1_4       = 0x005,  // Voltage of channels 1-4 (default value)
+    CANH_ID_TX_VOLTAGE_5_8       = 0x006,  // Voltage of channels 5-8 (default value)
+    CANH_ID_TX_VOLTAGE_9_12      = 0x007,  // Voltage of channels 9-12 (default value)
+    CANH_ID_TX_VOLTAGE_13_16     = 0x008,  // Voltage of channels 13-16 (default value)
+    CANH_ID_TX_CURRENT_1_4       = 0x009,  // Current of channels 1-4 (default value)
+    CANH_ID_TX_CURRENT_5_8       = 0x00A,  // Current of channels 5-8 (default value)
+    CANH_ID_TX_CURRENT_9_12      = 0x00B,  // Current of channels 9-12 (default value)
+    CANH_ID_TX_CURRENT_13_16     = 0x00C,  // Current of channels 13-16 (default value)
+    CANH_ID_TX_NAMES             = 0x00D,  // Channel of current name,
+    CANH_ID_TX_PHY_INPUTS_1_4    = 0x00E,  // Physical inputs 1-4
+    CANH_ID_TX_PHY_INPUTS_5_8    = 0x00F,  // Physical inputs 5-8
+    CANH_ID_TX_IMU_ACC           = 0x010,  // IMU acceleration data
+    CANH_ID_TX_IMU_GYRO          = 0x011,  // IMU gyroscope data
+    CANH_ID_TX_CURRENT_RMS_1_4   = 0x012,  // RMS Current of channels 1-4 (default value)
+    CANH_ID_TX_CURRENT_RMS_5_8   = 0x013,  // RMS Current of channels 1-4 (default value)
+    CANH_ID_TX_I2T_HEAT_1_8      = 0x014,  // I2t heat of channels 1-8
+    CANH_ID_TX_SOC_TRESH_1_4     = 0x015,  // SOC treshold of channels 1-4
+    CANH_ID_TX_SOC_TRESH_5_8     = 0x016,  // SOC treshold of channels 5-8
+
+    // CONFIG PROTOCOL
+    CANH_ID_RX_ISOTP_ENTRANCE    = 0x050,  // Entrance gateway for ISO-TP communication mode
+    CANH_ID_TX_ISOTP             = 0x051,  // CAN ID used for ISO-TP transmission
+    CANH_ID_RX_ISOTP             = 0x052,  // CAN ID used for ISO-TP reception
+    CANH_ID_RX_HASH_REQ          = 0x053,  // CAN ID used for config hash request from desktop
+    CANH_ID_TX_HASH_RESP         = 0x054,  // CAN ID used for config hash response to desktop
+    CANH_ID_RX_CONFIG_REQ        = 0x055,  // CAN ID used for configuration request from desktop (eg. to send current config or request config update)
+
+    // FORCE RESET
+    CANH_ID_RX_FORCE_RESET_GW    = 0x0AF,  // Force reset command, if specific pattern is sent to CAN with this ID then device will reset  
+
 }T_CANH_ID;
+
+static bool CANH_InitFilterInstance1(void);
+static bool CANH_InitFilterInstance2(void);
 
 /// @brief [pnpTxMsg] Message sent on device power-up
 T_CANH_TX_PACKAGE CANH_TxPnp =
@@ -111,7 +129,7 @@ T_CANH_TX_PACKAGE CANH_TxPnp =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_PNP,
+        .StdId = CANH_ID_TX_PNP,
         .TransmitGlobalTime = DISABLE,
     },
     .data = {CANH_TX_DEFAULT_BYTE},
@@ -125,7 +143,7 @@ T_CANH_TX_PACKAGE CANH_TxStatus1_8 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_STATUS_1_8,
+        .StdId = CANH_ID_TX_STATUS_1_8,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -140,7 +158,7 @@ T_CANH_TX_PACKAGE CANH_TxStatus9_16 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_STATUS_9_16,
+        .StdId = CANH_ID_TX_STATUS_9_16,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -154,7 +172,7 @@ T_CANH_TX_PACKAGE CANH_TxVoltage1_4 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_VOLTAGE_1_4,
+        .StdId = CANH_ID_TX_VOLTAGE_1_4,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -168,7 +186,7 @@ T_CANH_TX_PACKAGE CANH_TxVoltage5_8 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_VOLTAGE_5_8,
+        .StdId = CANH_ID_TX_VOLTAGE_5_8,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -182,7 +200,7 @@ T_CANH_TX_PACKAGE CANH_TxVoltage9_12 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_VOLTAGE_9_12,
+        .StdId = CANH_ID_TX_VOLTAGE_9_12,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -196,7 +214,7 @@ T_CANH_TX_PACKAGE CANH_TxVoltage13_16 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_VOLTAGE_13_16,
+        .StdId = CANH_ID_TX_VOLTAGE_13_16,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -210,7 +228,7 @@ T_CANH_TX_PACKAGE CANH_TxCurrent1_4 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_CURRENT_1_4,
+        .StdId = CANH_ID_TX_CURRENT_1_4,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -224,7 +242,7 @@ T_CANH_TX_PACKAGE CANH_TxCurrent5_8 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_CURRENT_5_8,
+        .StdId = CANH_ID_TX_CURRENT_5_8,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -238,7 +256,7 @@ T_CANH_TX_PACKAGE CANH_TxCurrent9_12 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_CURRENT_9_12,
+        .StdId = CANH_ID_TX_CURRENT_9_12,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -252,7 +270,7 @@ T_CANH_TX_PACKAGE CANH_TxCurrent13_16 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_CURRENT_13_16,
+        .StdId = CANH_ID_TX_CURRENT_13_16,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -266,7 +284,7 @@ T_CANH_TX_PACKAGE CANH_TxSysStatus =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_SYS_STATUS,
+        .StdId = CANH_ID_TX_SYS_STATUS,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -280,7 +298,7 @@ T_CANH_TX_PACKAGE CANH_TxState1_16 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_STATE_1_16,
+        .StdId = CANH_ID_TX_STATE_1_16,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -294,7 +312,7 @@ T_CANH_TX_PACKAGE CANH_TxNames =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_NAMES,
+        .StdId = CANH_ID_TX_NAMES,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -308,7 +326,7 @@ T_CANH_TX_PACKAGE CANH_TxPhyInputs1_4 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_PHY_INPUTS_1_4,
+        .StdId = CANH_ID_TX_PHY_INPUTS_1_4,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -322,7 +340,7 @@ T_CANH_TX_PACKAGE CANH_TxPhyInputs5_8 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_PHY_INPUTS_5_8,
+        .StdId = CANH_ID_TX_PHY_INPUTS_5_8,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -336,7 +354,7 @@ T_CANH_TX_PACKAGE CANH_TxImuAcc =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_IMU_ACC,
+        .StdId = CANH_ID_TX_IMU_ACC,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -350,7 +368,7 @@ T_CANH_TX_PACKAGE CANH_TxImuGyro =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_IMU_GYRO,
+        .StdId = CANH_ID_TX_IMU_GYRO,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -364,7 +382,7 @@ T_CANH_TX_PACKAGE CANH_TxCurrentRMS1_4 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_CURRENT_RMS_1_4,
+        .StdId = CANH_ID_TX_CURRENT_RMS_1_4,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -378,7 +396,7 @@ T_CANH_TX_PACKAGE CANH_TxCurrentRMS5_8 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_CURRENT_RMS_5_8,
+        .StdId = CANH_ID_TX_CURRENT_RMS_5_8,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -392,7 +410,7 @@ T_CANH_TX_PACKAGE CANH_TxI2tHeat1_8 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_I2T_HEAT_1_8,
+        .StdId = CANH_ID_TX_I2T_HEAT_1_8,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -406,7 +424,7 @@ T_CANH_TX_PACKAGE CANH_TxSOCThreshold1_4 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_SOC_TRESH_1_4,
+        .StdId = CANH_ID_TX_SOC_TRESH_1_4,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
@@ -420,11 +438,16 @@ T_CANH_TX_PACKAGE CANH_TxSOCThreshold5_8 =
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
-        .StdId = CANH_ID_SOC_TRESH_5_8,
+        .StdId = CANH_ID_TX_SOC_TRESH_5_8,
         .TransmitGlobalTime = DISABLE,
     },
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
+
+extern void RTOS_SuspendCAN_1(void);
+extern void RTOS_SuspendCAN_2(void);
+extern void RTOS_ResumeCAN_1(void);
+extern void RTOS_ResumeCAN_2(void);
 
 void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8)
 {   
@@ -746,7 +769,7 @@ static void CANH_InitModule(T_CANH_INSTANCE instance)
     {
         /* Error creating xQueue -> heap too small [?] */
         LOG_ERR("Unable to create CAN TX queue");
-        __NOP();
+        return;
     }
 
     // Initialize RX queue
@@ -754,8 +777,19 @@ static void CANH_InitModule(T_CANH_INSTANCE instance)
     {
         /* Error creating xQueue -> heap too small [?] */
         LOG_ERR("Unable to create CAN RX queue");
-        __NOP();
+        return;
     }
+
+    if(instance == CANH_INSTANCE_1)
+    {
+        CANH_InitFilterInstance1();
+    }
+    else if(instance == CANH_INSTANCE_2)
+    {
+        CANH_InitFilterInstance2();
+    }
+
+    cansReg[instance].isInited = TRUE;
 }
 
 static void CANH_AllowTxCallback1(void)
@@ -772,6 +806,129 @@ static void CANH_AllowTxCallback2(void)
     cansReg[CANH_INSTANCE_2].readyForTx = TRUE;
 }
 
+/// @brief Initialize dynamic filter based on BSP CAN inputs
+/// @param instance CAN instance for which the filter should be initialized
+/// @param firstDynamicBankNumber First filter bank number that can be used for dynamic configuration (other banks are used for static filters)
+/// @return TRUE if filter initialization was successful, FALSE if not enough filter banks for all inputs
+static bool CANH_InitDynamicFilter(T_CANH_INSTANCE instance, uint32_t firstDynamicBankNumber)
+{
+    CAN_FilterTypeDef sFilterConfig;
+         
+    sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST; 
+    sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+    sFilterConfig.FilterActivation = CAN_FILTER_ENABLE;
+    sFilterConfig.SlaveStartFilterBank = CANH_FILTER_INSTANCE2_FIRST_BANK;
+
+    // Dynamic filter configuration for BSP inputs
+    uint16_t filterPassIdsArr[4] = {0x7FF, 0x7FF, 0x7FF, 0x7FF};
+    uint32_t filterPassIdsCount = 0;
+    uint32_t filterBankNumber = firstDynamicBankNumber;
+    const uint32_t lastUsedBankNumber = (instance == CANH_INSTANCE_1) ? CANH_FILTER_INSTANCE1_LAST_BANK : CANH_FILTER_INSTANCE2_LAST_BANK;
+
+    for(uint32_t i = 0; i < IN_CAN_MAX; i++)
+    {
+        if(TRUE == BSP_CANIN_IsInputUsed(i))
+        {
+            T_BSP_CANIN_CFG* incfg = BSP_CANIN_GetInputCfg(i);
+
+            if(incfg->canInstance == instance)
+            {
+                filterPassIdsArr[filterPassIdsCount] = incfg->canId;
+                filterPassIdsCount++;
+
+                if(filterPassIdsCount >= 4)
+                {
+                    sFilterConfig.FilterBank        = filterBankNumber;
+                    sFilterConfig.FilterIdHigh      = filterPassIdsArr[0] << 5;
+                    sFilterConfig.FilterIdLow       = filterPassIdsArr[1] << 5;
+                    sFilterConfig.FilterMaskIdHigh  = filterPassIdsArr[2] << 5;
+                    sFilterConfig.FilterMaskIdLow   = filterPassIdsArr[3] << 5;
+
+                    if(filterBankNumber <= lastUsedBankNumber)
+                    {
+                        if(HAL_CAN_ConfigFilter(cansReg[instance].hcan, &sFilterConfig) != HAL_OK)
+                        {
+                            LOG_ERR("CANH:: Failed to configure CAN filter for BSP CAN inputs!");
+                            return FALSE;
+                        } 
+                        filterPassIdsCount = 0;
+                        filterBankNumber++;
+
+                        filterPassIdsArr[0] = 0x7FF;
+                        filterPassIdsArr[1] = 0x7FF;
+                        filterPassIdsArr[2] = 0x7FF;
+                        filterPassIdsArr[3] = 0x7FF;
+                    }
+                    else
+                    {
+                        LOG_ERR("CANH:: Not enough filter banks for CAN BSP inputs! Some inputs will not pass the filter!");
+                        return FALSE;
+                    }
+                }
+            }
+        }
+    }
+
+    return TRUE;
+}
+
+static bool CANH_InitFilterInstance1(void)
+{
+    bool result = TRUE;
+
+    CAN_FilterTypeDef sFilterConfig;
+
+    sFilterConfig.FilterBank = CANH_FILTER_INSTANCE1_FIRST_BANK;                       
+    sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST; 
+    sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+    sFilterConfig.FilterActivation = CAN_FILTER_ENABLE;
+    sFilterConfig.SlaveStartFilterBank = CANH_FILTER_INSTANCE2_FIRST_BANK;
+
+    // Pass force reset frame only
+    sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;   
+
+    // Matches EXACTLY 0x123
+    sFilterConfig.FilterIdHigh     = (cansCfg[CANH_INSTANCE_2].baseId + CANH_ID_RX_FORCE_RESET_GW) << 5;
+    sFilterConfig.FilterIdLow      = 0x7FF << 5;         
+    sFilterConfig.FilterMaskIdHigh = 0x7FF << 5;
+    sFilterConfig.FilterMaskIdLow  = 0x7FF << 5;
+
+    result = (HAL_CAN_ConfigFilter(&hcan2, &sFilterConfig) == HAL_OK);
+
+    result &= CANH_InitDynamicFilter(CANH_INSTANCE_1, CANH_FILTER_INSTANCE1_FIRST_BANK + 1);
+
+    return result;
+}
+
+static bool CANH_InitFilterInstance2(void)
+{
+    bool result = TRUE;
+
+    CAN_FilterTypeDef sFilterConfig;
+
+    sFilterConfig.FilterBank = CANH_FILTER_INSTANCE2_FIRST_BANK;                       
+    sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK; 
+    sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+    sFilterConfig.FilterActivation = CAN_FILTER_ENABLE;
+    sFilterConfig.SlaveStartFilterBank = CANH_FILTER_INSTANCE2_FIRST_BANK;
+
+    // Pass configuration frames (0x050 - 0x057) and force reset command (0x0AF)
+    sFilterConfig.FilterIdHigh = (cansCfg[CANH_INSTANCE_2].baseId + CANH_ID_RX_ISOTP_ENTRANCE) << 5;             
+    sFilterConfig.FilterMaskIdHigh = (0x7F8 << 5) | 0x08; 
+
+    sFilterConfig.FilterIdLow = (cansCfg[CANH_INSTANCE_2].baseId + CANH_ID_RX_FORCE_RESET_GW) << 5;                  
+    sFilterConfig.FilterMaskIdLow = (0x7FF << 5) | 0x08; 
+
+    result = (HAL_CAN_ConfigFilter(&hcan2, &sFilterConfig) == HAL_OK);
+
+    result &= CANH_InitDynamicFilter(CANH_INSTANCE_2, CANH_FILTER_INSTANCE2_FIRST_BANK + 1);
+
+    return result;
+}
+
 void CANH_Init(void)
 {
     // Intialize CAN instances and TX queue
@@ -786,14 +943,58 @@ void CANH_Init(void)
     }
 }
 
+
+void CANH_ReconfigureAll(void)
+{
+    RTOS_SuspendCAN_1();
+    RTOS_SuspendCAN_2();
+
+    vPortEnterCritical();
+
+    if(TRUE == cansCfg[CANH_INSTANCE_1].enabled)
+    {
+        HAL_CAN_Stop(&hcan1);
+    }
+
+    if(TRUE == cansCfg[CANH_INSTANCE_2].enabled)
+    {
+        HAL_CAN_Stop(&hcan2);
+    }
+
+    CANH_Init();
+
+    vPortExitCritical();
+
+    if(TRUE == cansCfg[CANH_INSTANCE_1].enabled)
+    {
+        HAL_CAN_Start(&hcan1);
+        HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+        RTOS_ResumeCAN_1();
+    }   
+
+    if(TRUE == cansCfg[CANH_INSTANCE_2].enabled)
+    {
+        HAL_CAN_Start(&hcan2);
+        HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING);
+        RTOS_ResumeCAN_2();
+    }
+}
+
+
 void can1TaskStart(void *argument)
 {
     LOG_INFO("CAN1:: Task start");
 
-    canAllowAllFilter.FilterBank = 0;
-    if (HAL_CAN_ConfigFilter(&hcan1, &canAllowAllFilter) != HAL_OK)
+    // canAllowAllFilter.FilterBank = 0;
+    // if (HAL_CAN_ConfigFilter(&hcan1, &canAllowAllFilter) != HAL_OK)
+    // {
+    //     LOG_ERR("CANH:: CAN1 filter configuration failed!");
+    // }
+
+    if(cansCfg[CANH_INSTANCE_1].enabled == FALSE)
     {
-        LOG_ERR("CANH:: CAN1 filter configuration failed!");
+        LOG_WARN("CANH:: CAN1 is disabled in configuration!");
+        vTaskSuspend(NULL);
     }
 
     /* Start CAN1 -  CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens */
@@ -838,7 +1039,7 @@ void can1TaskStart(void *argument)
                 BSP_CANIN_DispatchFrame(CANH_INSTANCE_1, rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
 
                 // Force reset command reception
-                if(rxPkg.header.StdId == CANH_ID_FORCE_RESET + cansCfg[CANH_INSTANCE_1].baseId)
+                if(rxPkg.header.StdId == CANH_ID_RX_FORCE_RESET_GW + cansCfg[CANH_INSTANCE_1].baseId)
                 {
                     PDM_CANResetGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
                 }
@@ -852,10 +1053,16 @@ void can2TaskStart(void *argument)
 {
     LOG_INFO("CAN2:: Task start");
 
-    canAllowAllFilter.FilterBank = 14;
-    if (HAL_CAN_ConfigFilter(&hcan2, &canAllowAllFilter) != HAL_OK)
+    // canAllowAllFilter.FilterBank = 14;
+    // if (HAL_CAN_ConfigFilter(&hcan2, &canAllowAllFilter) != HAL_OK)
+    // {
+    //     LOG_ERR("CANH:: CAN2 filter configuration failed!");
+    // }
+
+    if(cansCfg[CANH_INSTANCE_2].enabled == FALSE)
     {
-        LOG_ERR("CANH:: CAN2 filter configuration failed!");
+        LOG_WARN("CANH:: CAN2 is disabled in configuration!");
+        vTaskSuspend(NULL);
     }
 
     /* Start CAN2  - CAN periph is started here so RX queue won't overfill if unexpected latency in init sequence happens*/
@@ -900,15 +1107,15 @@ void can2TaskStart(void *argument)
                 BSP_CANIN_DispatchFrame(CANH_INSTANCE_2, rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
                 
                 // ISO-TP related frames (entrance GW and data frame reception) -- only CAN2
-                if(rxPkg.header.StdId == CANH_ID_ISOTP_ENTRANCE + cansCfg[CANH_INSTANCE_2].baseId)
+                if(rxPkg.header.StdId == CANH_ID_RX_ISOTP_ENTRANCE + cansCfg[CANH_INSTANCE_2].baseId)
                 {
                     APP_ISOTP_CANEntranceGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
                 }
-                else if(rxPkg.header.StdId == CANH_ID_ISOTP_RX + cansCfg[CANH_INSTANCE_2].baseId)
+                else if(rxPkg.header.StdId == CANH_ID_RX_ISOTP + cansCfg[CANH_INSTANCE_2].baseId)
                 {
                     APP_ISOTP_DispatchFrame(rxPkg.data.raw, rxPkg.header.DLC);
                 }
-                else if(rxPkg.header.StdId == CANH_ID_CONFIG_REQ + cansCfg[CANH_INSTANCE_2].baseId)
+                else if(rxPkg.header.StdId == CANH_ID_RX_CONFIG_REQ + cansCfg[CANH_INSTANCE_2].baseId)
                 {
                     // Right now config A is hardcoded - B unused
                     uint32_t size = 0;
@@ -919,7 +1126,7 @@ void can2TaskStart(void *argument)
                 }
                 
                 // Force reset command reception
-                if(rxPkg.header.StdId == CANH_ID_FORCE_RESET + cansCfg[CANH_INSTANCE_2].baseId)
+                if(rxPkg.header.StdId == CANH_ID_RX_FORCE_RESET_GW + cansCfg[CANH_INSTANCE_2].baseId)
                 {
                     PDM_CANResetGateway(rxPkg.header.StdId, rxPkg.data.raw, rxPkg.header.DLC);
                 }

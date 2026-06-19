@@ -89,6 +89,9 @@ static void CONFIG_PostConfigChange(void)
     // Reconfigure all channels
     OUT_ReconfigureAll();
 
+    // Reconfigure CAN handlers (filters, callbacks etc.) based on new config
+    CANH_ReconfigureAll();
+
     RTOS_ResumeAfterConfigChange();
 }
 

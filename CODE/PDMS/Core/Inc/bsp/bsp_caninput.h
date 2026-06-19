@@ -72,6 +72,16 @@ uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location);
 /// @return TRUE if the override was successful, FALSE otherwise
 bool BSP_CANIN_OverrideValueSchmitt(T_IN_CAN_LOC location, bool state);
 
+/// @brief  Check if a CAN input is used
+/// @param location The location of the CAN input
+/// @return TRUE if the input is used, FALSE otherwise
+bool BSP_CANIN_IsInputUsed(T_IN_CAN_LOC location);
+
+/// @brief Get the configuration of a CAN input slot
+/// @param location The location of the CAN input
+/// @return Pointer to the CAN input configuration
+T_BSP_CANIN_CFG* BSP_CANIN_GetInputCfg(T_IN_CAN_LOC location);
+
 extern T_BSP_CANIN_CFG bspCanInputsCfg[IN_CAN_MAX];
 
 #endif // __BSP_CANINPUT_H_

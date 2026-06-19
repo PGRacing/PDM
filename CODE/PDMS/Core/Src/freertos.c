@@ -363,7 +363,26 @@ void RTOS_ResumeAfterConfigChange(void)
   vTaskResume(adc2TaskHandle);
   vTaskResume(pdmTaskHandle);
   vTaskResume(telemTaskHandle);
+}
 
+void RTOS_SuspendCAN_1(void)
+{
+  vTaskSuspend(can1TaskHandle);
+}
+
+void RTOS_SuspendCAN_2(void)
+{
+  vTaskSuspend(can2TaskHandle);
+}
+
+void RTOS_ResumeCAN_1(void)
+{
+  vTaskResume(can1TaskHandle);
+}
+
+void RTOS_ResumeCAN_2(void)
+{ 
+  vTaskResume(can2TaskHandle);
 }
 /* USER CODE END Application */
 

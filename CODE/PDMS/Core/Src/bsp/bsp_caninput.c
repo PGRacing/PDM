@@ -308,6 +308,10 @@ uint_fast16_t BSP_CANIN_GetValueAnalog(T_IN_CAN_LOC location)
     return bspCanInputsReg[location].voltageValue;
 }
 
+/// @brief Override CAN input state (after usage of previous value)
+/// @param location The location of the CAN input
+/// @param state The new state to set
+/// @return TRUE if the override was successful, FALSE otherwise
 bool BSP_CANIN_OverrideValueSchmitt(T_IN_CAN_LOC location, bool state)
 {
     ASSERT(location < IN_CAN_MAX);
@@ -321,4 +325,22 @@ bool BSP_CANIN_OverrideValueSchmitt(T_IN_CAN_LOC location, bool state)
     bspCanInputsReg[location].voltageValue = state ? 5000 : 0;
     bspCanInputsReg[location].schmittState = state;
     return TRUE;
+}
+
+/// @brief  Check if a CAN input is used
+/// @param location The location of the CAN input
+/// @return TRUE if the input is used, FALSE otherwise
+bool BSP_CANIN_IsInputUsed(T_IN_CAN_LOC location)
+{
+    ASSERT(location < IN_CAN_MAX);
+    return bspCanInputsCfg[location].isUsed;
+}
+
+/// @brief Get the configuration of a CAN input slot
+/// @param location The location of the CAN input
+/// @return Pointer to the CAN input configuration
+T_BSP_CANIN_CFG* BSP_CANIN_GetInputCfg(T_IN_CAN_LOC location)
+{
+    ASSERT(location < IN_CAN_MAX);
+    return &bspCanInputsCfg[location];
 }

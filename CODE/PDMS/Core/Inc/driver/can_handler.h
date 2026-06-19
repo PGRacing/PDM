@@ -27,6 +27,7 @@ typedef struct __packed
 typedef struct
 {
     CAN_HandleTypeDef *hcan;
+    bool isInited;
     QueueHandle_t txQueueHandle;
     QueueHandle_t rxQueueHandle;
     bool readyForTx;
@@ -118,6 +119,9 @@ void can2TaskStart(void *argument);
 
 /// @brief CAN bus module initialization
 void CANH_Init(void);
+
+/// @brief  CAN bus module reconfiguration
+void CANH_ReconfigureAll(void);
 
 void CANH_PushToTxQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg);
 void CANH_PushToRxQueue(T_CANH_INSTANCE instance, T_CANH_RX_PACKAGE pkg);
