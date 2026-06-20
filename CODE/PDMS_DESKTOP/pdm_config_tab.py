@@ -2194,6 +2194,20 @@ class LogicChannelPage(QWidget):
             self.logic_group.setDisabled(False)
 
     def to_dict(self):
+        if self.check_used.isChecked() and self.check_always_on.isChecked():
+            return {
+                "isUsed": True,
+                "exp": {
+                    "input1Type": LOGIC_INPUT_TYPE_CONST_SCHMITT,
+                    "input1ID": 0,
+                    "input1Const": 1,
+                    "input2Type": LOGIC_INPUT_TYPE_UNSET,
+                    "input2ID": 0,
+                    "input2Const": 0,
+                    "opr": 0x08,
+                },
+            }
+
         return {
             "isUsed": self.check_used.isChecked(),
             "exp": {
@@ -2218,6 +2232,17 @@ class LogicChannelPage(QWidget):
         }
 
     def pack_logic_record(self):
+        if self.check_used.isChecked() and self.check_always_on.isChecked():
+            return struct.pack(
+                LOGIC_RECORD_FORMAT,
+                1,
+                LOGIC_INPUT_TYPE_CONST_SCHMITT,
+                1,
+                LOGIC_INPUT_TYPE_UNSET,
+                0,
+                0x08,
+            )
+
         return struct.pack(
             LOGIC_RECORD_FORMAT,
             1 if self.check_used.isChecked() else 0,
@@ -2241,42 +2266,8 @@ class LogicChannelPage(QWidget):
     def _on_always_on_toggled(self, checked):
         self._sync_always_on_visibility()
         if checked:
-            # Force operator E and both inputs to CONST_SCHMITT = TRUE
-            # Operator E value is 0x03, CONST_SCHMITT input type is 0x01
-            opr_value = 0x03
-            const_schmitt = 0x01
-            # Set operator (this will repopulate allowed input type combos)
-            idx = self.combo_operator.findData(opr_value)
-            if idx >= 0:
-                self.combo_operator.setCurrentIndex(idx)
+            # Normalize Always ON to CONST_SCHMITT(TRUE) + UNSET and freeze editing.
             self._sync_logic_operator_state()
-
-            # Set both input types to CONST_SCHMITT if available
-            try:
-                idx1 = self.combo_input1_type.findData(const_schmitt)
-                if idx1 >= 0:
-                    self.combo_input1_type.setCurrentIndex(idx1)
-            except Exception:
-                pass
-            try:
-                idx2 = self.combo_input2_type.findData(const_schmitt)
-                if idx2 >= 0:
-                    self.combo_input2_type.setCurrentIndex(idx2)
-            except Exception:
-                pass
-
-            # Set constant values to TRUE (1)
-            self.combo_input1_bool.setCurrentIndex(1)
-            self.combo_input2_bool.setCurrentIndex(1)
-
-            # Disable editing of input types and values while Always ON
-            self.combo_input1_type.setEnabled(False)
-            self.combo_input2_type.setEnabled(False)
-            self.combo_input1_bool.setEnabled(False)
-            self.combo_input2_bool.setEnabled(False)
-            self.edit_input1_value.setEnabled(False)
-            self.edit_input2_value.setEnabled(False)
-            self.combo_operator.setEnabled(False)
         else:
             # Re-enable and refresh operator-derived state
             self.combo_operator.setEnabled(True)
@@ -3481,22 +3472,33 @@ class ConfigTab(QWidget):
             + INPUT_TOTAL_SIZE
             + LOGIC_TOTAL_SIZE
         )
+        expected_size_with_crc = expected_size + 4
         previous_size = (
             V3_OUTPUT_CONFIG_TOTAL_SIZE
             + CAN_INPUT_TOTAL_SIZE
             + INPUT_TOTAL_SIZE
             + LOGIC_TOTAL_SIZE
         )
+        previous_size_with_crc = previous_size + 4
         legacy_output_size = LEGACY_OUTPUT_CONFIG_TOTAL_SIZE
+        legacy_output_size_with_crc = legacy_output_size + 4
         payload = None
         if len(data) == expected_size:
             payload = data
+        elif len(data) == expected_size_with_crc:
+            payload = data[:-4]
         elif len(data) == previous_size:
             payload = data
+        elif len(data) == previous_size_with_crc:
+            payload = data[:-4]
         elif len(data) == legacy_output_size:
             payload = data
+        elif len(data) == legacy_output_size_with_crc:
+            payload = data[:-4]
         elif len(data) >= 5 and data[:4] == BINARY_MAGIC:
             payload = data[5:]
+            if len(payload) in (expected_size_with_crc, previous_size_with_crc, legacy_output_size_with_crc):
+                payload = payload[:-4]
             if len(payload) not in (expected_size, previous_size, legacy_output_size):
                 raise ValueError("Binary header found but payload size mismatch")
         else:

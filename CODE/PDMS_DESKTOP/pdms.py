@@ -1,5 +1,6 @@
 import multiprocessing
 import json
+import struct
 import time
 import sys
 from pathlib import Path
@@ -57,6 +58,22 @@ myappid = 'mycompany.myproduct.subproduct.version'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 CHECKBOX_TICK_PATH = get_asset_path("assets/checkbox-tick.svg")
+
+
+def _stm32_crc32_bytes(data):
+    """Match STM32 CRC peripheral: poly 0x04C11DB7, init 0xFFFFFFFF,
+    input/output inversion disabled, no final XOR.
+    """
+    crc = 0xFFFFFFFF
+    poly = 0x04C11DB7
+    for byte in data:
+        crc ^= (int(byte) & 0xFF) << 24
+        for _ in range(8):
+            if crc & 0x80000000:
+                crc = ((crc << 1) ^ poly) & 0xFFFFFFFF
+            else:
+                crc = (crc << 1) & 0xFFFFFFFF
+    return crc & 0xFFFFFFFF
 
 
 def _discover_serial_devices():
@@ -221,15 +238,21 @@ def _format_voltage_mv(value):
 
 def _format_channel_error_summary(channels):
     error_channels = []
+    warning_channels = []
     for index, channel in enumerate(channels or []):
         try:
-            if int(channel.get("status", 0)) != 0:
+            status = int(channel.get("status", 0))
+            if status >= 9:
                 error_channels.append(str(index + 1))
+            elif status > 0:
+                warning_channels.append(str(index + 1))
         except Exception:
             continue
-    if not error_channels:
-        return "In error: None", "#09BC8A"
-    return f"In error: {', '.join(error_channels)}", "#E30026"
+    if error_channels:
+        return f"In error: {', '.join(error_channels)}", "#E30026"
+    if warning_channels:
+        return f"Warning: {', '.join(warning_channels)}", "#FFB74D"
+    return "In error: None", "#09BC8A"
 
 
 def _battery_kpi_color(voltage_mv):
@@ -274,8 +297,10 @@ class MainWindow(QMainWindow):
         self.worker_started = False
         self.serial_device_ready = False
         self._device_config_request_pending = False
+        self._device_crc_request_pending = False
         self._device_config_prompt = None
         self._pending_device_config = None
+        self._device_config_processing_scheduled = False
         self._connection_state = "disconnected"
         self._config_check_suppressed_until = 0.0
         self.last_frame_rx_time = 0.0
@@ -711,7 +736,10 @@ class MainWindow(QMainWindow):
     def send_isotp_config(self, payload):
         self._config_check_suppressed_until = time.time() + 5.0
         self._refresh_control_tab()
-        self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
+        payload_bytes = bytes(payload)
+        payload_crc = _stm32_crc32_bytes(payload_bytes)
+        payload_with_crc = payload_bytes + struct.pack("<I", payload_crc)
+        self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload_with_crc})
 
     def send_reset_device(self):
         self.tx_queue.put({"cmd": "RESET_DEVICE"})
@@ -721,6 +749,12 @@ class MainWindow(QMainWindow):
             return
         self._device_config_request_pending = True
         self.tx_queue.put({"cmd": "REQUEST_CONFIG"})
+
+    def request_config_crc_from_device(self):
+        if self._device_crc_request_pending or self._device_config_request_pending:
+            return
+        self._device_crc_request_pending = True
+        self.tx_queue.put({"cmd": "REQUEST_CONFIG_CRC"})
 
     def send_can_frame(self, arbitration_id, payload):
         self.tx_queue.put({"cmd": "TX", "id": int(arbitration_id), "payload": payload})
@@ -735,10 +769,34 @@ class MainWindow(QMainWindow):
         self.control_tab.refresh_controls(can_inputs, usage_by_input)
 
     def _request_config_if_needed(self):
-        if self.config_tab is None or self._device_config_request_pending:
+        if self.config_tab is None or self._device_config_request_pending or self._device_crc_request_pending:
             return
         if time.time() < self._config_check_suppressed_until:
             return
+        self.request_config_crc_from_device()
+
+    def _local_config_crc32(self):
+        if self.config_tab is None:
+            return None
+        try:
+            payload = bytes(self.config_tab._build_binary_payload())
+        except Exception:
+            return None
+        return _stm32_crc32_bytes(payload)
+
+    def _handle_device_config_crc(self, device_crc):
+        self._device_crc_request_pending = False
+        local_crc = self._local_config_crc32()
+        if local_crc is None:
+            if self.config_tab is not None:
+                self.config_tab.set_isotp_state(0, "Could not compute local configuration CRC", busy=False)
+            return
+        if int(local_crc) == int(device_crc):
+            if self.config_tab is not None:
+                self.config_tab.set_isotp_state(100, "Configuration up to date", busy=False)
+            return
+        if self.config_tab is not None:
+            self.config_tab.set_isotp_state(0, "CRC mismatch, requesting device configuration", busy=True)
         self.request_config_from_device()
 
     def _config_signature(self, config):
@@ -957,6 +1015,22 @@ class MainWindow(QMainWindow):
         if self.config_tab is None:
             return
 
+        self._device_crc_request_pending = False
+        self._pending_device_config = bytes(payload)
+        if self._device_config_processing_scheduled:
+            return
+        self._device_config_processing_scheduled = True
+        QTimer.singleShot(0, self._process_pending_device_config)
+
+    def _process_pending_device_config(self):
+        self._device_config_processing_scheduled = False
+        if self.config_tab is None or self._pending_device_config is None:
+            self._pending_device_config = None
+            return
+
+        payload = self._pending_device_config
+        self._pending_device_config = None
+
         try:
             device_config = self.config_tab.parse_binary_payload(payload)
         except Exception as exc:
@@ -1052,12 +1126,16 @@ class MainWindow(QMainWindow):
                     if self.config_tab is not None:
                         self._handle_device_config_payload(packet["isotp_config_payload"])
                     continue
+                if "device_config_crc" in packet:
+                    self._handle_device_config_crc(packet["device_config_crc"])
+                    continue
                 if packet.get("serial_ready"):
                     self.serial_device_ready = True
                     self._connection_state = "serial_ready"
                     continue
                 if "error" in packet:
                     self._device_config_request_pending = False
+                    self._device_crc_request_pending = False
                     if self.config_tab is not None:
                         self.config_tab.set_isotp_state(0, f"Error: {packet['error']}", busy=False)
                     continue

@@ -1,5 +1,7 @@
 import csv
 import datetime
+import queue
+import threading
 import time
 from collections import defaultdict, deque
 from pathlib import Path
@@ -25,14 +27,19 @@ BASE_DIR = Path(__file__).resolve().parent
 LOG_DIR = BASE_DIR / "log"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-ISOTP_ENTRANCE_ID = 0x450
-ISOTP_RX_ID = 0x451
-ISOTP_TX_ID = 0x452
-REQUEST_CONFIG_ID = 0x459
+CAN_BASE_ID = 0x400
+ISOTP_ENTRANCE_ID = CAN_BASE_ID + 0x050
+ISOTP_RX_ID = CAN_BASE_ID + 0x051
+ISOTP_TX_ID = CAN_BASE_ID + 0x052
+REQUEST_CONFIG_CRC_ID = CAN_BASE_ID + 0x053
+RESPONSE_CONFIG_CRC_ID = CAN_BASE_ID + 0x054
+REQUEST_CONFIG_ID = CAN_BASE_ID + 0x055
 REQUEST_CONFIG_PAYLOAD = bytes((0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
+REQUEST_CONFIG_CRC_PAYLOAD = bytes((0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
 ISOTP_FLOW_CONTROL_CTS = bytes((0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
 ISOTP_GATEWAY_DELAY_S = 0.05
 ISOTP_FRAME_DELAY_S = 0.003
+CRC_REQUEST_TIMEOUT_S = 1.0
 # Expected RX config payload size: outputs + CAN inputs + inputs + logic.
 ISOTP_CONFIG_RX_EXPECTED_BYTES = 1392 + 144 + 96 + 192
 ISOTP_GATEWAY_FRAMES = (
@@ -41,7 +48,10 @@ ISOTP_GATEWAY_FRAMES = (
     bytes((0x52, 0xA8, 0xB7, 0x20, 0xAD, 0xAD, 0xFF, 0xF0)),
 )
 
-RESET_DEVICE_ID = 0x4AF
+RESET_DEVICE_ID = CAN_BASE_ID + 0x0AF
+CONFIG_REQUEST_TIMEOUT_S = 5.0
+CRC_REQUEST_TIMEOUT_S = 5.0
+CONFIG_RX_TIMEOUT_S = 5.0
 RESET_DEVICE_FRAMES = (
     bytes((0xAE, 0x3A, 0x3E, 0x2B, 0x07, 0x17, 0xC8, 0x4C)),
     bytes((0x2D, 0x72, 0x88, 0x04, 0x9F, 0xEA, 0xDA, 0xC7)),
@@ -112,6 +122,31 @@ def _expected_isotp_frames(payload_len):
     return 1 + ((payload_len - 6 + 6) // 7)
 
 
+class AsyncPipeSender:
+    def __init__(self, pipe_conn):
+        self._pipe_conn = pipe_conn
+        self._queue = queue.Queue()
+        self._stop_token = object()
+        self._thread = threading.Thread(target=self._run, daemon=True)
+        self._thread.start()
+
+    def _run(self):
+        while True:
+            packet = self._queue.get()
+            if packet is self._stop_token:
+                return
+            try:
+                self._pipe_conn.send(packet)
+            except Exception:
+                return
+
+    def send(self, packet):
+        self._queue.put(packet)
+
+    def close(self):
+        self._queue.put(self._stop_token)
+
+
 class FrameRateMeter:
     """Rolling frame rate meter over a fixed time window (seconds)."""
     def __init__(self, window=10.0):
@@ -134,7 +169,7 @@ class FrameRateMeter:
         return len(self.timestamps) / self.window
 
 
-def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
+def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state, config_request_state):
     if msg.arbitration_id != ISOTP_RX_ID:
         return
 
@@ -145,6 +180,9 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
     pci_type = data[0] >> 4
 
     if pci_type == 0x1:
+        config_request_state["awaiting"] = False
+        config_request_state["deadline"] = 0.0
+        rx_cfg_state["deadline"] = time.time() + CONFIG_RX_TIMEOUT_S
         total_len = ((data[0] & 0x0F) << 8) | data[1]
         if total_len <= 0:
             total_len = ISOTP_CONFIG_RX_EXPECTED_BYTES
@@ -152,12 +190,14 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
         rx_cfg_state["active"] = True
         rx_cfg_state["total_len"] = total_len
         rx_cfg_state["buffer"] = bytearray()
+        rx_cfg_state["last_progress_sent"] = -1
         first_payload = data[2:8]
         rx_cfg_state["buffer"].extend(first_payload[: min(len(first_payload), total_len)])
         rx_cfg_state["bytes_received"] = len(rx_cfg_state["buffer"])
         rx_cfg_state["frames_received"] = 1
         rx_cfg_state["frames_expected"] = _expected_isotp_frames(total_len)
         progress = int((rx_cfg_state["bytes_received"] * 100) / max(1, total_len))
+        rx_cfg_state["last_progress_sent"] = progress
         _pipe_progress(
             pipe_conn,
             progress,
@@ -166,6 +206,7 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
         if rx_cfg_state["bytes_received"] >= total_len:
             rx_cfg_state["active"] = False
             rx_cfg_state["expecting_config"] = False
+            rx_cfg_state["deadline"] = 0.0
             _pipe_progress(
                 pipe_conn,
                 100,
@@ -179,6 +220,7 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
         return
 
     if pci_type == 0x2 and rx_cfg_state.get("active"):
+        rx_cfg_state["deadline"] = time.time() + CONFIG_RX_TIMEOUT_S
         total_len = int(rx_cfg_state.get("total_len", ISOTP_CONFIG_RX_EXPECTED_BYTES))
         remaining = max(0, total_len - int(rx_cfg_state["bytes_received"]))
         chunk = data[1:8]
@@ -188,9 +230,12 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
         rx_cfg_state["bytes_received"] = len(rx_cfg_state["buffer"])
         rx_cfg_state["frames_received"] += 1
         progress = int((rx_cfg_state["bytes_received"] * 100) / max(1, total_len))
+        last_progress_sent = int(rx_cfg_state.get("last_progress_sent", -1))
         if rx_cfg_state["bytes_received"] >= total_len:
             rx_cfg_state["active"] = False
             rx_cfg_state["expecting_config"] = False
+            rx_cfg_state["deadline"] = 0.0
+            rx_cfg_state["last_progress_sent"] = 100
             _pipe_progress(
                 pipe_conn,
                 100,
@@ -198,7 +243,8 @@ def _track_rx_config_progress(pipe_conn, msg, rx_cfg_state):
                 done=True,
             )
             pipe_conn.send({"isotp_config_payload": bytes(rx_cfg_state["buffer"][:total_len])})
-        else:
+        elif progress != last_progress_sent and (progress == 100 or progress - last_progress_sent >= 5):
+            rx_cfg_state["last_progress_sent"] = progress
             _pipe_progress(
                 pipe_conn,
                 progress,
@@ -214,6 +260,19 @@ def _reset_rx_config_state(rx_cfg_state):
     rx_cfg_state["frames_received"] = 0
     rx_cfg_state["frames_expected"] = _expected_isotp_frames(ISOTP_CONFIG_RX_EXPECTED_BYTES)
     rx_cfg_state["buffer"] = bytearray()
+    rx_cfg_state["deadline"] = 0.0
+    rx_cfg_state["last_progress_sent"] = -1
+
+
+def _handle_rx_config_timeout(pipe_conn, rx_cfg_state):
+    if not rx_cfg_state.get("expecting_config"):
+        return False
+    deadline = float(rx_cfg_state.get("deadline", 0.0))
+    if deadline <= 0.0 or time.time() < deadline:
+        return False
+    _reset_rx_config_state(rx_cfg_state)
+    pipe_conn.send({"error": "Timeout waiting for configuration"})
+    return True
 
 
 def _send_isotp_config(can_bus, pipe_conn, payload):
@@ -221,15 +280,16 @@ def _send_isotp_config(can_bus, pipe_conn, payload):
         total_steps = len(ISOTP_GATEWAY_FRAMES) + len(_build_isotp_frames(payload))
         done_steps = 0
 
-        _pipe_progress(pipe_conn, 0, "Sending gateway frames")
+        _pipe_progress(pipe_conn, 0, "Sending config entry frames")
         for index, gateway_frame in enumerate(ISOTP_GATEWAY_FRAMES, start=1):
             can_bus.send(Message(arbitration_id=ISOTP_ENTRANCE_ID, data=gateway_frame, is_extended_id=False))
             done_steps += 1
             percent = int(done_steps * 100 / total_steps)
-            _pipe_progress(pipe_conn, percent, f"Gateway frame {index}/3")
+            _pipe_progress(pipe_conn, percent, f"Config entry frame {index}/3")
             time.sleep(ISOTP_GATEWAY_DELAY_S)
 
         isotp_frames = _build_isotp_frames(payload)
+        time.sleep(0.5)
         if len(isotp_frames) > 1:
             # ISO-TP sender flow: send First Frame, wait for FC, then send Consecutive Frames.
             can_bus.send(Message(arbitration_id=ISOTP_TX_ID, data=isotp_frames[0], is_extended_id=False))
@@ -298,7 +358,7 @@ def _send_fixed_frames(can_bus, pipe_conn, arbitration_id, frames, status_prefix
 def _send_config_request(can_bus, pipe_conn, rx_cfg_state):
     try:
         total_steps = len(ISOTP_GATEWAY_FRAMES) + 1
-        _pipe_progress(pipe_conn, 0, "Entering ISO-TP gateway")
+        _pipe_progress(pipe_conn, 0, "Entering configuration gateway")
         done_steps = 0
         for index, gateway_frame in enumerate(ISOTP_GATEWAY_FRAMES, start=1):
             can_bus.send(Message(arbitration_id=ISOTP_ENTRANCE_ID, data=gateway_frame, is_extended_id=False))
@@ -318,6 +378,18 @@ def _send_config_request(can_bus, pipe_conn, rx_cfg_state):
     except Exception as exc:
         _reset_rx_config_state(rx_cfg_state)
         _pipe_progress(pipe_conn, 0, "Config request failed", done=True, error=str(exc))
+
+
+def _send_config_crc_request(can_bus, pipe_conn, crc_request_state):
+    try:
+        can_bus.send(Message(arbitration_id=REQUEST_CONFIG_CRC_ID, data=REQUEST_CONFIG_CRC_PAYLOAD, is_extended_id=False))
+        crc_request_state["awaiting"] = True
+        crc_request_state["deadline"] = time.time() + CRC_REQUEST_TIMEOUT_S
+        _pipe_progress(pipe_conn, 100, "Verifying if config is up-to-date", done=True)
+    except Exception as exc:
+        crc_request_state["awaiting"] = False
+        crc_request_state["deadline"] = 0.0
+        _pipe_progress(pipe_conn, 0, "Config verification failed", done=True, error=str(exc))
 
 
 def _isotp_reply_flow_control_if_needed(can_bus, msg):
@@ -348,7 +420,7 @@ def _isotp_reply_flow_control_if_needed(can_bus, msg):
 
 
 def _wait_and_reply_fc_after_request(can_bus, pipe_conn, rx_cfg_state, timeout=0.4):
-    """Catch a fast first frame right after 0x459 and immediately send FC."""
+    """Catch a fast first frame right after 0x455 and immediately send FC."""
     deadline = time.time() + timeout
     while time.time() < deadline:
         remaining = max(0.0, deadline - time.time())
@@ -364,6 +436,8 @@ def _wait_and_reply_fc_after_request(can_bus, pipe_conn, rx_cfg_state, timeout=0
 
 
 def can_isolated_process(pipe_conn, tx_queue):
+    pipe_conn = AsyncPipeSender(pipe_conn)
+
     def _open_can_bus():
         return can.interface.Bus(
             channel=get_can_channel("COM16"),
@@ -448,7 +522,11 @@ def can_isolated_process(pipe_conn, tx_queue):
         "frames_received": 0,
         "frames_expected": _expected_isotp_frames(ISOTP_CONFIG_RX_EXPECTED_BYTES),
         "buffer": bytearray(),
+        "deadline": 0.0,
+        "last_progress_sent": -1,
     }
+    config_request_state = {"awaiting": False, "deadline": 0.0}
+    crc_request_state = {"awaiting": False, "deadline": 0.0}
 
     while True:
         while not tx_queue.empty():
@@ -456,6 +534,7 @@ def can_isolated_process(pipe_conn, tx_queue):
             if task.get("cmd") == "EXIT":
                 if log_writer:
                     log_f.close()
+                pipe_conn.close()
                 return
             if task.get("cmd") == "TOGGLE":
                 acquiring = not acquiring
@@ -478,7 +557,13 @@ def can_isolated_process(pipe_conn, tx_queue):
             elif task.get("cmd") == "RESET_DEVICE":
                 _send_fixed_frames(can_bus, pipe_conn, RESET_DEVICE_ID, RESET_DEVICE_FRAMES, "Sending reset frames")
             elif task.get("cmd") == "REQUEST_CONFIG":
+                config_request_state["awaiting"] = True
+                config_request_state["deadline"] = time.time() + CONFIG_REQUEST_TIMEOUT_S
                 _send_config_request(can_bus, pipe_conn, rx_cfg_state)
+            elif task.get("cmd") == "REQUEST_CONFIG_CRC":
+                crc_request_state["awaiting"] = True
+                crc_request_state["deadline"] = time.time() + CRC_REQUEST_TIMEOUT_S
+                _send_config_crc_request(can_bus, pipe_conn, crc_request_state)
 
         if can_bus is None:
             pipe_conn.send({"error": "CAN device disconnected"})
@@ -508,13 +593,33 @@ def can_isolated_process(pipe_conn, tx_queue):
             continue
 
         if msg is None:
+            if config_request_state.get("awaiting") and time.time() >= float(config_request_state.get("deadline", 0.0)):
+                config_request_state["awaiting"] = False
+                config_request_state["deadline"] = 0.0
+                pipe_conn.send({"error": "Timeout waiting for configuration response (5s)"})
+            if crc_request_state.get("awaiting") and time.time() >= float(crc_request_state.get("deadline", 0.0)):
+                crc_request_state["awaiting"] = False
+                crc_request_state["deadline"] = 0.0
+                pipe_conn.send({"error": "Timeout waiting for configuration CRC response (5s)"})
+            _handle_rx_config_timeout(pipe_conn, rx_cfg_state)
             continue
 
         cid = msg.arbitration_id
         d = msg.data
         t_now = time.time()
 
-        _track_rx_config_progress(pipe_conn, msg, rx_cfg_state)
+        if cid == RESPONSE_CONFIG_CRC_ID:
+            data = bytes(d)
+            if len(data) >= 4:
+                crc_value = int.from_bytes(data[:4], byteorder="little", signed=False)
+                pipe_conn.send({"device_config_crc": crc_value})
+            else:
+                pipe_conn.send({"error": "Invalid CRC response frame length"})
+            crc_request_state["awaiting"] = False
+            crc_request_state["deadline"] = 0.0
+            continue
+
+        _track_rx_config_progress(pipe_conn, msg, rx_cfg_state, config_request_state)
 
         try:
             if _isotp_reply_flow_control_if_needed(can_bus, msg):
@@ -622,6 +727,18 @@ def can_isolated_process(pipe_conn, tx_queue):
             imu["pitch"] = (vals[0] / 1000.0)
             imu["roll"] = (vals[1] / 1000.0)
             imu["yaw"] = (vals[2] / 1000.0)
+
+        if config_request_state.get("awaiting") and time.time() >= float(config_request_state.get("deadline", 0.0)):
+            config_request_state["awaiting"] = False
+            config_request_state["deadline"] = 0.0
+            pipe_conn.send({"error": "Timeout waiting for configuration response (5s)"})
+
+        if crc_request_state.get("awaiting") and time.time() >= float(crc_request_state.get("deadline", 0.0)):
+            crc_request_state["awaiting"] = False
+            crc_request_state["deadline"] = 0.0
+            pipe_conn.send({"error": "Timeout waiting for configuration CRC response (5s)"})
+
+        _handle_rx_config_timeout(pipe_conn, rx_cfg_state)
 
         if t_now - last_log_time >= 0.05:
             last_log_time = t_now

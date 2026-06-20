@@ -31,8 +31,10 @@ class Kalman1D:
 
 
 class PlotPanel(QWidget):
-    MIN_VOLTAGE_RANGE_MV = 10000
+    MIN_VOLTAGE_RANGE_MV = 12000
     MIN_CURRENT_RANGE_MA = 3000
+    VOLTAGE_HEADROOM_MV = 2000
+    CURRENT_HEADROOM_MA = 1000
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -125,14 +127,16 @@ class PlotPanel(QWidget):
         self.plot_v.setTitle("Voltage", color="#BB86FC", size="11pt")
         self.plot_v.setLabel("left", "Voltage", units="mV")
         self.plot_v.showGrid(x=True, y=True, alpha=0.15)
-        self.plot_v.setMouseEnabled(x=True, y=True)
-        self.plot_v.getViewBox().setMouseMode(pg.ViewBox.RectMode)
+        self.plot_v.setMouseEnabled(x=False, y=False)
+        self.plot_v.getViewBox().setMouseEnabled(x=False, y=False)
+        self.plot_v.setMenuEnabled(False)
 
         self.plot_i.setTitle("Current", color="#BB86FC", size="11pt")
         self.plot_i.setLabel("left", "Current", units="mA")
         self.plot_i.showGrid(x=True, y=True, alpha=0.15)
-        self.plot_i.setMouseEnabled(x=True, y=True)
-        self.plot_i.getViewBox().setMouseMode(pg.ViewBox.RectMode)
+        self.plot_i.setMouseEnabled(x=False, y=False)
+        self.plot_i.getViewBox().setMouseEnabled(x=False, y=False)
+        self.plot_i.setMenuEnabled(False)
 
         for ch in range(CHANNEL_COUNT):
             clr = TRACK_COLORS[ch % len(TRACK_COLORS)]
@@ -229,17 +233,29 @@ class PlotPanel(QWidget):
             voltage_values.extend(value for _, value in self.hist_sys_v_filt)
             current_values.extend(value for _, value in self.hist_sys_i_filt)
 
-        self._set_minimum_range(self.plot_v, voltage_values, self.MIN_VOLTAGE_RANGE_MV)
-        self._set_minimum_range(self.plot_i, current_values, self.MIN_CURRENT_RANGE_MA)
+        self._set_minimum_range(
+            self.plot_v,
+            voltage_values,
+            self.MIN_VOLTAGE_RANGE_MV,
+            force_zero_lower=True,
+            top_margin=self.VOLTAGE_HEADROOM_MV,
+        )
+        self._set_minimum_range(
+            self.plot_i,
+            current_values,
+            self.MIN_CURRENT_RANGE_MA,
+            force_zero_lower=True,
+            top_margin=self.CURRENT_HEADROOM_MA,
+        )
 
     @staticmethod
-    def _set_minimum_range(plot_item, values, minimum_range):
+    def _set_minimum_range(plot_item, values, minimum_range, force_zero_lower=False, top_margin=0):
         if values:
-            lower = max(0, min(values))
-            upper = max(max(values), lower + minimum_range)
+            lower = 0 if force_zero_lower else max(0, min(values))
+            upper = max(max(values) + top_margin, lower + minimum_range)
         else:
             lower = 0
-            upper = minimum_range
+            upper = minimum_range + top_margin
         plot_item.setYRange(lower, upper, padding=0)
 
     def _set_channels(self, indices_to_show):

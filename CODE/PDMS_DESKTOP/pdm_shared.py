@@ -181,14 +181,17 @@ TRACK_COLORS = [
 
 
 def get_row_colors(state, status):
-    if state == 2:
-        return "#4A1F1F", "#FF8A80"
     if status == 0 and state == 0:
         return "#242424", "#A0A0A0"
     if status == 0:
         return "#1B3B2B", "#81C784"
-    if status < 20:
+    # OPEN_LOAD (1) and SAFETY_OPEN (8) are warnings, not hard errors.
+    if 0 < status < 9:
         return "#3E2723", "#FFB74D"
+    if status >= 9:
+        return "#3D1C1C", "#E57373"
+    if state == 2:
+        return "#4A1F1F", "#FF8A80"
     return "#3D1C1C", "#E57373"
 
 
