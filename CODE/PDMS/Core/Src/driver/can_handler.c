@@ -444,6 +444,20 @@ T_CANH_TX_PACKAGE CANH_TxSOCThreshold5_8 =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_TxHashResp = 
+{
+    .header = 
+    {
+        .DLC = 4,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_TX_HASH_RESP,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
 extern void RTOS_SuspendCAN_1(void);
 extern void RTOS_SuspendCAN_2(void);
 extern void RTOS_ResumeCAN_1(void);
@@ -686,6 +700,13 @@ void CANH_Send_SocTreshold_5_8(T_CANH_INSTANCE instance, uint16_t oc1, uint16_t 
     CANH_PushToTxQueue(instance, CANH_TxSOCThreshold5_8);
 }
 
+void CANH_Send_Hash(T_CANH_INSTANCE instance, uint32_t hash)
+{
+    CANH_TxHashResp.data.hash_resp.hash = hash;
+
+    CANH_PushToTxQueue(instance, CANH_TxHashResp);
+}
+
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)
 {   
     if(instance == CANH_INSTANCE_1)
@@ -806,6 +827,31 @@ static void CANH_AllowTxCallback2(void)
     cansReg[CANH_INSTANCE_2].readyForTx = TRUE;
 }
 
+static bool CANH_ConfigFilter4ID(T_CANH_INSTANCE instance, uint32_t filterBankNumber, uint16_t id1, uint16_t id2, uint16_t id3, uint16_t id4)
+{
+    CAN_FilterTypeDef sFilterConfig;
+
+    sFilterConfig.FilterBank = filterBankNumber;                       
+    sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST; 
+    sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+    sFilterConfig.FilterActivation = CAN_FILTER_ENABLE;
+    sFilterConfig.SlaveStartFilterBank = CANH_FILTER_INSTANCE2_FIRST_BANK;
+
+    sFilterConfig.FilterIdHigh     = id1 << 5;
+    sFilterConfig.FilterIdLow      = id2 << 5;         
+    sFilterConfig.FilterMaskIdHigh = id3 << 5;
+    sFilterConfig.FilterMaskIdLow  = id4 << 5;
+
+    if(HAL_CAN_ConfigFilter(cansReg[instance].hcan, &sFilterConfig) != HAL_OK)
+    {
+        LOG_ERR("CANH:: Failed to configure CAN filter for ID list!");
+        return FALSE;
+    } 
+
+    return TRUE;
+}
+
 /// @brief Initialize dynamic filter based on BSP CAN inputs
 /// @param instance CAN instance for which the filter should be initialized
 /// @param firstDynamicBankNumber First filter bank number that can be used for dynamic configuration (other banks are used for static filters)
@@ -839,17 +885,10 @@ static bool CANH_InitDynamicFilter(T_CANH_INSTANCE instance, uint32_t firstDynam
 
                 if(filterPassIdsCount >= 4)
                 {
-                    sFilterConfig.FilterBank        = filterBankNumber;
-                    sFilterConfig.FilterIdHigh      = filterPassIdsArr[0] << 5;
-                    sFilterConfig.FilterIdLow       = filterPassIdsArr[1] << 5;
-                    sFilterConfig.FilterMaskIdHigh  = filterPassIdsArr[2] << 5;
-                    sFilterConfig.FilterMaskIdLow   = filterPassIdsArr[3] << 5;
-
                     if(filterBankNumber <= lastUsedBankNumber)
                     {
-                        if(HAL_CAN_ConfigFilter(cansReg[instance].hcan, &sFilterConfig) != HAL_OK)
+                        if(CANH_ConfigFilter4ID(instance, filterBankNumber, filterPassIdsArr[0], filterPassIdsArr[1], filterPassIdsArr[2], filterPassIdsArr[3]) != TRUE)
                         {
-                            LOG_ERR("CANH:: Failed to configure CAN filter for BSP CAN inputs!");
                             return FALSE;
                         } 
                         filterPassIdsCount = 0;
@@ -868,6 +907,15 @@ static bool CANH_InitDynamicFilter(T_CANH_INSTANCE instance, uint32_t firstDynam
                 }
             }
         }
+    }
+
+    if(filterPassIdsCount > 0 && filterBankNumber <= lastUsedBankNumber)
+    {
+        // Configure remaining filter IDs if there are any
+        if(CANH_ConfigFilter4ID(instance, filterBankNumber, filterPassIdsArr[0], filterPassIdsArr[1], filterPassIdsArr[2], filterPassIdsArr[3]) != TRUE)
+        {
+            return FALSE;
+        } 
     }
 
     return TRUE;
@@ -1123,6 +1171,10 @@ void can2TaskStart(void *argument)
                     CONFIG_GetCfgExpSize(&size);
                     CONFIG_GetCfgPtr(CONFIG_SELECTION_A, &cfgPtr);
                     APP_ISOTP_Send(cfgPtr, size);
+                }
+                else if(rxPkg.header.StdId == CANH_ID_RX_HASH_REQ + cansCfg[CANH_INSTANCE_2].baseId)
+                {
+                    CANH_Send_Hash(CANH_INSTANCE_2, CONFIG_GetCurrentConfigCrc());
                 }
                 
                 // Force reset command reception

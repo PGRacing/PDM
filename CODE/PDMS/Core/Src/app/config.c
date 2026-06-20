@@ -1,4 +1,5 @@
 #include "config.h"
+#include "crc.h"
 #include "buzzer.h"
 #include "out.h"
 #include "bsp_flash.h"
@@ -20,10 +21,11 @@ T_OUT_CFG (*configPtrB)[16] = (T_OUT_CFG (*)[16])0x080F0000; // Pointing to CONF
 #define CONFIG_BSP_CAN_SIZE sizeof(bspCanInputsCfg) // BSP CAN INPUT configuration size in bytes (size of bspCanInputsCfg array - PACKED)
 #define CONFIG_INPUT_SIZE sizeof(inputsCfg) // INPUT configuration size in bytes (size of inputsCfg array - PACKED)
 #define CONFIG_LOGIC_SIZE sizeof(logicCfg) // LOGIC configuration size in bytes (size of logicCfg array - PACKED)
+#define CONFIG_CRC_SIZE sizeof(uint32_t) // CRC size in bytes
 
-//                         [OUTPUT][BSP_CAN][INPUT][LOGIC]
-//#define CONFIG_EXPECTED_SIZE 1360 + 144 + 96 + 192
-#define CONFIG_EXPECTED_SIZE (CONFIG_OUTPUT_SIZE + CONFIG_BSP_CAN_SIZE + CONFIG_INPUT_SIZE + CONFIG_LOGIC_SIZE)
+//                         [OUTPUT][BSP_CAN][INPUT][LOGIC][CRC]
+//#define CONFIG_EXPECTED_SIZE 1360 + 144 + 96 + 192       + 4
+#define CONFIG_EXPECTED_SIZE (CONFIG_OUTPUT_SIZE + CONFIG_BSP_CAN_SIZE + CONFIG_INPUT_SIZE + CONFIG_LOGIC_SIZE + CONFIG_CRC_SIZE)
 
 #define CONFIG_EXPECTED_SIZE_IN_SECTOR DIV_CEIL(CONFIG_EXPECTED_SIZE, FLASH_SECTOR_SIZE)
 
@@ -31,9 +33,21 @@ T_OUT_CFG (*configPtrB)[16] = (T_OUT_CFG (*)[16])0x080F0000; // Pointing to CONF
 #define CONFIG_CANCFG_OFFSET  CONFIG_OUTPUT_SIZE
 #define CONFIG_INPUTCFG_OFFSET (CONFIG_CANCFG_OFFSET + CONFIG_BSP_CAN_SIZE)
 #define CONFIG_LOGICCFG_OFFSET (CONFIG_INPUTCFG_OFFSET + CONFIG_INPUT_SIZE)
+#define CONFIG_CRC_OFFSET (CONFIG_LOGICCFG_OFFSET + CONFIG_LOGIC_SIZE)
 
 extern void RTOS_SuspendForConfigChange(void);
 extern void RTOS_ResumeAfterConfigChange(void);
+
+uint32_t currentConfigCrc = 0x00000000;
+
+/// @brief Calculate CRC32 of given data
+/// @param data Ptr to data
+/// @param size Size of data
+/// @return CRC value for given data
+static uint32_t CONFIG_CalcCRC(uint8_t* data, uint32_t size)
+{
+    return HAL_CRC_Calculate(&hcrc, (uint32_t*)data, size);
+}
 
 /// @brief Perform required action before applying new configuration (e.g. suspend tasks, set outputs to safe state etc.)
 /// @param 
@@ -58,6 +72,7 @@ void CONFIG_LoadConfig(T_CONFIG_SELECTION configSelection)
         memcpy(bspCanInputsCfg, (T_BSP_CANIN_CFG*)((uint8_t*)configPtrA + CONFIG_CANCFG_OFFSET), sizeof(bspCanInputsCfg));
         memcpy(inputsCfg, (T_IN_CFG*)((uint8_t*)configPtrA + CONFIG_INPUTCFG_OFFSET), sizeof(inputsCfg));
         memcpy(logicCfg, (T_LOGIC_CFG*)((uint8_t*)configPtrA + CONFIG_LOGICCFG_OFFSET), sizeof(logicCfg));
+        currentConfigCrc = (uint32_t)(*(uint32_t*)((uint8_t*)configPtrA + CONFIG_CRC_OFFSET));
     }
     else if(configSelection == CONFIG_SELECTION_B)
     {
@@ -65,6 +80,7 @@ void CONFIG_LoadConfig(T_CONFIG_SELECTION configSelection)
         memcpy(bspCanInputsCfg, (T_BSP_CANIN_CFG*)((uint8_t*)configPtrB + CONFIG_CANCFG_OFFSET), sizeof(bspCanInputsCfg));
         memcpy(inputsCfg, (T_IN_CFG*)((uint8_t*)configPtrB + CONFIG_INPUTCFG_OFFSET), sizeof(inputsCfg));
         memcpy(logicCfg, (T_LOGIC_CFG*)((uint8_t*)configPtrB + CONFIG_LOGICCFG_OFFSET), sizeof(logicCfg));
+        currentConfigCrc = (uint32_t)(*(uint32_t*)((uint8_t*)configPtrB + CONFIG_CRC_OFFSET));
     }
 }
 
@@ -145,12 +161,39 @@ static bool CONFIG_FlushConfig(T_CONFIG_SELECTION configSelection, uint8_t* data
     return true;
 }
 
+static bool CONFIG_VerifyConfig(T_CONFIG_SELECTION configSelection, uint8_t* data, uint32_t size, uint32_t* crcOut)
+{
+    if(size != CONFIG_EXPECTED_SIZE)
+    {
+        LOG_ERR("CONFIG:: Invalid config size for CRC verification!");
+        return false;
+    }
+
+    uint32_t expectedCrc = 0;
+    memcpy(&expectedCrc, data + CONFIG_CRC_OFFSET, sizeof(uint32_t));
+    *crcOut = CONFIG_CalcCRC(data, size - CONFIG_CRC_SIZE);
+
+    if(expectedCrc != *crcOut)
+    {
+        LOG_ERR("CONFIG:: Invalid CRC");
+        return false;
+    }
+    return true;
+}
+
 /// @brief Perform full sequence of applying new configuration (pre-change actions, config flush, post-change actions)
 /// @param configSelection Selected configuration [A/B]
 /// @param data Configuration data
 /// @param size Size of configuration data
 void CONFIG_NewConfig(T_CONFIG_SELECTION configSelection, uint8_t* data, uint32_t size)
 {
+    uint32_t calcCrc = 0x00000000;
+    if(FALSE == CONFIG_VerifyConfig(configSelection, data, size, &calcCrc))
+    {
+        LOG_ERR("CONFIG:: New configuration verification failed! Aborting config change.");
+        return;
+    }
+
     if(CONFIG_FlushConfig(configSelection, data, size))
     {
         CONFIG_PreConfigChange();
@@ -179,4 +222,9 @@ void CONFIG_GetCfgPtr(T_CONFIG_SELECTION configSelection, uint8_t** outPtr)
 void CONFIG_GetCfgExpSize(uint32_t* outSize)
 {
     *outSize = CONFIG_EXPECTED_SIZE;
+}
+
+uint32_t CONFIG_GetCurrentConfigCrc(void)
+{
+    return currentConfigCrc;
 }

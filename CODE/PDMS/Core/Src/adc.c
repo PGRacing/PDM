@@ -739,7 +739,12 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
     ADC_InjectionConfTypeDef sConfigInjected = {0};
 
     uint8_t convNum = (uint8_t)oc1 + (uint8_t)oc2 + (uint8_t)oc3 + (uint8_t)oc4 +
-                        (uint8_t)oc5 + (uint8_t)oc6 + (uint8_t)oc7 + (uint8_t)oc8; 
+                        (uint8_t)oc5 + (uint8_t)oc6 + (uint8_t)oc7 + (uint8_t)oc8;
+                        
+    if(convNum == 0)
+    {
+        return;
+    }
      
     // Clamp number of converted channels to 4
     convNum = convNum > 4 ? 4 : convNum;      
@@ -879,6 +884,7 @@ void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bo
     }
 }
 
+
 void ADC1_Init(void)
 { 
     /* Timer 15 configured to execute ADC1 conversion each 0.1ms / 10kHz */
@@ -908,28 +914,6 @@ void ADC2_Init(void)
 
 void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-    // LL_GPIO_SetOutputPin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
-    // volatile uint32_t delay = 1000;
-    // while ((delay--) != 0)
-    // {
-    //     __NOP();
-    // }
-    // LL_GPIO_ResetOutputPin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
-    // TODO PWM Fix
-    /*
-    - [DONE] Verify here value of TIM3->CNT
-    - [DONE] Migrate from TIM3 to TIM8 (now ADC2 trigger)
-    - [DONE] Use one of 5,6 channel from TIM6 as dedicated trigger
-    - [DONE] LL_TIM_OC_EnablePreload(TIM8, LL_TIM_CHANNEL_CH1); (enable to not change CCR in flight)
-    - [DONE] Set CCR4 to ARR or something at center of PWM
-    - Consider enabling queue on injected channels
-    - Verify the trigger for TIM4 start and RPT counter
-    - [DONE] Verify that duty cycle high is generated during ARR not 0, there might be need to verify PWM mode and or polarity, and dudty cyclce calculation as 1 - DUTY
-    */
-
-    // arr[arr_count % 99] = DEBUG_ARM_CLOCKS_TO_US(DEBUG_ARM_GET_TIME);
-    // arr_count++;
-
     if (hadc->Instance == ADC1)
     {
         *injectedPtrTargetBuffer[0] = HAL_ADCEx_InjectedGetValue(hadc, ADC_INJECTED_RANK_1);
@@ -937,7 +921,6 @@ void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc)
         *injectedPtrTargetBuffer[2] = HAL_ADCEx_InjectedGetValue(hadc, ADC_INJECTED_RANK_3);
         *injectedPtrTargetBuffer[3] = HAL_ADCEx_InjectedGetValue(hadc, ADC_INJECTED_RANK_4);
     }
-
 }
 
 /* USER CODE END 1 */

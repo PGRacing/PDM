@@ -33,6 +33,10 @@
 /* Max possible current [mA] */
 #define BSP_OUT_MAX_CURRENT_MA (300000) // 300A
 
+#define BSP_OUT_ADC_OFFSET 0x13
+
+#define BSP_OUT_ADC_MUL_CORR 1.06
+
 const float bspOutRmsDutyLut[101] = {
     0.000000, // 0%
     0.100000, // 1%
@@ -149,6 +153,7 @@ typedef struct _T_BSP_OUT_CFG
     const uint32_t dkilis;
     const uint32_t sensRValue;
     const uint32_t faultLevel;  // Defined absolutly to remove non-needed calculations
+    const bool     isControlledSafetyHW; // Is output channel controlled by hardware safety lin
 }T_BSP_OUT_CFG;
 
 typedef struct _T_BSP_OUT_REG
@@ -329,7 +334,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[0]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = FALSE
     },
     [OUT_ID_2] = 
     {
@@ -343,7 +349,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[1]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = FALSE
     },
     [OUT_ID_3] = 
     {
@@ -357,7 +364,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[2]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = FALSE
     },
     [OUT_ID_4] = 
     {
@@ -371,7 +379,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[3]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = FALSE
     },
     [OUT_ID_5] = 
     {
@@ -385,7 +394,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[4]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = TRUE
     },
     [OUT_ID_6] = 
     {
@@ -399,7 +409,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[5]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = TRUE
     },
     [OUT_ID_7] = 
     {
@@ -413,7 +424,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[6]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = TRUE
     },
     [OUT_ID_8] = 
     {
@@ -427,7 +439,8 @@ static const T_BSP_OUT_CFG bspOutsCfg[OUT_ID_MAX] =
         .currentRawData = &(adc1AvgData[7]),
         .dkilis = 38000,
         .sensRValue = 3900,
-        .faultLevel = 12000
+        .faultLevel = 12000,
+        .isControlledSafetyHW = FALSE
     },
     [OUT_ID_9] = 
     {
@@ -591,7 +604,9 @@ uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id)
 
 void BSP_OUT_CalcCurrentPlusRMS(T_OUT_ID id, uint32_t* pInstCurrentMA, uint32_t* pRmsCurrentMA)
 {
-    const uint32_t isVoltage = ((float)*(bspOutsCfg[id].currentRawData)/(float)4096)*(float)VDD_VALUE; 
+    float isVoltage = ((float)(((int16_t)*(bspOutsCfg[id].currentRawData)) - BSP_OUT_ADC_OFFSET)/(float)4096)*(float)VDD_VALUE; 
+    isVoltage = isVoltage < 0 ? 0 : isVoltage;
+    isVoltage *= BSP_OUT_ADC_MUL_CORR;
     uint32_t current = isVoltage * (bspOutsCfg[id].dkilis)/(bspOutsCfg[id].sensRValue);
     current = CLAMP(current, 0, BSP_OUT_MAX_CURRENT_MA);
     *pInstCurrentMA = current * (bspOutsReg[id].isPWM ? (bspOutsReg[id].duty/100.0) : 1);
@@ -707,156 +722,6 @@ void BSP_OUT_InitTimers(void)
     // This is required to unlock TIM8 outputs, they are locked by MOE by default
     LL_TIM_EnableAllOutputs(TIM8);
 }
-
-// void BSP_OUT_InitTimers(void)
-// {   
-//     // TIM3
-//     if(LL_APB1_GRP1_IsEnabledClock(LL_APB1_GRP1_PERIPH_TIM3) == 0)
-//     {
-//         LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM3);
-
-//         LL_TIM_SetClockSource(TIM3, LL_TIM_CLOCKSOURCE_INTERNAL);
-//         LL_TIM_SetCounterMode(TIM3, LL_TIM_COUNTERMODE_CENTER_UP_DOWN);
-
-//         // Current solution aims 175 Hz
-//         // Modify BSP_OUT_PWM_TARGET_FREQ if needed
-//         LL_TIM_SetPrescaler(TIM3, BSP_OUT_PWM_PRESCALER);
-//         LL_TIM_SetAutoReload(TIM3, BSP_OUT_PWM_ARR);
-
-//         LL_TIM_SetRepetitionCounter(TIM3, 1);
-
-//         /* Generate update event to change prescaler and arr immediately */
-//         LL_TIM_GenerateEvent_UPDATE(TIM3);
-//         LL_TIM_ClearFlag_UPDATE(TIM3);
-
-//         // HAL_NVIC_SetPriority(bspOutsCfg[id].timIRQn, 3, 0);
-//         // HAL_NVIC_EnableIRQ(bspOutsCfg[id].timIRQn);
-//     }
-
-//     // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH1, LL_TIM_OCPOLARITY_HIGH);
-
-//     // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_OCPOLARITY_HIGH);
-
-//     // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH3, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH3, LL_TIM_OCPOLARITY_HIGH);
-
-//     // LL_TIM_OC_SetMode(TIM3, LL_TIM_CHANNEL_CH4, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH4, LL_TIM_OCPOLARITY_HIGH);
-
-//     // TIM4
-//     if(LL_APB1_GRP1_IsEnabledClock(LL_APB1_GRP1_PERIPH_TIM4) == 0)
-//     {
-//         LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM4);
-
-//         LL_TIM_SetClockSource(TIM4, LL_TIM_CLOCKSOURCE_INTERNAL);
-//         LL_TIM_SetCounterMode(TIM4, LL_TIM_COUNTERMODE_CENTER_UP_DOWN);
-
-//         // Current solution aims 175 Hz
-//         // Modify BSP_OUT_PWM_TARGET_FREQ if needed
-//         LL_TIM_SetPrescaler(TIM4, BSP_OUT_PWM_PRESCALER);
-//         LL_TIM_SetAutoReload(TIM4, BSP_OUT_PWM_ARR);
-
-//         /* Generate update event to change prescaler and arr immediately */
-//         LL_TIM_GenerateEvent_UPDATE(TIM4);
-//         LL_TIM_ClearFlag_UPDATE(TIM4);
-
-//         // HAL_NVIC_SetPriority(bspOutsCfg[id].timIRQn, 3, 0);
-//         // HAL_NVIC_EnableIRQ(bspOutsCfg[id].timIRQn);
-//     }
-
-//     LL_TIM_SetTriggerOutput(TIM3, LL_TIM_TRGO_UPDATE);
-//     // TIM4 is slave now
-//     LL_TIM_SetTriggerInput(TIM4, LL_TIM_TS_ITR2);
-//     LL_TIM_SetSlaveMode(TIM4, LL_TIM_SLAVEMODE_RESET);
-
-//     // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH1, LL_TIM_OCPOLARITY_HIGH);
-
-//     // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH2, LL_TIM_OCPOLARITY_HIGH);
-
-//     // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH3, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH3, LL_TIM_OCPOLARITY_HIGH);
-
-//     // LL_TIM_OC_SetMode(TIM4, LL_TIM_CHANNEL_CH4, LL_TIM_OCMODE_PWM1);
-//     // LL_TIM_OC_SetPolarity(TIM4, LL_TIM_CHANNEL_CH4, LL_TIM_OCPOLARITY_HIGH);
-
-//     LL_TIM_SetCounter(TIM4, 0);
-//     LL_TIM_SetCounter(TIM3, 0);
-    
-//     LL_TIM_ClearFlag_UPDATE(TIM3);
-//     LL_TIM_ClearFlag_UPDATE(TIM4);
-
-//     // Slave start -- listen to events from master
-//     LL_TIM_EnableCounter(TIM4);
-
-//     // Master start
-//     LL_TIM_SetCounter(TIM3, 0);
-//     LL_TIM_EnableCounter(TIM3);
-
-// }
-
-// void BSP_OUT_InitPWM(T_OUT_ID id)
-// {
-//     ASSERT( id < OUT_ID_MAX);
-//     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-//     /* IO config */
-//     GPIO_InitStruct.Pin = bspOutsCfg[id].io.pin;
-//     GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-//     GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-    
-//     // Can be probably optimized out because all values AF2
-//     GPIO_InitStruct.Alternate = bspOutsCfg[id].alt; 
-//     GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-
-//     LL_GPIO_Init(bspOutsCfg[id].io.port, &GPIO_InitStruct);
-
-//     /* Timer config */
-//     if(LL_APB1_GRP1_IsEnabledClock(bspOutsCfg[id].clock) == 0)
-//     {
-//         LL_APB1_GRP1_EnableClock(bspOutsCfg[id].clock);
-
-//         LL_TIM_SetClockSource(bspOutsCfg[id].tim, LL_TIM_CLOCKSOURCE_INTERNAL);
-//         LL_TIM_SetCounterMode(bspOutsCfg[id].tim, LL_TIM_COUNTERMODE_UP);
-
-//         // Current solution aims 175 Hz
-//         // Modify BSP_OUT_PWM_TARGET_FREQ if needed
-//         LL_TIM_SetPrescaler(bspOutsCfg[id].tim, BSP_OUT_PWM_PRESCALER);
-//         LL_TIM_SetAutoReload(bspOutsCfg[id].tim, BSP_OUT_PWM_ARR);
-
-//         /* Generate update event to change prescaler and arr immediately */
-//         LL_TIM_GenerateEvent_UPDATE(bspOutsCfg[id].tim);
-//         LL_TIM_ClearFlag_UPDATE(bspOutsCfg[id].tim);
-
-//         HAL_NVIC_SetPriority(bspOutsCfg[id].timIRQn, 3, 0);
-//         HAL_NVIC_EnableIRQ(bspOutsCfg[id].timIRQn);
-//     }
-
-//     /* Channel config */
-//     BSP_OUT_SetTimerCompare(bspOutsCfg[id].tim, bspOutsCfg[id].ch, BSP_OUT_PWM_START_DUTY);
-
-//     LL_TIM_OC_SetMode(bspOutsCfg[id].tim, bspOutsCfg[id].chmask, LL_TIM_OCMODE_PWM1);
-//     LL_TIM_OC_SetPolarity(bspOutsCfg[id].tim, bspOutsCfg[id].chmask, LL_TIM_OCPOLARITY_HIGH);
-
-//     // Enable update interrupt to detect rising edge
-//     LL_TIM_EnableIT_UPDATE(bspOutsCfg[id].tim);
-
-//     // Enable capture-compare interrupt based on channel
-//     if (bspOutsCfg[id].chmask == LL_TIM_CHANNEL_CH1)      LL_TIM_EnableIT_CC1(bspOutsCfg[id].tim);
-//     else if (bspOutsCfg[id].chmask == LL_TIM_CHANNEL_CH2) LL_TIM_EnableIT_CC2(bspOutsCfg[id].tim);
-//     else if (bspOutsCfg[id].chmask == LL_TIM_CHANNEL_CH3) LL_TIM_EnableIT_CC3(bspOutsCfg[id].tim);
-//     else if (bspOutsCfg[id].chmask == LL_TIM_CHANNEL_CH4) LL_TIM_EnableIT_CC4(bspOutsCfg[id].tim);
-
-//     LL_TIM_CC_EnableChannel(bspOutsCfg[id].tim, bspOutsCfg[id].chmask);
-
-//     if(LL_TIM_IsEnabledCounter(bspOutsCfg[id].tim) == 0)
-//     {
-//         LL_TIM_EnableCounter(bspOutsCfg[id].tim);
-//     }
-// }
 
 void BSP_OUT_InitPWM(T_OUT_ID id)
 {
@@ -1025,6 +890,14 @@ __attribute__((always_inline)) bool BSP_OUT_IsPWM(T_OUT_ID id)
     return bspOutsReg[id].isPWM;
 }
 
+// __attribute__((always_inline)) -- Works only with compiler optimizations enabled
+__attribute__((always_inline)) bool BSP_OUT_IsControlledSafetyHW(T_OUT_ID id)
+{
+    return bspOutsCfg[id].isControlledSafetyHW;
+}
+
+// Previous PWM measurement control
+
 // void TIM3_IRQHandler(void)
 // {
 //     // Detect PWM rising edge
@@ -1102,8 +975,6 @@ __attribute__((always_inline)) bool BSP_OUT_IsPWM(T_OUT_ID id)
 
 //     }
 // }
-
-
 
 // void TIM8_IRQHandler(void)
 // {

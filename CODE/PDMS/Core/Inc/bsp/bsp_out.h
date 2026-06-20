@@ -131,6 +131,10 @@ bool BSP_OUT_IsCurrentFault(T_OUT_ID id);
 /// @param id Output channel id [1..16] T_OUT_ID
 bool BSP_OUT_IsPWM(T_OUT_ID id);
 
+/// @brief Check if output channel is controlled by safety hardware
+/// @param id Output channel id [1..16] T_OUT_ID
+bool BSP_OUT_IsControlledSafetyHW(T_OUT_ID id);
+
 /// @brief Initialize timers used for handling of BSP outputs
 /// @param  
 void BSP_OUT_InitTimers(void);

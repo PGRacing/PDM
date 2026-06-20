@@ -1680,7 +1680,11 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
 
   // Check safety line
   T_OUT_STATUS safetyStatus = OUT_STATUS_OK;
-  if(OUT_STATE_ON == reg->state && reg->voltageMV < OUT_DIAG_BTS_VBAT_HISTERESIS && FALSE == PDM_GetSafetyState())
+  
+  if(OUT_STATE_ON == reg->state 
+    && reg->voltageMV < OUT_DIAG_BTS_VBAT_HISTERESIS 
+    && FALSE == PDM_GetSafetyState() 
+    && BSP_OUT_IsControlledSafetyHW(id))
   {
     safetyStatus = OUT_STATUS_SAFETY_OPEN;
   }
