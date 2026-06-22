@@ -466,7 +466,7 @@ def can_isolated_process(pipe_conn, tx_queue):
     def _reset_runtime_state():
         channels = _reset_channel_runtime_fields(CHANNEL_COUNT)
         phy_inputs = [0] * PHY_INPUT_COUNT
-        sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0, "logicValidMask": 0}
+        sys_status = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0, "logicValidMask": 0, "system_load": 0}
         imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
         name_parts = defaultdict(dict)
         current_avg_window = [deque() for _ in range(CHANNEL_COUNT)]
@@ -709,6 +709,9 @@ def can_isolated_process(pipe_conn, tx_queue):
                 ch = i + 4
                 if ch < CHANNEL_COUNT:
                     channels[ch]["soc_threshold"] = int(vals[i]) * 10
+        elif cid == IDS["DEV_DIAG"]:
+            if len(d) > 0:
+                sys_status["system_load"] = int(d[0])
         elif cid == IDS["NAMES"]:
             meta = d[0]
             part, ch = (meta >> 4) & 0x0F, meta & 0x0F

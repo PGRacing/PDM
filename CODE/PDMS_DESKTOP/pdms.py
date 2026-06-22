@@ -509,9 +509,9 @@ class MainWindow(QMainWindow):
         self.lbl_temp = QLabel("- °C")
         sys_grid.addWidget(self.lbl_temp, 2, 1)
 
-        sys_grid.addWidget(QLabel("Safety Line:"), 3, 0)
-        self.lbl_safety = QLabel("-")
-        sys_grid.addWidget(self.lbl_safety, 3, 1)
+        sys_grid.addWidget(QLabel("System load:"), 3, 0)
+        self.lbl_system_load = QLabel("- %")
+        sys_grid.addWidget(self.lbl_system_load, 3, 1)
 
         sys_grid.addWidget(QLabel("Total I Avg:"), 4, 0)
         self.lbl_total_i = QLabel("- mA")
@@ -1161,7 +1161,7 @@ class MainWindow(QMainWindow):
         self.lbl_sys_state.setText(SYS_STATUS_MAP.get(int(self.latest_sys["status"]), str(self.latest_sys["status"])))
         self.lbl_batt.setText(f"{self.latest_sys['batt']} mV")
         self.lbl_temp.setText(f"{self.latest_sys['core_temp']:.1f} °C")
-        self.lbl_safety.setText(str(self.latest_sys["safety"]))
+        self.lbl_system_load.setText(f"{self.latest_sys.get('system_load', 0)}%")
         self.lbl_total_i.setText(f"{self.latest_sys['total_current']:.1f} mA")
         total_current_a = float(self.latest_sys["total_current"]) / 1000.0
         self.lbl_itot.setText(f"I<sub>tot</sub>: {total_current_a:.1f} A")
