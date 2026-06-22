@@ -118,6 +118,7 @@ IDS = {
     "I2T_HEAT_1_8": BASE_ID + 0x014,
     "SOC_TRESH_1_4": BASE_ID + 0x015,
     "SOC_TRESH_5_8": BASE_ID + 0x016,
+    "PWM_DUTY_1_8": BASE_ID + 0x017,
     "IMU_ACC": BASE_ID + 0x10,
     "IMU_RATES": BASE_ID + 0x11,
     "IRMS_1_4": BASE_ID + 0x12,

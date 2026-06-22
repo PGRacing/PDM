@@ -596,7 +596,7 @@ class MainWindow(QMainWindow):
 
         out_table_box = QGroupBox("PDM Output Channel Bus Matrix")
         out_table_vbox = QVBoxLayout(out_table_box)
-        self.table_channels = QTableWidget(CHANNEL_COUNT, 9)
+        self.table_channels = QTableWidget(CHANNEL_COUNT, 10)
         self.table_channels.setHorizontalHeaderLabels([
             "Name",
             "Status",
@@ -605,6 +605,7 @@ class MainWindow(QMainWindow):
             "I inst [mA]",
             "I avg [mA]",
             "Irms [mA]",
+            "PWM duty [%]",
             "I2T heat [%]",
             "SOC threshold",
         ])
@@ -613,7 +614,7 @@ class MainWindow(QMainWindow):
         self.table_channels.verticalHeader().setMinimumSectionSize(18)
         self.table_channels.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         for row in range(CHANNEL_COUNT):
-            for col in range(9):
+            for col in range(10):
                 item = QTableWidgetItem("")
                 if col > 2:
                     item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -1201,6 +1202,7 @@ class MainWindow(QMainWindow):
             status_str = OUT_STATUS_MAP.get(ch["status"], str(ch["status"]))
             state_str = OUT_STATE_MAP.get(ch["state"], str(ch["state"]))
             irms_text = str(ch.get("current_rms", 0)) if i < 8 else "-"
+            pwm_text = f"{int(ch.get('pwm_duty', 0))}%" if i < 8 else "-"
             heat_text = f"{int(ch.get('i2t_heat', 0))}%" if i < 8 else "-"
             soc_text = str(int(ch.get('soc_threshold', 0))) if i < 8 else "-"
             vals = (
@@ -1211,6 +1213,7 @@ class MainWindow(QMainWindow):
                 str(ch["current"]),
                 f"{ch['current_avg']:.1f}",
                 irms_text,
+                pwm_text,
                 heat_text,
                 soc_text,
             )

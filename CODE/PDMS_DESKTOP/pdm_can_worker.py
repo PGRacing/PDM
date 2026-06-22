@@ -456,6 +456,7 @@ def can_isolated_process(pipe_conn, tx_queue):
                 "current": 0,
                 "current_avg": 0,
                 "current_rms": 0,
+                "pwm_duty": 0,
                 "i2t_heat": 0,
                 "soc_threshold": 0,
             }
@@ -501,6 +502,7 @@ def can_isolated_process(pipe_conn, tx_queue):
                 f"ch{n}_i_inst_mA",
                 f"ch{n}_i_avg_mA",
                 f"ch{n}_i_rms_mA",
+                f"ch{n}_pwm_duty_pct",
                 f"ch{n}_i2t_heat_pct",
                 f"ch{n}_soc_threshold_mA",
             ]
@@ -688,6 +690,10 @@ def can_isolated_process(pipe_conn, tx_queue):
                 ch = base + i
                 if ch < CHANNEL_COUNT:
                     channels[ch]["current_rms"] = vals[i] * 10
+        elif cid == IDS["PWM_DUTY_1_8"]:
+            for i in range(min(8, len(d))):
+                if i < CHANNEL_COUNT:
+                    channels[i]["pwm_duty"] = int(d[i])
         elif cid == IDS["I2T_HEAT_1_8"]:
             for i in range(min(8, len(d))):
                 if i < CHANNEL_COUNT:
@@ -707,6 +713,9 @@ def can_isolated_process(pipe_conn, tx_queue):
             meta = d[0]
             part, ch = (meta >> 4) & 0x0F, meta & 0x0F
             if ch < CHANNEL_COUNT:
+                if part == 0:
+                    name_parts[ch].clear()
+                    channels[ch]["name"] = ""
                 name_parts[ch][part] = d[1:].decode(errors="ignore").rstrip("\x00")
                 channels[ch]["name"] = "".join(name_parts[ch][i] for i in sorted(name_parts[ch]))
         elif cid == IDS["PHY_INPUTS_1_4"]:
@@ -754,6 +763,7 @@ def can_isolated_process(pipe_conn, tx_queue):
                             ch["current"],
                             f"{ch['current_avg']:.1f}",
                             ch.get("current_rms", 0),
+                            ch.get("pwm_duty", 0),
                             ch.get("i2t_heat", 0),
                             ch.get("soc_threshold", 0),
                         ])
