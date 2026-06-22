@@ -330,4 +330,9 @@ uint8_t OUT_DIAG_GetI2tHeat(T_OUT_ID id);
 /// @return Threshold value in cA (centi-ampere)
 uint16_t OUT_DIAG_GetSocTreshold_cA(T_OUT_ID id);
 
+/// @brief Get output channel PWM duty
+/// @param id Output channel id [1..16] T_OUT_ID 
+/// @return Current applied PWM duty in percentage [0-100%]
+uint8_t OUT_DIAG_GetPwmDuty(T_OUT_ID id);
+
 #endif

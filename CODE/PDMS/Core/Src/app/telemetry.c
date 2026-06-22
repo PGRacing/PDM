@@ -15,7 +15,7 @@
 
 T_TELEM_CFG telemCfg = 
 {
-    .slowDataInterval = pdMS_TO_TICKS(50), // 50 ms - 20Hz
+    .slowDataInterval = pdMS_TO_TICKS(100), // 100 ms - 10Hz
     .fastDataInterval = pdMS_TO_TICKS(20), // 20 ms - 50Hz
     .namesInterval = pdMS_TO_TICKS(10000),
     .canInstance = CANH_INSTANCE_2,
@@ -135,6 +135,12 @@ static void TELEM_SendSocTresholdByCan(T_CANH_INSTANCE canInstance)
 {
     CANH_Send_SocTreshold_1_4(canInstance, OUT_DIAG_GetSocTreshold_cA(OUT_ID_1), OUT_DIAG_GetSocTreshold_cA(OUT_ID_2), OUT_DIAG_GetSocTreshold_cA(OUT_ID_3), OUT_DIAG_GetSocTreshold_cA(OUT_ID_4));
     CANH_Send_SocTreshold_5_8(canInstance, OUT_DIAG_GetSocTreshold_cA(OUT_ID_5), OUT_DIAG_GetSocTreshold_cA(OUT_ID_6), OUT_DIAG_GetSocTreshold_cA(OUT_ID_7), OUT_DIAG_GetSocTreshold_cA(OUT_ID_8));
+}
+
+static void TELEM_SendPWMDutyByCan(T_CANH_INSTANCE canInstance)
+{
+    CANH_Send_PWMDuty(canInstance, OUT_DIAG_GetPwmDuty(OUT_ID_1), OUT_DIAG_GetPwmDuty(OUT_ID_2), OUT_DIAG_GetPwmDuty(OUT_ID_3), OUT_DIAG_GetPwmDuty(OUT_ID_4),
+        OUT_DIAG_GetPwmDuty(OUT_ID_5), OUT_DIAG_GetPwmDuty(OUT_ID_6), OUT_DIAG_GetPwmDuty(OUT_ID_7), OUT_DIAG_GetPwmDuty(OUT_ID_8));
 }
 
 void telemTaskStart(void *argument)
@@ -342,11 +348,13 @@ void telemTaskStart(void *argument)
                 {
                     TELEM_SendI2tDataByCan(CANH_INSTANCE_1);
                     TELEM_SendSocTresholdByCan(CANH_INSTANCE_1);
+                    TELEM_SendPWMDutyByCan(CANH_INSTANCE_1);
                 }
                 else if (telemCfg.canInstance == CANH_INSTANCE_2)
                 {
                     TELEM_SendI2tDataByCan(CANH_INSTANCE_2);
                     TELEM_SendSocTresholdByCan(CANH_INSTANCE_2);
+                    TELEM_SendPWMDutyByCan(CANH_INSTANCE_2);
                 }
                 else
                 {
@@ -354,6 +362,8 @@ void telemTaskStart(void *argument)
                     TELEM_SendI2tDataByCan(CANH_INSTANCE_2);
                     TELEM_SendSocTresholdByCan(CANH_INSTANCE_1);
                     TELEM_SendSocTresholdByCan(CANH_INSTANCE_2);
+                    TELEM_SendPWMDutyByCan(CANH_INSTANCE_1);
+                    TELEM_SendPWMDutyByCan(CANH_INSTANCE_2);
                 }
             }
 

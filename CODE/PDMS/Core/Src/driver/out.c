@@ -1680,7 +1680,7 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
 
   // Check safety line
   T_OUT_STATUS safetyStatus = OUT_STATUS_OK;
-  
+
   if(OUT_STATE_ON == reg->state 
     && reg->voltageMV < OUT_DIAG_BTS_VBAT_HISTERESIS 
     && FALSE == PDM_GetSafetyState() 
@@ -1990,6 +1990,12 @@ T_OUT_STATE OUT_DIAG_GetState(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETREGPTR(id)->state;
+}
+
+uint8_t OUT_DIAG_GetPwmDuty(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return BSP_OUT_GetPwmDuty(id);
 }
 
 #pragma endregion DIAG_SECTION

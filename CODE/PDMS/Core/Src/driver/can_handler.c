@@ -103,6 +103,7 @@ typedef enum
     CANH_ID_TX_I2T_HEAT_1_8      = 0x014,  // I2t heat of channels 1-8
     CANH_ID_TX_SOC_TRESH_1_4     = 0x015,  // SOC treshold of channels 1-4
     CANH_ID_TX_SOC_TRESH_5_8     = 0x016,  // SOC treshold of channels 5-8
+    CANH_ID_TX_PWM_DUTY_1_8      = 0x017,  // PWM duty of channels 1-8
 
     // CONFIG PROTOCOL
     CANH_ID_RX_ISOTP_ENTRANCE    = 0x050,  // Entrance gateway for ISO-TP communication mode
@@ -458,6 +459,20 @@ T_CANH_TX_PACKAGE CANH_TxHashResp =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_TxPWMDuty = 
+{
+    .header = 
+    {
+        .DLC = 8,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId =   CANH_ID_TX_PWM_DUTY_1_8,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
 extern void RTOS_SuspendCAN_1(void);
 extern void RTOS_SuspendCAN_2(void);
 extern void RTOS_ResumeCAN_1(void);
@@ -667,15 +682,15 @@ void CANH_Send_TxCurrentRMS5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c
 
 void CANH_Send_I2tHeat1_8(T_CANH_INSTANCE instance, uint8_t h1, uint8_t h2, uint8_t h3, uint8_t h4, uint8_t h5, uint8_t h6, uint8_t h7, uint8_t h8)
 {
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[0] = h1;
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[1] = h2;
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[2] = h3;
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[3] = h4;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[0] = h1;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[1] = h2;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[2] = h3;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[3] = h4;
 
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[4] = h5;
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[5] = h6;
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[6] = h7;
-    CANH_TxI2tHeat1_8.data.i2t_heat_1_8.heat[7] = h8;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[4] = h5;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[5] = h6;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[6] = h7;
+    CANH_TxI2tHeat1_8.data.i2t_heat_8ch.heat[7] = h8;
 
     CANH_PushToTxQueue(instance, CANH_TxI2tHeat1_8);
 }
@@ -705,6 +720,21 @@ void CANH_Send_Hash(T_CANH_INSTANCE instance, uint32_t hash)
     CANH_TxHashResp.data.hash_resp.hash = hash;
 
     CANH_PushToTxQueue(instance, CANH_TxHashResp);
+}
+
+void CANH_Send_PWMDuty(T_CANH_INSTANCE instance, uint8_t ch1, uint8_t ch2, uint8_t ch3, uint8_t ch4, uint8_t ch5, uint8_t ch6, uint8_t ch7, uint8_t ch8)
+{
+
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[0] = ch1;
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[1] = ch2;
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[2] = ch3;
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[3] = ch4;
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[4] = ch5;
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[5] = ch6;
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[6] = ch7;
+    CANH_TxPWMDuty.data.pwm_duty_8ch.duty[7] = ch8;
+
+    CANH_PushToTxQueue(instance, CANH_TxPWMDuty);
 }
 
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)
@@ -858,14 +888,6 @@ static bool CANH_ConfigFilter4ID(T_CANH_INSTANCE instance, uint32_t filterBankNu
 /// @return TRUE if filter initialization was successful, FALSE if not enough filter banks for all inputs
 static bool CANH_InitDynamicFilter(T_CANH_INSTANCE instance, uint32_t firstDynamicBankNumber)
 {
-    CAN_FilterTypeDef sFilterConfig;
-         
-    sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST; 
-    sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
-    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-    sFilterConfig.FilterActivation = CAN_FILTER_ENABLE;
-    sFilterConfig.SlaveStartFilterBank = CANH_FILTER_INSTANCE2_FIRST_BANK;
-
     // Dynamic filter configuration for BSP inputs
     uint16_t filterPassIdsArr[4] = {0x7FF, 0x7FF, 0x7FF, 0x7FF};
     uint32_t filterPassIdsCount = 0;

@@ -143,4 +143,9 @@ void BSP_OUT_InitTimers(void);
 /// @param  
 void BSP_OUT_ConfigureAdcFollowPWM(void);
 
+/// @brief Returns current PWM duty applied to channel
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return PWM duty in percentage [0..100]
+uint8_t BSP_OUT_GetPwmDuty(T_OUT_ID id);
+
 #endif

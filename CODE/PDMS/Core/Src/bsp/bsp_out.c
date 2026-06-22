@@ -896,6 +896,12 @@ __attribute__((always_inline)) bool BSP_OUT_IsControlledSafetyHW(T_OUT_ID id)
     return bspOutsCfg[id].isControlledSafetyHW;
 }
 
+uint8_t BSP_OUT_GetPwmDuty(T_OUT_ID id)
+{
+    ASSERT( id < OUT_ID_MAX);
+    return bspOutsReg[id].duty;
+}
+
 // Previous PWM measurement control
 
 // void TIM3_IRQHandler(void)
