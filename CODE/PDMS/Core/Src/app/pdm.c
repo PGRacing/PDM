@@ -57,7 +57,9 @@ volatile T_PDM_REG pdmReg =
     .uvloAssessment = FALSE,
     .uvloLoCounter = 0,
     .uvloHiCounter = 0,
-    .uvloTimer = NULL
+    .uvloTimer = NULL,
+    .resetGwCounter = 0,
+    .rtosSysLoad = 0
 };
 
 // static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] = 
@@ -87,6 +89,11 @@ static const uint8_t resetGatewayPattern[PDM_RESET_GATEWAY_PATTERN_SIZE][8] = {{
 T_PDM_SYS_STATUS PDM_GetSysStatus(void)
 {
     return pdmReg.status;
+}
+
+uint8_t PDM_GetRtosSysLoad(void)
+{
+    return pdmReg.rtosSysLoad;
 }
 
 static void PDM_OutConfig(void)
@@ -366,4 +373,35 @@ void pdmTaskStart(void *argument)
       
         osDelay(pdMS_TO_TICKS(1));
     }
+}
+
+
+void statusTaskStart(void *argument)
+{
+    LOG_INFO("STATUS:: Task start");
+
+    BUZZER_TurnOn();
+    osDelay(300);
+    BUZZER_TurnOff();
+
+    TaskHandle_t xIdleTaskHandle = xTaskGetIdleTaskHandle();
+    for(;;)
+    {
+        TaskStatus_t xTaskDetails;
+        vTaskGetInfo(xIdleTaskHandle, &xTaskDetails, pdTRUE, eInvalid);
+        uint32_t idleRuntime = xTaskDetails.ulRunTimeCounter;
+        uint32_t totalRuntime = portGET_RUN_TIME_COUNTER_VALUE(); 
+
+        if (totalRuntime > 0) {
+            uint32_t idlePercent = (idleRuntime * 100) / totalRuntime;
+            pdmReg.rtosSysLoad = 100 - idlePercent;
+#ifdef DEBUG
+            printf("CPU Usage: %u%% (Idle: %lu%%)\r\n", pdmReg.rtosSysLoad, idlePercent);
+#endif
+        }
+        
+        //HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+        osDelay(1000);
+    }
+
 }

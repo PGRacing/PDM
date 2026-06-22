@@ -17,6 +17,7 @@ T_TELEM_CFG telemCfg =
 {
     .slowDataInterval = pdMS_TO_TICKS(100), // 100 ms - 10Hz
     .fastDataInterval = pdMS_TO_TICKS(20), // 20 ms - 50Hz
+    .ultraSlowDataInterval = pdMS_TO_TICKS(5000), // 5000 ms - 0.2Hz
     .namesInterval = pdMS_TO_TICKS(10000),
     .canInstance = CANH_INSTANCE_2,
     .sendSystemData = TRUE,
@@ -27,7 +28,8 @@ T_TELEM_CFG telemCfg =
     .sendNames = TRUE,
     .sendPhyInputs = TRUE,
     .sendImu = TRUE,
-    .sendOutDiag = TRUE
+    .sendOutDiag = TRUE,
+    .sendSysDiag = TRUE
 };
 
 static void TELEM_SendVoltageByCan1_8(T_CANH_INSTANCE canInstance)
@@ -143,6 +145,11 @@ static void TELEM_SendPWMDutyByCan(T_CANH_INSTANCE canInstance)
         OUT_DIAG_GetPwmDuty(OUT_ID_5), OUT_DIAG_GetPwmDuty(OUT_ID_6), OUT_DIAG_GetPwmDuty(OUT_ID_7), OUT_DIAG_GetPwmDuty(OUT_ID_8));
 }
 
+static void TELEM_SendSysDiagByCan(T_CANH_INSTANCE canInstance)
+{
+    CANH_Send_DevDiag(canInstance, PDM_GetRtosSysLoad());
+}
+
 void telemTaskStart(void *argument)
 {
     LOG_INFO("TELEM:: Task start");
@@ -150,6 +157,7 @@ void telemTaskStart(void *argument)
     BaseType_t lastNameTs = 0;
     BaseType_t lastFastDataTs = 0;
     BaseType_t lastSlowDataTs = 0;
+    BaseType_t lastUltraSlowDataTs = 0;
 
     for (;;)
     {
@@ -369,6 +377,30 @@ void telemTaskStart(void *argument)
 
 
             lastSlowDataTs = xTaskGetTickCount();
+        }
+
+        //// ULTRA SLOW DATA
+        if(lastUltraSlowDataTs == 0 || (xTaskGetTickCount() - lastUltraSlowDataTs >= telemCfg.ultraSlowDataInterval))
+        {
+             // VOLTAGE DATA 9-16
+            if (telemCfg.sendSysDiag == TRUE)
+            {
+                if (telemCfg.canInstance == CANH_INSTANCE_1)
+                {
+                    TELEM_SendSysDiagByCan(CANH_INSTANCE_1);
+                }
+                else if (telemCfg.canInstance == CANH_INSTANCE_2)
+                {
+                    TELEM_SendSysDiagByCan(CANH_INSTANCE_2);
+                }
+                else
+                {
+                    TELEM_SendSysDiagByCan(CANH_INSTANCE_1);
+                    TELEM_SendSysDiagByCan(CANH_INSTANCE_2);
+                }
+            }
+
+            lastUltraSlowDataTs = xTaskGetTickCount();
         }
 
         // SEND NAMES

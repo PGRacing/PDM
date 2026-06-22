@@ -2074,6 +2074,7 @@ inline bool OUT_IsSafetyLineDependent(T_OUT_ID id)
 
 void testTaskEntry(void *argument)
 {
+  vTaskSuspend(NULL);
   for(;;)
   {
     osDelay(10);

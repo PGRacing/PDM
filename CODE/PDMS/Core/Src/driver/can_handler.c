@@ -104,6 +104,7 @@ typedef enum
     CANH_ID_TX_SOC_TRESH_1_4     = 0x015,  // SOC treshold of channels 1-4
     CANH_ID_TX_SOC_TRESH_5_8     = 0x016,  // SOC treshold of channels 5-8
     CANH_ID_TX_PWM_DUTY_1_8      = 0x017,  // PWM duty of channels 1-8
+    CANH_ID_TX_DEV_DIAG          = 0x018,  // Device diagnostics
 
     // CONFIG PROTOCOL
     CANH_ID_RX_ISOTP_ENTRANCE    = 0x050,  // Entrance gateway for ISO-TP communication mode
@@ -473,6 +474,21 @@ T_CANH_TX_PACKAGE CANH_TxPWMDuty =
     .data.raw = {CANH_TX_DEFAULT_BYTE}
 };
 
+T_CANH_TX_PACKAGE CANH_TxDevDiag = 
+{
+    .header = 
+    {
+        .DLC = 1,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId =   CANH_ID_TX_DEV_DIAG,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data.raw = {CANH_TX_DEFAULT_BYTE}
+};
+
+
 extern void RTOS_SuspendCAN_1(void);
 extern void RTOS_SuspendCAN_2(void);
 extern void RTOS_ResumeCAN_1(void);
@@ -735,6 +751,13 @@ void CANH_Send_PWMDuty(T_CANH_INSTANCE instance, uint8_t ch1, uint8_t ch2, uint8
     CANH_TxPWMDuty.data.pwm_duty_8ch.duty[7] = ch8;
 
     CANH_PushToTxQueue(instance, CANH_TxPWMDuty);
+}
+
+void CANH_Send_DevDiag(T_CANH_INSTANCE instance, uint8_t sysLoad)
+{
+    CANH_TxDevDiag.data.dev_diag.sysLoad = sysLoad;
+
+    CANH_PushToTxQueue(instance, CANH_TxDevDiag);
 }
 
 static void CANH_SwitchTerminator(T_CANH_INSTANCE instance, bool state)

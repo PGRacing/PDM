@@ -60,6 +60,7 @@ typedef struct
     osTimerId_t      uvloTimer;       // Undervoltage protection timer
     osTimerId_t      softLimpTimer;   // Soft limp home mode timer
     uint32_t         resetGwCounter;  // Counter for reset gateway asks
+    uint8_t          rtosSysLoad;     // System load in percentage (0-100) from RTOS idle task runtime counter    
 }T_PDM_REG;
 
 
@@ -67,9 +68,10 @@ extern volatile T_PDM_CFG pdmCfg;
 extern volatile T_PDM_REG pdmReg;
 
 T_PDM_SYS_STATUS PDM_GetSysStatus(void);
+uint8_t PDM_GetRtosSysLoad(void);
+
 bool PDM_GetSafetyState(void);
 void PDM_CANResetGateway(uint32_t id, uint8_t* data, uint32_t size);
-
 // Platform start
 void PDM_Init(void);
 

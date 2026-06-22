@@ -25,6 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "tim.h"
 #include "iwdg.h"
 #include "tim.h"
 #include "typedefs.h"
@@ -161,7 +162,7 @@ const osThreadAttr_t imuTask_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
-void statusTaskStart(void *argument);
+extern void statusTaskStart(void *argument);
 extern void can1TaskStart(void *argument);
 extern void can2TaskStart(void *argument);
 extern void adc1TaskStart(void *argument);
@@ -282,35 +283,11 @@ void StartDefaultTask(void *argument)
   /* USER CODE END StartDefaultTask */
 }
 
-/* USER CODE BEGIN Header_statusTaskStart */
-/**
-* @brief Function implementing the statusTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_statusTaskStart */
-void statusTaskStart(void *argument)
-{
-  /* USER CODE BEGIN statusTaskStart */
-  LOG_INFO("STATUS:: Task start");
-
-  BUZZER_TurnOn();
-  osDelay(300);
-  BUZZER_TurnOff();
-  /* Infinite loop */
-    for(;;)
-    {
-        //HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
-        osDelay(500);
-    }
-  /* USER CODE END statusTaskStart */
-}
-
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 void RTOS_EnterSoftLimpHomeMode(void)
 {
-  vTaskSuspend(spoc2CurrTaskHandle);
+  //vTaskSuspend(spoc2CurrTaskHandle);
   //vTaskSuspend(vmuxTaskHandle);
   vTaskSuspend(argbTaskHandle);
   vTaskSuspend(adc1TaskHandle);
@@ -322,7 +299,7 @@ void RTOS_EnterSoftLimpHomeMode(void)
 
 void RTOS_ExitSoftLimpHomeMode(void)
 {
-  vTaskResume(spoc2CurrTaskHandle);
+  //vTaskResume(spoc2CurrTaskHandle);
   //vTaskResume(vmuxTaskHandle);
   vTaskResume(argbTaskHandle);
   vTaskResume(adc1TaskHandle);
@@ -349,7 +326,7 @@ void RTOS_ResumeTelemetry(void)
 
 void RTOS_SuspendForConfigChange(void)
 {
-  vTaskSuspend(spoc2CurrTaskHandle);
+  //vTaskSuspend(spoc2CurrTaskHandle);
   vTaskSuspend(adc1TaskHandle);
   vTaskSuspend(adc2TaskHandle);
   vTaskSuspend(pdmTaskHandle);
@@ -358,7 +335,7 @@ void RTOS_SuspendForConfigChange(void)
 
 void RTOS_ResumeAfterConfigChange(void)
 {
-  vTaskResume(spoc2CurrTaskHandle);
+  //vTaskResume(spoc2CurrTaskHandle);
   vTaskResume(adc1TaskHandle);
   vTaskResume(adc2TaskHandle);
   vTaskResume(pdmTaskHandle);
@@ -383,6 +360,16 @@ void RTOS_ResumeCAN_1(void)
 void RTOS_ResumeCAN_2(void)
 { 
   vTaskResume(can2TaskHandle);
+}
+
+void RTOS_ConfigureRunTimeStats(void)
+{
+  HAL_TIM_Base_Start(&htim5);
+}
+
+uint32_t RTOS_GetRunTimeCounterValue(void)
+{
+  return __HAL_TIM_GET_COUNTER(&htim5); 
 }
 /* USER CODE END Application */
 
