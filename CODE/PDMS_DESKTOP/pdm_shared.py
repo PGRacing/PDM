@@ -8,7 +8,7 @@ CHANNEL_COUNT = 16
 PHY_INPUT_COUNT = 8
 BASE_ID = 0x400
 BASE_DIR = Path(__file__).resolve().parent
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.2.1"
 
 
 def get_runtime_base_dir():

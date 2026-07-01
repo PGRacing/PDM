@@ -231,7 +231,7 @@ SYS_STATUS_MAP = {
 
 def _format_voltage_mv(value):
     try:
-        return f"{float(value) / 1000.0:.1f}V"
+        return f"{float(value) / 1000.0:.2f}V"
     except Exception:
         return "-"
 
@@ -502,7 +502,7 @@ class MainWindow(QMainWindow):
         sys_grid.addWidget(self.lbl_sys_state, 0, 1)
 
         sys_grid.addWidget(QLabel("Battery:"), 1, 0)
-        self.lbl_batt = QLabel("- mV")
+        self.lbl_batt = QLabel("- V")
         sys_grid.addWidget(self.lbl_batt, 1, 1)
 
         sys_grid.addWidget(QLabel("Device temp:"), 2, 0)
@@ -601,7 +601,7 @@ class MainWindow(QMainWindow):
             "Name",
             "Status",
             "State",
-            "V [mV]",
+            "V [V]",
             "I inst [mA]",
             "I avg [mA]",
             "Irms [mA]",
@@ -626,7 +626,7 @@ class MainWindow(QMainWindow):
         phy_table_box = QGroupBox("Device Physical Inputs")
         phy_table_vbox = QVBoxLayout(phy_table_box)
         self.table_phy = QTableWidget(PHY_INPUT_COUNT, 2)
-        self.table_phy.setHorizontalHeaderLabels(["Input Line", "Input voltage [mV]"])
+        self.table_phy.setHorizontalHeaderLabels(["Input Line", "Input voltage [V]"])
         self.table_phy.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table_phy.horizontalHeader().setStretchLastSection(True)
         self.table_phy.verticalHeader().setDefaultSectionSize(22)
@@ -1159,7 +1159,7 @@ class MainWindow(QMainWindow):
             return
 
         self.lbl_sys_state.setText(SYS_STATUS_MAP.get(int(self.latest_sys["status"]), str(self.latest_sys["status"])))
-        self.lbl_batt.setText(f"{self.latest_sys['batt']} mV")
+        self.lbl_batt.setText(_format_voltage_mv(self.latest_sys['batt']))
         self.lbl_temp.setText(f"{self.latest_sys['core_temp']:.1f} °C")
         self.lbl_system_load.setText(f"{self.latest_sys.get('system_load', 0)}%")
         self.lbl_total_i.setText(f"{self.latest_sys['total_current']:.1f} mA")
@@ -1209,7 +1209,7 @@ class MainWindow(QMainWindow):
                 ch["name"],
                 status_str,
                 state_str,
-                str(ch["voltage"]),
+                _format_voltage_mv(ch["voltage"]),
                 str(ch["current"]),
                 f"{ch['current_avg']:.1f}",
                 irms_text,
@@ -1229,8 +1229,9 @@ class MainWindow(QMainWindow):
 
         for i, val in enumerate(self.latest_phy):
             item = self.table_phy.item(i, 1)
-            if item.text() != str(val):
-                item.setText(str(val))
+            voltage_text = _format_voltage_mv(val)
+            if item.text() != voltage_text:
+                item.setText(voltage_text)
 
         self.table_frames.setRowCount(len(self.latest_frames))
         for row, frame in enumerate(self.latest_frames):

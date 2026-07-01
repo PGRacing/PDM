@@ -84,11 +84,13 @@ class PlotPanel(QWidget):
             cb = QCheckBox(f"CH{i+1}")
             cb.setChecked(i == 0)
             cb.setStyleSheet("QCheckBox { padding: 6px 8px; margin: 2px 0; }")
+            cb.stateChanged.connect(self.refresh_plots)
             self.channel_checkboxes.append(cb)
             channel_layout.insertWidget(channel_layout.count() - 1, cb)
         self.system_checkbox = QCheckBox("System")
         self.system_checkbox.setChecked(True)
         self.system_checkbox.setStyleSheet("QCheckBox { padding: 6px 8px; margin: 2px 0; }")
+        self.system_checkbox.stateChanged.connect(self.refresh_plots)
         channel_layout.insertWidget(channel_layout.count() - 1, self.system_checkbox)
         self.channel_scroll.setWidget(channel_content)
         ch_layout.addWidget(self.channel_scroll, 1)
@@ -121,8 +123,8 @@ class PlotPanel(QWidget):
         self.plot_v = self.graph_container.addPlot(row=0, col=0)
         self.plot_i = self.graph_container.addPlot(row=1, col=0)
 
-        self.plot_v.addLegend(offset=(10, 10))
-        self.plot_i.addLegend(offset=(10, 10))
+        self.legend_v = self.plot_v.addLegend(offset=(10, 10), colCount=2)
+        self.legend_i = self.plot_i.addLegend(offset=(10, 10), colCount=2)
 
         self.plot_v.setTitle("Voltage", color="#BB86FC", size="11pt")
         self.plot_v.setLabel("left", "Voltage", units="mV")
@@ -142,9 +144,9 @@ class PlotPanel(QWidget):
             clr = TRACK_COLORS[ch % len(TRACK_COLORS)]
             self.curves_v[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1.5), name=f"CH{ch+1}")
             self.plot_v.addItem(self.curves_v[ch])
-            self.curves_i_inst[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1.5), name=f"CH{ch+1}")
+            self.curves_i_inst[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr, width=1.5), name=f"CH{ch+1} I")
             self.plot_i.addItem(self.curves_i_inst[ch])
-            self.curves_i_avg[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr + "40", width=1), name=f"CH{ch+1}")
+            self.curves_i_avg[ch] = pg.PlotDataItem(pen=pg.mkPen(color=clr + "40", width=1), name=f"CH{ch+1} Irms")
             self.plot_i.addItem(self.curves_i_avg[ch])
 
         sys_pen = pg.mkPen(color="#F2C94C", width=2)
@@ -153,6 +155,7 @@ class PlotPanel(QWidget):
         self.curves_sys_i = pg.PlotDataItem(pen=sys_pen, name="System")
         self.plot_i.addItem(self.curves_sys_i)
 
+        self._refresh_legends()
         self._apply_minimum_axis_ranges()
 
     def update_from_packet(self, packet):
@@ -220,7 +223,23 @@ class PlotPanel(QWidget):
         else:
             self.curves_sys_i.setData([], [])
 
+        self._refresh_legends(selected_channels)
         self._apply_minimum_axis_ranges(selected_channels)
+
+    def _refresh_legends(self, selected_channels=None):
+        selected_channels = [i for i, cb in enumerate(self.channel_checkboxes) if cb.isChecked()] if selected_channels is None else list(selected_channels)
+
+        self.legend_v.clear()
+        self.legend_i.clear()
+
+        for ch in selected_channels:
+            self.legend_v.addItem(self.curves_v[ch], f"CH{ch + 1}")
+            self.legend_i.addItem(self.curves_i_inst[ch], f"CH{ch + 1} I")
+            self.legend_i.addItem(self.curves_i_avg[ch], f"CH{ch + 1} Irms")
+
+        if self.system_checkbox.isChecked():
+            self.legend_v.addItem(self.curves_sys_v, "System")
+            self.legend_i.addItem(self.curves_sys_i, "System")
 
     def _apply_minimum_axis_ranges(self, selected_channels=None):
         selected_channels = list(range(CHANNEL_COUNT)) if selected_channels is None else list(selected_channels)

@@ -3,7 +3,7 @@ import re
 import struct
 from pathlib import Path
 
-from PyQt5.QtCore import QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal
+from PyQt5.QtCore import QDateTime, QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal
 from PyQt5.QtGui import QColor, QFont, QIntValidator, QPainter, QPen, QPixmap, QPolygonF
 from PyQt5.QtWidgets import (
     QAbstractItemView,
@@ -309,10 +309,16 @@ class ClickableValueLabel(QLabel):
 
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
+        self._last_click_ms = 0
         self.setCursor(Qt.PointingHandCursor)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
+            now_ms = QDateTime.currentMSecsSinceEpoch()
+            if now_ms - self._last_click_ms < 220:
+                event.accept()
+                return
+            self._last_click_ms = now_ms
             self.clicked.emit(self.text(), self.mapToGlobal(event.pos()))
             event.accept()
             return
@@ -328,7 +334,10 @@ class HeaderPinOverlayWidget(QWidget):
         self._selected_pins = []
         self._event_filter_installed = False
         self._window_filter_target = None
-        self.setWindowFlags(Qt.ToolTip | Qt.FramelessWindowHint)
+        self._ignore_mouse_press_until_ms = 0
+        # Qt.ToolTip windows can auto-hide quickly; keep this as a normal tool window
+        # and close it only through our explicit event-filter rules.
+        self.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_ShowWithoutActivating)
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.resize(560, 340)
@@ -339,6 +348,7 @@ class HeaderPinOverlayWidget(QWidget):
         self._selected_connector = connector
         self._selected_pins = pins
         if global_pos is not None:
+            self._ignore_mouse_press_until_ms = QDateTime.currentMSecsSinceEpoch() + 250
             self._ensure_event_filters()
             self._move_near(global_pos)
             self.show()
@@ -360,13 +370,18 @@ class HeaderPinOverlayWidget(QWidget):
 
         event_type = event.type()
         if event_type == QEvent.MouseButtonPress:
+            if QDateTime.currentMSecsSinceEpoch() < self._ignore_mouse_press_until_ms:
+                return super().eventFilter(watched, event)
             global_pos = event.globalPos()
             if not self.geometry().contains(global_pos):
                 self.hide_preview()
         elif event_type == QEvent.KeyPress and event.key() == Qt.Key_Escape:
             self.hide_preview()
-        elif event_type in (QEvent.ApplicationDeactivate, QEvent.Hide, QEvent.Close):
+        elif event_type == QEvent.ApplicationDeactivate:
             self.hide_preview()
+        elif event_type in (QEvent.Hide, QEvent.Close):
+            if watched is self or watched is self._window_filter_target:
+                self.hide_preview()
         elif event_type == QEvent.WindowStateChange and watched is self._window_filter_target:
             if watched.isMinimized():
                 self.hide_preview()
