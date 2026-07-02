@@ -17,6 +17,25 @@
 
 #define CANH_TX_DEFAULT_BYTE 0xAA
 
+// GIT hash commit filled in Makefile
+#ifndef GIT_HASH
+#define GIT_HASH "0000000"
+#endif
+
+// FW revision filled in Makefile
+#ifndef FW_REVISION_MAJOR
+#define FW_REVISION_MAJOR 0
+#endif
+
+#ifndef FW_REVISION_MINOR
+#define FW_REVISION_MINOR 0
+#endif
+
+#ifndef FW_REVISION_PATCH
+#define FW_REVISION_PATCH 0
+#endif
+
+
 T_CANH_CFG cansCfg[CANH_INSTANCE_MAX] = 
 {
     [CANH_INSTANCE_1] = 
@@ -105,6 +124,7 @@ typedef enum
     CANH_ID_TX_SOC_TRESH_5_8     = 0x016,  // SOC treshold of channels 5-8
     CANH_ID_TX_PWM_DUTY_1_8      = 0x017,  // PWM duty of channels 1-8
     CANH_ID_TX_DEV_DIAG          = 0x018,  // Device diagnostics
+    CANH_ID_TX_FW_COMMIT_HASH    = 0x019,  // Firmware commit hash response
 
     // CONFIG PROTOCOL
     CANH_ID_RX_ISOTP_ENTRANCE    = 0x050,  // Entrance gateway for ISO-TP communication mode
@@ -127,15 +147,32 @@ T_CANH_TX_PACKAGE CANH_TxPnp =
 {
     .header = 
     {
-        .DLC = 1,
+        .DLC = 3,
         .ExtId = 0,
         .IDE = CAN_ID_STD,
         .RTR = CAN_RTR_DATA,
         .StdId = CANH_ID_TX_PNP,
         .TransmitGlobalTime = DISABLE,
     },
-    .data = {CANH_TX_DEFAULT_BYTE},
+    .data = {FW_REVISION_MAJOR, FW_REVISION_MINOR, FW_REVISION_PATCH},
 };
+
+#ifdef DEBUG
+/// @brief [fwCommitHashTxMsg] Message sent on device power-up
+T_CANH_TX_PACKAGE CANH_TxFwCommitHash =
+{
+    .header = 
+    {
+        .DLC = 7,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .StdId = CANH_ID_TX_FW_COMMIT_HASH,
+        .TransmitGlobalTime = DISABLE,
+    },
+    .data = {GIT_HASH[0], GIT_HASH[1], GIT_HASH[2], GIT_HASH[3], GIT_HASH[4], GIT_HASH[5], GIT_HASH[6]},
+};
+#endif
 
 T_CANH_TX_PACKAGE CANH_TxStatus1_8 = 
 {
@@ -869,14 +906,24 @@ static void CANH_InitModule(T_CANH_INSTANCE instance)
 static void CANH_AllowTxCallback1(void)
 {
     /* Send CAN1 hello message */
+    CANH_TxPnp.header.StdId = cansCfg[CANH_INSTANCE_1].baseId + CANH_ID_TX_PNP;
     HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, cansReg[CANH_INSTANCE_1].txMailbox);
+#ifdef DEBUG
+    CANH_TxFwCommitHash.header.StdId = cansCfg[CANH_INSTANCE_1].baseId + CANH_ID_TX_FW_COMMIT_HASH;
+    HAL_CAN_AddTxMessage(&hcan1, &(CANH_TxFwCommitHash.header), CANH_TxFwCommitHash.data.raw, cansReg[CANH_INSTANCE_1].txMailbox);
+#endif
     cansReg[CANH_INSTANCE_1].readyForTx = TRUE;
 }
 
 static void CANH_AllowTxCallback2(void)
 {
     /* Send CAN2 hello message */
+    CANH_TxPnp.header.StdId = cansCfg[CANH_INSTANCE_2].baseId + CANH_ID_TX_PNP;
     HAL_CAN_AddTxMessage(&hcan2, &(CANH_TxPnp.header), CANH_TxPnp.data.raw, cansReg[CANH_INSTANCE_2].txMailbox);
+#ifdef DEBUG
+    CANH_TxFwCommitHash.header.StdId = cansCfg[CANH_INSTANCE_2].baseId + CANH_ID_TX_FW_COMMIT_HASH;
+    HAL_CAN_AddTxMessage(&hcan2, &(CANH_TxFwCommitHash.header), CANH_TxFwCommitHash.data.raw, cansReg[CANH_INSTANCE_2].txMailbox);
+#endif
     cansReg[CANH_INSTANCE_2].readyForTx = TRUE;
 }
 

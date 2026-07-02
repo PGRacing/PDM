@@ -801,7 +801,7 @@ int32_t asm330lhh_xl_usr_offset_x_set(const stmdev_ctx_t *ctx,
 {
   int32_t ret;
 
-  ret = asm330lhh_write_reg(ctx, ASM330LHH_X_OFS_USR, buff, 1);
+  ret = asm330lhh_write_reg(ctx, ASM330LHH_X_OFS_USR, (uint8_t*)buff, 1);
 
   return ret;
 }
@@ -821,7 +821,7 @@ int32_t asm330lhh_xl_usr_offset_x_get(const stmdev_ctx_t *ctx,
 {
   int32_t ret;
 
-  ret = asm330lhh_read_reg(ctx, ASM330LHH_X_OFS_USR, buff, 1);
+  ret = asm330lhh_read_reg(ctx, ASM330LHH_X_OFS_USR, (uint8_t*)buff, 1);
 
   return ret;
 }
@@ -841,7 +841,7 @@ int32_t asm330lhh_xl_usr_offset_y_set(const stmdev_ctx_t *ctx,
 {
   int32_t ret;
 
-  ret = asm330lhh_write_reg(ctx, ASM330LHH_Y_OFS_USR, buff, 1);
+  ret = asm330lhh_write_reg(ctx, ASM330LHH_Y_OFS_USR, (uint8_t*)buff, 1);
 
   return ret;
 }
@@ -861,7 +861,7 @@ int32_t asm330lhh_xl_usr_offset_y_get(const stmdev_ctx_t *ctx,
 {
   int32_t ret;
 
-  ret = asm330lhh_read_reg(ctx, ASM330LHH_Y_OFS_USR, buff, 1);
+  ret = asm330lhh_read_reg(ctx, ASM330LHH_Y_OFS_USR, (uint8_t*)buff, 1);
 
   return ret;
 }
@@ -881,7 +881,7 @@ int32_t asm330lhh_xl_usr_offset_z_set(const stmdev_ctx_t *ctx,
 {
   int32_t ret;
 
-  ret = asm330lhh_write_reg(ctx, ASM330LHH_Z_OFS_USR, buff, 1);
+  ret = asm330lhh_write_reg(ctx, ASM330LHH_Z_OFS_USR, (uint8_t*)buff, 1);
 
   return ret;
 }
@@ -901,7 +901,7 @@ int32_t asm330lhh_xl_usr_offset_z_get(const stmdev_ctx_t *ctx,
 {
   int32_t ret;
 
-  ret = asm330lhh_read_reg(ctx, ASM330LHH_Z_OFS_USR, buff, 1);
+  ret = asm330lhh_read_reg(ctx, ASM330LHH_Z_OFS_USR, (uint8_t*)buff, 1);
 
   return ret;
 }

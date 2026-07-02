@@ -11,6 +11,7 @@
 #include "config.h"
 #include "string.h"
 #include "imu.h"
+#include "logger.h"
 
 /* HAL, MX includes */
 #include "iwdg.h"
@@ -235,7 +236,10 @@ void PDM_Init(void)
     //         break;
     //     }
     // }
-
+#ifdef DEBUG
+    LOGF("PDMS FW commit hash: %s\r\n", GIT_HASH);
+    LOGF("PDMS FW revision: %d.%d.%d\r\n", FW_REVISION_MAJOR, FW_REVISION_MINOR, FW_REVISION_PATCH);
+#endif
     // Enable watchdog
     MX_IWDG_Init();
     vPortExitCritical();
@@ -396,7 +400,7 @@ void statusTaskStart(void *argument)
             uint32_t idlePercent = (idleRuntime * 100) / totalRuntime;
             pdmReg.rtosSysLoad = 100 - idlePercent;
 #ifdef DEBUG
-            printf("CPU Usage: %u%% (Idle: %lu%%)\r\n", pdmReg.rtosSysLoad, idlePercent);
+            LOGF("INFO:: CPU Usage: %u%%\r\n", pdmReg.rtosSysLoad);
 #endif
         }
         

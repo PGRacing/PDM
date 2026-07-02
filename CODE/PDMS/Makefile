@@ -163,12 +163,18 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 # AS defines
 AS_DEFS = 
 
+GIT_HASH := $(shell git rev-parse --short HEAD)
+
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32L496xx \
 -DUSE_FULL_LL_DRIVER \
--DDEBUG=$(DEBUG)
+-DDEBUG=$(DEBUG) \
+-DGIT_HASH=\"$(GIT_HASH)\" \
+-DFW_REVISION_MAJOR=1 \
+-DFW_REVISION_MINOR=2 \
+-DFW_REVISION_PATCH=1
 
 
 # AS includes

@@ -22,10 +22,11 @@
 #define OFF_STATE_BIT 5
 #define DATA_SIZE 24
 
-WS2812B_COLOR_T red = {0xC0, 0x00, 0x00};
-WS2812B_COLOR_T green = {0x00, 0xC0, 0x00};
-WS2812B_COLOR_T blue = {0x00, 0x00, 0xC0};
-WS2812B_COLOR_T clear = {0x00, 0x00, 0x00};
+// Basic color (40% brightness)
+WS2812B_COLOR_T red      = {0x64, 0x00, 0x00};
+WS2812B_COLOR_T green    = {0x00, 0x64, 0x00};
+WS2812B_COLOR_T blue     = {0x00, 0x00, 0x64};
+WS2812B_COLOR_T clear    = {0x00, 0x00, 0x00};
 WS2812B_COLOR_T rcpergol = {219, 82, 15};
 
 #define WS2812B_STAT_LED1 16
