@@ -3,6 +3,8 @@ import json
 import struct
 import time
 import sys
+import math
+import random
 from pathlib import Path
 
 from PyQt5.QtCore import QTimer, Qt
@@ -13,10 +15,12 @@ from PyQt5.QtWidgets import (
     QApplication,
     QComboBox,
     QDialog,
+    QFileDialog,
     QGridLayout,
     QGroupBox,
     QHeaderView,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QMainWindow,
@@ -33,6 +37,7 @@ from PyQt5.QtWidgets import (
 from pdm_can_worker import can_isolated_process
 from pdm_control_tab import ControlConfigPage
 from pdm_config_tab import ConfigTab
+from pdms_logview import LogViewTab
 from pdm_plot_tab import PlotPanel
 import pdm_shared
 from pdm_shared import (
@@ -47,7 +52,9 @@ from pdm_shared import (
     PLOT_UPDATE_MS,
     get_row_colors,
     get_asset_path,
+    get_last_project_path,
     load_app_config,
+    save_last_project_path,
     save_usb_device_config,
     set_can_channel_runtime,
 )
@@ -286,7 +293,8 @@ def _battery_kpi_color(voltage_mv):
 class MainWindow(QMainWindow):
     def __init__(self, offline_mode=False):
         super().__init__()
-        self.setWindowTitle("PDMS Control App")
+        self.project_name = "Untitled"
+        self._update_window_title()
         self.resize(1920, 1280)
         self.offline_mode = bool(offline_mode)
 
@@ -325,13 +333,22 @@ class MainWindow(QMainWindow):
         self.lates_imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
         self.latest_frames = []
         self.plotting_enabled = True
+        self.tabs = None
         self.config_tab = None
         self.control_tab = None
+        self.log_tab = None
+        self._log_config_snapshot = {}
+        self._last_log_config_snapshot_refresh = 0.0
+        self._emulate_data_enabled = False
+        self._emulation_start_time = time.time()
+        self._emulation_step = 0
+        self._emulated_current_values_ma = [0.0 for _ in range(CHANNEL_COUNT)]
+        self._emulated_current_targets_ma = [0.0 for _ in range(CHANNEL_COUNT)]
 
         self.init_ui()
 
         self.plot_toggle_shortcut = QShortcut(QKeySequence("Ctrl+Space"), self)
-        self.plot_toggle_shortcut.activated.connect(self.toggle_plotting)
+        self.plot_toggle_shortcut.activated.connect(self._handle_ctrl_space_shortcut)
 
         self.gui_timer = QTimer(self)
         self.gui_timer.timeout.connect(self.process_gui_refresh)
@@ -344,6 +361,12 @@ class MainWindow(QMainWindow):
         self.hb_timer = QTimer(self)
         self.hb_timer.timeout.connect(self.update_heartbeat_status)
         self.hb_timer.start(200)
+
+        self.emulation_timer = QTimer(self)
+        self.emulation_timer.timeout.connect(self._emit_emulated_packet)
+        self.emulation_timer.setInterval(50)
+
+        self._autoload_last_project()
 
         if self.offline_mode:
             self._connection_state = "offline"
@@ -462,10 +485,17 @@ class MainWindow(QMainWindow):
 
     def init_ui(self):
         file_menu = self.menuBar().addMenu("File")
+        self.action_save_project = QAction("Save project", self)
+        self.action_save_project.setShortcut(QKeySequence("Ctrl+S"))
+        self.action_save_project.setShortcutContext(Qt.ApplicationShortcut)
+        self.action_load_project = QAction("Load project", self)
         self.action_load_binary = QAction("Load binary", self)
         self.action_export_binary = QAction("Export binary", self)
         self.action_load_json = QAction("Load JSON", self)
         self.action_export_json = QAction("Export JSON", self)
+        file_menu.addAction(self.action_save_project)
+        file_menu.addAction(self.action_load_project)
+        file_menu.addSeparator()
         file_menu.addAction(self.action_load_binary)
         file_menu.addAction(self.action_export_binary)
         file_menu.addAction(self.action_load_json)
@@ -483,11 +513,16 @@ class MainWindow(QMainWindow):
         self.action_change_usb = QAction("Change USB device...", self)
         self.action_change_usb.triggered.connect(self.change_usb_device)
         device_menu.addAction(self.action_change_usb)
+        self.action_emulate_data = QAction("Emulate data", self)
+        self.action_emulate_data.setCheckable(True)
+        self.action_emulate_data.toggled.connect(self._toggle_emulate_data)
+        device_menu.addAction(self.action_emulate_data)
 
         tabs = QTabWidget()
         tabs.setContentsMargins(0, 6, 0, 0)
         tabs.setStyleSheet("QTabWidget { margin-top: 5px; }")
         self.setCentralWidget(tabs)
+        self.tabs = tabs
 
         dashboard = QWidget()
         dashboard_layout = QVBoxLayout(dashboard)
@@ -662,20 +697,29 @@ class MainWindow(QMainWindow):
         self.config_tab.request_config_requested.connect(self.request_config_from_device)
         self.config_tab.can_frames_changed.connect(self._refresh_tx_frame_options)
         self.config_tab.config_applied.connect(self._refresh_control_tab)
+        self.config_tab.config_applied.connect(self._refresh_log_config_snapshot)
         self.config_tab.inputs_page.inputsChanged.connect(self._refresh_control_tab)
+        self.config_tab.inputs_page.inputsChanged.connect(self._refresh_log_config_snapshot)
         for channel_widget in self.config_tab.channel_widgets:
             channel_widget.logic_page.logicChanged.connect(self._refresh_control_tab)
+            channel_widget.logic_page.logicChanged.connect(self._refresh_log_config_snapshot)
             channel_widget.edit_name.textChanged.connect(self._refresh_control_tab)
+            channel_widget.edit_name.textChanged.connect(self._refresh_log_config_snapshot)
         tabs.addTab(self.config_tab, "Configuration")
         self.control_tab = ControlConfigPage()
         self.control_tab.can_frame_requested.connect(self.send_can_frame)
         tabs.addTab(self.control_tab, "Control")
+        self.log_tab = LogViewTab()
+        tabs.addTab(self.log_tab, "Log")
         self._refresh_tx_frame_options(self.config_tab.get_defined_can_frame_options())
         self._default_config_signature = self._config_signature(
             self._canonicalize_config(self.config_tab.collect_config())
         )
         self._refresh_control_tab()
+        self._refresh_log_config_snapshot()
 
+        self.action_save_project.triggered.connect(self.save_project)
+        self.action_load_project.triggered.connect(self.load_project)
         self.action_load_binary.triggered.connect(self.config_tab.load_binary)
         self.action_export_binary.triggered.connect(self.config_tab.export_binary)
         self.action_load_json.triggered.connect(self.config_tab.load_json)
@@ -768,6 +812,129 @@ class MainWindow(QMainWindow):
         can_inputs = self.config_tab.inputs_page.to_dict().get("can", [])
         usage_by_input = self.config_tab.build_usage_by_input()
         self.control_tab.refresh_controls(can_inputs, usage_by_input)
+
+    def _refresh_log_config_snapshot(self):
+        if self.config_tab is None:
+            return
+        try:
+            self._log_config_snapshot = self.config_tab.collect_config()
+            self._last_log_config_snapshot_refresh = time.time()
+            if self.log_tab is not None:
+                self.log_tab.set_config_snapshot(self._log_config_snapshot)
+        except Exception:
+            pass
+
+    def _update_window_title(self):
+        self.setWindowTitle(f"PDMS - {self.project_name}")
+
+    def save_project(self):
+        if self.config_tab is None or self.log_tab is None:
+            return
+
+        current_name = self.project_name if self.project_name and self.project_name != "Untitled" else ""
+        name, accepted = QInputDialog.getText(self, "Save project", "Project name:", text=current_name)
+        if not accepted:
+            return
+
+        project_name = name.strip() if isinstance(name, str) else ""
+        if not project_name:
+            project_name = self.project_name or "Untitled"
+
+        default_dir = pdm_shared.get_runtime_base_dir() / "config"
+        default_name = str((default_dir / f"{project_name}.pdmspro").as_posix())
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save PDMS project",
+            default_name,
+            "PDMS Project (*.pdmspro);;JSON Files (*.json);;All Files (*)",
+        )
+        if not file_path:
+            return
+
+        payload = {
+            "projectName": project_name,
+            "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "config": self.config_tab.collect_config(),
+            "logTab": self.log_tab.to_dict(),
+        }
+
+        try:
+            path_obj = Path(file_path)
+            path_obj.parent.mkdir(parents=True, exist_ok=True)
+            with path_obj.open("w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2)
+            save_last_project_path(str(path_obj))
+        except Exception as exc:
+            QMessageBox.critical(self, "Save failed", f"Could not save project: {exc}")
+            return
+
+        self.project_name = project_name
+        self._update_window_title()
+
+    def load_project(self, file_path_override=None, silent=False):
+        if self.config_tab is None or self.log_tab is None:
+            return False
+
+        file_path = file_path_override
+        if not file_path:
+            default_dir = str((pdm_shared.get_runtime_base_dir() / "config").as_posix())
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Load PDMS project",
+                default_dir,
+                "PDMS Project (*.pdmspro);;JSON Files (*.json);;All Files (*)",
+            )
+            if not file_path:
+                return False
+
+        try:
+            with Path(file_path).open("r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except Exception as exc:
+            if not silent:
+                QMessageBox.critical(self, "Load failed", f"Could not load project: {exc}")
+            return False
+
+        if not isinstance(payload, dict):
+            if not silent:
+                QMessageBox.critical(self, "Load failed", "Project file has invalid format.")
+            return False
+
+        config_payload = payload.get("config")
+        if not isinstance(config_payload, dict):
+            if not silent:
+                QMessageBox.critical(self, "Load failed", "Project file does not contain valid configuration.")
+            return False
+
+        try:
+            self.config_tab.apply_config(config_payload)
+            log_payload = payload.get("logTab")
+            if isinstance(log_payload, dict):
+                self.log_tab.apply_dict(log_payload)
+            self._refresh_control_tab()
+            self._refresh_log_config_snapshot()
+            save_last_project_path(str(Path(file_path)))
+        except Exception as exc:
+            if not silent:
+                QMessageBox.critical(self, "Load failed", f"Could not apply project data: {exc}")
+            return False
+
+        project_name = payload.get("projectName")
+        if isinstance(project_name, str) and project_name.strip():
+            self.project_name = project_name.strip()
+        else:
+            self.project_name = Path(file_path).stem
+        self._update_window_title()
+        return True
+
+    def _autoload_last_project(self):
+        last_project_path = get_last_project_path(None)
+        if not last_project_path:
+            return
+        path_obj = Path(last_project_path)
+        if not path_obj.exists() or not path_obj.is_file():
+            return
+        self.load_project(file_path_override=str(path_obj), silent=True)
 
     def _request_config_if_needed(self):
         if self.config_tab is None or self._device_config_request_pending or self._device_crc_request_pending:
@@ -1108,6 +1275,119 @@ class MainWindow(QMainWindow):
 
         self.send_can_frame(arbitration_id, payload)
 
+    def _toggle_emulate_data(self, enabled):
+        self._emulate_data_enabled = bool(enabled)
+        if self._emulate_data_enabled:
+            self._emulation_start_time = time.time()
+            self._emulation_step = 0
+            self._emulated_current_values_ma = [float(max(1, CHANNEL_COUNT - i) * 1000.0) for i in range(CHANNEL_COUNT)]
+            self._emulated_current_targets_ma = list(self._emulated_current_values_ma)
+            self.emulation_timer.start()
+            self._connection_state = "emulating"
+            self._set_heartbeat_status("Emulation mode", "#90CAF9")
+        else:
+            self.emulation_timer.stop()
+            if self.offline_mode:
+                self._connection_state = "offline"
+                self._set_heartbeat_status("Offline mode", "#90CAF9")
+
+    def _build_emulated_packet(self):
+        t_now = time.time()
+        elapsed = max(0.0, t_now - self._emulation_start_time)
+        self._emulation_step += 1
+
+        batt_mv = int(14500 + random.uniform(-220, 220) + 120 * math.sin(elapsed * 0.35))
+        total_current_ma = 0.0
+
+        channels = []
+        for index in range(CHANNEL_COUNT):
+            phase = elapsed * 0.35 + index * 0.12
+            base_amp = float(max(1, CHANNEL_COUNT - index))
+
+            if self._emulation_step % 30 == 0:
+                drift_amp = random.uniform(-0.6, 0.6)
+                self._emulated_current_targets_ma[index] = max(0.0, (base_amp + drift_amp) * 1000.0)
+
+            target_ma = self._emulated_current_targets_ma[index]
+            current_ma = self._emulated_current_values_ma[index]
+            current_ma += (target_ma - current_ma) * 0.08
+            current_ma += 55.0 * math.sin(phase)
+            current_ma += random.uniform(-25.0, 25.0)
+            current_ma = max(0.0, current_ma)
+            self._emulated_current_values_ma[index] = current_ma
+
+            current_avg_ma = max(0.0, current_ma * 0.96 + random.uniform(-12.0, 12.0))
+            current_rms_ma = max(0.0, current_ma * 1.02 + random.uniform(5.0, 15.0))
+            voltage_mv = int(batt_mv - random.uniform(100.0, 700.0))
+            state = 1 if current_ma > 250 else 0
+            status_choices = [0, 0, 0, 0, 1, 8, 9, 10, 11, 20, 21, 22]
+            status = random.choice(status_choices) if random.random() < 0.02 else 0
+
+            channel = {
+                "name": f"OUT{index + 1}",
+                "status": int(status),
+                "state": int(state),
+                "voltage": max(0, voltage_mv),
+                "current": float(current_ma),
+                "current_avg": float(current_avg_ma),
+                "current_rms": float(current_rms_ma),
+                "pwm_duty": int(max(0, min(100, 50 + 35 * math.sin(phase * 0.8)))),
+                "i2t_heat": int(max(0, min(100, 40 + 40 * math.sin(phase * 0.4)))),
+                "soc_threshold": int(max(0, 1500 + 400 * math.sin(phase * 0.3))),
+            }
+            channels.append(channel)
+            total_current_ma += channel["current_avg"]
+
+        imu = {
+            "accX": 0.12 * math.sin(elapsed * 0.45) + random.uniform(-0.01, 0.01),
+            "accY": 0.10 * math.sin(elapsed * 0.52 + 1.2) + random.uniform(-0.01, 0.01),
+            "accZ": 1.0 + 0.06 * math.sin(elapsed * 0.3 + 0.4) + random.uniform(-0.01, 0.01),
+            "pitch": 90.0 * math.sin(elapsed * 0.22) + random.uniform(-2.0, 2.0),
+            "roll": 140.0 * math.sin(elapsed * 0.28 + 0.8) + random.uniform(-2.5, 2.5),
+            "yaw": 200.0 * math.sin(elapsed * 0.18 + 1.4) + random.uniform(-3.0, 3.0),
+        }
+
+        packet = {
+            "time": elapsed,
+            "sys": {
+                "status": 0,
+                "batt": batt_mv,
+                "core_temp": 34.0 + 3.0 * math.sin(elapsed * 0.08) + random.uniform(-0.3, 0.3),
+                "safety": "OK",
+                "total_current": total_current_ma,
+                "logicValidMask": 0xFFFF,
+                "system_load": int(max(0, min(100, 45 + 15 * math.sin(elapsed * 0.18)))),
+            },
+            "ch": channels,
+            "phy": [int(max(0, batt_mv - random.uniform(300, 900))) for _ in range(PHY_INPUT_COUNT)],
+            "imu": imu,
+            "frames": [
+                {"id": IDS["SYS_STATUS"], "count": self._emulation_step, "freq": 20.0},
+                {"id": IDS["STATE_1_16"], "count": self._emulation_step, "freq": 20.0},
+            ],
+        }
+        return packet
+
+    def _emit_emulated_packet(self):
+        if not self._emulate_data_enabled:
+            return
+        packet = self._build_emulated_packet()
+        self.latest_sys = packet["sys"]
+        self.latest_ch = packet["ch"]
+        self.latest_phy = packet["phy"]
+        self.lates_imu = packet["imu"]
+        self.latest_frames = packet.get("frames", [])
+        if self.control_tab is not None:
+            self.control_tab.set_live_channels(self.latest_ch)
+            self.control_tab.set_live_physical_values(self.latest_phy)
+        if self.log_tab is not None and self.config_tab is not None:
+            if time.time() - self._last_log_config_snapshot_refresh >= 0.5:
+                self._refresh_log_config_snapshot()
+            self.log_tab.update_from_packet(packet, self._log_config_snapshot)
+        self.plot_panel.update_from_packet(packet)
+        self.last_frame_rx_time = time.time()
+        self._render_latest_snapshot()
+
     def process_gui_refresh(self):
         updated = False
         while self.pipe_ui.poll():
@@ -1141,6 +1421,9 @@ class MainWindow(QMainWindow):
                         self.config_tab.set_isotp_state(0, f"Error: {packet['error']}", busy=False)
                     continue
 
+                if self._emulate_data_enabled:
+                    continue
+
                 self.latest_sys = packet["sys"]
                 self.latest_ch = packet["ch"]
                 self.latest_phy = packet["phy"]
@@ -1149,6 +1432,10 @@ class MainWindow(QMainWindow):
                 if self.control_tab is not None:
                     self.control_tab.set_live_channels(self.latest_ch)
                     self.control_tab.set_live_physical_values(self.latest_phy)
+                if self.log_tab is not None and self.config_tab is not None:
+                    if time.time() - self._last_log_config_snapshot_refresh >= 0.5:
+                        self._refresh_log_config_snapshot()
+                    self.log_tab.update_from_packet(packet, self._log_config_snapshot)
                 self.plot_panel.update_from_packet(packet)
                 self.last_frame_rx_time = time.time()
                 updated = True
@@ -1157,6 +1444,10 @@ class MainWindow(QMainWindow):
 
         if not updated:
             return
+
+        self._render_latest_snapshot()
+
+    def _render_latest_snapshot(self):
 
         self.lbl_sys_state.setText(SYS_STATUS_MAP.get(int(self.latest_sys["status"]), str(self.latest_sys["status"])))
         self.lbl_batt.setText(_format_voltage_mv(self.latest_sys['batt']))
@@ -1210,9 +1501,9 @@ class MainWindow(QMainWindow):
                 status_str,
                 state_str,
                 _format_voltage_mv(ch["voltage"]),
-                str(ch["current"]),
-                f"{ch['current_avg']:.1f}",
-                irms_text,
+                str(int(round(float(ch.get("current", 0))))),
+                str(int(round(float(ch.get("current_avg", 0))))),
+                str(int(round(float(ch.get("current_rms", 0))))) if i < 8 else "-",
                 pwm_text,
                 heat_text,
                 soc_text,
@@ -1256,6 +1547,11 @@ class MainWindow(QMainWindow):
         self.update_heartbeat_status()
 
     def update_heartbeat_status(self):
+        if self._emulate_data_enabled:
+            self._connection_state = "emulating"
+            self._set_heartbeat_status("Emulation mode", "#90CAF9")
+            return
+
         if self.offline_mode:
             self._connection_state = "offline"
             self._set_heartbeat_status("Offline mode", "#90CAF9")
@@ -1302,6 +1598,16 @@ class MainWindow(QMainWindow):
             self.plot_timer.start(PLOT_UPDATE_MS)
         else:
             self.plot_timer.stop()
+
+    def _handle_ctrl_space_shortcut(self):
+        if self.tabs is not None and self.log_tab is not None and self.tabs.currentWidget() is self.log_tab:
+            is_paused = self.log_tab.toggle_paused()
+            if is_paused:
+                self.statusBar().showMessage("LOG paused", 1500)
+            else:
+                self.statusBar().showMessage("LOG resumed", 1500)
+            return
+        self.toggle_plotting()
 
     def closeEvent(self, event):
         if self.worker_started:

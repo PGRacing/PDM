@@ -78,13 +78,42 @@ def set_can_channel_runtime(channel_name):
 
 
 def save_usb_device_config(channel_name):
-    data = {"usb_device": str(channel_name)}
+    current = load_app_config()
+    data = dict(current) if isinstance(current, dict) else {}
+    data["usb_device"] = str(channel_name)
     for candidate_path in get_app_config_candidate_paths():
         try:
             candidate_path.parent.mkdir(parents=True, exist_ok=True)
             with candidate_path.open("w", encoding="utf-8") as config_file:
                 json.dump(data, config_file, indent=2)
             set_can_channel_runtime(channel_name)
+            return candidate_path
+        except Exception:
+            continue
+    raise OSError("Could not write app_config.json")
+
+
+def get_last_project_path(default=None):
+    config = load_app_config()
+    candidate = config.get("last_project_path") if isinstance(config, dict) else None
+    if isinstance(candidate, str) and candidate.strip():
+        return candidate.strip()
+    return default
+
+
+def save_last_project_path(project_path):
+    current = load_app_config()
+    data = dict(current) if isinstance(current, dict) else {}
+    if isinstance(project_path, str) and project_path.strip():
+        data["last_project_path"] = project_path.strip()
+    else:
+        data.pop("last_project_path", None)
+
+    for candidate_path in get_app_config_candidate_paths():
+        try:
+            candidate_path.parent.mkdir(parents=True, exist_ok=True)
+            with candidate_path.open("w", encoding="utf-8") as config_file:
+                json.dump(data, config_file, indent=2)
             return candidate_path
         except Exception:
             continue
