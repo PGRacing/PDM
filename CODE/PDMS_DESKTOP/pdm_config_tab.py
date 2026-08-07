@@ -1,14 +1,19 @@
 import json
+import re
 import struct
 from pathlib import Path
 
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import QDateTime, QEvent, QPoint, QPointF, QRectF, Qt, pyqtSignal
+from PyQt5.QtGui import QColor, QFont, QIntValidator, QPainter, QPen, QPixmap, QPolygonF
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
     QCheckBox,
     QComboBox,
     QFrame,
     QFileDialog,
     QFormLayout,
+    QHeaderView,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -18,12 +23,17 @@ from PyQt5.QtWidgets import (
     QProgressBar,
     QGridLayout,
     QScrollArea,
+    QSlider,
     QSpinBox,
     QTabWidget,
     QSizePolicy,
+    QTableWidget,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
+from i2t_chart import I2TChartWidget
+from i2t_chart_inverted import I2TChartInvertedWidget
 
 from pdm_shared import CHANNEL_COUNT, get_asset_path, get_runtime_base_dir
 
@@ -58,6 +68,7 @@ SPOC2_CH_ID_4 = 0x03
 FIELD_LABELS = {
     "channel": {
         "channel_id": "Channel ID:",
+        "physical_pin": "Physical pin:",
         "type": "Type:",
         "spoc_mapping": "SPOC mapping:",
         "mode": "Mode:",
@@ -75,12 +86,13 @@ FIELD_LABELS = {
         "use_soc": "Use overcurrent (SOC) protection",
         "nominal_threshold": "Nominal threshold:",
         "allow_inrush": "Allow inrush:",
+        "inrush_input": "External inrush source:",
         "inrush_window_from_start": "Inrush window from start:",
         "inrush_threshold": "Inrush threshold:",
         "inrush_time_threshold": "Inrush time threshold:",
     },
     "i2t": {
-        "use_i2t": "(UNUSED) Use I2T protection",
+        "use_i2t": "Use I2T protection",
         "nominal_current": "Nominal current:",
         "nominal_current_sq": "Nominal current squared:",
         "time_threshold": "Time threshold:",
@@ -91,25 +103,31 @@ FIELD_LABELS = {
         "duty_input": "Duty input:",
         "mapping": "Mapping:",
     },
+    "softstart": {
+        "use_softstart": "Use soft-start",
+        "start_duty": "Start duty:",
+        "end_duty": "End duty:",
+        "time_threshold": "Time threshold:",
+    },
 }
 
 LOGIC_OPERATOR_LABELS = [
-    ("AND", 0x00),
-    ("OR", 0x01),
-    ("NE", 0x02),
-    ("E", 0x03),
-    ("G", 0x04),
-    ("GE", 0x05),
-    ("L", 0x06),
-    ("LE", 0x07),
-    ("IT", 0x08),
-    ("IF", 0x09),
+    ("AND [&]", 0x00),
+    ("OR  [|]", 0x01),
+    ("NE  [!=]", 0x02),
+    ("E   [==]", 0x03),
+    ("G   [>]", 0x04),
+    ("GE  [>=]", 0x05),
+    ("L   [<]", 0x06),
+    ("LE  [<=]", 0x07),
+    ("IS TRUE",  0x08),
+    ("IS FALSE", 0x09),
 ]
 
 LOGIC_INPUT_TYPE_LABELS = [
     ("SENSOR", 0x00),
-    ("CONST_SCHMITT", 0x01),
-    ("CONST_ANALOG", 0x02),
+    ("CONST DIGITAL", 0x01),
+    ("CONST ANALOG", 0x02),
     ("UNSET", 0x03),
 ]
 
@@ -177,6 +195,299 @@ INPUT_INTERPRETATION_LABELS = [
     ("Analog", 0x01),
 ]
 
+PHYSICAL_INPUT_PIN_LABELS = [
+    "B20",
+    "B14",
+    "B21",
+    "B15",
+    "B22",
+    "B16",
+    "B23",
+    "B17",
+]
+OUTPUT_CHANNEL_PIN_LABELS = [
+    "B13/19",
+    "B6/7",
+    "B3/4/5",
+    "B1/2/8",
+    "A9/17",
+    "A5/13",
+    "A1/2",
+    "A18/27",
+    "A34",
+    "A8",
+    "A7",
+    "A6",
+    "A4",
+    "A3",
+    "A10",
+    "A26",
+]
+
+HEADER_PIN_COORDS = {
+    "A": {
+        1:  (0.130, 0.405),
+        2:  (0.162, 0.405),
+        3:  (0.201, 0.405),
+        4:  (0.239, 0.405),
+        5:  (0.278, 0.405),
+        6:  (0.323, 0.405),
+        7:  (0.355, 0.405),
+        8:  (0.394, 0.405),
+        9:  (0.432, 0.405),
+        10: (0.143, 0.487),
+        11: (0.182, 0.487),
+        12: (0.220, 0.487),
+        13: (0.259, 0.487),
+        14: (0.298, 0.487),
+        15: (0.336, 0.487),
+        16: (0.375, 0.487),
+        17: (0.413, 0.487),
+        18: (0.143, 0.583),
+        19: (0.182, 0.583),
+        20: (0.221, 0.583),
+        21: (0.259, 0.583),
+        22: (0.298, 0.583),
+        23: (0.337, 0.583),
+        24: (0.376, 0.583),
+        25: (0.413, 0.583),
+        26: (0.124, 0.665),
+        27: (0.162, 0.665),
+        28: (0.201, 0.665),
+        29: (0.239, 0.665),
+        30: (0.278, 0.665),
+        31: (0.317, 0.665),
+        32: (0.356, 0.665),
+        33: (0.394, 0.665),
+        34: (0.433, 0.665),
+    },
+    "B": {
+        1:  (0.644, 0.412),
+        2:  (0.677, 0.412),
+        3:  (0.715, 0.412),
+        4:  (0.755, 0.412),
+        5:  (0.793, 0.412),
+        6:  (0.831, 0.412),
+        7:  (0.875, 0.412),
+        8:  (0.658, 0.493),
+        9:  (0.696, 0.493),
+        10: (0.735, 0.493),
+        11: (0.780, 0.493),
+        12: (0.813, 0.493),
+        13: (0.851, 0.493),
+        14: (0.658, 0.587),
+        15: (0.696, 0.587),
+        16: (0.736, 0.587),
+        17: (0.774, 0.587),
+        18: (0.812, 0.587),
+        19: (0.851, 0.587),
+        20: (0.638, 0.668),
+        21: (0.677, 0.668),
+        22: (0.715, 0.668),
+        23: (0.754, 0.668),
+        24: (0.794, 0.668),
+        25: (0.836, 0.668),
+        26: (0.870, 0.668),
+    },
+}
+
+PIN_ASSIGNMENT_PATTERN = re.compile(r"^([AB])(\d+(?:/\d+)*)$")
+
+
+def _parse_pin_assignment(pin_label):
+    match = PIN_ASSIGNMENT_PATTERN.match((pin_label or "").strip().upper())
+    if not match:
+        return None, []
+
+    connector = match.group(1)
+    pins = [int(value) for value in match.group(2).split("/")]
+    return connector, pins
+
+
+class ClickableValueLabel(QLabel):
+    clicked = pyqtSignal(str, QPoint)
+
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self._last_click_ms = 0
+        self.setCursor(Qt.PointingHandCursor)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            now_ms = QDateTime.currentMSecsSinceEpoch()
+            if now_ms - self._last_click_ms < 220:
+                event.accept()
+                return
+            self._last_click_ms = now_ms
+            self.clicked.emit(self.text(), self.mapToGlobal(event.pos()))
+            event.accept()
+            return
+        super().mousePressEvent(event)
+
+
+class HeaderPinOverlayWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._pixmap = QPixmap(str(get_asset_path("assets/pdms_header.png")))
+        self._selected_assignment = ""
+        self._selected_connector = None
+        self._selected_pins = []
+        self._event_filter_installed = False
+        self._window_filter_target = None
+        self._ignore_mouse_press_until_ms = 0
+        # Qt.ToolTip windows can auto-hide quickly; keep this as a normal tool window
+        # and close it only through our explicit event-filter rules.
+        self.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WA_ShowWithoutActivating)
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.resize(560, 340)
+
+    def set_assignment(self, pin_label, global_pos=None):
+        connector, pins = _parse_pin_assignment(pin_label)
+        self._selected_assignment = (pin_label or "").strip().upper()
+        self._selected_connector = connector
+        self._selected_pins = pins
+        if global_pos is not None:
+            self._ignore_mouse_press_until_ms = QDateTime.currentMSecsSinceEpoch() + 250
+            self._ensure_event_filters()
+            self._move_near(global_pos)
+            self.show()
+            self.raise_()
+        self.update()
+
+    def clear_assignment(self):
+        self._selected_assignment = ""
+        self._selected_connector = None
+        self._selected_pins = []
+        self.update()
+
+    def hide_preview(self):
+        self.hide()
+
+    def eventFilter(self, watched, event):
+        if not self.isVisible():
+            return super().eventFilter(watched, event)
+
+        event_type = event.type()
+        if event_type == QEvent.MouseButtonPress:
+            if QDateTime.currentMSecsSinceEpoch() < self._ignore_mouse_press_until_ms:
+                return super().eventFilter(watched, event)
+            global_pos = event.globalPos()
+            if not self.geometry().contains(global_pos):
+                self.hide_preview()
+        elif event_type == QEvent.KeyPress and event.key() == Qt.Key_Escape:
+            self.hide_preview()
+        elif event_type == QEvent.ApplicationDeactivate:
+            self.hide_preview()
+        elif event_type in (QEvent.Hide, QEvent.Close):
+            if watched is self or watched is self._window_filter_target:
+                self.hide_preview()
+        elif event_type == QEvent.WindowStateChange and watched is self._window_filter_target:
+            if watched.isMinimized():
+                self.hide_preview()
+        elif event_type == QEvent.Move and watched is self._window_filter_target:
+            self.hide_preview()
+        return super().eventFilter(watched, event)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        try:
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.fillRect(self.rect(), QColor("#111111"))
+            painter.setPen(QPen(QColor("#6B1E8C"), 2))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawRoundedRect(self.rect().adjusted(1, 1, -2, -2), 8, 8)
+
+            if self._pixmap.isNull():
+                painter.setPen(QColor("#E0E0E0"))
+                painter.drawText(self.rect(), Qt.AlignCenter, "Header image not available")
+                return
+
+            margin = 12
+            text_height = 28
+            target = QRectF(
+                margin,
+                margin,
+                max(1, self.width() - margin * 2),
+                max(1, self.height() - margin * 2 - text_height),
+            )
+            pixmap_rect = self._fit_rect(self._pixmap.width(), self._pixmap.height(), target)
+            painter.drawPixmap(
+                pixmap_rect,
+                self._pixmap,
+                QRectF(0, 0, self._pixmap.width(), self._pixmap.height()),
+            )
+
+            if self._selected_connector and self._selected_pins:
+                radius = max(12.0, min(pixmap_rect.width(), pixmap_rect.height()) * 0.022)
+                fill = QColor("#FFBDEB")
+                fill.setAlpha(215)
+                outline = QColor("#D0008F")
+                outline.setAlpha(245)
+                painter.setPen(QPen(outline, 2))
+                painter.setBrush(fill)
+
+                for pin in self._selected_pins:
+                    coord = HEADER_PIN_COORDS.get(self._selected_connector, {}).get(pin)
+                    if coord is None:
+                        continue
+                    x_coord, y_coord = coord
+                    point = QPointF(
+                        pixmap_rect.left() + x_coord * pixmap_rect.width(),
+                        pixmap_rect.top() + y_coord * pixmap_rect.height(),
+                    )
+                    painter.drawEllipse(point, radius, radius)
+
+            painter.setPen(QColor("#E0E0E0"))
+            caption = "Click a Physical pin value to highlight its header pins."
+            if self._selected_assignment:
+                caption = f"Selected header pins: {self._selected_assignment}"
+            painter.setFont(QFont(painter.font().family(), 10))
+            caption_rect = QRectF(margin, self.height() - margin - text_height, self.width() - margin * 2, text_height)
+            painter.drawText(caption_rect, Qt.AlignLeft | Qt.AlignVCenter, caption)
+        finally:
+            painter.end()
+
+    def _move_near(self, global_pos):
+        size = self.size()
+        screen = QApplication.screenAt(global_pos)
+        available = screen.availableGeometry() if screen is not None else QApplication.primaryScreen().availableGeometry()
+
+        x = global_pos.x() + 18
+        y = global_pos.y() + 18
+        if x + size.width() > available.right():
+            x = global_pos.x() - size.width() - 18
+        if y + size.height() > available.bottom():
+            y = global_pos.y() - size.height() - 18
+        x = max(available.left(), min(x, available.right() - size.width()))
+        y = max(available.top(), min(y, available.bottom() - size.height()))
+        self.move(x, y)
+
+    def _ensure_event_filters(self):
+        app = QApplication.instance()
+        if app is not None and not self._event_filter_installed:
+            app.installEventFilter(self)
+            self._event_filter_installed = True
+
+        window = self.parentWidget().window() if self.parentWidget() is not None else None
+        if window is not None and window is not self._window_filter_target:
+            if self._window_filter_target is not None:
+                self._window_filter_target.removeEventFilter(self)
+            window.installEventFilter(self)
+            self._window_filter_target = window
+
+    @staticmethod
+    def _fit_rect(source_width, source_height, target_rect):
+        if source_width <= 0 or source_height <= 0:
+            return QRectF(target_rect)
+
+        scale = min(target_rect.width() / source_width, target_rect.height() / source_height)
+        draw_width = source_width * scale
+        draw_height = source_height * scale
+        left = target_rect.left() + (target_rect.width() - draw_width) / 2
+        top = target_rect.top() + (target_rect.height() - draw_height) / 2
+        return QRectF(left, top, draw_width, draw_height)
+
 CAN_INSTANCE_LABELS = [
     ("CANH_INSTANCE_1", 0x00),
     ("CANH_INSTANCE_2", 0x01),
@@ -190,6 +501,57 @@ CAN_INPUT_DATA_TYPE_LABELS = [
     ("CAN_INPUT_TYPE_INT32", 0x04),
     ("CAN_INPUT_TYPE_FLOAT", 0x05),
 ]
+
+CAN_INPUT_DATA_TYPE_SIZES = {
+    0x00: 1,
+    0x01: 2,
+    0x02: 4,
+    0x03: 2,
+    0x04: 4,
+    0x05: 4,
+}
+
+
+def _clamp_int(value, minimum, maximum):
+    try:
+        ivalue = int(value)
+    except Exception:
+        return minimum
+    if ivalue < minimum:
+        return minimum
+    if ivalue > maximum:
+        return maximum
+    return ivalue
+
+
+def _pack_can_input_value(data_type, value):
+    if data_type == 0x00:
+        return bytes((1 if bool(value) else 0,))
+    if data_type == 0x01:
+        return struct.pack("<H", _clamp_int(value, 0, 0xFFFF))
+    if data_type == 0x02:
+        return struct.pack("<I", _clamp_int(value, 0, 0xFFFFFFFF))
+    if data_type == 0x03:
+        return struct.pack("<h", _clamp_int(value, -0x8000, 0x7FFF))
+    if data_type == 0x04:
+        return struct.pack("<i", _clamp_int(value, -0x80000000, 0x7FFFFFFF))
+    if data_type == 0x05:
+        try:
+            return struct.pack("<f", float(value))
+        except Exception:
+            return struct.pack("<f", 0.0)
+    return struct.pack("<H", _clamp_int(value, 0, 0xFFFF))
+
+
+def _build_can_control_payload(arbitration_id, offset, data_type, value):
+    payload = bytearray(8)
+    encoded_value = _pack_can_input_value(data_type, value)
+    start = _clamp_int(offset, 0, 7)
+    end = start + len(encoded_value)
+    if end > len(payload):
+        raise ValueError("Control value does not fit into an 8-byte CAN frame at the selected offset")
+    payload[start:end] = encoded_value
+    return int(arbitration_id), bytes(payload)
 
 SPOC_MAPPING_LABELS = {
     8: "SPOC2_ID_1 / SPOC2_CH_ID_1",
@@ -240,19 +602,23 @@ CHECKBOX_STYLE = (
 )
 
 BINARY_MAGIC = b"PDMB"
-BINARY_VERSION = 2
+BINARY_VERSION = 4
 # Packed record layout for one T_OUT_CFG instance:
 # id:u8, type:u8, mode:u8, spocId:u8, spocChId:u8, name[32], batch:u8,
 # afterErrorCfg.behavior:u8, afterErrorCfg.latchTime:u32, actOnSafety:u8,
 # errRetryThreshold:u16, retryTimerInterval:u32,
 # socCfg.useSoc:u8, socCfg.nominalThreshold:u32, socCfg.allowInrush:u8,
-# socCfg.inrushWindowFromStart:u32, socCfg.inrushThreshold:u32,
+# socCfg.inrushInput:u8, socCfg.inrushWindowFromStart:u32, socCfg.inrushThreshold:u32,
 # socCfg.inrushTimeThreshold:u32,
 # i2tCfg.useI2t:u8, i2tCfg.nominalCurrent:u32, i2tCfg.nominalCurrentSq:u32,
 # i2tCfg.timeThreshold:u32, i2tCfg.i2tThreshold:u32,
 # pwmCfg.baseDuty:u8, pwmCfg.dutyInput:u16,
 # pwmCfg.inputAxis[OUT_PWM_MAP_RESOLUTION]:u16,
-# pwmCfg.dutyAxis[OUT_PWM_MAP_RESOLUTION]:u8.
+# pwmCfg.dutyAxis[OUT_PWM_MAP_RESOLUTION]:u8,
+# softStart.useSoftStart:u8,
+# softStart.startDuty:u8,
+# softStart.endDuty:u8,
+# softStart.timeThreshold:u32.
 LEGACY_BINARY_RECORD_FORMAT = "<" + "".join(
     [
         "B",
@@ -277,20 +643,73 @@ LEGACY_BINARY_RECORD_FORMAT = "<" + "".join(
         "I",
         "I",
         "I",
-        "I",
+        "q",
     ]
 )
 LEGACY_BINARY_RECORD_SIZE = struct.calcsize(LEGACY_BINARY_RECORD_FORMAT)
-BINARY_RECORD_FORMAT = LEGACY_BINARY_RECORD_FORMAT + "B" + "H" + ("H" * OUT_PWM_MAP_RESOLUTION) + ("B" * OUT_PWM_MAP_RESOLUTION)
+BINARY_BASE_RECORD_FORMAT = "<" + "".join(
+    [
+        "B",
+        "B",
+        "B",
+        "B",
+        "B",
+        "32s",
+        "B",
+        "B",
+        "I",
+        "B",
+        "H",
+        "I",
+        "B",
+        "I",
+        "B",
+        "H",
+        "I",
+        "I",
+        "I",
+        "B",
+        "I",
+        "I",
+        "I",
+        "q",
+    ]
+)
+BINARY_RECORD_FORMAT_V3 = (
+    LEGACY_BINARY_RECORD_FORMAT
+    + "B"
+    + "H"
+    + ("H" * OUT_PWM_MAP_RESOLUTION)
+    + ("B" * OUT_PWM_MAP_RESOLUTION)
+    + "B"
+    + "B"
+    + "B"
+    + "I"
+)
+BINARY_RECORD_SIZE_V3 = struct.calcsize(BINARY_RECORD_FORMAT_V3)
+BINARY_RECORD_FORMAT = (
+    BINARY_BASE_RECORD_FORMAT
+    + "B"
+    + "H"
+    + ("H" * OUT_PWM_MAP_RESOLUTION)
+    + ("B" * OUT_PWM_MAP_RESOLUTION)
+    + "B"
+    + "B"
+    + "B"
+    + "I"
+)
 BINARY_RECORD_SIZE = struct.calcsize(BINARY_RECORD_FORMAT)
 
 OUTPUT_RECORD_FORMAT = BINARY_RECORD_FORMAT
 OUTPUT_RECORD_SIZE = BINARY_RECORD_SIZE
 LEGACY_OUTPUT_RECORD_FORMAT = LEGACY_BINARY_RECORD_FORMAT
 LEGACY_OUTPUT_RECORD_SIZE = LEGACY_BINARY_RECORD_SIZE
+V3_OUTPUT_RECORD_FORMAT = BINARY_RECORD_FORMAT_V3
+V3_OUTPUT_RECORD_SIZE = BINARY_RECORD_SIZE_V3
 
 OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * OUTPUT_RECORD_SIZE
 LEGACY_OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * LEGACY_OUTPUT_RECORD_SIZE
+V3_OUTPUT_CONFIG_TOTAL_SIZE = OUTPUT_CONFIG_COUNT * V3_OUTPUT_RECORD_SIZE
 
 def _make_spinbox(minimum, maximum, value, suffix="", step = 1):
     spin = QSpinBox()
@@ -301,6 +720,308 @@ def _make_spinbox(minimum, maximum, value, suffix="", step = 1):
     if suffix:
         spin.setSuffix(suffix)
     return spin
+
+
+class PWMChartWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._input_axis = [0, 625, 1250, 1875, 2500, 3125, 3750, 5000]
+        self._duty_axis = [0, 12, 25, 37, 50, 62, 75, 100]
+        self.setMinimumWidth(420)
+        self.setMaximumWidth(560)
+        self.setMinimumHeight(260)
+        self.setMaximumHeight(340)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+    def set_axes(self, input_axis, duty_axis):
+        self._input_axis = list(input_axis or [0, 625, 1250, 1875, 2500, 3125, 3750, 5000])
+        self._duty_axis = list(duty_axis or [0, 12, 25, 37, 50, 62, 75, 100])
+        self.update()
+
+    @staticmethod
+    def _linear_map(value, minimum, maximum, start, end):
+        minimum = float(minimum)
+        maximum = float(maximum)
+        value = max(minimum, min(maximum, float(value)))
+        if abs(maximum - minimum) < 1e-9:
+            return float(start)
+        ratio = (value - minimum) / (maximum - minimum)
+        return float(start) + ratio * (float(end) - float(start))
+
+    @staticmethod
+    def _format_input_label(value):
+        if float(value).is_integer():
+            return f"{int(value)} mV"
+        return f"{float(value):.1f} mV"
+
+    @staticmethod
+    def _format_duty_label(value):
+        if float(value).is_integer():
+            return f"{int(value)} %"
+        return f"{float(value):.1f} %"
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+
+        rect = self.rect().adjusted(0, 0, -1, -1)
+        painter.fillRect(rect, QColor("#111111"))
+
+        left_margin = 54
+        right_margin = 12
+        top_margin = 24
+        bottom_margin = 38
+        plot_rect = rect.adjusted(left_margin, top_margin, -right_margin, -bottom_margin)
+        if plot_rect.width() <= 0 or plot_rect.height() <= 0:
+            return
+
+        painter.setPen(QPen(QColor("#2A2A2A"), 1))
+        for tick in range(0, 5001, 625):
+            x = int(self._linear_map(tick, 0, 5000, plot_rect.left(), plot_rect.right()))
+            painter.drawLine(x, plot_rect.top(), x, plot_rect.bottom())
+
+        for tick in range(0, 101, 10):
+            y = int(self._linear_map(tick, 0, 100, plot_rect.bottom(), plot_rect.top()))
+            painter.drawLine(plot_rect.left(), y, plot_rect.right(), y)
+
+        painter.setPen(QPen(QColor("#606060"), 1))
+        painter.drawRect(plot_rect)
+
+        painter.setPen(QColor("#B8B8B8"))
+        font = painter.font()
+        font.setPointSize(8)
+        painter.setFont(font)
+
+        for tick in range(0, 5001, 625):
+            x = int(self._linear_map(tick, 0, 5000, plot_rect.left(), plot_rect.right()))
+            painter.drawText(x - 18, plot_rect.bottom() + 6, 36, 18, Qt.AlignHCenter | Qt.AlignTop, self._format_input_label(tick))
+
+        for tick in range(0, 101, 10):
+            y = int(self._linear_map(tick, 0, 100, plot_rect.bottom(), plot_rect.top()))
+            painter.drawText(0, y - 8, left_margin - 8, 16, Qt.AlignRight | Qt.AlignVCenter, self._format_duty_label(tick))
+
+        painter.setPen(QPen(QColor("#09BC8A"), 2))
+        points = []
+        for input_value, duty_value in zip(self._input_axis, self._duty_axis):
+            x = self._linear_map(input_value, 0, 5000, plot_rect.left(), plot_rect.right())
+            y = self._linear_map(duty_value, 0, 100, plot_rect.bottom(), plot_rect.top())
+            points.append(QPointF(x, y))
+
+        if len(points) >= 2:
+            painter.drawPolyline(QPolygonF(points))
+
+        painter.setBrush(QColor("#09BC8A"))
+        painter.setPen(QPen(QColor("#111111"), 1))
+        for point in points:
+            painter.drawEllipse(point, 4, 4)
+
+
+class ConfigSummaryPage(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setStyleSheet(PAGE_LABEL_STYLE)
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(20, 20, 20, 20)
+        outer.setSpacing(10)
+
+        self.table = QTableWidget(0, 11)
+        self.table.setHorizontalHeaderLabels(
+            [
+                "Channel",
+                "Type",
+                "Mode",
+                "Name",
+                "Batch",
+                "PWM",
+                "Logic",
+                "Safety",
+                "Soft-start",
+                "SOC",
+                "I2T",
+            ]
+        )
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table.setSelectionMode(QAbstractItemView.NoSelection)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setAlternatingRowColors(True)
+        self.table.setShowGrid(False)
+        self.table.setTextElideMode(Qt.ElideRight)
+        self.table.setWordWrap(True)
+        self.table.setFocusPolicy(Qt.NoFocus)
+        self.table.setFont(self.font())
+        self.table.verticalHeader().setVisible(False)
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.Stretch)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.Stretch)
+        header.setSectionResizeMode(6, QHeaderView.Stretch)
+        header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(8, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(9, QHeaderView.Stretch)
+        header.setSectionResizeMode(10, QHeaderView.Stretch)
+        header.setStretchLastSection(False)
+        header.setDefaultSectionSize(96)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.table.verticalHeader().setDefaultSectionSize(36)
+        self.table.setStyleSheet(
+            "QTableWidget { background-color: #141414; gridline-color: #2A2A2A; font-size: 11px; }"
+            "QHeaderView::section { padding: 4px 6px; font-size: 11px; }"
+            "QTableWidget::item { padding: 2px 4px; }"
+        )
+        self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        outer.addWidget(self.table, 1)
+
+    @staticmethod
+    def _stacked_text(values, default="-"):
+        cleaned = [str(value) for value in values if str(value).strip()]
+        return "\n".join(cleaned) if cleaned else default
+
+    def _logic_operand_text(self, type_value, source_value, bool_value, value_text, input_labels):
+        if type_value == 0x00:
+            if source_value is None:
+                return "-"
+            try:
+                return input_labels.get(int(source_value), f"Input {int(source_value) + 1}")
+            except Exception:
+                return str(source_value)
+        if type_value == 0x01:
+            return "ON" if int(bool_value or 0) else "OFF"
+        if type_value == 0x02:
+            text = str(value_text).strip()
+            return text if text else "0"
+        return "-"
+
+    def _logic_expression_text(self, channel_widget, input_labels):
+        logic_page = channel_widget.logic_page
+        if not logic_page.check_used.isChecked():
+            return "-"
+        if logic_page.check_always_on.isChecked():
+            return "Always on"
+
+        logic_data = logic_page.to_dict().get("exp", {}) or {}
+        left = self._logic_operand_text(
+            logic_data.get("input1Type"),
+            logic_data.get("input1ID"),
+            logic_data.get("input1Const"),
+            logic_page.edit_input1_value.text(),
+            input_labels,
+        )
+        right = self._logic_operand_text(
+            logic_data.get("input2Type"),
+            logic_data.get("input2ID"),
+            logic_data.get("input2Const"),
+            logic_page.edit_input2_value.text(),
+            input_labels,
+        )
+        operator = logic_page.combo_operator.currentText()
+        return f"{left}\n{operator}\n{right}"
+
+    @staticmethod
+    def _format_inrush_window(value):
+        try:
+            if int(value) >= UINT32_MAX:
+                return "Infinite"
+        except Exception:
+            pass
+        return f"{int(value)} ms"
+
+    def refresh_summary(self, channel_widgets, input_labels=None):
+        channel_widgets = list(channel_widgets or [])
+        input_labels = dict(input_labels or {})
+        self.table.setRowCount(len(channel_widgets))
+
+        for row, channel_widget in enumerate(channel_widgets):
+            mode_value = channel_widget.combo_mode.currentData()
+            batch_text = channel_widget.combo_batch.currentText() if mode_value == OUT_MODE_BATCH else "-"
+
+            if mode_value == OUT_MODE_PWM:
+                pwm_lines = [
+                    f"Base duty: {channel_widget.edit_base_duty.value()} %",
+                    f"Control input: {channel_widget.combo_duty_input.currentText()}",
+                ]
+                pwm_text = "\n".join(pwm_lines)
+            else:
+                pwm_text = "-"
+
+            if channel_widget.softstart_enable.isChecked() and mode_value == OUT_MODE_STD:
+                softstart_text = "\n".join(
+                    [
+                        f"Start: {channel_widget.edit_softstart_start_duty.value()} %",
+                        f"End: {channel_widget.edit_softstart_end_duty.value()} %",
+                        f"Time: {channel_widget.edit_softstart_time_threshold.value()} ms",
+                    ]
+                )
+            else:
+                softstart_text = "-"
+
+            if channel_widget.combo_after_error_behavior.currentData() == OUT_ERR_BEH_RETRY:
+                safety_lines = [
+                    f"Behavior: {channel_widget.combo_after_error_behavior.currentText()}",
+                    f"Retries: {channel_widget.edit_err_retry_threshold.value()}",
+                    f"Retry interval: {channel_widget.edit_retry_timer_interval.value()} ms",
+                    f"Act on safety: {'Yes' if channel_widget.check_act_on_safety.isChecked() else 'No'}",
+                ]
+            else:
+                safety_lines = [
+                    f"Behavior: {channel_widget.combo_after_error_behavior.currentText()}",
+                    f"Latch time: {channel_widget.edit_after_error_latch_time.value()} ms",
+                    f"Act on safety: {'Yes' if channel_widget.check_act_on_safety.isChecked() else 'No'}",
+                ]
+            safety_text = "\n".join(safety_lines)
+
+            if channel_widget.soc_enable.isChecked():
+                soc_lines = [
+                    f"Threshold: {channel_widget.edit_nominal_threshold.value()} mA",
+                    f"Inrush: {'Yes' if channel_widget.check_allow_inrush.isChecked() else 'No'}",
+                    f"Inrush input: {channel_widget.combo_inrush_input.currentText() if channel_widget.check_allow_inrush.isChecked() else '-'}",
+                    f"Window: {self._format_inrush_window(channel_widget._get_inrush_window_from_start())}",
+                    f"Inrush threshold: {channel_widget.edit_inrush_threshold.value()} mA",
+                    f"Inrush time: {channel_widget.edit_inrush_time_threshold.value()} ms",
+                ]
+                soc_text = "\n".join(soc_lines)
+            else:
+                soc_text = "-"
+
+            if channel_widget.i2t_enable.isChecked():
+                i2t_lines = [
+                    f"Preset: {channel_widget.combo_i2t_preset.currentText()}",
+                    f"Conductors: {channel_widget.spin_i2t_conductors.value()}",
+                    f"Nominal: {channel_widget.edit_nominal_current.value()} mA",
+                    f"Threshold: {channel_widget.edit_i2t_threshold.text() or '0'}",
+                    f"Time: {channel_widget.edit_time_threshold.value()} ms",
+                ]
+                i2t_text = "\n".join(i2t_lines)
+            else:
+                i2t_text = "-"
+
+            values = [
+                f"OUT_{row + 1}",
+                "BTS500" if row < 8 else "SPOC2",
+                channel_widget.combo_mode.currentText(),
+                channel_widget.edit_name.text(),
+                batch_text,
+                pwm_text,
+                self._logic_expression_text(channel_widget, input_labels),
+                safety_text,
+                softstart_text,
+                soc_text,
+                i2t_text,
+            ]
+
+            for column, value in enumerate(values):
+                item = QTableWidgetItem(str(value))
+                item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+                self.table.setItem(row, column, item)
+
+        self.table.resizeRowsToContents()
+        self.table.resizeColumnsToContents()
+        self.table.setColumnWidth(5, max(self.table.columnWidth(5), 220))
+        self.table.setColumnWidth(6, max(self.table.columnWidth(6), 240))
 
 
 PAGE_LABEL_STYLE = (
@@ -347,6 +1068,22 @@ RESET_BUTTON_STYLE = (
 
 
 class ChannelConfigPage(QWidget):
+    batchChanged = pyqtSignal()
+    modeChanged = pyqtSignal()
+    configChanged = pyqtSignal()
+    physicalPinClicked = pyqtSignal(str, QPoint)
+
+    I2T_PRESETS = [
+        ("Custom", None),
+        ("Tefzel 24 AWG (5A / 5s)", {"nominal_current_ma": 5000, "time_threshold_ms": 5000}),
+        ("Tefzel 22 AWG (7A / 8s)", {"nominal_current_ma": 7000, "time_threshold_ms": 8000}),
+        ("Tefzel 20 AWG (10A / 10s)", {"nominal_current_ma": 10000, "time_threshold_ms": 10000}),
+        ("Tefzel 18 AWG (13A / 15s)", {"nominal_current_ma": 13000, "time_threshold_ms": 15000}),
+        ("Tefzel 16 AWG (15A / 25s)", {"nominal_current_ma": 15000, "time_threshold_ms": 25000}),
+        ("Tefzel 14 AWG (20A / 40s)", {"nominal_current_ma": 20000, "time_threshold_ms": 40000}),
+        ("Tefzel 12 AWG (25A / 60s)", {"nominal_current_ma": 25000, "time_threshold_ms": 60000}),
+    ]
+
     def __init__(self, channel_index, parent=None):
         super().__init__(parent)
         self.channel_index = channel_index
@@ -362,6 +1099,10 @@ class ChannelConfigPage(QWidget):
 
         self.label_channel_id = QLabel(f"OUT_ID_{channel_index + 1}")
         self.label_channel_id.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.label_physical_pin = ClickableValueLabel(OUTPUT_CHANNEL_PIN_LABELS[channel_index])
+        self.label_physical_pin.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.label_physical_pin.setToolTip("Click to highlight this pin assignment on the header image")
+        self.label_physical_pin.clicked.connect(self.physicalPinClicked.emit)
         self.label_type = QLabel("BTS500" if channel_index < 8 else "SPOC2")
         self.label_type.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.label_spoc = QLabel("n/a")
@@ -372,19 +1113,34 @@ class ChannelConfigPage(QWidget):
         self.combo_mode.addItem("PWM (BETA)", OUT_MODE_PWM)
         self.combo_mode.addItem("BATCH", OUT_MODE_BATCH)
         self.edit_name = QLineEdit(f"OUT_{channel_index + 1}")
-        self.edit_batch = _make_spinbox(0, 16, 0)
+        
+        # self.combo_batch = _make_spinbox(0, 16, 0)
+        self.combo_batch = QComboBox()
+        self.fill_batch_combo(channel_index)
 
         channel_form.addRow(FIELD_LABELS["channel"]["channel_id"], self.label_channel_id)
+        channel_form.addRow(FIELD_LABELS["channel"]["physical_pin"], self.label_physical_pin)
         channel_form.addRow(FIELD_LABELS["channel"]["type"], self.label_type)
-        channel_form.addRow(FIELD_LABELS["channel"]["spoc_mapping"], self.label_spoc)
+
+        if channel_index >= 8:
+            channel_form.addRow(FIELD_LABELS["channel"]["spoc_mapping"], self.label_spoc)
         channel_form.addRow(FIELD_LABELS["channel"]["mode"], self.combo_mode)
         channel_form.addRow(FIELD_LABELS["channel"]["name"], self.edit_name)
-        channel_form.addRow(FIELD_LABELS["channel"]["batch"], self.edit_batch)
+        channel_form.addRow(FIELD_LABELS["channel"]["batch"], self.combo_batch)
         outer.addWidget(channel_group)
 
         self.pwm_box = QGroupBox("PWM")
-        pwm_form = QFormLayout(self.pwm_box)
+        pwm_layout = QHBoxLayout(self.pwm_box)
+        pwm_layout.setContentsMargins(10, 10, 10, 10)
+        pwm_layout.setSpacing(12)
+
+        pwm_form_widget = QWidget()
+        pwm_form_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+        pwm_form = QFormLayout(pwm_form_widget)
+        pwm_form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
+        self.pwm_box.setStyleSheet("QWidget { background-color: transparent; }")
         self.pwm_source_provider = lambda allowed_var=None: []
+        self.inrush_source_provider = lambda allowed_var=None: []
         self.edit_base_duty = _make_spinbox(0, 100, 0, "%")
         self.combo_duty_input = QComboBox()
         self.combo_duty_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -408,20 +1164,30 @@ class ChannelConfigPage(QWidget):
         input_axis_label = QLabel("Input axis [0-5000 mV]")
         input_axis_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         pwm_map_layout.addWidget(input_axis_label, 1, 0)
+        input_axis_defaults = [0, 625, 1250, 1875, 2500, 3125, 3750, 5000]
         for column in range(OUT_PWM_MAP_RESOLUTION):
-            spin_box = _make_spinbox(0, 5000, 0, " mV")
+            spin_box = _make_spinbox(0, 5000, input_axis_defaults[column], " mV")
             self.pwm_input_axis.append(spin_box)
             pwm_map_layout.addWidget(spin_box, 1, column + 1)
+            spin_box.valueChanged.connect(self._update_pwm_chart)
+            spin_box.editingFinished.connect(lambda col=column: self._finalize_pwm_input_axis(col))
 
         duty_axis_label = QLabel("Duty axis [0-100 %]")
         duty_axis_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         pwm_map_layout.addWidget(duty_axis_label, 2, 0)
+        duty_axis_defaults = [0, 12, 25, 37, 50, 62, 75, 100]
         for column in range(OUT_PWM_MAP_RESOLUTION):
-            spin_box = _make_spinbox(0, 100, 0, " %")
+            spin_box = _make_spinbox(0, 100, duty_axis_defaults[column], " %")
             self.pwm_duty_axis.append(spin_box)
             pwm_map_layout.addWidget(spin_box, 2, column + 1)
+            spin_box.valueChanged.connect(self._update_pwm_chart)
 
         pwm_form.addRow(FIELD_LABELS["pwm"]["mapping"], pwm_map_widget)
+        self.pwm_chart = PWMChartWidget()
+        self.pwm_chart.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        pwm_layout.addWidget(pwm_form_widget, 3)
+        pwm_layout.addWidget(self.pwm_chart, 2)
+        self._update_pwm_chart()
         outer.addWidget(self.pwm_box)
 
         self.logic_page = LogicChannelPage(channel_index)
@@ -452,15 +1218,33 @@ class ChannelConfigPage(QWidget):
         safety_form.addRow(FIELD_LABELS["safety"]["act_on_safety"], self.check_act_on_safety)
         outer.addWidget(safety_group)
 
+
+        self.softstart_enable = QCheckBox(FIELD_LABELS["softstart"]["use_softstart"])
+        self.softstart_enable.setChecked(False)
+        outer.addWidget(self.softstart_enable)
+
+        self.softstart_box = QGroupBox("Soft-start")
+        softstart_form = QFormLayout(self.softstart_box)
+        self.edit_softstart_start_duty = _make_spinbox(0, 100, 30, "%")
+        self.edit_softstart_end_duty = _make_spinbox(0, 100, 100, "%")
+        self.edit_softstart_time_threshold = _make_spinbox(0, 2147483647, 5000, " ms")
+        softstart_form.addRow(FIELD_LABELS["softstart"]["start_duty"], self.edit_softstart_start_duty)
+        softstart_form.addRow(FIELD_LABELS["softstart"]["end_duty"], self.edit_softstart_end_duty)
+        softstart_form.addRow(FIELD_LABELS["softstart"]["time_threshold"], self.edit_softstart_time_threshold)
+        outer.addWidget(self.softstart_box)
+
         self.soc_enable = QCheckBox(FIELD_LABELS["soc"]["use_soc"])
         self.soc_enable.setChecked(True)
         outer.addWidget(self.soc_enable)
 
         self.soc_box = QGroupBox("SOC")
         soc_form = QFormLayout(self.soc_box)
-        self.edit_nominal_threshold = _make_spinbox(0, 65535, 0, " mA", 100)
+        self.edit_nominal_threshold = _make_spinbox(1000, 65535, 2000, " mA", 100)
         self.check_allow_inrush = QCheckBox()
         self.check_allow_inrush.setStyleSheet(CHECKBOX_STYLE)
+        self.check_allow_inrush.setChecked(False)
+        self.combo_inrush_input = QComboBox()
+        self.combo_inrush_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.edit_inrush_window_from_start = _make_spinbox(0, 2147483647, 0, " ms")
         self.check_inrush_window_infinite = QCheckBox("Infinite")
         self.check_inrush_window_infinite.setStyleSheet(CHECKBOX_STYLE)
@@ -475,10 +1259,13 @@ class ChannelConfigPage(QWidget):
         inrush_window_layout.addWidget(self.check_inrush_window_infinite)
         inrush_window_layout.addWidget(self.label_inrush_window_infinite)
         inrush_window_layout.addStretch(1)
-        self.edit_inrush_threshold = _make_spinbox(0, 65535, 0, " mA", 100)
-        self.edit_inrush_time_threshold = _make_spinbox(0, 2147483647, 0, " ms")
+        inrush_window_row.setStyleSheet("background-color: transparent;")
+        self.check_inrush_window_infinite.setChecked(True)
+        self.edit_inrush_threshold = _make_spinbox(1000, 65535, 4000, " mA", 100)
+        self.edit_inrush_time_threshold = _make_spinbox(100, 2147483647, 1000, " ms")
         soc_form.addRow(FIELD_LABELS["soc"]["nominal_threshold"], self.edit_nominal_threshold)
         soc_form.addRow(FIELD_LABELS["soc"]["allow_inrush"], self.check_allow_inrush)
+        soc_form.addRow(FIELD_LABELS["soc"]["inrush_input"], self.combo_inrush_input)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_window_from_start"], inrush_window_row)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_threshold"], self.edit_inrush_threshold)
         soc_form.addRow(FIELD_LABELS["soc"]["inrush_time_threshold"], self.edit_inrush_time_threshold)
@@ -486,22 +1273,56 @@ class ChannelConfigPage(QWidget):
 
         self.i2t_enable = QCheckBox(FIELD_LABELS["i2t"]["use_i2t"])
         self.i2t_enable.setChecked(False)
-        self.i2t_enable.setEnabled(False)
+        #self.i2t_enable.setEnabled(False)
         outer.addWidget(self.i2t_enable)
 
         self.i2t_box = QGroupBox("I2T")
-        i2t_form = QFormLayout(self.i2t_box)
-        self.edit_nominal_current = _make_spinbox(0, 65535, 0, " mA", 100)
+        self.i2t_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+        self.i2t_box.setStyleSheet(
+            "QGroupBox { background-color: #1E1E1E; color: #E0E0E0; font-weight: bold; border: 1px solid #444444; border-radius: 6px; margin-top: 8px; padding-top: 12px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 12px; padding: 0 4px; }"
+        )
+        i2t_layout = QHBoxLayout(self.i2t_box)
+        i2t_layout.setContentsMargins(10, 12, 10, 10)
+        i2t_layout.setSpacing(10)
+
+        i2t_form_widget = QWidget()
+        i2t_form_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+        i2t_form_widget.setStyleSheet("QWidget { background-color: #1E1E1E; }")
+        i2t_form = QFormLayout(i2t_form_widget)
+        i2t_form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
+        self.edit_nominal_current = _make_spinbox(1000, 65535, 2000, " mA", 100)
         self.edit_nominal_current_sq = QLineEdit("0")
         self.edit_nominal_current_sq.setReadOnly(True)
         self.edit_nominal_current_sq.setVisible(False)
-        self.edit_time_threshold = _make_spinbox(0, 2147483647, 0, " ms")
+        self.edit_time_threshold = _make_spinbox(100, 2147483647, 1000, " ms")
         self.edit_i2t_threshold = QLineEdit("0")
         self.edit_i2t_threshold.setReadOnly(True)
+        self.edit_nominal_current.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.edit_time_threshold.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.edit_i2t_threshold.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.combo_i2t_preset = QComboBox()
+        self.combo_i2t_preset.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        for label, preset in self.I2T_PRESETS:
+            self.combo_i2t_preset.addItem(label, preset)
+        self.combo_i2t_preset.currentIndexChanged.connect(self._apply_i2t_preset)
+        i2t_form.addRow("Preset:", self.combo_i2t_preset)
+        self.spin_i2t_conductors = _make_spinbox(1, 8, 1)
+        i2t_form.addRow("Conductors:", self.spin_i2t_conductors)
         i2t_form.addRow(FIELD_LABELS["i2t"]["nominal_current"], self.edit_nominal_current)
         #i2t_form.addRow(FIELD_LABELS["i2t"]["nominal_current_sq"], self.edit_nominal_current_sq)
         i2t_form.addRow(FIELD_LABELS["i2t"]["time_threshold"], self.edit_time_threshold)
         i2t_form.addRow(FIELD_LABELS["i2t"]["i2t_threshold"], self.edit_i2t_threshold)
+
+        self.i2t_chart = I2TChartWidget()
+        self.i2t_chart.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        i2t_layout.addWidget(i2t_form_widget, 3)
+        i2t_layout.addWidget(self.i2t_chart, 1)
+
+        self.i2t_chart_inverted = I2TChartInvertedWidget()
+        self.i2t_chart_inverted.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        i2t_layout.addWidget(self.i2t_chart_inverted, 1)
+
         outer.addWidget(self.i2t_box)
 
         self.soc_enable.toggled.connect(self._sync_soc_state)
@@ -509,17 +1330,109 @@ class ChannelConfigPage(QWidget):
         self.check_allow_inrush.toggled.connect(self._sync_soc_inrush_state)
         self.edit_nominal_current.valueChanged.connect(self._update_i2t_fields)
         self.edit_time_threshold.valueChanged.connect(self._update_i2t_fields)
+        self.spin_i2t_conductors.valueChanged.connect(self._apply_i2t_preset)
         self.check_inrush_window_infinite.toggled.connect(self._sync_inrush_window_state)
         self.combo_after_error_behavior.currentIndexChanged.connect(self._sync_after_error_state)
         self.combo_mode.currentIndexChanged.connect(self._sync_mode_state)
+        self.combo_duty_input.currentIndexChanged.connect(self._emit_mode_changed)
+        self.softstart_enable.toggled.connect(self._sync_softstart_state)
+        self.combo_batch.currentIndexChanged.connect(self._emit_batch_changed)
+        self.combo_mode.currentIndexChanged.connect(self._emit_config_changed)
+        self.edit_name.textChanged.connect(self._emit_config_changed)
+        self.edit_base_duty.valueChanged.connect(self._emit_config_changed)
+        self.combo_duty_input.currentIndexChanged.connect(self._emit_config_changed)
+        for spin_box in self.pwm_input_axis:
+            spin_box.valueChanged.connect(self._emit_config_changed)
+        for spin_box in self.pwm_duty_axis:
+            spin_box.valueChanged.connect(self._emit_config_changed)
+        self.combo_after_error_behavior.currentIndexChanged.connect(self._emit_config_changed)
+        self.edit_after_error_latch_time.valueChanged.connect(self._emit_config_changed)
+        self.check_act_on_safety.toggled.connect(self._emit_config_changed)
+        self.edit_err_retry_threshold.valueChanged.connect(self._emit_config_changed)
+        self.edit_retry_timer_interval.valueChanged.connect(self._emit_config_changed)
+        self.softstart_enable.toggled.connect(self._emit_config_changed)
+        self.edit_softstart_start_duty.valueChanged.connect(self._emit_config_changed)
+        self.edit_softstart_end_duty.valueChanged.connect(self._emit_config_changed)
+        self.edit_softstart_time_threshold.valueChanged.connect(self._emit_config_changed)
+        self.soc_enable.toggled.connect(self._emit_config_changed)
+        self.edit_nominal_threshold.valueChanged.connect(self._emit_config_changed)
+        self.check_allow_inrush.toggled.connect(self._emit_config_changed)
+        self.combo_inrush_input.currentIndexChanged.connect(self._emit_config_changed)
+        self.edit_inrush_window_from_start.valueChanged.connect(self._emit_config_changed)
+        self.check_inrush_window_infinite.toggled.connect(self._emit_config_changed)
+        self.edit_inrush_threshold.valueChanged.connect(self._emit_config_changed)
+        self.edit_inrush_time_threshold.valueChanged.connect(self._emit_config_changed)
+        self.i2t_enable.toggled.connect(self._emit_config_changed)
+        self.combo_i2t_preset.currentIndexChanged.connect(self._emit_config_changed)
+        self.spin_i2t_conductors.valueChanged.connect(self._emit_config_changed)
+        self.edit_nominal_current.valueChanged.connect(self._emit_config_changed)
+        self.edit_time_threshold.valueChanged.connect(self._emit_config_changed)
 
         self._apply_spoc_mapping()
         self.refresh_pwm_sources()
+        self.refresh_inrush_sources()
         self._sync_soc_state()
         self._sync_i2t_state()
         self._sync_inrush_window_state()
         self._sync_after_error_state()
         self._sync_mode_state()
+        self._sync_softstart_state()
+        self._update_i2t_fields()
+
+    def _update_pwm_chart(self):
+        if hasattr(self, "pwm_chart"):
+            self.pwm_chart.set_axes(
+                [spin_box.value() for spin_box in self.pwm_input_axis],
+                [spin_box.value() for spin_box in self.pwm_duty_axis],
+            )
+
+    def _clamp_pwm_axis_value(self, spin_boxes, index, maximum):
+        if index < 0 or index >= len(spin_boxes):
+            return
+
+        current_value = spin_boxes[index].value()
+        lower_value = spin_boxes[index - 1].value() if index > 0 else 0
+        upper_value = spin_boxes[index + 1].value() if index < len(spin_boxes) - 1 else maximum
+
+        clamped_value = current_value
+        if current_value < lower_value:
+            clamped_value = lower_value
+        elif current_value > upper_value:
+            clamped_value = upper_value
+        elif index > 0 and current_value == lower_value:
+            clamped_value = min(maximum, lower_value + 1)
+        elif index < len(spin_boxes) - 1 and current_value == upper_value:
+            clamped_value = max(0, upper_value - 1)
+
+        if clamped_value != current_value:
+            spin_boxes[index].blockSignals(True)
+            try:
+                spin_boxes[index].setValue(int(clamped_value))
+            finally:
+                spin_boxes[index].blockSignals(False)
+
+    def _finalize_pwm_input_axis(self, index):
+        self._clamp_pwm_axis_value(self.pwm_input_axis, index, 5000)
+        self._update_pwm_chart()
+
+    def _apply_i2t_preset(self, *_args):
+        preset = self.combo_i2t_preset.currentData()
+        if not preset:
+            return
+
+        conductor_count = max(1, int(self.spin_i2t_conductors.value()))
+        nominal_current = int(preset["nominal_current_ma"]) * conductor_count
+        time_threshold = int(preset["time_threshold_ms"])
+
+        self.edit_nominal_current.blockSignals(True)
+        self.edit_time_threshold.blockSignals(True)
+        try:
+            self.edit_nominal_current.setValue(nominal_current)
+            self.edit_time_threshold.setValue(time_threshold)
+        finally:
+            self.edit_nominal_current.blockSignals(False)
+            self.edit_time_threshold.blockSignals(False)
+
         self._update_i2t_fields()
 
     def _apply_spoc_mapping(self):
@@ -544,23 +1457,38 @@ class ChannelConfigPage(QWidget):
 
     def _sync_soc_state(self):
         enabled = self.soc_enable.isChecked()
+        self.soc_box.setVisible(enabled)
         for widget in (
             self.edit_nominal_threshold,
             self.check_allow_inrush,
-            # self.edit_inrush_window_from_start,
-            # self.check_inrush_window_infinite,
-            # self.label_inrush_window_infinite,
-            # self.edit_inrush_threshold,
-            # self.edit_inrush_time_threshold,
+            self.combo_inrush_input,
         ):
             widget.setEnabled(enabled)
-        self.check_allow_inrush.setChecked(enabled)
+        if not enabled:
+            self.edit_nominal_threshold.setValue(2000)
+            self.check_allow_inrush.blockSignals(True)
+            self.check_allow_inrush.setChecked(False)
+            self.check_allow_inrush.blockSignals(False)
+            inrush_input_index = self.combo_inrush_input.findData(0xFFFF)
+            if inrush_input_index >= 0:
+                self.combo_inrush_input.setCurrentIndex(inrush_input_index)
+            self.edit_inrush_window_from_start.setValue(0)
+            self.check_inrush_window_infinite.blockSignals(True)
+            self.check_inrush_window_infinite.setChecked(True)
+            self.check_inrush_window_infinite.blockSignals(False)
+            self.edit_inrush_threshold.setValue(4000)
+            self.edit_inrush_time_threshold.setValue(1000)
         self._sync_soc_inrush_state()
         self._sync_inrush_window_state()
 
     def _sync_soc_inrush_state(self):
         enabled = self.check_allow_inrush.isChecked()
+        if not enabled:
+            inrush_input_index = self.combo_inrush_input.findData(0xFFFF)
+            if inrush_input_index >= 0:
+                self.combo_inrush_input.setCurrentIndex(inrush_input_index)
         for widget in (
+            self.combo_inrush_input,
             self.edit_inrush_window_from_start,
             self.check_inrush_window_infinite,
             self.label_inrush_window_infinite,
@@ -568,19 +1496,29 @@ class ChannelConfigPage(QWidget):
             self.edit_inrush_time_threshold,
         ):
             widget.setEnabled(enabled)
-        ##self.check_allow_inrush.setChecked(enabled)
-        self.soc_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
+        if self.soc_enable.isChecked() and enabled:
+            self.soc_box.setVisible(True)
 
     def _sync_i2t_state(self):
         enabled = self.i2t_enable.isChecked()
+        self.i2t_box.setVisible(enabled)
         for widget in (
+            self.combo_i2t_preset,
             self.edit_nominal_current,
             self.edit_nominal_current_sq,
             self.edit_time_threshold,
             self.edit_i2t_threshold,
         ):
             widget.setEnabled(enabled)
-        self.i2t_box.setStyleSheet("" if enabled else "QGroupBox { color: #888888; opacity: 0.2;}")
+        if not enabled:
+            self.combo_i2t_preset.blockSignals(True)
+            self.combo_i2t_preset.setCurrentIndex(0)
+            self.combo_i2t_preset.blockSignals(False)
+            self.edit_nominal_current.setValue(2000)
+            self.edit_time_threshold.setValue(1000)
+        self.i2t_chart.setEnabled(enabled)
+        self.i2t_chart_inverted.setEnabled(enabled)
+        self._sync_i2t_chart()
 
     def _sync_inrush_window_state(self):
         infinite = self.check_inrush_window_infinite.isChecked()
@@ -602,6 +1540,17 @@ class ChannelConfigPage(QWidget):
             return UINT32_MAX
         return self.edit_inrush_window_from_start.value()
 
+    @staticmethod
+    def _ma_to_centiamp(value):
+        return max(0, int(value) // 10)
+
+    @staticmethod
+    def _centiamp_to_ma(value):
+        return max(0, int(value)) * 10
+
+    # Backward-compatible alias for an older misspelling used by some configs.
+    _cenitamp_to_ma = _centiamp_to_ma
+
     def _update_i2t_fields(self, *args):
         nominal_current = self.edit_nominal_current.value()
         time_threshold = self.edit_time_threshold.value()
@@ -610,6 +1559,22 @@ class ChannelConfigPage(QWidget):
         self.edit_nominal_current_sq.setText(str(nominal_current_sq))
         self.edit_nominal_current_sq.setVisible(False)
         self.edit_i2t_threshold.setText(str(i2t_threshold))
+        self._sync_i2t_chart()
+
+    def _sync_i2t_chart(self):
+        if hasattr(self, "i2t_chart"):
+            self.i2t_chart.set_parameters(
+                self.edit_nominal_current.value(),
+                self.edit_i2t_threshold.text() or 0,
+                self.i2t_enable.isChecked(),
+            )
+        if hasattr(self, "i2t_chart_inverted"):
+            self.i2t_chart_inverted.set_parameters(
+                self.edit_nominal_current.value(),
+                self.edit_i2t_threshold.text() or 0,
+                self.i2t_enable.isChecked(),
+            )
+
     def _sync_after_error_state(self):
         behavior = self.combo_after_error_behavior.currentData()
         # Enable latch time only for TIME_LATCH behavior
@@ -628,6 +1593,10 @@ class ChannelConfigPage(QWidget):
     def set_pwm_source_provider(self, provider):
         self.pwm_source_provider = provider or (lambda allowed_var=None: [])
         self.refresh_pwm_sources()
+
+    def set_inrush_source_provider(self, provider):
+        self.inrush_source_provider = provider or (lambda allowed_var=None: [])
+        self.refresh_inrush_sources()
 
     def refresh_pwm_sources(self):
         current_value = self.combo_duty_input.currentData()
@@ -652,8 +1621,79 @@ class ChannelConfigPage(QWidget):
             self.combo_duty_input.setCurrentIndex(selected_index)
         self.combo_duty_input.blockSignals(False)
 
+    def refresh_inrush_sources(self):
+        current_value = self.combo_inrush_input.currentData()
+        if current_value is None:
+            current_value = 0xFFFF
+
+        sources = [("Not selected", 0xFFFF)]
+        try:
+            sources.extend(self.inrush_source_provider(0x00))
+        except Exception:
+            pass
+
+        self.combo_inrush_input.blockSignals(True)
+        self.combo_inrush_input.clear()
+        for label, value in sources:
+            self.combo_inrush_input.addItem(label, value)
+
+        selected_index = self.combo_inrush_input.findData(current_value)
+        if selected_index < 0:
+            selected_index = self.combo_inrush_input.findData(0xFFFF)
+        if selected_index >= 0:
+            self.combo_inrush_input.setCurrentIndex(selected_index)
+        self.combo_inrush_input.blockSignals(False)
+
     def _sync_mode_state(self):
-        self.pwm_box.setVisible(self.combo_mode.currentData() == OUT_MODE_PWM)
+        mode = self.combo_mode.currentData() 
+        self.pwm_box.setVisible(mode == OUT_MODE_PWM)
+        self.combo_batch.setEnabled(mode == OUT_MODE_BATCH)
+        if mode != OUT_MODE_BATCH:
+            self.combo_batch.setCurrentIndex(0)
+        softstart_allowed = mode == OUT_MODE_STD
+        self.softstart_enable.setVisible(softstart_allowed)
+        if not softstart_allowed and self.softstart_enable.isChecked():
+            self.softstart_enable.blockSignals(True)
+            self.softstart_enable.setChecked(False)
+            self.softstart_enable.blockSignals(False)
+        self._sync_softstart_state()
+        self.logic_page.set_channel_used(mode != OUT_MODE_UNUSED)
+        self._emit_mode_changed()
+
+    def _sync_softstart_state(self):
+        enabled = self.combo_mode.currentData() == OUT_MODE_STD and self.softstart_enable.isChecked()
+        self.softstart_box.setVisible(enabled)
+        for widget in (
+            self.edit_softstart_start_duty,
+            self.edit_softstart_end_duty,
+            self.edit_softstart_time_threshold,
+        ):
+            widget.setEnabled(enabled)
+        if not enabled:
+            self.edit_softstart_start_duty.setValue(30)
+            self.edit_softstart_end_duty.setValue(100)
+            self.edit_softstart_time_threshold.setValue(5000)
+
+    def _emit_batch_changed(self, *_args):
+        self.batchChanged.emit()
+
+    def _emit_mode_changed(self, *_args):
+        self.modeChanged.emit()
+
+    def _emit_config_changed(self, *_args):
+        self.configChanged.emit()
+
+    def fill_batch_combo(self, ch_idx):
+        self.combo_batch.clear()
+        if ch_idx < 8:
+            start_offset = 4 if ch_idx >= 4 else 0
+            self.combo_batch.addItem("NONE", ch_idx)
+            for i in range(start_offset, start_offset + 4):
+                if i != ch_idx:
+                    self.combo_batch.addItem(f"OUT_{i+1}", i)
+        else:
+            # Handles indices 8 and above
+            self.combo_batch.addItem("NOT ALLOWED", 0)
 
     def apply_dict(self, data):
         mode_value = data.get("mode", OUT_MODE_UNUSED)
@@ -662,7 +1702,12 @@ class ChannelConfigPage(QWidget):
             self.combo_mode.setCurrentIndex(mode_index)
 
         self.edit_name.setText(str(data.get("name", self.edit_name.text())))
-        self.edit_batch.setValue(int(data.get("batch", self.edit_batch.value())))
+        # self.combo_batch.setValue(int(data.get("batch", self.combo_batch.value())))
+
+        batch_value = data.get("batch", 0)
+        batch_index = self.combo_batch.findData(batch_value)
+        if batch_index >= 0:
+            self.combo_batch.setCurrentIndex(batch_index)
 
         pwm = data.get("pwmCfg", {}) or {}
         self.edit_base_duty.setValue(int(pwm.get("baseDuty", self.edit_base_duty.value())))
@@ -682,6 +1727,8 @@ class ChannelConfigPage(QWidget):
             if axis_index < len(axis_values):
                 spin_box.setValue(int(axis_values[axis_index]))
 
+        self._update_pwm_chart()
+
         safety = data.get("safety", {}) or {}
         after_error = safety.get("afterErrorCfg", {}) or {}
         behavior_index = self.combo_after_error_behavior.findData(after_error.get("behavior", OUT_ERR_BEH_NO))
@@ -696,6 +1743,13 @@ class ChannelConfigPage(QWidget):
         self.soc_enable.setChecked(bool(soc.get("useSoc", self.soc_enable.isChecked())))
         self.edit_nominal_threshold.setValue(int(soc.get("nominalThreshold", self.edit_nominal_threshold.value())))
         self.check_allow_inrush.setChecked(bool(soc.get("allowInrush", self.check_allow_inrush.isChecked())))
+        self.refresh_inrush_sources()
+        inrush_input_value = soc.get("inrushInput", 0xFFFF)
+        inrush_input_index = self.combo_inrush_input.findData(inrush_input_value)
+        if inrush_input_index < 0:
+            inrush_input_index = self.combo_inrush_input.findData(0xFFFF)
+        if inrush_input_index >= 0:
+            self.combo_inrush_input.setCurrentIndex(inrush_input_index)
         self._set_inrush_window_from_start(soc.get("inrushWindowFromStart", self._get_inrush_window_from_start()))
         self.edit_inrush_threshold.setValue(int(soc.get("inrushThreshold", self.edit_inrush_threshold.value())))
         self.edit_inrush_time_threshold.setValue(int(soc.get("inrushTimeThreshold", self.edit_inrush_time_threshold.value())))
@@ -708,6 +1762,12 @@ class ChannelConfigPage(QWidget):
         self._sync_soc_state()
         self._sync_soc_inrush_state()
         self._sync_i2t_state()
+        self.softstart_enable.setChecked(bool(data.get("softStart", {}).get("useSoftStart", self.softstart_enable.isChecked())))
+        softstart = data.get("softStart", {}) or {}
+        self.edit_softstart_start_duty.setValue(int(softstart.get("startDuty", self.edit_softstart_start_duty.value())))
+        self.edit_softstart_end_duty.setValue(int(softstart.get("endDuty", self.edit_softstart_end_duty.value())))
+        self.edit_softstart_time_threshold.setValue(int(softstart.get("timeThreshold", self.edit_softstart_time_threshold.value())))
+        self._sync_softstart_state()
         self._update_i2t_fields()
         self._sync_mode_state()
 
@@ -715,6 +1775,12 @@ class ChannelConfigPage(QWidget):
         name_bytes = self.edit_name.text().encode("utf-8")[:32]
         name_bytes = name_bytes.ljust(32, b"\0")
         type_value = OUT_TYPE_BTS500 if self.channel_index < 8 else OUT_TYPE_SPOC2
+        allow_inrush = self.check_allow_inrush.isChecked()
+        inrush_input = self.combo_inrush_input.currentData()
+        if inrush_input is None or int(inrush_input) == 0xFFFF:
+            inrush_input_u16 = 0xFFFF
+        else:
+            inrush_input_u16 = max(0, min(0xFFFF, int(inrush_input)))
         record_values = (
             self.channel_index,  # channel_id
             type_value,  # type
@@ -722,7 +1788,7 @@ class ChannelConfigPage(QWidget):
             0 if self.channel_index < 8 else self.spoc_id,  # spoc_id
             0 if self.channel_index < 8 else self.spoc_ch_id,  # spoc_ch_id
             name_bytes,  # name[16]
-            self.edit_batch.value(),  # batch
+            self.combo_batch.currentData(),  # batch
             self.combo_after_error_behavior.currentData(),  # after_error_behavior
             self.edit_after_error_latch_time.value(),  # after_error_latch_time
             1 if self.check_act_on_safety.isChecked() else 0,  # act_on_safety
@@ -730,19 +1796,24 @@ class ChannelConfigPage(QWidget):
             self.edit_retry_timer_interval.value(),  # retry_timer_interval
             1 if self.soc_enable.isChecked() else 0,  # use_soc
             self.edit_nominal_threshold.value(),  # nominal_threshold
-            1 if self.check_allow_inrush.isChecked() else 0,  # allow_inrush
+            1 if allow_inrush else 0,  # allow_inrush
+            inrush_input_u16 if allow_inrush else 0xFFFF,  # inrush_input
             self._get_inrush_window_from_start(),  # inrush_window_from_start
             self.edit_inrush_threshold.value(),  # inrush_threshold
             self.edit_inrush_time_threshold.value(),  # inrush_time_threshold
             1 if self.i2t_enable.isChecked() else 0,  # use_i2t
-            self.edit_nominal_current.value(),  # nominal_current
-            self.edit_nominal_current.value() ** 2,  # nominal_current_sq
+            self._ma_to_centiamp(self.edit_nominal_current.value()),  # nominal_current (centi-A)
+            self._ma_to_centiamp(self.edit_nominal_current.value()) ** 2,  # nominal_current_sq (centi-A^2)
             self.edit_time_threshold.value(),  # time_threshold
-            self.edit_nominal_current.value() ** 2 * self.edit_time_threshold.value(),  # i2t_threshold
+            self._ma_to_centiamp(self.edit_nominal_current.value()) ** 2 * self.edit_time_threshold.value(),  # i2t_threshold (centi-A^2*ms)
             self.edit_base_duty.value(),  # base_duty
             self.combo_duty_input.currentData(),  # duty_input
             *[spin_box.value() for spin_box in self.pwm_input_axis],  # inputAxis[]
             *[spin_box.value() for spin_box in self.pwm_duty_axis],  # dutyAxis[]
+            1 if self.softstart_enable.isChecked() else 0,  # use_softstart
+            self.edit_softstart_start_duty.value(),  # start_duty
+            self.edit_softstart_end_duty.value(),  # end_duty
+            self.edit_softstart_time_threshold.value(),  # time_threshold
         )
         return struct.pack(
             BINARY_RECORD_FORMAT,
@@ -761,12 +1832,18 @@ class ChannelConfigPage(QWidget):
             "spocId": spoc_id,
             "spocChId": spoc_ch_id,
             "name": self.edit_name.text(),
-            "batch": self.edit_batch.value(),
+            "batch": self.combo_batch.currentData(),
                 "pwmCfg": {
                     "baseDuty": self.edit_base_duty.value(),
                     "dutyInput": self.combo_duty_input.currentData(),
                     "inputAxis": [spin_box.value() for spin_box in self.pwm_input_axis],
                     "dutyAxis": [spin_box.value() for spin_box in self.pwm_duty_axis],
+                },
+                "softStart": {
+                    "useSoftStart": self.softstart_enable.isChecked(),
+                    "startDuty": self.edit_softstart_start_duty.value(),
+                    "endDuty": self.edit_softstart_end_duty.value(),
+                    "timeThreshold": self.edit_softstart_time_threshold.value(),
                 },
             "safety": {
                 "afterErrorCfg": {
@@ -780,6 +1857,7 @@ class ChannelConfigPage(QWidget):
                     "useSoc": self.soc_enable.isChecked(),
                     "nominalThreshold": self.edit_nominal_threshold.value(),
                     "allowInrush": self.check_allow_inrush.isChecked(),
+                    "inrushInput": self.combo_inrush_input.currentData() if self.check_allow_inrush.isChecked() else None,
                     "inrushWindowFromStart": self._get_inrush_window_from_start(),
                     "inrushThreshold": self.edit_inrush_threshold.value(),
                     "inrushTimeThreshold": self.edit_inrush_time_threshold.value(),
@@ -811,30 +1889,47 @@ class LogicChannelPage(QWidget):
 
         logic_group = QGroupBox(f"Control logic")
         logic_form = QFormLayout(logic_group)
+        self.logic_form = logic_form
         self.logic_group = logic_group
         logic_form.setContentsMargins(10, 12, 10, 10)
         logic_form.setVerticalSpacing(6)
         logic_form.setHorizontalSpacing(12)
-
+        
+        isused_group = QHBoxLayout()
+        isused_group.setSpacing(0)
         self.check_used = QCheckBox("")
         self.check_used.setStyleSheet(CHECKBOX_STYLE)
         self.check_used.setChecked(False)
-        logic_form.addRow("Channel used:", self.check_used)
+        self.check_used.setEnabled(False)
+        self.check_used.setVisible(False)
+        self.check_used.setToolTip("Read-only: follows the output channel mode")
+        self.outside_controlled = QLabel("CHANNEL CONTROLLED VIA BATCH")
+        self.outside_controlled.setStyleSheet("color: red; font-weight: bold; font-size: 1.2em;")
+        self.outside_controlled.setVisible(False)
+        
+        isused_group.addWidget(self.check_used)
+        isused_group.addWidget(self.outside_controlled)
+
+        logic_form.addRow("Channel used:", isused_group)
+        self._logic_row_channel_used = logic_form.rowCount() - 1
 
         self.check_always_on = QCheckBox("")
         self.check_always_on.setStyleSheet(CHECKBOX_STYLE)
         self.check_always_on.setChecked(False)
         logic_form.addRow("Always on", self.check_always_on)
+        self._logic_row_always_on = logic_form.rowCount() - 1
 
         self.combo_operator = QComboBox()
         for label, value in LOGIC_OPERATOR_LABELS:
             self.combo_operator.addItem(label, value)
         self.combo_operator.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         logic_form.addRow("Operator:", self.combo_operator)
+        self._logic_row_operator = logic_form.rowCount() - 1
 
         self.label_relation = QLabel("First: - | Second: -")
         self.label_relation.setStyleSheet("QLabel { color: #B0B0B0; font-style: italic; }")
         logic_form.addRow("Allowed:", self.label_relation)
+        self._logic_row_allowed = logic_form.rowCount() - 1
 
         self.combo_input1_type = QComboBox()
         self.combo_input2_type = QComboBox()
@@ -868,6 +1963,7 @@ class LogicChannelPage(QWidget):
         self.combo_input2_bool.setVisible(False)
 
         input1_row = QWidget()
+        input1_row.setStyleSheet("background-color: transparent;")
         input1_layout = QHBoxLayout(input1_row)
         input1_layout.setContentsMargins(0, 0, 0, 0)
         input1_layout.setSpacing(10)
@@ -878,6 +1974,7 @@ class LogicChannelPage(QWidget):
         input1_layout.addStretch(1)
 
         input2_row = QWidget()
+        input2_row.setStyleSheet("background-color: transparent;")
         input2_layout = QHBoxLayout(input2_row)
         input2_layout.setContentsMargins(0, 0, 0, 0)
         input2_layout.setSpacing(10)
@@ -888,7 +1985,9 @@ class LogicChannelPage(QWidget):
         input2_layout.addStretch(1)
 
         logic_form.addRow("Input 1:", input1_row)
+        self._logic_row_input1 = logic_form.rowCount() - 1
         logic_form.addRow("Input 2:", input2_row)
+        self._logic_row_input2 = logic_form.rowCount() - 1
         outer.addWidget(logic_group)
 
         self.combo_operator.currentIndexChanged.connect(self._sync_logic_operator_state)
@@ -911,6 +2010,8 @@ class LogicChannelPage(QWidget):
         self._sync_logic_operator_state()
         self._sync_input_row(self.combo_input1_type, self.edit_input1_value)
         self._sync_input_row(self.combo_input2_type, self.edit_input2_value)
+        self._sync_always_on_visibility()
+        self._set_logic_row_visible(self._logic_row_channel_used, False)
         self.refresh_sensor_sources()
 
     def set_sensor_source_provider(self, provider):
@@ -989,14 +2090,72 @@ class LogicChannelPage(QWidget):
                 return 0
         return 0
 
+    def _apply_always_on_defaults(self):
+        if not self.check_always_on.isChecked():
+            return
+
+        opr_value = 0x08
+        const_digital = 0x01
+        unset_value = 0x03
+
+        widgets = (
+            self.combo_operator,
+            self.combo_input1_type,
+            self.combo_input2_type,
+            self.combo_input1_bool,
+            self.combo_input2_bool,
+            self.edit_input1_value,
+            self.edit_input2_value,
+        )
+        previous_signal_states = {widget: widget.blockSignals(True) for widget in widgets}
+        try:
+            operator_index = self.combo_operator.findData(opr_value)
+            if operator_index >= 0:
+                self.combo_operator.setCurrentIndex(operator_index)
+
+            input1_index = self.combo_input1_type.findData(const_digital)
+            if input1_index >= 0:
+                self.combo_input1_type.setCurrentIndex(input1_index)
+
+            input2_index = self.combo_input2_type.findData(unset_value)
+            if input2_index >= 0:
+                self.combo_input2_type.setCurrentIndex(input2_index)
+
+            self.combo_input1_bool.setCurrentIndex(1)
+            self.combo_input2_bool.setCurrentIndex(0)
+            self.edit_input1_value.setText("1")
+            self.edit_input2_value.setText("0")
+        finally:
+            for widget, previous_state in previous_signal_states.items():
+                widget.blockSignals(previous_state)
+
+        self.combo_operator.setEnabled(False)
+        self.combo_input1_type.setEnabled(False)
+        self.combo_input2_type.setEnabled(False)
+        self.combo_input1_bool.setEnabled(False)
+        self.combo_input2_bool.setEnabled(False)
+        self.edit_input1_value.setEnabled(False)
+        self.edit_input2_value.setEnabled(False)
+
     def _emit_logic_changed(self, *_args):
         self.logicChanged.emit()
+
+    def set_channel_used(self, used):
+        used = bool(used)
+        self.check_used.blockSignals(True)
+        self.check_used.setChecked(used)
+        self.check_used.blockSignals(False)
+        if not used:
+            self.check_always_on.blockSignals(True)
+            self.check_always_on.setChecked(False)
+            self.check_always_on.blockSignals(False)
+        self._sync_always_on_visibility()
+        if used:
+            self._sync_logic_operator_state()
 
     def apply_dict(self, data):
         if not isinstance(data, dict):
             return
-
-        self.check_used.setChecked(bool(data.get("isUsed", self.check_used.isChecked())))
 
         exp = data.get("exp", {}) or {}
         operator_index = self.combo_operator.findData(exp.get("opr", self.combo_operator.currentData()))
@@ -1021,17 +2180,49 @@ class LogicChannelPage(QWidget):
         self.edit_input1_value.setText(str(int(input1_const)))
         self.edit_input2_value.setText(str(int(input2_const)))
 
-        self.check_always_on.setChecked(
-            self.combo_operator.currentData() == 0x03
+        always_on = (
+            self.combo_operator.currentData() in (0x03, 0x08)
             and self.combo_input1_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
-            and self.combo_input2_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
             and self.combo_input1_bool.currentData() == 1
-            and self.combo_input2_bool.currentData() == 1
+            and (
+                (
+                    self.combo_input2_type.currentData() == LOGIC_INPUT_TYPE_CONST_SCHMITT
+                    and self.combo_input2_bool.currentData() == 1
+                )
+                or self.combo_input2_type.currentData() == LOGIC_INPUT_TYPE_UNSET
+            )
         )
+        self.check_always_on.setChecked(always_on if self.check_used.isChecked() else False)
 
         self._sync_logic_operator_state()
+        self._sync_always_on_visibility()
+
+    def disable_logic(self, isDisabled, index):
+        if isDisabled == True:
+            self.check_used.setVisible(False)
+            self.outside_controlled.setText(f"CHANNEL CONTROLLED BATCH WITH OUT_{index + 1}")
+            self.outside_controlled.setVisible(True)
+            self.logic_group.setDisabled(True)
+        else:
+            self.check_used.setVisible(False)
+            self.outside_controlled.setVisible(False)
+            self.logic_group.setDisabled(False)
 
     def to_dict(self):
+        if self.check_used.isChecked() and self.check_always_on.isChecked():
+            return {
+                "isUsed": True,
+                "exp": {
+                    "input1Type": LOGIC_INPUT_TYPE_CONST_SCHMITT,
+                    "input1ID": 0,
+                    "input1Const": 1,
+                    "input2Type": LOGIC_INPUT_TYPE_UNSET,
+                    "input2ID": 0,
+                    "input2Const": 0,
+                    "opr": 0x08,
+                },
+            }
+
         return {
             "isUsed": self.check_used.isChecked(),
             "exp": {
@@ -1056,6 +2247,17 @@ class LogicChannelPage(QWidget):
         }
 
     def pack_logic_record(self):
+        if self.check_used.isChecked() and self.check_always_on.isChecked():
+            return struct.pack(
+                LOGIC_RECORD_FORMAT,
+                1,
+                LOGIC_INPUT_TYPE_CONST_SCHMITT,
+                1,
+                LOGIC_INPUT_TYPE_UNSET,
+                0,
+                0x08,
+            )
+
         return struct.pack(
             LOGIC_RECORD_FORMAT,
             1 if self.check_used.isChecked() else 0,
@@ -1077,43 +2279,10 @@ class LogicChannelPage(QWidget):
         )
 
     def _on_always_on_toggled(self, checked):
+        self._sync_always_on_visibility()
         if checked:
-            # Force operator E and both inputs to CONST_SCHMITT = TRUE
-            # Operator E value is 0x03, CONST_SCHMITT input type is 0x01
-            opr_value = 0x03
-            const_schmitt = 0x01
-            # Set operator (this will repopulate allowed input type combos)
-            idx = self.combo_operator.findData(opr_value)
-            if idx >= 0:
-                self.combo_operator.setCurrentIndex(idx)
+            # Normalize Always ON to CONST_SCHMITT(TRUE) + UNSET and freeze editing.
             self._sync_logic_operator_state()
-
-            # Set both input types to CONST_SCHMITT if available
-            try:
-                idx1 = self.combo_input1_type.findData(const_schmitt)
-                if idx1 >= 0:
-                    self.combo_input1_type.setCurrentIndex(idx1)
-            except Exception:
-                pass
-            try:
-                idx2 = self.combo_input2_type.findData(const_schmitt)
-                if idx2 >= 0:
-                    self.combo_input2_type.setCurrentIndex(idx2)
-            except Exception:
-                pass
-
-            # Set constant values to TRUE (1)
-            self.combo_input1_bool.setCurrentIndex(1)
-            self.combo_input2_bool.setCurrentIndex(1)
-
-            # Disable editing of input types and values while Always ON
-            self.combo_input1_type.setEnabled(False)
-            self.combo_input2_type.setEnabled(False)
-            self.combo_input1_bool.setEnabled(False)
-            self.combo_input2_bool.setEnabled(False)
-            self.edit_input1_value.setEnabled(False)
-            self.edit_input2_value.setEnabled(False)
-            self.combo_operator.setEnabled(False)
         else:
             # Re-enable and refresh operator-derived state
             self.combo_operator.setEnabled(True)
@@ -1121,6 +2290,42 @@ class LogicChannelPage(QWidget):
             self.combo_input2_type.setEnabled(True)
             # Let the operator logic decide whether input2 should be enabled
             self._sync_logic_operator_state()
+
+    def _sync_always_on_visibility(self):
+        used = self.check_used.isChecked()
+        self._set_logic_row_visible(self._logic_row_channel_used, False)
+        self.check_used.setVisible(False)
+        self._set_logic_row_visible(self._logic_row_always_on, used)
+
+        hidden = self.check_always_on.isChecked() or not used
+        for row_index in (
+            getattr(self, "_logic_row_operator", None),
+            getattr(self, "_logic_row_allowed", None),
+            getattr(self, "_logic_row_input1", None),
+            getattr(self, "_logic_row_input2", None),
+        ):
+            if row_index is None:
+                continue
+            self._set_logic_row_visible(row_index, not hidden)
+
+    def _set_logic_row_visible(self, row_index, visible):
+        if row_index is None:
+            return
+        if hasattr(self.logic_form, "setRowVisible"):
+            try:
+                self.logic_form.setRowVisible(int(row_index), bool(visible))
+                return
+            except Exception:
+                pass
+
+        label_item = self.logic_form.itemAt(row_index, QFormLayout.LabelRole)
+        field_item = self.logic_form.itemAt(row_index, QFormLayout.FieldRole)
+        for item in (label_item, field_item):
+            if item is None:
+                continue
+            widget = item.widget()
+            if widget is not None:
+                widget.setVisible(bool(visible))
 
     def _logic_var_label(self, value):
         return {
@@ -1144,12 +2349,20 @@ class LogicChannelPage(QWidget):
     def _input_type_label(self, value):
         return {
             0x00: "SENSOR",
-            0x01: "CONST_SCHMITT",
-            0x02: "CONST_ANALOG",
+            0x01: "CONST DIGITAL",
+            0x02: "CONST ANALOG",
             0x03: "UNSET",
         }.get(value, str(value))
 
     def _sync_logic_operator_state(self):
+        if self.check_always_on.isChecked():
+            self.label_relation.setText("First: - | Second: -")
+            self._allowed_first_var = 0x03
+            self._allowed_second_var = 0x03
+            self._apply_always_on_defaults()
+            self._sync_always_on_visibility()
+            return
+
         operator = self.combo_operator.currentData()
         allowed_first_var, allowed_second_var = LOGIC_OPERATOR_RELATIONS.get(operator, (0x03, 0x03))
         self.label_relation.setText(
@@ -1176,6 +2389,7 @@ class LogicChannelPage(QWidget):
             pass
 
         second_enabled = allowed_second_var != 0x03
+        self._set_logic_row_visible(self._logic_row_input2, second_enabled and not self.check_always_on.isChecked())
         self.combo_input2_type.setEnabled(second_enabled)
         self.edit_input2_value.setEnabled(second_enabled and self.combo_input2_type.currentData() != 0x03)
         if not second_enabled:
@@ -1202,8 +2416,293 @@ class LogicChannelPage(QWidget):
             value_edit.setPlaceholderText("Unused")
 
 
+class ControlCanInputRow(QGroupBox):
+    valueChanged = pyqtSignal(object, object)
+
+    def __init__(self, input_data, parent=None):
+        title = f"CAN input {int(input_data.get('location', 0)) + 1}"
+        super().__init__(title, parent)
+        self.input_data = dict(input_data or {})
+        self._updating = False
+        self._current_value = 0
+        self._usage_labels = []
+
+        self.setStyleSheet(PAGE_LABEL_STYLE)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(10, 12, 10, 10)
+        layout.setSpacing(8)
+
+        self.description_label = QLabel("")
+        self.description_label.setWordWrap(True)
+        layout.addWidget(self.description_label)
+
+        control_row = QWidget()
+        control_layout = QHBoxLayout(control_row)
+        control_layout.setContentsMargins(0, 0, 0, 0)
+        control_layout.setSpacing(8)
+
+        self.toggle_button = QPushButton("OFF")
+        self.toggle_button.setCheckable(True)
+        self.toggle_button.setFixedWidth(100)
+        self.toggle_button.clicked.connect(self._on_toggle_clicked)
+        control_layout.addWidget(self.toggle_button)
+
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(0, 5000)
+        self.slider.valueChanged.connect(self._on_slider_changed)
+        self.slider.setVisible(False)
+        control_layout.addWidget(self.slider, 1)
+
+        self.value_edit = QLineEdit("0")
+        self.value_edit.setFixedWidth(96)
+        self.value_edit.setValidator(QIntValidator(0, 5000, self))
+        self.value_edit.editingFinished.connect(self._on_editing_finished)
+        self.value_edit.setVisible(False)
+        control_layout.addWidget(self.value_edit)
+
+        control_layout.addStretch(1)
+        layout.addWidget(control_row)
+
+        self.outputs_label = QLabel("Controlled outputs: -")
+        self.outputs_label.setWordWrap(True)
+        layout.addWidget(self.outputs_label)
+
+        self._sync_description()
+        self._sync_mode_widgets()
+
+    def _data_type_label(self, value):
+        return {
+            0x00: "BOOL",
+            0x01: "UINT16",
+            0x02: "UINT32",
+            0x03: "INT16",
+            0x04: "INT32",
+            0x05: "FLOAT",
+        }.get(int(value), str(value))
+
+    def _sync_description(self):
+        mode_label = "Digital" if int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else "Analog"
+        can_instance = int(self.input_data.get("canInstance", 0)) + 1
+        can_id = int(self.input_data.get("canId", 0))
+        offset = int(self.input_data.get("offset", 0))
+        data_type = self._data_type_label(self.input_data.get("dataType", 0))
+        self.description_label.setText(
+            f"{mode_label} control, CAN{can_instance}, ID 0x{can_id:03X}, offset {offset}, type {data_type}"
+        )
+
+    def _sync_mode_widgets(self):
+        is_digital = int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT
+        self.toggle_button.setVisible(is_digital)
+        self.slider.setVisible(not is_digital)
+        self.value_edit.setVisible(not is_digital)
+
+    def set_usage_labels(self, usage_labels):
+        self._usage_labels = list(usage_labels or [])
+
+    def set_live_channels(self, channels):
+        if not self._usage_labels:
+            self.outputs_label.setText("Controlled outputs: -")
+            return
+
+        channels = channels or []
+        parts = []
+        for label in self._usage_labels:
+            channel_index = None
+            if isinstance(label, dict):
+                channel_index = label.get("index")
+                channel_name = label.get("name") or f"OUT_{int(channel_index) + 1 if channel_index is not None else 0}"
+            else:
+                channel_name = str(label)
+
+            voltage_text = "- mV"
+            if channel_index is not None:
+                try:
+                    channel_index = int(channel_index)
+                    if 0 <= channel_index < len(channels):
+                        voltage_text = f"{int(channels[channel_index].get('voltage', 0))} mV"
+                except Exception:
+                    voltage_text = "- mV"
+
+            parts.append(f"{channel_name}: {voltage_text}")
+
+        self.outputs_label.setText("Controlled outputs: " + (" | ".join(parts) if parts else "-"))
+
+    def set_value(self, value, emit=False):
+        value = int(bool(value)) if int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT else int(value)
+        if value == self._current_value and not emit:
+            return
+
+        self._current_value = value
+        self._updating = True
+        try:
+            if int(self.input_data.get("mode", IN_MODE_SCHMITT)) == IN_MODE_SCHMITT:
+                self.toggle_button.blockSignals(True)
+                self.toggle_button.setChecked(bool(value))
+                self.toggle_button.setText("ON" if value else "OFF")
+                self.toggle_button.blockSignals(False)
+            else:
+                self.slider.blockSignals(True)
+                self.value_edit.blockSignals(True)
+                self.slider.setValue(max(0, min(5000, int(value))))
+                self.value_edit.setText(str(max(0, min(5000, int(value)))))
+                self.slider.blockSignals(False)
+                self.value_edit.blockSignals(False)
+        finally:
+            self._updating = False
+
+        if emit:
+            self.valueChanged.emit(self.input_data, self._current_value)
+
+    def current_value(self):
+        return self._current_value
+
+    def _on_toggle_clicked(self, checked):
+        if self._updating:
+            return
+        value = 1 if checked else 0
+        self.toggle_button.setText("ON" if checked else "OFF")
+        if value != self._current_value:
+            self._current_value = value
+            self.valueChanged.emit(self.input_data, value)
+
+    def _on_slider_changed(self, value):
+        if self._updating:
+            return
+        self._updating = True
+        try:
+            self.value_edit.blockSignals(True)
+            self.value_edit.setText(str(int(value)))
+            self.value_edit.blockSignals(False)
+        finally:
+            self._updating = False
+        if int(value) != self._current_value:
+            self._current_value = int(value)
+            self.valueChanged.emit(self.input_data, self._current_value)
+
+    def _on_editing_finished(self):
+        if self._updating:
+            return
+        try:
+            value = int(self.value_edit.text())
+        except Exception:
+            value = self._current_value
+        value = max(0, min(5000, value))
+        if value == self._current_value:
+            self.value_edit.setText(str(value))
+            return
+        self._updating = True
+        try:
+            self.slider.blockSignals(True)
+            self.slider.setValue(value)
+            self.slider.blockSignals(False)
+            self.value_edit.setText(str(value))
+        finally:
+            self._updating = False
+        self._current_value = value
+        self.valueChanged.emit(self.input_data, value)
+
+
+class ControlConfigPage(QWidget):
+    can_frame_requested = pyqtSignal(int, object)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setStyleSheet(PAGE_LABEL_STYLE)
+        self._rows = []
+        self._usage_by_input = {}
+        self._latest_channels = []
+
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(20, 20, 20, 20)
+        outer.setSpacing(8)
+        outer.setAlignment(Qt.AlignTop)
+
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setFrameShape(QScrollArea.NoFrame)
+        self.scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.container = QWidget()
+        self.container_layout = QVBoxLayout(self.container)
+        self.container_layout.setContentsMargins(0, 0, 0, 0)
+        self.container_layout.setSpacing(8)
+        self.container_layout.setAlignment(Qt.AlignTop)
+        self.scroll.setWidget(self.container)
+        outer.addWidget(self.scroll, 1)
+
+        self.empty_label = QLabel("No enabled CAN inputs.")
+        self.empty_label.setStyleSheet("QLabel { color: #B0B0B0; font-style: italic; }")
+        self.container_layout.addWidget(self.empty_label)
+
+    def _clear_rows(self):
+        while self.container_layout.count():
+            item = self.container_layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                if widget is self.empty_label:
+                    self.container_layout.removeWidget(widget)
+                    widget.setParent(None)
+                    widget.hide()
+                else:
+                    widget.deleteLater()
+        self._rows = []
+
+    def refresh_controls(self, can_inputs, usage_by_input=None):
+        self._usage_by_input = usage_by_input or {}
+        previous_values = {}
+        for row in self._rows:
+            input_index = int(row.input_data.get("location", 0))
+            previous_values[input_index] = row.current_value()
+
+        self._clear_rows()
+
+        visible_rows = []
+        for input_data in can_inputs or []:
+            if not isinstance(input_data, dict) or not input_data.get("isUsed"):
+                continue
+
+            row_widget = ControlCanInputRow(input_data)
+            input_index = int(input_data.get("location", 0))
+            usage_entries = self._usage_by_input.get(input_index, [])
+            row_widget.set_usage_labels(usage_entries)
+            if input_index in previous_values:
+                row_widget.set_value(previous_values[input_index], emit=False)
+            row_widget.valueChanged.connect(self._handle_value_changed)
+            self.container_layout.addWidget(row_widget)
+            visible_rows.append(row_widget)
+
+        self._rows = visible_rows
+        if not self._rows:
+            self.container_layout.addWidget(self.empty_label)
+            self.empty_label.show()
+        else:
+            self.empty_label.hide()
+
+        self.set_live_channels(self._latest_channels)
+
+    def set_live_channels(self, channels):
+        self._latest_channels = list(channels or [])
+        for row in self._rows:
+            row.set_live_channels(self._latest_channels)
+
+    def _handle_value_changed(self, input_data, value):
+        try:
+            arbitration_id, payload = _build_can_control_payload(
+                int(input_data.get("canId", 0)),
+                int(input_data.get("offset", 0)),
+                int(input_data.get("dataType", 0)),
+                value,
+            )
+        except Exception as exc:
+            QMessageBox.critical(self, "Control send failed", str(exc))
+            return
+
+        self.can_frame_requested.emit(arbitration_id, payload)
+
+
 class InputsConfigPage(QWidget):
     inputsChanged = pyqtSignal()
+    physicalPinClicked = pyqtSignal(str, QPoint)
 
     @staticmethod
     def _make_column_separator():
@@ -1223,12 +2722,6 @@ class InputsConfigPage(QWidget):
         outer.setSpacing(12)
         outer.setAlignment(Qt.AlignTop)
 
-        summary = QLabel(
-            "This tab only changes the viewport. Physical inputs expose Analog/Digital selection; CAN inputs add bus and decoding fields."
-        )
-        summary.setWordWrap(True)
-        outer.addWidget(summary)
-
         physical_group = QGroupBox("Physical inputs")
         physical_layout = QGridLayout(physical_group)
         physical_layout.setContentsMargins(10, 12, 10, 10)
@@ -1236,21 +2729,29 @@ class InputsConfigPage(QWidget):
         physical_layout.setVerticalSpacing(8)
         physical_layout.addWidget(QLabel("Input"), 0, 0)
         physical_layout.addWidget(self._make_column_separator(), 0, 1)
-        physical_layout.addWidget(QLabel("Used by outputs"), 0, 2)
+        physical_layout.addWidget(QLabel("Physical pin"), 0, 2)
         physical_layout.addWidget(self._make_column_separator(), 0, 3)
-        physical_layout.addWidget(QLabel("Interpretation"), 0, 4)
+        physical_layout.addWidget(QLabel("Used by outputs"), 0, 4)
+        physical_layout.addWidget(self._make_column_separator(), 0, 5)
+        physical_layout.addWidget(QLabel("Interpretation"), 0, 6)
 
         self.physical_rows = []
         for index in range(8):
             label = QLabel(f"Physical input {index + 1}")
+            pin = ClickableValueLabel(PHYSICAL_INPUT_PIN_LABELS[index])
+            pin.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            pin.setToolTip("Click to highlight this pin assignment on the header image")
             combo = QComboBox()
             usage = QLabel("-")
             usage.setWordWrap(True)
             for option_label, option_value in INPUT_INTERPRETATION_LABELS:
                 combo.addItem(option_label, option_value)
             physical_layout.addWidget(label, index + 1, 0)
-            physical_layout.addWidget(combo, index + 1, 4)
-            self.physical_rows.append({"label": label, "interpretation": combo, "usage": usage})
+            physical_layout.addWidget(pin, index + 1, 2)
+            physical_layout.addWidget(usage, index + 1, 4)
+            physical_layout.addWidget(combo, index + 1, 6)
+            self.physical_rows.append({"label": label, "pin": pin, "interpretation": combo, "usage": usage})
+            pin.clicked.connect(self.physicalPinClicked.emit)
             combo.currentIndexChanged.connect(lambda *_: self.inputsChanged.emit())
 
         outer.addWidget(physical_group)
@@ -1343,13 +2844,24 @@ class InputsConfigPage(QWidget):
     def set_usage_by_input(self, usage_by_input):
         usage_by_input = usage_by_input or {}
 
+        def _format_usage(entries):
+            formatted = []
+            for entry in entries:
+                if isinstance(entry, dict):
+                    name = str(entry.get("name", "")).strip()
+                    if name:
+                        formatted.append(name)
+                else:
+                    formatted.append(str(entry))
+            return ", ".join(formatted) if formatted else "-"
+
         for index, row in enumerate(self.physical_rows):
             outputs = usage_by_input.get(index, [])
-            row["usage"].setText(", ".join(outputs) if outputs else "-")
+            row["usage"].setText(_format_usage(outputs))
 
         for index, row in enumerate(self.can_rows):
             outputs = usage_by_input.get(8 + index, [])
-            row["usage"].setText(", ".join(outputs) if outputs else "-")
+            row["usage"].setText(_format_usage(outputs))
 
     def _packed_input_mode(self, interpretation_combo):
         output = interpretation_combo.currentData()
@@ -1512,9 +3024,12 @@ class ConfigTab(QWidget):
     send_reset_requested = pyqtSignal()
     request_config_requested = pyqtSignal()
     can_frames_changed = pyqtSignal(object)
+    can_frame_requested = pyqtSignal(int, object)
+    config_applied = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._bulk_loading = False
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -1570,6 +3085,8 @@ class ConfigTab(QWidget):
         title_row.addWidget(self.btn_reset_device)
         layout.addLayout(title_row)
 
+        self.header_overlay = HeaderPinOverlayWidget(self)
+
         # subtitle = QLabel(
         #     "One tab per channel. Type is display-only and derived from the channel number; channels 1-8 export spoc fields as 0. "
         #     "Use Load JSON to restore a saved configuration or Export binary for a packed little-endian payload."
@@ -1580,6 +3097,10 @@ class ConfigTab(QWidget):
         self.tabs = QTabWidget()
         self.tabs.setMovable(True)
         self.tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.summary_page = ConfigSummaryPage()
+        self.tabs.addTab(self.summary_page, "Summary")
+
         inputs_scroll = QScrollArea()
         inputs_scroll.setWidgetResizable(True)
         inputs_scroll.setFrameShape(QScrollArea.NoFrame)
@@ -1587,6 +3108,7 @@ class ConfigTab(QWidget):
         self.inputs_page = InputsConfigPage()
         inputs_scroll.setWidget(self.inputs_page)
         self.tabs.addTab(inputs_scroll, "Inputs")
+        self.inputs_page.physicalPinClicked.connect(self.header_overlay.set_assignment)
         self.channel_widgets = []
         for index in range(CHANNEL_COUNT):
             scroll = QScrollArea()
@@ -1596,8 +3118,16 @@ class ConfigTab(QWidget):
             page = ChannelConfigPage(index)
             page.logic_page.set_sensor_source_provider(self.inputs_page.get_sensor_sources)
             page.set_pwm_source_provider(self.inputs_page.get_sensor_sources)
+            page.set_inrush_source_provider(self.inputs_page.get_sensor_sources)
             page.logic_page.logicChanged.connect(self._refresh_input_usage_summary)
             page.edit_name.textChanged.connect(self._refresh_input_usage_summary)
+            page.batchChanged.connect(self._refresh_batch_relations)
+            page.batchChanged.connect(self._refresh_summary_page)
+            page.modeChanged.connect(self._refresh_input_usage_summary)
+            page.modeChanged.connect(self._refresh_summary_page)
+            page.modeChanged.connect(self._verify_overall_mode_validity)
+            page.configChanged.connect(self._refresh_summary_page)
+            page.physicalPinClicked.connect(self.header_overlay.set_assignment)
             self.channel_widgets.append(page)
             scroll.setWidget(page)
             self.tabs.addTab(scroll, f"Channel {index + 1}")
@@ -1605,10 +3135,14 @@ class ConfigTab(QWidget):
 
         self.inputs_page.inputsChanged.connect(self._refresh_logic_sensor_sources)
         self.inputs_page.inputsChanged.connect(self._refresh_pwm_sensor_sources)
+        self.inputs_page.inputsChanged.connect(self._refresh_inrush_sensor_sources)
         self.inputs_page.inputsChanged.connect(self._emit_can_frames_changed)
+        self.inputs_page.inputsChanged.connect(self._refresh_summary_page)
         self._refresh_logic_sensor_sources()
         self._refresh_pwm_sensor_sources()
+        self._refresh_inrush_sensor_sources()
         self._emit_can_frames_changed()
+        self._refresh_summary_page()
 
         transfer_box = QGroupBox("Transfer status")
         transfer_box.setStyleSheet(TRANSFER_GROUP_STYLE)
@@ -1632,6 +3166,16 @@ class ConfigTab(QWidget):
         transfer_layout.addLayout(transfer_row)
         layout.addWidget(transfer_box)
 
+    @staticmethod
+    def _ma_to_centiamp(value):
+        return max(0, int(value) // 10)
+
+    @staticmethod
+    def _centiamp_to_ma(value):
+        return max(0, int(value)) * 10
+
+    _cenitamp_to_ma = _centiamp_to_ma
+
     def collect_config(self):
         return {
             "channels": [widget.to_dict() for widget in self.channel_widgets],
@@ -1640,31 +3184,45 @@ class ConfigTab(QWidget):
         }
 
     def apply_config(self, config):
-        if isinstance(config, dict):
-            inputs_data = config.get("inputs")
-            if isinstance(inputs_data, dict):
-                self.inputs_page.apply_dict(inputs_data)
+        self._bulk_loading = True
+        self.setUpdatesEnabled(False)
+        try:
+            if isinstance(config, dict):
+                inputs_data = config.get("inputs")
+                if isinstance(inputs_data, dict):
+                    self.inputs_page.apply_dict(inputs_data)
 
-        channels = config.get("channels") if isinstance(config, dict) else config
-        if not isinstance(channels, list):
-            raise ValueError("Expected a channels list in the JSON file")
+            channels = config.get("channels") if isinstance(config, dict) else config
+            if not isinstance(channels, list):
+                raise ValueError("Expected a channels list in the JSON file")
 
-        for index, channel_data in enumerate(channels[: len(self.channel_widgets)]):
-            if isinstance(channel_data, dict):
-                self.channel_widgets[index].apply_dict(channel_data)
-                logic_data = channel_data.get("logic")
-                if isinstance(logic_data, dict):
-                    self.channel_widgets[index].logic_page.apply_dict(logic_data)
+            for index, channel_data in enumerate(channels[: len(self.channel_widgets)]):
+                if isinstance(channel_data, dict):
+                    self.channel_widgets[index].apply_dict(channel_data)
+                    logic_data = channel_data.get("logic")
+                    if isinstance(logic_data, dict):
+                        self.channel_widgets[index].logic_page.apply_dict(logic_data)
 
-        if isinstance(config, dict):
-            logic_data = config.get("logic")
-            if isinstance(logic_data, list):
-                for index, logic_item in enumerate(logic_data[: len(self.channel_widgets)]):
-                    if isinstance(logic_item, dict):
-                        self.channel_widgets[index].logic_page.apply_dict(logic_item)
+            if isinstance(config, dict):
+                logic_data = config.get("logic")
+                if isinstance(logic_data, list):
+                    for index, logic_item in enumerate(logic_data[: len(self.channel_widgets)]):
+                        if isinstance(logic_item, dict):
+                            self.channel_widgets[index].logic_page.apply_dict(logic_item)
+                            self.channel_widgets[index].logic_page.set_channel_used(
+                                self.channel_widgets[index].combo_mode.currentData() != OUT_MODE_UNUSED
+                            )
+        finally:
+            self.setUpdatesEnabled(True)
+            self._bulk_loading = False
 
+        self._refresh_batch_relations()
+        self._refresh_pwm_sensor_sources()
+        self._refresh_inrush_sensor_sources()
         self._refresh_logic_sensor_sources()
+        self._verify_overall_mode_validity()
         self._emit_can_frames_changed()
+        self.config_applied.emit()
 
     def get_defined_can_frame_options(self):
         # Build a unique list of arbitration IDs from enabled CAN input rows.
@@ -1682,47 +3240,151 @@ class ConfigTab(QWidget):
         return options
 
     def _emit_can_frames_changed(self):
+        if self._bulk_loading:
+            return
         self.can_frames_changed.emit(self.get_defined_can_frame_options())
 
     def _refresh_logic_sensor_sources(self):
+        if self._bulk_loading:
+            return
         for channel_widget in self.channel_widgets:
             channel_widget.logic_page.refresh_sensor_sources()
         self._refresh_input_usage_summary()
 
     def _refresh_pwm_sensor_sources(self):
+        if self._bulk_loading:
+            return
         for channel_widget in self.channel_widgets:
             channel_widget.refresh_pwm_sources()
 
+    def _refresh_inrush_sensor_sources(self):
+        if self._bulk_loading:
+            return
+        for channel_widget in self.channel_widgets:
+            channel_widget.refresh_inrush_sources()
+
+    def _refresh_control_page(self, usage_by_input=None):
+        if self._bulk_loading:
+            return
+        if not hasattr(self, "control_page"):
+            return
+
+        can_inputs = self.inputs_page.to_dict().get("can", [])
+        usage_by_input = self.build_usage_by_input() if usage_by_input is None else usage_by_input
+        self.control_page.refresh_controls(can_inputs, usage_by_input)
+
+    def set_live_channel_data(self, channels):
+        if hasattr(self, "control_page"):
+            self.control_page.set_live_channels(channels)
+
+    def _refresh_batch_relations(self):
+        if self._bulk_loading:
+            return
+        batch_controlled = [-1] * 16
+        for index, channel_widget in enumerate(self.channel_widgets):
+            batch = channel_widget.combo_batch.currentData()
+            if batch != -1 and batch != index and index < 8:
+                batch_controlled[batch] = index
+
+        for index, channel_widget in enumerate(self.channel_widgets):
+            channel_widget.logic_page.disable_logic(batch_controlled[index] != -1, batch_controlled[index])
+
+        for_removal = [item for i, x in enumerate(batch_controlled) if x != -1 for item in (i, x)]
+
+        for index, channel_widget in enumerate(self.channel_widgets):
+            channel_widget.combo_batch.blockSignals(True)
+            current_batch = channel_widget.combo_batch.currentData()
+            channel_widget.fill_batch_combo(index)
+            batch_index = channel_widget.combo_batch.findData(current_batch)
+            channel_widget.combo_batch.setCurrentIndex(batch_index)
+            channel_widget.combo_batch.blockSignals(False)
+
+        for index, channel_widget in enumerate(self.channel_widgets):
+            if index not in for_removal:
+                for remove in for_removal:
+                    if index != remove:
+                        remove_index = channel_widget.combo_batch.findData(remove)
+                        if remove_index >= 0:
+                            channel_widget.combo_batch.removeItem(remove_index)
+
+    def _verify_overall_mode_validity(self):
+        if self._bulk_loading:
+            return
+        channels_in_pwm = []
+        for index, channel_widget in enumerate(self.channel_widgets):
+            mode = channel_widget.combo_mode.currentData()
+            if mode == OUT_MODE_PWM:
+                channels_in_pwm.append(f"CH{index + 1} (PWM)")
+            elif mode == OUT_MODE_STD and channel_widget.softstart_enable.isChecked():
+                channels_in_pwm.append(f"CH{index + 1} (SOFTSTART)")
+
+        if len(channels_in_pwm) > 4:
+            str_channels_in_pwm = "".join([f"{x}\n" for x in channels_in_pwm])
+            QMessageBox.critical(
+                self,
+                "PWM setup error",
+                f"Maximum number of channels used for PWM is 4, asked for {len(channels_in_pwm)}.\n\n{str_channels_in_pwm}",
+            )
+
     def _refresh_input_usage_summary(self):
+        if self._bulk_loading:
+            return
+        usage_by_input = self.build_usage_by_input()
+        self.inputs_page.set_usage_by_input(usage_by_input)
+        self._refresh_control_page(usage_by_input)
+        self._refresh_summary_page()
+
+    def _build_input_label_map(self):
+        label_map = {}
+        for source_label, source_id in self.inputs_page.get_sensor_sources(None):
+            try:
+                label_map[int(source_id)] = str(source_label)
+            except Exception:
+                continue
+        return label_map
+
+    def _refresh_summary_page(self):
+        if self._bulk_loading or not hasattr(self, "summary_page"):
+            return
+        self.summary_page.refresh_summary(self.channel_widgets, self._build_input_label_map())
+
+    def build_usage_by_input(self):
         usage_by_input = {}
 
         for output_index, channel_widget in enumerate(self.channel_widgets):
             logic_data = channel_widget.logic_page.to_dict()
-            if not logic_data.get("isUsed"):
-                continue
-
             output_name = channel_widget.edit_name.text().strip() or f"OUT_{output_index + 1}"
-            output_label = f"CH{output_index + 1}:{output_name}"
+            is_active_output = channel_widget.combo_mode.currentData() != OUT_MODE_UNUSED
 
-            exp = logic_data.get("exp", {}) or {}
-            for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
-                if exp.get(type_key) != LOGIC_INPUT_TYPE_SENSOR:
-                    continue
+            if is_active_output and logic_data.get("isUsed"):
+                output_label = {"index": output_index, "name": output_name}
+                exp = logic_data.get("exp", {}) or {}
+                for type_key, id_key in (("input1Type", "input1ID"), ("input2Type", "input2ID")):
+                    if exp.get(type_key) != LOGIC_INPUT_TYPE_SENSOR:
+                        continue
 
-                source_id = exp.get(id_key)
-                if source_id is None:
-                    continue
-                try:
-                    source_id = int(source_id)
-                except Exception:
-                    continue
+                    source_id = exp.get(id_key)
+                    if source_id is None:
+                        continue
+                    try:
+                        source_id = int(source_id)
+                    except Exception:
+                        continue
 
-                if source_id not in usage_by_input:
-                    usage_by_input[source_id] = []
-                if output_label not in usage_by_input[source_id]:
-                    usage_by_input[source_id].append(output_label)
+                    usage_by_input.setdefault(source_id, [])
+                    if output_label not in usage_by_input[source_id]:
+                        usage_by_input[source_id].append(output_label)
 
-        self.inputs_page.set_usage_by_input(usage_by_input)
+            if is_active_output and channel_widget.combo_mode.currentData() == OUT_MODE_PWM:
+                duty_input = channel_widget.combo_duty_input.currentData()
+                if duty_input is not None and int(duty_input) != 0xFFFF:
+                    pwm_label = {"index": output_index, "name": f"{output_name} (PWM)"}
+                    duty_source_id = int(duty_input)
+                    usage_by_input.setdefault(duty_source_id, [])
+                    if pwm_label not in usage_by_input[duty_source_id]:
+                        usage_by_input[duty_source_id].append(pwm_label)
+
+        return usage_by_input
 
     def _build_output_payload(self):
         return b"".join(widget.pack_binary_record() for widget in self.channel_widgets)
@@ -1756,6 +3418,15 @@ class ConfigTab(QWidget):
     def _request_config(self):
         self.set_isotp_state(0, "Preparing config request", busy=True)
         self.request_config_requested.emit()
+
+    def send_binary_to_device(self):
+        self._send_binary()
+
+    def request_device_config(self):
+        self._request_config()
+
+    def reset_device(self):
+        self._send_reset()
 
     def set_isotp_state(self, progress, status=None, busy=None):
         self.progress_send.setValue(max(0, min(100, int(progress))))
@@ -1802,26 +3473,48 @@ class ConfigTab(QWidget):
 
     def load_binary_payload(self, data):
         try:
-            self._load_binary_payload(data)
+            self._load_binary_payload(data, apply=True)
         except Exception as exc:
             QMessageBox.critical(self, "Load failed", f"Could not load binary: {exc}")
 
-    def _load_binary_payload(self, data):
+    def parse_binary_payload(self, data):
+        return self._load_binary_payload(data, apply=False)
+
+    def _load_binary_payload(self, data, apply=True):
         expected_size = (
             OUTPUT_CONFIG_TOTAL_SIZE
             + CAN_INPUT_TOTAL_SIZE
             + INPUT_TOTAL_SIZE
             + LOGIC_TOTAL_SIZE
         )
+        expected_size_with_crc = expected_size + 4
+        previous_size = (
+            V3_OUTPUT_CONFIG_TOTAL_SIZE
+            + CAN_INPUT_TOTAL_SIZE
+            + INPUT_TOTAL_SIZE
+            + LOGIC_TOTAL_SIZE
+        )
+        previous_size_with_crc = previous_size + 4
         legacy_output_size = LEGACY_OUTPUT_CONFIG_TOTAL_SIZE
+        legacy_output_size_with_crc = legacy_output_size + 4
         payload = None
         if len(data) == expected_size:
             payload = data
+        elif len(data) == expected_size_with_crc:
+            payload = data[:-4]
+        elif len(data) == previous_size:
+            payload = data
+        elif len(data) == previous_size_with_crc:
+            payload = data[:-4]
         elif len(data) == legacy_output_size:
             payload = data
+        elif len(data) == legacy_output_size_with_crc:
+            payload = data[:-4]
         elif len(data) >= 5 and data[:4] == BINARY_MAGIC:
             payload = data[5:]
-            if len(payload) not in (expected_size, legacy_output_size):
+            if len(payload) in (expected_size_with_crc, previous_size_with_crc, legacy_output_size_with_crc):
+                payload = payload[:-4]
+            if len(payload) not in (expected_size, previous_size, legacy_output_size):
                 raise ValueError("Binary header found but payload size mismatch")
         else:
             raise ValueError(f"Invalid binary size: {len(data)} bytes")
@@ -1837,39 +3530,87 @@ class ConfigTab(QWidget):
                 return hi
             return iv
 
+        def _sanitize_input_id(v):
+            iv = _clamp(v, 0, 0xFFFF)
+            if iv in (0xFF, 0xFFFF):
+                return 0xFFFF
+            if 0 <= iv < INPUT_CONFIG_COUNT:
+                return iv
+            return 0xFFFF
+
         if len(payload) == legacy_output_size:
             channels = []
 
-        def _build_output_channel_dict(values, include_pwm):
+        def _build_output_channel_dict(values, include_pwm, include_inrush_input):
             if include_pwm:
-                (
-                    ch_id,
-                    type_v,
-                    mode_v,
-                    spoc_id,
-                    spoc_ch,
-                    name_bytes,
-                    batch,
-                    after_err_beh,
-                    after_err_latch_time,
-                    act_on_safety,
-                    err_retry_threshold,
-                    retry_timer_interval,
-                    use_soc,
-                    nominal_threshold,
-                    allow_inrush,
-                    inrush_window_from_start,
-                    inrush_threshold,
-                    inrush_time_threshold,
-                    use_i2t,
-                    nominal_current,
-                    nominal_current_sq,
-                    time_threshold,
-                    i2t_threshold,
-                    base_duty,
-                    duty_input,
-                    *axis_values,
-                ) = values
+                if include_inrush_input:
+                    (
+                        ch_id,
+                        type_v,
+                        mode_v,
+                        spoc_id,
+                        spoc_ch,
+                        name_bytes,
+                        batch,
+                        after_err_beh,
+                        after_err_latch_time,
+                        act_on_safety,
+                        err_retry_threshold,
+                        retry_timer_interval,
+                        use_soc,
+                        nominal_threshold,
+                        allow_inrush,
+                        inrush_input,
+                        inrush_window_from_start,
+                        inrush_threshold,
+                        inrush_time_threshold,
+                        use_i2t,
+                        nominal_current,
+                        nominal_current_sq,
+                        time_threshold,
+                        i2t_threshold,
+                        base_duty,
+                        duty_input,
+                        *axis_values,
+                        use_softstart,
+                        softstart_start_duty,
+                        softstart_end_duty,
+                        softstart_time_threshold,
+                    ) = values
+                else:
+                    (
+                        ch_id,
+                        type_v,
+                        mode_v,
+                        spoc_id,
+                        spoc_ch,
+                        name_bytes,
+                        batch,
+                        after_err_beh,
+                        after_err_latch_time,
+                        act_on_safety,
+                        err_retry_threshold,
+                        retry_timer_interval,
+                        use_soc,
+                        nominal_threshold,
+                        allow_inrush,
+                        inrush_window_from_start,
+                        inrush_threshold,
+                        inrush_time_threshold,
+                        use_i2t,
+                        nominal_current,
+                        nominal_current_sq,
+                        time_threshold,
+                        i2t_threshold,
+                        base_duty,
+                        duty_input,
+                        *axis_values,
+                        use_softstart,
+                        softstart_start_duty,
+                        softstart_end_duty,
+                        softstart_time_threshold,
+                    ) = values
+                    inrush_input = 0xFFFF
                 input_axis = [int(axis_values[index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
                 duty_axis = [int(axis_values[OUT_PWM_MAP_RESOLUTION + index]) for index in range(OUT_PWM_MAP_RESOLUTION)]
             else:
@@ -1898,16 +3639,27 @@ class ConfigTab(QWidget):
                     time_threshold,
                     i2t_threshold,
                 ) = values
+                inrush_input = 0xFFFF
                 base_duty = 0
                 duty_input = 0xFFFF
                 input_axis = [0] * OUT_PWM_MAP_RESOLUTION
                 duty_axis = [0] * OUT_PWM_MAP_RESOLUTION
+                use_softstart = 0
+                softstart_start_duty = 0
+                softstart_end_duty = 0
+                softstart_time_threshold = 0
             name = name_bytes.split(b"\0", 1)[0].decode("utf-8", errors="replace")
             pwm_cfg = {
                 "baseDuty": _clamp(base_duty, 0, 100),
                 "dutyInput": _clamp(duty_input, 0, 0xFFFF),
                 "inputAxis": [_clamp(value, 0, 5000) for value in input_axis],
                 "dutyAxis": [_clamp(value, 0, 100) for value in duty_axis],
+            }
+            softstart_cfg = {
+                "useSoftStart": bool(use_softstart),
+                "startDuty": _clamp(softstart_start_duty, 0, 100),
+                "endDuty": _clamp(softstart_end_duty, 0, 100),
+                "timeThreshold": _clamp(softstart_time_threshold, 0, 2147483647),
             }
             return {
                 "id": ch_id,
@@ -1918,6 +3670,7 @@ class ConfigTab(QWidget):
                 "name": name,
                 "batch": batch,
                 "pwmCfg": pwm_cfg,
+                "softStart": softstart_cfg,
                 "safety": {
                     "afterErrorCfg": {"behavior": after_err_beh, "latchTime": _clamp(after_err_latch_time, 0, 2147483647)},
                     "actOnSafety": bool(act_on_safety),
@@ -1927,16 +3680,17 @@ class ConfigTab(QWidget):
                         "useSoc": bool(use_soc),
                         "nominalThreshold": _clamp(nominal_threshold, 0, 65535),
                         "allowInrush": bool(allow_inrush),
+                        "inrushInput": _sanitize_input_id(inrush_input),
                         "inrushWindowFromStart": _clamp(inrush_window_from_start, 0, UINT32_MAX),
                         "inrushThreshold": _clamp(inrush_threshold, 0, 2147483647),
                         "inrushTimeThreshold": _clamp(inrush_time_threshold, 0, 2147483647),
                     },
                     "i2tCfg": {
                         "useI2t": bool(use_i2t),
-                        "nominalCurrent": _clamp(nominal_current, 0, 65535),
-                        "nominalCurrentSq": _clamp(nominal_current_sq, 0, 2147483647),
+                        "nominalCurrent": _clamp(self._centiamp_to_ma(nominal_current), 0, 65535),
+                        "nominalCurrentSq": _clamp(self._centiamp_to_ma(nominal_current) ** 2, 0, 2147483647),
                         "timeThreshold": _clamp(time_threshold, 0, 2147483647),
-                        "i2tThreshold": _clamp(i2t_threshold, 0, 2147483647),
+                        "i2tThreshold": _clamp(self._centiamp_to_ma(nominal_current) ** 2 * time_threshold, 0, 2147483647),
                     },
                 },
             }
@@ -1947,18 +3701,27 @@ class ConfigTab(QWidget):
                 start = i * LEGACY_BINARY_RECORD_SIZE
                 rec = payload[start : start + LEGACY_BINARY_RECORD_SIZE]
                 tup = struct.unpack(LEGACY_BINARY_RECORD_FORMAT, rec)
-                channels.append(_build_output_channel_dict(tup, False))
+                channels.append(_build_output_channel_dict(tup, False, False))
 
-            self.apply_config({"channels": channels})
-            return
+            config = {"channels": channels}
+            if apply:
+                self.apply_config(config)
+            return config
 
         offset = 0
         channels = []
-        for i in range(CHANNEL_COUNT):
-            rec = payload[offset : offset + BINARY_RECORD_SIZE]
-            tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
-            channels.append(_build_output_channel_dict(tup, True))
-            offset += BINARY_RECORD_SIZE
+        if len(payload) == previous_size:
+            for i in range(CHANNEL_COUNT):
+                rec = payload[offset : offset + BINARY_RECORD_SIZE_V3]
+                tup = struct.unpack(BINARY_RECORD_FORMAT_V3, rec)
+                channels.append(_build_output_channel_dict(tup, True, False))
+                offset += BINARY_RECORD_SIZE_V3
+        else:
+            for i in range(CHANNEL_COUNT):
+                rec = payload[offset : offset + BINARY_RECORD_SIZE]
+                tup = struct.unpack(BINARY_RECORD_FORMAT, rec)
+                channels.append(_build_output_channel_dict(tup, True, True))
+                offset += BINARY_RECORD_SIZE
         can_inputs = []
         for index in range(CAN_INPUT_COUNT):
             rec = payload[offset : offset + CAN_INPUT_RECORD_SIZE]
@@ -2011,11 +3774,16 @@ class ConfigTab(QWidget):
             if can_input_index < len(inputs):
                 mode_val = inputs[can_input_index].get("mode")
             entry = dict(can_entry)
+            entry["location"] = i
+            entry["type"] = IN_TYPE_CAN
             if mode_val is not None:
                 entry["mode"] = mode_val
             merged_can.append(entry)
 
-        self.apply_config({"channels": channels, "inputs": {"can": merged_can, "physical": inputs[:8]}, "logic": logic})
+        config = {"channels": channels, "inputs": {"can": merged_can, "physical": inputs[:8]}, "logic": logic}
+        if apply:
+            self.apply_config(config)
+        return config
 
     def export_binary(self):
         default_name = str(CONFIG_DIR / "pdm_output_config.bin")

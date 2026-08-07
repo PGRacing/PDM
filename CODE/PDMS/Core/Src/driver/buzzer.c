@@ -25,3 +25,10 @@ void BUZZER_TurnOff(void)
     LL_GPIO_ResetOutputPin(buzzerIo.port, buzzerIo.pin);
 #endif
 }
+
+void BUZZER_Toggle(void)
+{
+#ifdef USE_BUZZER
+    LL_GPIO_TogglePin(buzzerIo.port, buzzerIo.pin);
+#endif
+}

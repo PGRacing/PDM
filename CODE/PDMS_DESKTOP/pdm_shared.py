@@ -8,6 +8,7 @@ CHANNEL_COUNT = 16
 PHY_INPUT_COUNT = 8
 BASE_ID = 0x400
 BASE_DIR = Path(__file__).resolve().parent
+APP_VERSION = "1.2.1"
 
 
 def get_runtime_base_dir():
@@ -52,7 +53,74 @@ def _load_app_config():
 
 _APP_CONFIG = _load_app_config()
 
-CAN_CHANNEL = str(_APP_CONFIG.get("usb_device", "COM16"))
+
+def get_app_config_candidate_paths():
+    return [
+        get_runtime_base_dir() / "app_config.json",
+        get_runtime_base_dir() / "config" / "app_config.json",
+        get_bundle_base_dir() / "app_config.json",
+        get_bundle_base_dir() / "config" / "app_config.json",
+    ]
+
+
+def load_app_config():
+    return dict(_load_app_config())
+
+
+def get_can_channel(default="COM16"):
+    return str(_APP_CONFIG.get("usb_device", default))
+
+
+def set_can_channel_runtime(channel_name):
+    _APP_CONFIG["usb_device"] = str(channel_name)
+    global CAN_CHANNEL
+    CAN_CHANNEL = str(channel_name)
+
+
+def save_usb_device_config(channel_name):
+    current = load_app_config()
+    data = dict(current) if isinstance(current, dict) else {}
+    data["usb_device"] = str(channel_name)
+    for candidate_path in get_app_config_candidate_paths():
+        try:
+            candidate_path.parent.mkdir(parents=True, exist_ok=True)
+            with candidate_path.open("w", encoding="utf-8") as config_file:
+                json.dump(data, config_file, indent=2)
+            set_can_channel_runtime(channel_name)
+            return candidate_path
+        except Exception:
+            continue
+    raise OSError("Could not write app_config.json")
+
+
+def get_last_project_path(default=None):
+    config = load_app_config()
+    candidate = config.get("last_project_path") if isinstance(config, dict) else None
+    if isinstance(candidate, str) and candidate.strip():
+        return candidate.strip()
+    return default
+
+
+def save_last_project_path(project_path):
+    current = load_app_config()
+    data = dict(current) if isinstance(current, dict) else {}
+    if isinstance(project_path, str) and project_path.strip():
+        data["last_project_path"] = project_path.strip()
+    else:
+        data.pop("last_project_path", None)
+
+    for candidate_path in get_app_config_candidate_paths():
+        try:
+            candidate_path.parent.mkdir(parents=True, exist_ok=True)
+            with candidate_path.open("w", encoding="utf-8") as config_file:
+                json.dump(data, config_file, indent=2)
+            return candidate_path
+        except Exception:
+            continue
+    raise OSError("Could not write app_config.json")
+
+
+CAN_CHANNEL = get_can_channel("COM16")
 CAN_BITRATE = 1000000
 SERIAL_BAUD = 115200
 
@@ -76,6 +144,15 @@ IDS = {
     "NAMES": BASE_ID + 0x00D,
     "PHY_INPUTS_1_4": BASE_ID + 0x00E,
     "PHY_INPUTS_5_8": BASE_ID + 0x00F,
+    "I2T_HEAT_1_8": BASE_ID + 0x014,
+    "SOC_TRESH_1_4": BASE_ID + 0x015,
+    "SOC_TRESH_5_8": BASE_ID + 0x016,
+    "PWM_DUTY_1_8": BASE_ID + 0x017,
+    "DEV_DIAG": BASE_ID + 0x018,
+    "IMU_ACC": BASE_ID + 0x10,
+    "IMU_RATES": BASE_ID + 0x11,
+    "IRMS_1_4": BASE_ID + 0x12,
+    "IRMS_5_8": BASE_ID + 0x13,
 }
 
 OUT_STATE_MAP = {0: "OFF", 1: "ON", 2: "ERR"}
@@ -100,6 +177,14 @@ def build_dark_stylesheet(checkbox_tick_path=None):
     return (
         "    QMainWindow { background-color: #121212; }\n"
         "    QWidget { background-color: #121212; color: #E0E0E0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; }\n"
+        "    QMenuBar { background-color: #BB86FC; color: #1A1A1A; border-bottom: 1px solid #6C4AA8; spacing: 0px; padding: 0px 8px 4px 8px; }\n"
+        "    QMenuBar::item { background: transparent; padding: 6px 14px; margin: 0px; color: #1A1A1A; border-right: 1px solid #8F5FD6; }\n"
+        "    QMenuBar::item:selected { background-color: #D7B7FD; color: #121212; }\n"
+        "    QMenuBar::item:pressed { background-color: #E5CEFF; color: #121212; }\n"
+        "    QMenu { background-color: #1E1E1E; color: #E0E0E0; border: 1px solid #333333; padding: 4px; }\n"
+        "    QMenu::item { padding: 6px 24px; border-radius: 4px; }\n"
+        "    QMenu::item:selected { background-color: #3C3C3C; color: #FFFFFF; }\n"
+        "    QMenu::separator { height: 1px; background: #333333; margin: 4px 8px; }\n"
         "    QTabWidget::pane { background-color: #121212; border: 1px solid #333333; }\n"
         "    QTabBar::tab { background-color: #1E1E1E; color: #E0E0E0; padding: 6px 10px; border: 1px solid #333333; }\n"
         "    QTabBar::tab:selected { background-color: #2D2D2D; color: #BB86FC; }\n"
@@ -127,14 +212,17 @@ TRACK_COLORS = [
 
 
 def get_row_colors(state, status):
-    if state == 2:
-        return "#4A1F1F", "#FF8A80"
     if status == 0 and state == 0:
         return "#242424", "#A0A0A0"
     if status == 0:
         return "#1B3B2B", "#81C784"
-    if status < 20:
+    # OPEN_LOAD (1) and SAFETY_OPEN (8) are warnings, not hard errors.
+    if 0 < status < 9:
         return "#3E2723", "#FFB74D"
+    if status >= 9:
+        return "#3D1C1C", "#E57373"
+    if state == 2:
+        return "#4A1F1F", "#FF8A80"
     return "#3D1C1C", "#E57373"
 
 
@@ -155,3 +243,10 @@ def parse_system_status(data):
     if len(data) >= 8:
         logic_valid_mask = data[6] | (data[7] << 8)
     return status, batt_voltage, core_temp_raw / 10.0, safety_line_state, logic_valid_mask
+
+def parse_i16x3(data):
+    if not isinstance(data, (bytes, bytearray)):
+        data = bytes(data)
+    if len(data) < 6:
+        data = data + b"\x00" * (6 - len(data))
+    return struct.unpack("<3h", data[:6])

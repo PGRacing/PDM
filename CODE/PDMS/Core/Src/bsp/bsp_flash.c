@@ -1,6 +1,7 @@
 #include "bsp_flash.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_flash.h"
+#include "FreeRTOS.h"
 #include <string.h>
 
 static FLASH_EraseInitTypeDef eraseInitStruct;
@@ -107,12 +108,18 @@ int32_t BSP_FLASH_Read(uint32_t sector, uint32_t offset, uint8_t* buffer, size_t
 // @retval 0 if OK, -1 if readout out of range, -2 if flash program error
 int32_t BSP_FLASH_Prog(uint32_t sector, uint32_t offset, uint8_t* buffer, size_t size)
 {
+    vPortEnterCritical();
     HAL_FLASH_Unlock();
+    
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | 
+                       FLASH_FLAG_PGAERR | FLASH_FLAG_SIZERR | FLASH_FLAG_PGSERR);
 
     uint32_t addr = FLASH_USER_START_ADDR + (sector * FLASH_SECTOR_SIZE) + offset;
 
     if((addr + size) > FLASH_USER_END_ADDR )
     {
+        HAL_FLASH_Lock();
+        vPortExitCritical();
         return -1;
     }
 
@@ -126,11 +133,13 @@ int32_t BSP_FLASH_Prog(uint32_t sector, uint32_t offset, uint8_t* buffer, size_t
       if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, addr + i, dword) != HAL_OK)
       {
         HAL_FLASH_Lock();
+        vPortExitCritical();
         return -2;
       }
     }
 
     HAL_FLASH_Lock();
+    vPortExitCritical();
     return 0;
 }
 
@@ -139,7 +148,11 @@ int32_t BSP_FLASH_Prog(uint32_t sector, uint32_t offset, uint8_t* buffer, size_t
 // @retval 0 if OK, -1 if erase error
 int32_t BSP_FLASH_Erease(uint32_t sector)
 {
+    vPortEnterCritical();
     HAL_FLASH_Unlock();
+
+    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | 
+                       FLASH_FLAG_PGAERR | FLASH_FLAG_SIZERR | FLASH_FLAG_PGSERR);
     // Get the 1st sector to erase
     uint32_t dst =  BSP_FLASH_GetSector(FLASH_USER_START_ADDR + (sector * FLASH_SECTOR_SIZE));
 
@@ -156,10 +169,12 @@ int32_t BSP_FLASH_Erease(uint32_t sector)
     if (HAL_FLASHEx_Erase(&eraseInitStruct, &sectorError) != HAL_OK)
     {
         HAL_FLASH_Lock();
+        vPortExitCritical();
         return -1;
     }
 
     HAL_FLASH_Lock();
+    vPortExitCritical();
     return 0;
 }
 

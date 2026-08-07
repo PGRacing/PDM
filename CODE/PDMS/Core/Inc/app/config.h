@@ -22,5 +22,6 @@ void CONFIG_LoadConfig(T_CONFIG_SELECTION configSelection);
 void CONFIG_NewConfig(T_CONFIG_SELECTION configSelection, uint8_t* data, uint32_t size);
 void CONFIG_GetCfgPtr(T_CONFIG_SELECTION configSelection, uint8_t** outPtr);
 void CONFIG_GetCfgExpSize(uint32_t* outSize);
+uint32_t CONFIG_GetCurrentConfigCrc(void);
 
 #endif // __CONFIG_H__

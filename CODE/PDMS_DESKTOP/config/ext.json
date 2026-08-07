@@ -1,0 +1,1428 @@
+{
+  "channels": [
+    {
+      "id": 0,
+      "type": 0,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_1",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 1,
+      "type": 0,
+      "mode": 2,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_2",
+      "batch": 1,
+      "pwmCfg": {
+        "baseDuty": 10,
+        "dutyInput": 9,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": true,
+          "inrushInput": 10,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 10000,
+          "inrushTimeThreshold": 2000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": 0,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_3",
+      "batch": 2,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": 0,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_4",
+      "batch": 3,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": 0,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_5",
+      "batch": 4,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": 0,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_6",
+      "batch": 5,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": 0,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_7",
+      "batch": 6,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": 0,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_8",
+      "batch": 7,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": 1,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 0,
+      "name": "OUT_9",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": 1,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 1,
+      "name": "OUT_10",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": 1,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 2,
+      "name": "OUT_11",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": 1,
+      "mode": 0,
+      "spocId": 0,
+      "spocChId": 3,
+      "name": "OUT_12",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": 1,
+      "mode": 0,
+      "spocId": 1,
+      "spocChId": 0,
+      "name": "OUT_13",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": 1,
+      "mode": 0,
+      "spocId": 1,
+      "spocChId": 1,
+      "name": "OUT_14",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 14,
+      "type": 1,
+      "mode": 0,
+      "spocId": 1,
+      "spocChId": 2,
+      "name": "OUT_15",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    },
+    {
+      "id": 15,
+      "type": 1,
+      "mode": 0,
+      "spocId": 1,
+      "spocChId": 3,
+      "name": "OUT_16",
+      "batch": 0,
+      "pwmCfg": {
+        "baseDuty": 0,
+        "dutyInput": 65535,
+        "inputAxis": [
+          0,
+          625,
+          1250,
+          1875,
+          2500,
+          3125,
+          3750,
+          5000
+        ],
+        "dutyAxis": [
+          0,
+          12,
+          25,
+          37,
+          50,
+          62,
+          75,
+          100
+        ]
+      },
+      "softStart": {
+        "useSoftStart": false,
+        "startDuty": 30,
+        "endDuty": 100,
+        "timeThreshold": 5000
+      },
+      "safety": {
+        "afterErrorCfg": {
+          "behavior": 1,
+          "latchTime": 0
+        },
+        "actOnSafety": false,
+        "errRetryThreshold": 0,
+        "retryTimerInterval": 0,
+        "socCfg": {
+          "useSoc": true,
+          "nominalThreshold": 2000,
+          "allowInrush": false,
+          "inrushInput": null,
+          "inrushWindowFromStart": 4294967295,
+          "inrushThreshold": 4000,
+          "inrushTimeThreshold": 1000
+        },
+        "i2tCfg": {
+          "useI2t": false,
+          "nominalCurrent": 2000,
+          "nominalCurrentSq": 4000000,
+          "timeThreshold": 1000,
+          "i2tThreshold": 4000000000
+        }
+      }
+    }
+  ],
+  "inputs": {
+    "physical": [
+      {
+        "location": 0,
+        "type": 0,
+        "mode": 1
+      },
+      {
+        "location": 1,
+        "type": 0,
+        "mode": 1
+      },
+      {
+        "location": 2,
+        "type": 0,
+        "mode": 1
+      },
+      {
+        "location": 3,
+        "type": 0,
+        "mode": 1
+      },
+      {
+        "location": 4,
+        "type": 0,
+        "mode": 1
+      },
+      {
+        "location": 5,
+        "type": 0,
+        "mode": 1
+      },
+      {
+        "location": 6,
+        "type": 0,
+        "mode": 1
+      },
+      {
+        "location": 7,
+        "type": 0,
+        "mode": 1
+      }
+    ],
+    "can": [
+      {
+        "isUsed": true,
+        "canInstance": 1,
+        "canId": 1824,
+        "offset": 0,
+        "dataType": 0,
+        "location": 0,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": true,
+        "canInstance": 1,
+        "canId": 1825,
+        "offset": 0,
+        "dataType": 1,
+        "location": 1,
+        "type": 1,
+        "mode": 2
+      },
+      {
+        "isUsed": true,
+        "canInstance": 1,
+        "canId": 1826,
+        "offset": 0,
+        "dataType": 0,
+        "location": 2,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 3,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 4,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 5,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 6,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 7,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 8,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 9,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 10,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 11,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 12,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 13,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 14,
+        "type": 1,
+        "mode": 1
+      },
+      {
+        "isUsed": false,
+        "canInstance": 0,
+        "canId": 0,
+        "offset": 0,
+        "dataType": 0,
+        "location": 15,
+        "type": 1,
+        "mode": 1
+      }
+    ]
+  },
+  "logic": [
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": true,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 8,
+        "input1Const": 8,
+        "input2Type": 3,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 8
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    },
+    {
+      "isUsed": false,
+      "exp": {
+        "input1Type": 0,
+        "input1ID": 0,
+        "input1Const": 0,
+        "input2Type": 0,
+        "input2ID": 0,
+        "input2Const": 0,
+        "opr": 0
+      }
+    }
+  ]
+}

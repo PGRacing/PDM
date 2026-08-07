@@ -10,6 +10,8 @@
 #include "app_isotp.h"
 #include "config.h"
 #include "string.h"
+#include "imu.h"
+#include "logger.h"
 
 /* HAL, MX includes */
 #include "iwdg.h"
@@ -23,7 +25,8 @@
 
 #define PDM_RESET_GATEWAY_PATTERN_SIZE 3
 
-extern void RTOS_SoftLimpHomeMode(void);
+extern void RTOS_EnterSoftLimpHomeMode(void);
+extern void RTOS_ExitSoftLimpHomeMode(void);
 
 volatile T_PDM_CFG pdmCfg =
 {
@@ -55,7 +58,9 @@ volatile T_PDM_REG pdmReg =
     .uvloAssessment = FALSE,
     .uvloLoCounter = 0,
     .uvloHiCounter = 0,
-    .uvloTimer = NULL
+    .uvloTimer = NULL,
+    .resetGwCounter = 0,
+    .rtosSysLoad = 0
 };
 
 // static T_OUT_MODE PDM_OutModeInitTable[OUT_ID_MAX] = 
@@ -87,38 +92,40 @@ T_PDM_SYS_STATUS PDM_GetSysStatus(void)
     return pdmReg.status;
 }
 
+uint8_t PDM_GetRtosSysLoad(void)
+{
+    return pdmReg.rtosSysLoad;
+}
+
 static void PDM_OutConfig(void)
 {
-    for(T_OUT_ID i = 0; i < OUT_ID_MAX; i++)
-    {
-        OUT_Reconfigure(i);
-    }
+    OUT_ReconfigureAll();
 }
 
 static void PDM_SoftLimpHomeModeTimerCallback()
 {
     VMUX_ReadBattVoltage();
-    HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_SET);
-    BUZZER_TurnOn();
-    osDelay(2000);
-    BUZZER_TurnOff();
-    HAL_GPIO_WritePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+    BUZZER_Toggle();
 }
 
 // Soft limp home mode with active telemetry (can bus)
-static void PDM_SoftLimpHomeMode(T_PDM_SYS_STATUS status)
+static void PDM_EnterSoftLimpHomeMode(T_PDM_SYS_STATUS status)
 {
+    // Disable all tasks except can handlers
+    RTOS_EnterSoftLimpHomeMode();
+
     pdmReg.status = status;
     for(T_OUT_ID id = 0; id < OUT_ID_MAX; id++)
     {
-        OUT_SetState(id, OUT_STATE_ERR_LATCH);
+        OUT_SetState(id, OUT_STATE_OFF);
     }
 
     // Check battery voltage manually each 30 seconds
-    pdmReg.uvloTimer = osTimerNew((osTimerFunc_t)PDM_SoftLimpHomeModeTimerCallback, osTimerPeriodic, NULL, NULL);
-    if(pdmReg.uvloTimer)
+    pdmReg.softLimpTimer = osTimerNew((osTimerFunc_t)PDM_SoftLimpHomeModeTimerCallback, osTimerPeriodic, NULL, NULL);
+    if(pdmReg.softLimpTimer)
     {
-        osTimerStart(pdmReg.uvloTimer, pdMS_TO_TICKS(30000));
+        osTimerStart(pdmReg.softLimpTimer, pdMS_TO_TICKS(30000));
     }
     else
     {
@@ -127,9 +134,19 @@ static void PDM_SoftLimpHomeMode(T_PDM_SYS_STATUS status)
     
     // Disable all leds
     WS2812B_DisableAll();
+}
 
-    // Disable all tasks except can handlers
-    RTOS_SoftLimpHomeMode();
+static void PDM_ExitSoftLimpHomeMode(void)
+{
+    if(pdmReg.softLimpTimer != NULL)
+    {
+        osTimerStop(pdmReg.softLimpTimer);
+        osTimerDelete(pdmReg.softLimpTimer);
+        pdmReg.softLimpTimer = NULL;
+        pdmReg.status = PDM_SYS_STATUS_OK;
+    }
+
+    RTOS_ExitSoftLimpHomeMode();
 }
 
 // Platform start
@@ -151,6 +168,9 @@ void PDM_Init(void)
     // Initialize ADC acquisition handler
     ADCH_Init();
 
+    // Initialize output timers (PWM)
+    BSP_OUT_InitTimers();
+
     // Initialize CAN communication handling 
     CANH_Init();
 
@@ -159,6 +179,9 @@ void PDM_Init(void)
 
     // Initialize ARGB'S
     WS2812B_Init();
+
+    // Initialize IMU
+    IMU_Init();
 
     /* ===== MODULES INITALIZATION ===== */
     // Initialize output module (set correct mode and state)
@@ -213,7 +236,10 @@ void PDM_Init(void)
     //         break;
     //     }
     // }
-
+#ifdef DEBUG
+    LOGF("PDMS FW commit hash: %s\r\n", GIT_HASH);
+    LOGF("PDMS FW revision: %d.%d.%d\r\n", FW_REVISION_MAJOR, FW_REVISION_MINOR, FW_REVISION_PATCH);
+#endif
     // Enable watchdog
     MX_IWDG_Init();
     vPortExitCritical();
@@ -241,12 +267,13 @@ static void PDM_UVLOCallback()
         if(pdmReg.uvloHiCounter > (pdmCfg.uvloTimeThreshold / (UVLO_TIMER_PERIOD * pdmCfg.uvloRetainDivider)))
         {
             osTimerStop(pdmReg.uvloTimer);
+            osTimerDelete(pdmReg.uvloTimer);
             pdmReg.uvloTimer = NULL;
             pdmReg.uvloAssessment = FALSE;
             pdmReg.uvloHiCounter = 0;
             pdmReg.uvloLoCounter = 0;
             LOG_INFO("PDM:: UVLO Battery voltage retained, returing to normal operation");
-            osTimerDelete(pdmReg.uvloTimer);
+            PDM_ExitSoftLimpHomeMode();
             return;
         }
     }
@@ -255,13 +282,11 @@ static void PDM_UVLOCallback()
         pdmReg.uvloLoCounter++;
         if(pdmReg.uvloLoCounter > (pdmCfg.uvloTimeThreshold / UVLO_TIMER_PERIOD))
         {
-            osTimerStop(pdmReg.uvloTimer);
-            pdmReg.uvloTimer = NULL;
             pdmReg.uvloAssessment = FALSE;
             pdmReg.uvloHiCounter = 0;
             pdmReg.uvloLoCounter = 0;
             LOG_ERR("PDM:: UVLO detected turning off!");
-            PDM_SoftLimpHomeMode(PDM_SYS_STATUS_UVLO);
+            PDM_EnterSoftLimpHomeMode(PDM_SYS_STATUS_UVLO);
             return;
         }
     }
@@ -352,4 +377,35 @@ void pdmTaskStart(void *argument)
       
         osDelay(pdMS_TO_TICKS(1));
     }
+}
+
+
+void statusTaskStart(void *argument)
+{
+    LOG_INFO("STATUS:: Task start");
+
+    BUZZER_TurnOn();
+    osDelay(300);
+    BUZZER_TurnOff();
+
+    TaskHandle_t xIdleTaskHandle = xTaskGetIdleTaskHandle();
+    for(;;)
+    {
+        TaskStatus_t xTaskDetails;
+        vTaskGetInfo(xIdleTaskHandle, &xTaskDetails, pdTRUE, eInvalid);
+        uint32_t idleRuntime = xTaskDetails.ulRunTimeCounter;
+        uint32_t totalRuntime = portGET_RUN_TIME_COUNTER_VALUE(); 
+
+        if (totalRuntime > 0) {
+            uint32_t idlePercent = (idleRuntime * 100) / totalRuntime;
+            pdmReg.rtosSysLoad = 100 - idlePercent;
+#ifdef DEBUG
+            LOGF("INFO:: CPU Usage: %u%%\r\n", pdmReg.rtosSysLoad);
+#endif
+        }
+        
+        //HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
+        osDelay(1000);
+    }
+
 }

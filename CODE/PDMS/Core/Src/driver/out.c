@@ -22,9 +22,15 @@
 #define OUT_DIAG_BTS_DETECT_OPEN_LOAD TRUE // Is open load detection enabled on BTS channels?
 #define OUT_DIAG_BTS_VBAT_HISTERESIS 1000 // [mV] Acceptable variation of voltage on output to Vbatt
 #define OUT_DIAG_BTS_TRIP_THRESHOLD 40 // Arbitraty value that needs to be exceeded to trip SOC protection (removing super short local peaks)
+
+#define OUT_BATCH_ID_IAMFOLLOWER 0xFF // Indicates that this channel follows other channel
 // EMA
 #define OUT_DIAG_EMA_CURRENT_ALPHA 0.2f // Alpha for exponential moving average of current, lower value means smoother readings but longer time to react to changes
 #define OUT_DIAG_EMA_VOLTAGE_ALPHA 0.1f // Alpha for exponential moving average of voltage, lower value means smoother readings but longer time to react to changes
+
+// I2t 
+#define OUT_MAX_I2T_TRESHOLD (UINT64_MAX-1 / 100)
+#define OUT_DIAG_I2T_KCOOL 0.1f // Cooling constant for I2t calculation, higher value means faster cooling [Recommended 0.01f]
 
 /// MACRO FUNCTIONS
 #define OUT_ASSERT_IN_RANGE(id)      (ASSERT( (id) >= 0 && (id) < OUT_ID_MAX))
@@ -37,6 +43,9 @@
 static T_OUT_CFG* OUT_GetCfgPtr( T_OUT_ID id );
 static T_OUT_REG* OUT_GetRegPtr( T_OUT_ID id );
 static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id);
+static inline void OUT_DIAG_ArmI2tProtection(T_OUT_ID id);
+static inline void OUT_DIAG_ArmSoftStart(T_OUT_ID id);
+static inline void OUT_DIAG_SocExternalInrushRequest(T_OUT_ID id);
 
 // Get current time in ms
 #define OUT_GET_TIME_MS (pdTICKS_TO_MS( xTaskGetTickCount() ))
@@ -586,6 +595,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -599,6 +609,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+      .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -612,6 +623,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -625,6 +637,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -638,6 +651,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -651,6 +665,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -664,6 +679,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -677,6 +693,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -690,6 +707,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -703,6 +721,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -716,6 +735,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -729,6 +749,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -742,6 +763,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -755,6 +777,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -768,6 +791,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -781,6 +805,7 @@ T_OUT_REG outsReg[OUT_ID_MAX] =
   {
     .state = OUT_STATE_OFF,
     .status = OUT_STATUS_OK,
+    .lastError = OUT_STATUS_OK,
     .safety = 
     {
       .errRetryCounter = 0,
@@ -850,7 +875,7 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
   {
     if(cfg->type == OUT_TYPE_BTS500)
     {
-       if (cfg->mode == OUT_MODE_PWM)
+       if (cfg->mode == OUT_MODE_PWM || cfg->softStart.useSoftStart)
       {
         BSP_OUT_DeInitPWM(id);
       }
@@ -868,18 +893,31 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
   {
     if(cfg->type == OUT_TYPE_BTS500)
     {
-      if (cfg->mode == OUT_MODE_PWM)
+      if (cfg->mode == OUT_MODE_PWM || cfg->softStart.useSoftStart)
       {
         BSP_OUT_DeInitPWM(id);
       }
-      BSP_OUT_SetMode(id, targetMode);
+
+      if(cfg->softStart.useSoftStart)
+      {
+        // Even though on application layer its STD on BSP layer its PWM
+        BSP_OUT_SetMode(id, OUT_MODE_PWM);
+      }
+      else
+      {
+        BSP_OUT_SetMode(id, OUT_MODE_STD);
+      }
+
+      // Arm I2t
+      OUT_DIAG_ArmI2tProtection(id);
     }
     else if(cfg->type == OUT_TYPE_SPOC2)
     {
       // TODO [LOW] Add handler
       // SPOC2_SetMode(id, targetMode);
     }
-    OUT_SetState(cfg->id, OUT_STATE_OFF);
+
+    OUT_SetState(id, OUT_STATE_OFF);
     cfg->mode = targetMode;
     break;
   }
@@ -890,6 +928,10 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
       BSP_OUT_SetMode(id, targetMode);
       // Set PWM duty to 0%
       OUT_SetDutyPWM(id, 0);
+      
+      // Arm I2t
+      OUT_DIAG_ArmI2tProtection(id);
+      
       cfg->mode = targetMode;
     }
     break;
@@ -900,16 +942,24 @@ void OUT_ChangeMode(T_OUT_ID id, T_OUT_MODE targetMode)
     {
       LOG_WARN("Batching two inputs!");
 
-      /* Batch shouldn't be out of range */
-      ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
+      if(cfg->mode == OUT_MODE_BATCH 
+        && cfg->batch == OUT_BATCH_ID_IAMFOLLOWER)
+      {
+        break;
+      }
       T_OUT_CFG *batchCfg = &(outsCfg[cfg->batch]);
-
       // LL MODE STD
       BSP_OUT_SetMode(id, OUT_MODE_STD);
       BSP_OUT_SetMode(cfg->batch, OUT_MODE_STD);
-      OUT_SetState(cfg->id, OUT_STATE_OFF);
+      OUT_SetState(id, OUT_STATE_OFF);
       OUT_SetState(batchCfg->id, OUT_STATE_OFF);
+
+      // Only once per update
+      OUT_DIAG_ArmI2tProtection(id);
+      OUT_DIAG_ArmI2tProtection(batchCfg->id);
+
       batchCfg->mode = OUT_MODE_BATCH;
+      batchCfg->batch = OUT_BATCH_ID_IAMFOLLOWER;
       /* From now on actions on batch outputs are performed simultaniously */
       cfg->mode = targetMode;
     }
@@ -929,6 +979,23 @@ void OUT_Reconfigure(T_OUT_ID id)
   ASSERT( cfg );
 
   OUT_ChangeMode(id, cfg->mode);
+}
+
+void OUT_ReconfigureAll(void)
+{
+  vPortEnterCritical();
+
+  OUT_ResetRegistersAll();
+
+  for(T_OUT_ID i = 0; i < OUT_ID_MAX; i++)
+  {
+    OUT_ChangeMode(i, outsCfg[i].mode);
+  }
+
+  // Make sure ADC follows PWM correctly
+  BSP_OUT_ConfigureAdcFollowPWM();
+
+  vPortExitCritical();
 }
 
 bool OUT_SetDutyPWM(T_OUT_ID id, uint8_t duty)
@@ -984,6 +1051,19 @@ static uint8_t OUT_InterpolatePWM(const uint16_t xAxis[OUT_PWM_MAP_RESOLUTION], 
   return yAxis[OUT_PWM_MAP_RESOLUTION - 1];
 }
 
+static uint8_t OUT_InterpolateSoftStart(uint8_t startDuty, uint8_t endDuty, uint32_t current, uint32_t target)
+{
+  if (target == 0)
+    return endDuty;
+
+  if (current >= target)
+    return endDuty;
+
+  int32_t delta = (int32_t)endDuty - (int32_t)startDuty;
+
+  return (uint8_t)(startDuty + (delta * (int32_t)current) / (int32_t)target);
+}
+
 bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
 {
   bool res = TRUE;
@@ -1026,7 +1106,8 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
     {
       case OUT_MODE_UNUSED:
       {
-        LOG_WARN("Unable to set state on unused output config");
+        //LOG_WARN("Unable to set state on unused output config");
+        BSP_OUT_SetStdState(id, OUT_STATE_OFF);
         res = FALSE;
       }
       break;
@@ -1039,8 +1120,21 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
           if(OUT_STATE_ON == reqState)
           {
             OUT_DIAG_ArmSocProtection(id);
+            if(TRUE == cfg->softStart.useSoftStart)
+            {
+              OUT_DIAG_ArmSoftStart(id);
+            }
           }
-          BSP_OUT_SetStdState(id, reqState);
+
+          if(TRUE == cfg->softStart.useSoftStart && reqState == OUT_STATE_OFF)
+          {
+            BSP_OUT_SetDutyPWM(id, 0);
+          }
+          else
+          {
+            BSP_OUT_SetStdState(id, reqState);
+          }
+
         }
         else if(cfg->type == OUT_TYPE_SPOC2)
         {
@@ -1075,7 +1169,11 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
       {
         if(cfg->type == OUT_TYPE_BTS500)
         {
-          ASSERT(cfg->batch < ARRAY_COUNT(outsCfg));
+          if(cfg->batch == OUT_BATCH_ID_IAMFOLLOWER)
+          {
+            break; // This output follows other output
+          }
+
           T_OUT_REG* batchReg = OUT_GETREGPTR(cfg->batch);
 
           if(OUT_STATE_ON == reqState)
@@ -1112,6 +1210,20 @@ bool OUT_SetState(T_OUT_ID id, T_OUT_STATE reqState)
     else
     {
       OUT_SetDutyPWM(id, cfg->pwmCfg.baseDuty);
+    }
+  }
+  
+  if(reqState == OUT_STATE_ON 
+        && cfg->safety.socCfg.useSoc == TRUE 
+        && cfg->safety.socCfg.inrushInput != INPUT_ID_UNASSIGNED_VALUE)
+  {
+    // ARM software over current protection
+    if(IN_GetValueSchmitt(cfg->safety.socCfg.inrushInput) == TRUE)
+    {
+      OUT_DIAG_SocExternalInrushRequest(id);
+
+      // Clear request after acknowledging
+      IN_OverrideCANValueSchmitt(cfg->safety.socCfg.inrushInput, FALSE); 
     }
   }
 
@@ -1245,6 +1357,18 @@ static inline void OUT_DIAG_ArmSocProtection(T_OUT_ID id)
   
 }
 
+/// @brief Request inrush mode for output channel eg. via CAN or phy input
+/// @param id Output channel id [1..16] T_OUT_ID 
+static inline void OUT_DIAG_SocExternalInrushRequest(T_OUT_ID id)
+{
+  if(outsCfg[id].safety.socCfg.useSoc == TRUE && outsCfg[id].safety.socCfg.allowInrush == TRUE)
+  {
+    outsReg[id].safety.socReg.status = OUT_SAFETY_SOC_INRUSH_WINDOW;
+    outsReg[id].safety.socReg.inrushTripCounter = 0;
+    outsReg[id].safety.socReg.currentThreshold = outsCfg[id].safety.socCfg.inrushThreshold;
+  }
+}
+
 /// @brief Software over current protection processing executed in fast loop
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @param state Output channel state [ON/OFF]
@@ -1331,7 +1455,12 @@ static inline T_OUT_STATUS OUT_DIAG_SocProtection(T_OUT_ID id, T_OUT_STATE state
   return status;
 }
 
-static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentMA)
+static inline void OUT_DIAG_ArmI2tProtection(T_OUT_ID id)
+{
+  outsReg[id].safety.i2tReg.sum = 0;
+}
+
+static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state,  uint32_t voltageMV, uint32_t currentRMS_MA)
 {
   /*
   1. If current over target add to sum current * current
@@ -1341,21 +1470,101 @@ static inline T_OUT_STATUS OUT_DIAG_I2tProtection(T_OUT_ID id, T_OUT_STATE state
 
   T_OUT_STATUS status = OUT_STATUS_OK;
 
-  // We need to scale down the resolution to fit in int32  
-  int32_t iPart = (currentMA / 10) * (currentMA / 10) - (outsCfg[id].safety.i2tCfg.nominalCurrentSq);
-  // TODO Convert to float and ceil(iPart);
-  
-  if(outsReg[id].safety.i2tReg.i2tSum > 0)
+  if (TRUE == outsCfg[id].safety.i2tCfg.useI2t)
   {
-    outsReg[id].safety.i2tReg.i2tSum += iPart;
-  }
+    const int32_t i_cA = currentRMS_MA / 10;
+
+    int32_t iPart = (i_cA * i_cA) - (outsCfg[id].safety.i2tCfg.nominalCurrentSq_cA);
+    iPart = (iPart < 0 ? iPart * OUT_DIAG_I2T_KCOOL : iPart);
+
+    outsReg[id].safety.i2tReg.sum += (iPart * OUT_DIAG_READ_PERIOD);
+
+    if(outsReg[id].safety.i2tReg.sum < 0)
+    {
+      outsReg[id].safety.i2tReg.sum = 0;
+    }
   
-  if(outsReg[id].safety.i2tReg.i2tSum >= outsCfg[id].safety.i2tCfg.i2tThreshold)
-  {
-    status = OUT_STATUS_I2T_FAULT;
+    if(outsReg[id].safety.i2tReg.sum >= (int_fast64_t)(outsCfg[id].safety.i2tCfg.i2tThreshold))
+    {
+      status = OUT_STATUS_I2T_FAULT;
+    }
   }
   
  return status;
+}
+
+/// @brief Arm soft-start configuration
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @note Should be performed when changing output state to ON 
+static inline void OUT_DIAG_ArmSoftStart(T_OUT_ID id)
+{
+  // Set soft-start status as armed
+  outsReg[id].softStart.status = OUT_SOFTSTART_ARMED;
+  
+  // Set timer to default and disable channel
+  outsReg[id].softStart.duty = 0;
+  BSP_OUT_SetDutyPWM(id, 0);
+  outsReg[id].softStart.timerCounter = 0;
+}
+
+/// @brief Soft-start processing
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @param state Output channel state [ON/OFF]
+static inline void OUT_DIAG_SoftStart(T_OUT_ID id, T_OUT_STATE state)
+{
+  if(state == OUT_STATE_ON)
+  {
+    // When channel enabled progress
+    switch (outsReg[id].softStart.status)
+    {
+    case OUT_SOFTSTART_ARMED:
+      outsReg[id].softStart.duty = outsCfg[id].softStart.startDuty;
+      BSP_OUT_SetDutyPWM(id, outsReg[id].softStart.duty);
+      outsReg[id].softStart.timerCounter += OUT_DIAG_READ_PERIOD;
+
+      // Progress to on-going
+      outsReg[id].softStart.status = OUT_SOFTSTART_ONGOING;
+      break;
+
+    case OUT_SOFTSTART_ONGOING:
+      outsReg[id].softStart.timerCounter += OUT_DIAG_READ_PERIOD;
+      if (outsReg[id].softStart.timerCounter >= (outsCfg[id].softStart.timeThreshold))
+      {
+        // Progress to finished
+        outsReg[id].softStart.duty = outsCfg[id].softStart.endDuty;
+        BSP_OUT_SetDutyPWM(id, outsReg[id].softStart.duty);
+        outsReg[id].softStart.status = OUT_SOFTSTART_FINISHED;
+      }
+      else
+      {
+        // Calculate next-step value
+        outsReg[id].softStart.duty = OUT_InterpolateSoftStart(outsCfg[id].softStart.startDuty, outsCfg[id].softStart.endDuty, outsReg[id].softStart.timerCounter, outsCfg[id].softStart.timeThreshold);
+        BSP_OUT_SetDutyPWM(id, outsReg[id].softStart.duty);
+      }
+      break;
+
+    case OUT_SOFTSTART_FINISHED:
+      break;
+      
+    default:
+      break;
+    }
+  }
+  else
+  {
+    // Disable channel
+    BSP_OUT_SetDutyPWM(id, 0);
+    outsReg[id].softStart.duty = 0;
+  }
+}
+
+/// @brief Calculate EMA for given output
+/// @param reg Pointer to register of output to calculate EMA for
+static inline void OUT_DIAG_BtsCalcEma(T_OUT_REG* reg)
+{
+  reg->emaCurrentMA     = (reg->currentMA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentMA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
+  reg->emaCurrentRMS_MA = (reg->currentRMS_MA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentRMS_MA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
+  reg->emaVoltageMV     = (reg->voltageMV * OUT_DIAG_EMA_VOLTAGE_ALPHA) + (reg->emaVoltageMV * (1 - OUT_DIAG_EMA_VOLTAGE_ALPHA));
 }
 
 /// @brief Hardware assessment of BTS500 output channel
@@ -1444,30 +1653,38 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   if(OUT_STATE_ON == reg->state)
   {
     // If channel is ON calculate current
-    reg->currentMA = BSP_OUT_CalcCurrent(id);
-    reg->emaCurrentMA = (reg->currentMA * OUT_DIAG_EMA_CURRENT_ALPHA) + (reg->emaCurrentMA * (1 - OUT_DIAG_EMA_CURRENT_ALPHA));
+    BSP_OUT_CalcCurrentPlusRMS(id, &(reg->currentMA), &(reg->currentRMS_MA));
   }
   else
   {
     // If channel is OFF override current to 0
     reg->currentMA = 0;
-    reg->emaCurrentMA = (1 - OUT_DIAG_EMA_CURRENT_ALPHA) * reg->emaCurrentMA;
+    reg->currentRMS_MA = 0;
   }
   bool inFault = BSP_OUT_IsCurrentFault(id);
   
   // Get channel voltage from voltage multiplexer ADC data (already calculated)
   reg->voltageMV = VMUX_GetValue(id);
-  reg->emaVoltageMV = (reg->voltageMV * OUT_DIAG_EMA_VOLTAGE_ALPHA) + (reg->emaVoltageMV * (1 - OUT_DIAG_EMA_VOLTAGE_ALPHA));
 
   // Check for hardware issues and state changes
   T_OUT_STATUS hwStatus = OUT_DIAG_BtsHardware(id, reg->state, reg->voltageMV, reg->currentMA, inFault);
 
   // Check for software overcurrent
-  T_OUT_STATUS swStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
+  T_OUT_STATUS socStatus = OUT_DIAG_SocProtection(id, reg->state, reg->voltageMV, reg->currentMA);
+
+  // Check for I2t protection
+  T_OUT_STATUS i2tStatus = OUT_DIAG_I2tProtection(id, reg->state, reg->voltageMV, reg->currentRMS_MA);
+
+  // Software status SoC + I2t
+  T_OUT_STATUS swStatus = OUT_STATUS_GET_HIGHER_PRIORITY(socStatus, i2tStatus);
 
   // Check safety line
   T_OUT_STATUS safetyStatus = OUT_STATUS_OK;
-  if(OUT_STATE_ON == reg->state && reg->voltageMV < OUT_DIAG_BTS_VBAT_HISTERESIS && FALSE == PDM_GetSafetyState())
+
+  if(OUT_STATE_ON == reg->state 
+    && reg->voltageMV < OUT_DIAG_BTS_VBAT_HISTERESIS 
+    && FALSE == PDM_GetSafetyState() 
+    && BSP_OUT_IsControlledSafetyHW(id))
   {
     safetyStatus = OUT_STATUS_SAFETY_OPEN;
   }
@@ -1479,8 +1696,8 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
   if(newStatus >= OUT_STATUS_PRIORITY_DIV)
   {
     OUT_DIAG_OnErrorFallback(id);
+    reg->lastError = newStatus;
   }
-
   // Perform retry procedure
   if( TRUE == reg->safety.inRetrySequence)
   {
@@ -1495,6 +1712,15 @@ static void OUT_DIAG_SingleBtsNew(T_OUT_ID id)
       outsRetryCallbacks[id]();
     }
   }
+
+  // If no error and soft-start enabled
+  if(newStatus < OUT_STATUS_PRIORITY_DIV && cfg->softStart.useSoftStart)
+  {
+    OUT_DIAG_SoftStart(id, reg->state);
+  }
+
+  // EMA used only for telemetry so can be calculated later in scope
+  OUT_DIAG_BtsCalcEma(reg);
 
   // Set new channel status
   reg->status = newStatus;
@@ -1720,16 +1946,22 @@ uint32_t OUT_DIAG_GetCurrent(T_OUT_ID id)
   return OUT_GETREGPTR(id)->currentMA;
 }
 
-uint16_t OUT_DIAG_GetCurrent_pA(T_OUT_ID id)
+uint16_t OUT_DIAG_GetCurrent_cA(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETREGPTR(id)->currentMA / 10;
 }
 
-uint16_t OUT_DIAG_GetEmaCurrent_pA(T_OUT_ID id)
+uint16_t OUT_DIAG_GetEmaCurrent_cA(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETREGPTR(id)->emaCurrentMA / 10;
+}
+
+uint16_t OUT_DIAG_GetEmaCurrentRMS_cA(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return OUT_GETREGPTR(id)->emaCurrentRMS_MA / 10;
 }
 
 uint32_t OUT_DIAG_GetVoltage(T_OUT_ID id)
@@ -1747,6 +1979,10 @@ uint32_t OUT_DIAG_GetEmaVoltage(T_OUT_ID id)
 T_OUT_STATUS OUT_DIAG_GetStatus(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
+  if(OUT_GETREGPTR(id)->state == OUT_STATE_ERR_LATCH)
+  {
+    return OUT_GETREGPTR(id)->lastError;
+  }
   return OUT_GETREGPTR(id)->status;
 }
 
@@ -1754,6 +1990,12 @@ T_OUT_STATE OUT_DIAG_GetState(T_OUT_ID id)
 {
   OUT_ASSERT_IN_RANGE(id);
   return OUT_GETREGPTR(id)->state;
+}
+
+uint8_t OUT_DIAG_GetPwmDuty(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return BSP_OUT_GetPwmDuty(id);
 }
 
 #pragma endregion DIAG_SECTION
@@ -1776,6 +2018,20 @@ T_OUT_MODE OUT_GetMode(T_OUT_ID id)
   return OUT_GETCFGPTR(id)->mode;
 }
 
+uint8_t OUT_DIAG_GetI2tHeat(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  
+  if (outsCfg[id].safety.i2tCfg.i2tThreshold == 0) return 0;
+  return (outsReg[id].safety.i2tReg.sum * 100) / outsCfg[id].safety.i2tCfg.i2tThreshold;
+}
+
+uint16_t OUT_DIAG_GetSocTreshold_cA(T_OUT_ID id)
+{
+  OUT_ASSERT_IN_RANGE(id);
+  return (uint16_t)outsReg[id].safety.socReg.currentThreshold / 10;
+}
+
 void OUT_ResetRegistersAll(void)
 {
   for(uint8_t id = 0; id < OUT_ID_MAX; id++)
@@ -1784,18 +2040,25 @@ void OUT_ResetRegistersAll(void)
     ASSERT(reg);
     reg->state = OUT_STATE_OFF;
     reg->status = OUT_STATUS_OK;
+    reg->lastError = OUT_STATUS_OK; 
+
     reg->currentMA = 0;
+    reg->currentRMS_MA = 0;
     reg->voltageMV = 0;
     reg->emaCurrentMA = 0;
+    reg->emaCurrentRMS_MA = 0;
     reg->emaVoltageMV = 0;
+
     reg->safety.inRetrySequence = FALSE;
     reg->safety.errRetryCounter = 0;
     reg->safety.retryTimerCounter = 0;
+
     reg->safety.socReg.status = OUT_SAFETY_SOC_NORMAL_OPERATION;
     reg->safety.socReg.currentThreshold = 0;
     reg->safety.socReg.timeInPreInrush = 0;
     reg->safety.socReg.inrushTripCounter = 0;
-    reg->safety.i2tReg.i2tSum = 0;
+
+    reg->safety.i2tReg.sum = 0;
   }
 }
 
@@ -1811,6 +2074,7 @@ inline bool OUT_IsSafetyLineDependent(T_OUT_ID id)
 
 void testTaskEntry(void *argument)
 {
+  vTaskSuspend(NULL);
   for(;;)
   {
     osDelay(10);

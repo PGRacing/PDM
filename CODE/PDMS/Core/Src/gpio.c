@@ -72,6 +72,12 @@ void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(GPIOC, PWM_SIG4_Pin|PWM_SIG3_Pin|PWM_SIG2_Pin|PWM_SIG1_Pin);
 
   /**/
+  LL_GPIO_SetOutputPin(IMU_SA0_GPIO_Port, IMU_SA0_Pin);
+
+  /**/
+  LL_GPIO_SetOutputPin(IMU_MODE_SEL_GPIO_Port, IMU_MODE_SEL_Pin);
+
+  /**/
   GPIO_InitStruct.Pin = STATUS_LED_Pin|VOLTAGE_MUX_SEL4_Pin|VOLTAGE_MUX_SEL3_Pin|VOLTAGE_MUX_SEL2_Pin
                           |VOLTAGE_MUX_SEL1_Pin|CAN_TERM1_Pin|CAN_TERM2_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
@@ -95,13 +101,33 @@ void MX_GPIO_Init(void)
   LL_GPIO_Init(LP_SIG4_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = PWM_SIG8_Pin|PWM_SIG7_Pin|PWM_SIG6_Pin|PWM_SIG5_Pin
-                          |LP_CSN2_Pin;
+  GPIO_InitStruct.Pin = IMU_INT1_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(IMU_INT1_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = IMU_SA0_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(IMU_SA0_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = IMU_MODE_SEL_Pin|PWM_SIG8_Pin|PWM_SIG7_Pin|PWM_SIG6_Pin
+                          |PWM_SIG5_Pin|LP_CSN2_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = IMU_INT2_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(IMU_INT2_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = TEMP1_ALERT_Pin;

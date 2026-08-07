@@ -116,16 +116,36 @@ uint32_t BSP_OUT_GetFaultLevel(T_OUT_ID id);
 /// @return Output current in [mA]
 uint32_t BSP_OUT_CalcCurrent(T_OUT_ID id);
 
+/// @brief Calculate load RMS current of output channel
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @param [in] pInstCurrent Pointer where instantenious current will be set
+/// @param [in] pRmsCurrent  Pointer where RMS current will be set
+void BSP_OUT_CalcCurrentPlusRMS(T_OUT_ID id, uint32_t* pInstCurrentMA, uint32_t* pRmsCurrentMA);
+
 /// @brief Check if voltage on Is pin is above fault level
 /// @param id Output channel id [1..16] T_OUT_ID
 /// @return TRUE if fault, FALSE if ok
 bool BSP_OUT_IsCurrentFault(T_OUT_ID id);
 
-/// @brief Check if ADC readout from I(sense) pin is valid (not disturbed by PWM switching)
-bool BSP_OUT_SenseValid(T_OUT_ID id);
-
 /// @brief Check if output channel is in PWM mode
 /// @param id Output channel id [1..16] T_OUT_ID
 bool BSP_OUT_IsPWM(T_OUT_ID id);
+
+/// @brief Check if output channel is controlled by safety hardware
+/// @param id Output channel id [1..16] T_OUT_ID
+bool BSP_OUT_IsControlledSafetyHW(T_OUT_ID id);
+
+/// @brief Initialize timers used for handling of BSP outputs
+/// @param  
+void BSP_OUT_InitTimers(void);
+
+/// @brief Reconfigure BSP to make sure it follows PWM signals correctly
+/// @param  
+void BSP_OUT_ConfigureAdcFollowPWM(void);
+
+/// @brief Returns current PWM duty applied to channel
+/// @param id Output channel id [1..16] T_OUT_ID
+/// @return PWM duty in percentage [0..100]
+uint8_t BSP_OUT_GetPwmDuty(T_OUT_ID id);
 
 #endif

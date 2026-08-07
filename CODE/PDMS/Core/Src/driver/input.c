@@ -161,6 +161,27 @@ bool IN_GetValueSchmitt(T_INPUT_ID id)
   return ret;
 }
 
+/// @brief Override CAN input schmitt trigger value by input ID (after usage of previous value)
+/// @param id Input ID
+/// @param state The new state to set
+/// @return TRUE if the override was successful, FALSE otherwise
+bool IN_OverrideCANValueSchmitt(T_INPUT_ID id, bool state)
+{
+    bool ret = FALSE;
+
+  if( IN_GetMode(id) == IN_MODE_SCHMITT && IN_GetType(id) == IN_TYPE_CAN)
+  {
+    ret = BSP_CANIN_OverrideValueSchmitt(IN_GetCfgPtr(id)->location, state);
+  }
+  else
+  {
+    LOG_WARN( "IN:: trying to set boolean value for non CAN schmitt input");
+    ret = FALSE;
+  }
+
+  return ret;
+}
+
 /// @brief Get analog input value by input ID
 /// @param id Input ID
 /// @return Analog value in mV range [0, 5000]

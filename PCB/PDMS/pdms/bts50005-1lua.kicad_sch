@@ -2149,6 +2149,27 @@
 		)
 		(uuid "9c9dcf96-b06c-42f5-afcf-c6b732075276")
 	)
+	(text_box "Change this to 10nF, so it works with PWM output ->"
+		(exclude_from_sim no)
+		(at 13.335 52.07 0)
+		(size 32.385 6.35)
+		(stroke
+			(width 0)
+			(type dash)
+			(color 255 0 255 1)
+		)
+		(fill
+			(type none)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(color 255 0 255 1)
+			)
+			(justify left top)
+		)
+		(uuid "ec905019-53f1-412e-9eea-3a7b719ea440")
+	)
 	(text "Check if RC filter values are correct:\nSense signal filtering\nA time constant (RADC * CSENSE ) longer than 1 μs is recommended"
 		(exclude_from_sim no)
 		(at 27.178 82.042 0)

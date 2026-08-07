@@ -55,9 +55,11 @@ extern uint16_t adc1RawData[ADC1_CHANNEL_COUNT];
 extern uint16_t adc2RawData[ADC2_CHANNEL_COUNT];
 
 extern volatile uint16_t adc1MedianBufferShadow[ADC1_CHANNEL_COUNT][ADC1_SW_OVERSAMPLING_RATIO];
+extern volatile uint16_t adc1InjectedRawData[ADC1_CHANNEL_COUNT];
 
 void ADC1_Init(void);
 void ADC2_Init(void);
+void ADC1_ConfigureInjected_FollowPWM(bool oc1, bool oc2, bool oc3, bool oc4, bool oc5, bool oc6, bool oc7, bool oc8);
 
 /* USER CODE END Prototypes */
 

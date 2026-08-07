@@ -133,7 +133,7 @@ extern "C" {
 #endif
 
 #ifndef INCLUDE_xTaskGetIdleTaskHandle
-	#define INCLUDE_xTaskGetIdleTaskHandle 0
+	#define INCLUDE_xTaskGetIdleTaskHandle 1
 #endif
 
 #ifndef INCLUDE_xTaskAbortDelay
@@ -399,7 +399,7 @@ hold explicit before calling the code. */
 #endif
 
 #ifndef configRECORD_STACK_HIGH_ADDRESS
-	#define configRECORD_STACK_HIGH_ADDRESS 0
+	#define configRECORD_STACK_HIGH_ADDRESS 1
 #endif
 
 #ifndef configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H
@@ -713,8 +713,14 @@ hold explicit before calling the code. */
 #endif
 
 #ifndef configGENERATE_RUN_TIME_STATS
-	#define configGENERATE_RUN_TIME_STATS 0
+	#define configGENERATE_RUN_TIME_STATS 1
 #endif
+
+extern void RTOS_ConfigureRunTimeStats(void);
+extern uint32_t RTOS_GetRunTimeCounterValue(void);
+
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() RTOS_ConfigureRunTimeStats()
+#define portGET_RUN_TIME_COUNTER_VALUE() RTOS_GetRunTimeCounterValue()
 
 #if ( configGENERATE_RUN_TIME_STATS == 1 )
 
@@ -799,7 +805,7 @@ hold explicit before calling the code. */
 #endif
 
 #ifndef configUSE_STATS_FORMATTING_FUNCTIONS
-	#define configUSE_STATS_FORMATTING_FUNCTIONS 0
+	#define configUSE_STATS_FORMATTING_FUNCTIONS 1
 #endif
 
 #ifndef portASSERT_IF_INTERRUPT_PRIORITY_INVALID

@@ -25,6 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "tim.h"
 #include "iwdg.h"
 #include "tim.h"
 #include "typedefs.h"
@@ -138,13 +139,19 @@ osThreadId_t isotpTaskHandle;
 const osThreadAttr_t isotpTask_attributes = {
   .name = "isotpTask",
   .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal3,
+  .priority = (osPriority_t) osPriorityNormal,
 };
-
 /* Definitions for tmp126Task */
 osThreadId_t tmp126TaskHandle;
 const osThreadAttr_t tmp126Task_attributes = {
   .name = "tmp126Task",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for imuTask */
+osThreadId_t imuTaskHandle;
+const osThreadAttr_t imuTask_attributes = {
+  .name = "imuTask",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -155,7 +162,7 @@ const osThreadAttr_t tmp126Task_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
-void statusTaskStart(void *argument);
+extern void statusTaskStart(void *argument);
 extern void can1TaskStart(void *argument);
 extern void can2TaskStart(void *argument);
 extern void adc1TaskStart(void *argument);
@@ -168,6 +175,7 @@ extern void adc2TaskStart(void *argument);
 extern void argbTaskStart(void *argument);
 extern void isotpTaskStart(void *argument);
 extern void tmp126TaskEntry(void *argument);
+extern void imuTaskEntry(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -200,12 +208,6 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-
-  /* creation of pdmTask */
-  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
-
-  // First initialize default and peripheral task, then start main (PDM) task
-  // IWDG task
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of statusTask */
@@ -220,21 +222,23 @@ void MX_FREERTOS_Init(void) {
   /* creation of adc1Task */
   adc1TaskHandle = osThreadNew(adc1TaskStart, NULL, &adc1Task_attributes);
 
-  /* creation of adc2Task */
-  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
-
   /* creation of testTask */
-  // Disabloe test task
-  //testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
+  testTaskHandle = osThreadNew(testTaskEntry, NULL, &testTask_attributes);
 
   /* creation of vmuxTask */
   vmuxTaskHandle = osThreadNew(vmuxTaskStart, NULL, &vmuxTask_attributes);
+
+  /* creation of pdmTask */
+  pdmTaskHandle = osThreadNew(pdmTaskStart, NULL, &pdmTask_attributes);
 
   /* creation of spoc2CurrTask */
   spoc2CurrTaskHandle = osThreadNew(spoc2CurrTaskStart, NULL, &spoc2CurrTask_attributes);
 
   /* creation of telemTask */
   telemTaskHandle = osThreadNew(telemTaskStart, NULL, &telemTask_attributes);
+
+  /* creation of adc2Task */
+  adc2TaskHandle = osThreadNew(adc2TaskStart, NULL, &adc2Task_attributes);
 
   /* creation of argbTask */
   argbTaskHandle = osThreadNew(argbTaskStart, NULL, &argbTask_attributes);
@@ -244,6 +248,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of tmp126Task */
   tmp126TaskHandle = osThreadNew(tmp126TaskEntry, NULL, &tmp126Task_attributes);
+
+  /* creation of imuTask */
+  imuTaskHandle = osThreadNew(imuTaskEntry, NULL, &imuTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -276,42 +283,30 @@ void StartDefaultTask(void *argument)
   /* USER CODE END StartDefaultTask */
 }
 
-/* USER CODE BEGIN Header_statusTaskStart */
-/**
-* @brief Function implementing the statusTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_statusTaskStart */
-void statusTaskStart(void *argument)
-{
-  /* USER CODE BEGIN statusTaskStart */
-  LOG_INFO("STATUS:: Task start");
-
-  BUZZER_TurnOn();
-  osDelay(300);
-  BUZZER_TurnOff();
-  /* Infinite loop */
-    for(;;)
-    {
-        HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
-        osDelay(500);
-    }
-  /* USER CODE END statusTaskStart */
-}
-
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-void RTOS_SoftLimpHomeMode(void)
+void RTOS_EnterSoftLimpHomeMode(void)
 {
-  vTaskSuspend(spoc2CurrTaskHandle);
-  vTaskSuspend(vmuxTaskHandle);
+  //vTaskSuspend(spoc2CurrTaskHandle);
+  //vTaskSuspend(vmuxTaskHandle);
   vTaskSuspend(argbTaskHandle);
   vTaskSuspend(adc1TaskHandle);
   vTaskSuspend(adc2TaskHandle);
   vTaskSuspend(pdmTaskHandle);
   vTaskSuspend(statusTaskHandle);
   vTaskSuspend(isotpTaskHandle);
+}
+
+void RTOS_ExitSoftLimpHomeMode(void)
+{
+  //vTaskResume(spoc2CurrTaskHandle);
+  //vTaskResume(vmuxTaskHandle);
+  vTaskResume(argbTaskHandle);
+  vTaskResume(adc1TaskHandle);
+  vTaskResume(adc2TaskHandle);
+  vTaskResume(pdmTaskHandle);
+  vTaskResume(statusTaskHandle);
+  vTaskResume(isotpTaskHandle);
 }
 
 void RTOS_HardLimpHomeMode(void)
@@ -331,7 +326,7 @@ void RTOS_ResumeTelemetry(void)
 
 void RTOS_SuspendForConfigChange(void)
 {
-  vTaskSuspend(spoc2CurrTaskHandle);
+  //vTaskSuspend(spoc2CurrTaskHandle);
   vTaskSuspend(adc1TaskHandle);
   vTaskSuspend(adc2TaskHandle);
   vTaskSuspend(pdmTaskHandle);
@@ -340,12 +335,41 @@ void RTOS_SuspendForConfigChange(void)
 
 void RTOS_ResumeAfterConfigChange(void)
 {
-  vTaskResume(spoc2CurrTaskHandle);
+  //vTaskResume(spoc2CurrTaskHandle);
   vTaskResume(adc1TaskHandle);
   vTaskResume(adc2TaskHandle);
   vTaskResume(pdmTaskHandle);
   vTaskResume(telemTaskHandle);
+}
 
+void RTOS_SuspendCAN_1(void)
+{
+  vTaskSuspend(can1TaskHandle);
+}
+
+void RTOS_SuspendCAN_2(void)
+{
+  vTaskSuspend(can2TaskHandle);
+}
+
+void RTOS_ResumeCAN_1(void)
+{
+  vTaskResume(can1TaskHandle);
+}
+
+void RTOS_ResumeCAN_2(void)
+{ 
+  vTaskResume(can2TaskHandle);
+}
+
+void RTOS_ConfigureRunTimeStats(void)
+{
+  HAL_TIM_Base_Start(&htim5);
+}
+
+uint32_t RTOS_GetRunTimeCounterValue(void)
+{
+  return __HAL_TIM_GET_COUNTER(&htim5); 
 }
 /* USER CODE END Application */
 

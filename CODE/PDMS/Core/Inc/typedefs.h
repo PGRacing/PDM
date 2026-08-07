@@ -21,6 +21,9 @@
 // Get ceil from division
 #define DIV_CEIL(X, Y) (((X) + (Y) - 1) / (Y))
 
+// CLAMP value
+#define CLAMP(x, min, max) (((x) < (min)) ? (min) : (((x) > (max)) ? (max) : (x)))
+
 /// CONFIG
 #define POWER_OUT_COUNT 16
 //#define USE_PDM_ASSERT 0

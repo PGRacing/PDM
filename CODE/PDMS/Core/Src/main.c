@@ -21,7 +21,9 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "can.h"
+#include "crc.h"
 #include "dma.h"
+#include "i2c.h"
 #include "iwdg.h"
 #include "spi.h"
 #include "tim.h"
@@ -105,14 +107,17 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   MX_ADC2_Init();
-  MX_TIM8_Init();
   MX_ADC1_Init();
   MX_ADC3_Init();
   MX_SPI2_Init();
   MX_TIM2_Init();
-  // MX_IWDG_Init();
+  MX_IWDG_Init();
   MX_TIM15_Init();
   MX_SPI1_Init();
+  MX_I2C2_Init();
+  MX_TIM3_Init();
+  MX_CRC_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
  
   // Platform start
@@ -255,6 +260,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+  __disable_irq();
+
+  // Disable all channels
+  OUT_SetState(OUT_ID_1, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_2, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_3, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_4, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_5, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_6, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_7, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_8, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_9, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_10, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_11, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_12, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_13, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_14, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_15, OUT_STATE_OFF);
+  OUT_SetState(OUT_ID_16, OUT_STATE_OFF);
+
   LL_GPIO_ResetOutputPin(PWM_SIG1_GPIO_Port, PWM_SIG1_Pin);
   LL_GPIO_ResetOutputPin(PWM_SIG2_GPIO_Port, PWM_SIG2_Pin);
   LL_GPIO_ResetOutputPin(PWM_SIG3_GPIO_Port, PWM_SIG3_Pin);
@@ -265,7 +290,7 @@ void Error_Handler(void)
   LL_GPIO_ResetOutputPin(PWM_SIG8_GPIO_Port, PWM_SIG8_Pin);
 
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
+
   uint32_t delay = 0;
   const uint32_t error_delay = 1000000;
   while (1)

@@ -1,18 +1,26 @@
 import multiprocessing
+import json
+import struct
 import time
 import sys
+import math
+import random
 from pathlib import Path
 
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPixmap
+from PyQt5.QtGui import QColor, QIcon, QKeySequence, QPixmap, QPainter, QFont
 from PyQt5.QtWidgets import QSplashScreen
 from PyQt5.QtWidgets import (
+    QAction,
     QApplication,
     QComboBox,
+    QDialog,
+    QFileDialog,
     QGridLayout,
     QGroupBox,
     QHeaderView,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QMainWindow,
@@ -27,12 +35,15 @@ from PyQt5.QtWidgets import (
 )
 
 from pdm_can_worker import can_isolated_process
+from pdm_control_tab import ControlConfigPage
 from pdm_config_tab import ConfigTab
+from pdms_logview import LogViewTab
 from pdm_plot_tab import PlotPanel
+import pdm_shared
 from pdm_shared import (
+    APP_VERSION,
     CHANNEL_COUNT,
     build_dark_stylesheet,
-    CAN_CHANNEL,
     GUI_UPDATE_MS,
     IDS,
     OUT_STATE_MAP,
@@ -41,6 +52,11 @@ from pdm_shared import (
     PLOT_UPDATE_MS,
     get_row_colors,
     get_asset_path,
+    get_last_project_path,
+    load_app_config,
+    save_last_project_path,
+    save_usb_device_config,
+    set_can_channel_runtime,
 )
 
 import ctypes
@@ -50,11 +66,237 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 CHECKBOX_TICK_PATH = get_asset_path("assets/checkbox-tick.svg")
 
+
+def _stm32_crc32_bytes(data):
+    """Match STM32 CRC peripheral: poly 0x04C11DB7, init 0xFFFFFFFF,
+    input/output inversion disabled, no final XOR.
+    """
+    crc = 0xFFFFFFFF
+    poly = 0x04C11DB7
+    for byte in data:
+        crc ^= (int(byte) & 0xFF) << 24
+        for _ in range(8):
+            if crc & 0x80000000:
+                crc = ((crc << 1) ^ poly) & 0xFFFFFFFF
+            else:
+                crc = (crc << 1) & 0xFFFFFFFF
+    return crc & 0xFFFFFFFF
+
+
+def _discover_serial_devices():
+    try:
+        from serial.tools import list_ports
+    except Exception:
+        return []
+
+    devices = []
+    try:
+        for port in list_ports.comports():
+            device = str(getattr(port, "device", "") or "").strip()
+            if not device:
+                continue
+            description = str(getattr(port, "description", "") or "Unknown device")
+            devices.append((device, description))
+    except Exception:
+        return []
+
+    devices.sort(key=lambda item: item[0])
+    return devices
+
+
+def _load_saved_usb_device():
+    config = load_app_config()
+    candidate = config.get("usb_device") if isinstance(config, dict) else None
+    if isinstance(candidate, str) and candidate.strip():
+        return candidate.strip()
+    return None
+
+
+class StartupDeviceDialog(QDialog):
+    def __init__(self, devices, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select USB Device")
+        self.setModal(True)
+        self.setMinimumWidth(460)
+        self.selected_device = None
+        self.offline_mode = False
+
+        layout = QVBoxLayout(self)
+        intro = QLabel("No previous selection of USB to CAN interface was found. Choose a SLCAN interface device or continue in offline mode.")
+        intro.setWordWrap(True)
+        layout.addWidget(intro)
+        layout.addSpacing(12)
+
+        self.combo_device = QComboBox()
+        for device, description in devices:
+            self.combo_device.addItem(f"{device} - {description}", device)
+        layout.addWidget(self.combo_device)
+        layout.addSpacing(12)
+
+        button_row = QHBoxLayout()
+        btn_use = QPushButton("Use Device")
+        btn_offline = QPushButton("Offline")
+        btn_cancel = QPushButton("Cancel")
+        button_row.addWidget(btn_use)
+        button_row.addWidget(btn_offline)
+        button_row.addWidget(btn_cancel)
+        layout.addLayout(button_row)
+
+        btn_use.clicked.connect(self._accept_device)
+        btn_offline.clicked.connect(self._accept_offline)
+        btn_cancel.clicked.connect(self.reject)
+
+    def _accept_device(self):
+        device = self.combo_device.currentData()
+        if not device and self.combo_device.currentText():
+            device = self.combo_device.currentText().split(" - ", 1)[0].strip()
+        if not device:
+            QMessageBox.warning(self, "No device selected", "Please select a USB device or choose Offline mode.")
+            return
+        self.selected_device = str(device)
+        self.offline_mode = False
+        self.accept()
+
+    def _accept_offline(self):
+        self.selected_device = None
+        self.offline_mode = True
+        self.accept()
+
+
+def _resolve_startup_transport():
+    saved_device = _load_saved_usb_device()
+    if saved_device:
+        set_can_channel_runtime(saved_device)
+        return {"offline": False, "channel": saved_device}
+
+    devices = _discover_serial_devices()
+    if not devices:
+        answer = QMessageBox.question(
+            None,
+            "No serial devices",
+            "No serial devices were detected and no valid app_config.json exists. Start in offline mode?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        if answer == QMessageBox.Yes:
+            return {"offline": True, "channel": None}
+        return None
+
+    dialog = StartupDeviceDialog(devices)
+    if dialog.exec_() != QDialog.Accepted:
+        return None
+
+    if dialog.offline_mode:
+        return {"offline": True, "channel": None}
+
+    selected_device = dialog.selected_device
+    if not selected_device:
+        return None
+
+    set_can_channel_runtime(selected_device)
+    try:
+        save_usb_device_config(selected_device)
+    except Exception as exc:
+        QMessageBox.warning(
+            None,
+            "Configuration warning",
+            f"Selected device will be used for this session, but app_config.json could not be saved:\n{exc}",
+        )
+    return {"offline": False, "channel": selected_device}
+
+
+def _kpi_label_style(color="#E0E0E0"):
+    return (
+        "QLabel {"
+        f" color: {color};"
+        " font-size: 22px;"
+        " font-weight: bold;"
+        " padding: 8px 12px;"
+        " border: 1px solid #333333;"
+        " border-radius: 8px;"
+        " background-color: #151515;"
+        " }"
+    )
+
+
+def _blend_color(start_hex, end_hex, ratio):
+    ratio = max(0.0, min(1.0, float(ratio)))
+    start = QColor(start_hex)
+    end = QColor(end_hex)
+    red = int(start.red() + (end.red() - start.red()) * ratio)
+    green = int(start.green() + (end.green() - start.green()) * ratio)
+    blue = int(start.blue() + (end.blue() - start.blue()) * ratio)
+    return f"#{red:02X}{green:02X}{blue:02X}"
+
+
+SYS_STATUS_MAP = {
+    0: "OK",
+    1: "ERROR",
+    2: "UNDER VOLTAGE LOCK OUT",
+}
+
+
+def _format_voltage_mv(value):
+    try:
+        return f"{float(value) / 1000.0:.2f}V"
+    except Exception:
+        return "-"
+
+
+def _format_channel_error_summary(channels):
+    error_channels = []
+    warning_channels = []
+    for index, channel in enumerate(channels or []):
+        try:
+            status = int(channel.get("status", 0))
+            if status >= 9:
+                error_channels.append(str(index + 1))
+            elif status > 0:
+                warning_channels.append(str(index + 1))
+        except Exception:
+            continue
+    if error_channels:
+        return f"In error: {', '.join(error_channels)}", "#E30026"
+    if warning_channels:
+        return f"Warning: {', '.join(warning_channels)}", "#FFB74D"
+    return "In error: None", "#09BC8A"
+
+
+def _battery_kpi_color(voltage_mv):
+    try:
+        voltage_v = float(voltage_mv) / 1000.0
+    except Exception:
+        return "#E30026"
+
+    if voltage_v <= 8.0 or voltage_v >= 18.0:
+        return "#E30026"
+
+    if voltage_v <= 14.5:
+        if voltage_v <= 10.0:
+            ratio = (voltage_v - 8.0) / (10.0 - 8.0)
+            return _blend_color("#E30026", "#F2994A", ratio)
+        if voltage_v <= 12.0:
+            ratio = (voltage_v - 10.0) / (12.0 - 10.0)
+            return _blend_color("#F2994A", "#F2C94C", ratio)
+        ratio = (voltage_v - 12.0) / (14.5 - 12.0)
+        return _blend_color("#F2C94C", "#09BC8A", ratio)
+
+    if voltage_v <= 16.0:
+        ratio = (voltage_v - 14.5) / (16.0 - 14.5)
+        return _blend_color("#09BC8A", "#F2C94C", ratio)
+    if voltage_v <= 17.0:
+        ratio = (voltage_v - 16.0) / (17.0 - 16.0)
+        return _blend_color("#F2C94C", "#F2994A", ratio)
+    ratio = (voltage_v - 17.0) / (18.0 - 17.0)
+    return _blend_color("#F2994A", "#E30026", ratio)
+
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, offline_mode=False):
         super().__init__()
-        self.setWindowTitle("PDMS Control App")
+        self.project_name = "Untitled"
+        self._update_window_title()
         self.resize(1920, 1280)
+        self.offline_mode = bool(offline_mode)
 
         self.pipe_ui, self.pipe_worker = multiprocessing.Pipe(duplex=False)
         self.tx_queue = multiprocessing.Queue()
@@ -62,22 +304,51 @@ class MainWindow(QMainWindow):
         self.worker_process = None
         self.worker_started = False
         self.serial_device_ready = False
+        self._device_config_request_pending = False
+        self._device_crc_request_pending = False
+        self._device_config_prompt = None
+        self._pending_device_config = None
+        self._device_config_processing_scheduled = False
+        self._connection_state = "disconnected"
+        self._config_check_suppressed_until = 0.0
         self.last_frame_rx_time = 0.0
 
         self.latest_sys = {"status": 0, "batt": 0, "core_temp": 0.0, "safety": 0, "total_current": 0}
         self.latest_ch = [
-            {"name": "", "status": 0, "state": 0, "voltage": 0, "current": 0, "current_avg": 0}
+            {
+                "name": "",
+                "status": 0,
+                "state": 0,
+                "voltage": 0,
+                "current": 0,
+                "current_avg": 0,
+                "current_rms": 0,
+                "i2t_heat": 0,
+                "soc_threshold": 0,
+            }
             for _ in range(CHANNEL_COUNT)
         ]
         self.latest_phy = [0] * PHY_INPUT_COUNT
+
+        self.lates_imu = {"accX": 0.0, "accY": 0.0, "accZ": 0.0, "pitch": 0.0, "roll": 0.0, "yaw": 0.0}
         self.latest_frames = []
         self.plotting_enabled = True
+        self.tabs = None
         self.config_tab = None
+        self.control_tab = None
+        self.log_tab = None
+        self._log_config_snapshot = {}
+        self._last_log_config_snapshot_refresh = 0.0
+        self._emulate_data_enabled = False
+        self._emulation_start_time = time.time()
+        self._emulation_step = 0
+        self._emulated_current_values_ma = [0.0 for _ in range(CHANNEL_COUNT)]
+        self._emulated_current_targets_ma = [0.0 for _ in range(CHANNEL_COUNT)]
 
         self.init_ui()
 
         self.plot_toggle_shortcut = QShortcut(QKeySequence("Ctrl+Space"), self)
-        self.plot_toggle_shortcut.activated.connect(self.toggle_plotting)
+        self.plot_toggle_shortcut.activated.connect(self._handle_ctrl_space_shortcut)
 
         self.gui_timer = QTimer(self)
         self.gui_timer.timeout.connect(self.process_gui_refresh)
@@ -91,21 +362,167 @@ class MainWindow(QMainWindow):
         self.hb_timer.timeout.connect(self.update_heartbeat_status)
         self.hb_timer.start(200)
 
-        QTimer.singleShot(0, self.start_can_worker)
+        self.emulation_timer = QTimer(self)
+        self.emulation_timer.timeout.connect(self._emit_emulated_packet)
+        self.emulation_timer.setInterval(50)
+
+        self._autoload_last_project()
+
+        if self.offline_mode:
+            self._connection_state = "offline"
+            self._set_heartbeat_status("Offline mode", "#90CAF9")
+        else:
+            QTimer.singleShot(0, self.start_can_worker)
 
     def start_can_worker(self):
         if self.worker_started:
             return
+        self.offline_mode = False
         self.serial_device_ready = False
+        self.last_frame_rx_time = 0.0
         self.worker_process = multiprocessing.Process(
             target=can_isolated_process, args=(self.pipe_worker, self.tx_queue), daemon=True
         )
         self.worker_process.start()
         self.worker_started = True
 
+    def stop_can_worker(self):
+        if not self.worker_started:
+            return
+        try:
+            self.tx_queue.put({"cmd": "EXIT"})
+        except Exception:
+            pass
+        if self.worker_process is not None:
+            try:
+                self.worker_process.join(timeout=0.8)
+            except Exception:
+                pass
+            if self.worker_process.is_alive():
+                try:
+                    self.worker_process.terminate()
+                    self.worker_process.join(timeout=0.5)
+                except Exception:
+                    pass
+        self.worker_process = None
+        self.worker_started = False
+        self.serial_device_ready = False
+        self.last_frame_rx_time = 0.0
+        self._connection_state = "disconnected"
+
+    def _show_transport_dialog(self, force_prompt=False):
+        if not force_prompt:
+            saved_device = _load_saved_usb_device()
+            if saved_device:
+                set_can_channel_runtime(saved_device)
+                return {"offline": False, "channel": saved_device}
+
+        devices = _discover_serial_devices()
+        if not devices:
+            answer = QMessageBox.question(
+                self,
+                "No serial devices",
+                "No serial devices were detected. Switch to offline mode?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes,
+            )
+            if answer == QMessageBox.Yes:
+                return {"offline": True, "channel": None}
+            return None
+
+        dialog = StartupDeviceDialog(devices, self)
+        if dialog.exec_() != QDialog.Accepted:
+            return None
+
+        if dialog.offline_mode:
+            return {"offline": True, "channel": None}
+
+        selected_device = dialog.selected_device
+        if not selected_device:
+            return None
+
+        set_can_channel_runtime(selected_device)
+        try:
+            save_usb_device_config(selected_device)
+        except Exception as exc:
+            QMessageBox.warning(
+                self,
+                "Configuration warning",
+                f"Selected device will be used for this session, but app_config.json could not be saved:\n{exc}",
+            )
+        return {"offline": False, "channel": selected_device}
+
+    def change_usb_device(self):
+        selection = self._show_transport_dialog(force_prompt=True)
+        if selection is None:
+            return
+
+        target_offline = bool(selection.get("offline", False))
+        previous_offline = self.offline_mode
+
+        if target_offline:
+            self.stop_can_worker()
+            self.offline_mode = True
+            self._set_heartbeat_status("Offline mode", "#90CAF9")
+            QMessageBox.information(self, "Connection updated", "Switched to offline mode.")
+            return
+
+        self.stop_can_worker()
+        self.offline_mode = False
+        self.start_can_worker()
+        if previous_offline:
+            QMessageBox.information(
+                self,
+                "Connection updated",
+                f"Switched from offline mode to {pdm_shared.CAN_CHANNEL}.",
+            )
+        else:
+            QMessageBox.information(
+                self,
+                "Connection updated",
+                f"USB device changed to {pdm_shared.CAN_CHANNEL}.",
+            )
+
     def init_ui(self):
+        file_menu = self.menuBar().addMenu("File")
+        self.action_save_project = QAction("Save project", self)
+        self.action_save_project.setShortcut(QKeySequence("Ctrl+S"))
+        self.action_save_project.setShortcutContext(Qt.ApplicationShortcut)
+        self.action_load_project = QAction("Load project", self)
+        self.action_load_binary = QAction("Load binary", self)
+        self.action_export_binary = QAction("Export binary", self)
+        self.action_load_json = QAction("Load JSON", self)
+        self.action_export_json = QAction("Export JSON", self)
+        file_menu.addAction(self.action_save_project)
+        file_menu.addAction(self.action_load_project)
+        file_menu.addSeparator()
+        file_menu.addAction(self.action_load_binary)
+        file_menu.addAction(self.action_export_binary)
+        file_menu.addAction(self.action_load_json)
+        file_menu.addAction(self.action_export_json)
+
+        device_menu = self.menuBar().addMenu("Device")
+        self.action_request_config = QAction("Request config", self)
+        self.action_send_to_device = QAction("Send to device", self)
+        self.action_reset_device = QAction("Reset device", self)
+        device_menu.addAction(self.action_request_config)
+        device_menu.addAction(self.action_send_to_device)
+        device_menu.addAction(self.action_reset_device)
+        device_menu.addSeparator()
+
+        self.action_change_usb = QAction("Change USB device...", self)
+        self.action_change_usb.triggered.connect(self.change_usb_device)
+        device_menu.addAction(self.action_change_usb)
+        self.action_emulate_data = QAction("Emulate data", self)
+        self.action_emulate_data.setCheckable(True)
+        self.action_emulate_data.toggled.connect(self._toggle_emulate_data)
+        device_menu.addAction(self.action_emulate_data)
+
         tabs = QTabWidget()
+        tabs.setContentsMargins(0, 6, 0, 0)
+        tabs.setStyleSheet("QTabWidget { margin-top: 5px; }")
         self.setCentralWidget(tabs)
+        self.tabs = tabs
 
         dashboard = QWidget()
         dashboard_layout = QVBoxLayout(dashboard)
@@ -118,21 +535,78 @@ class MainWindow(QMainWindow):
         sys_grid.addWidget(QLabel("State:"), 0, 0)
         self.lbl_sys_state = QLabel("-")
         sys_grid.addWidget(self.lbl_sys_state, 0, 1)
+
         sys_grid.addWidget(QLabel("Battery:"), 1, 0)
-        self.lbl_batt = QLabel("- mV")
+        self.lbl_batt = QLabel("- V")
         sys_grid.addWidget(self.lbl_batt, 1, 1)
+
         sys_grid.addWidget(QLabel("Device temp:"), 2, 0)
         self.lbl_temp = QLabel("- °C")
         sys_grid.addWidget(self.lbl_temp, 2, 1)
-        sys_grid.addWidget(QLabel("Safety Line:"), 3, 0)
-        self.lbl_safety = QLabel("-")
-        sys_grid.addWidget(self.lbl_safety, 3, 1)
+
+        sys_grid.addWidget(QLabel("System load:"), 3, 0)
+        self.lbl_system_load = QLabel("- %")
+        sys_grid.addWidget(self.lbl_system_load, 3, 1)
+
         sys_grid.addWidget(QLabel("Total I Avg:"), 4, 0)
         self.lbl_total_i = QLabel("- mA")
         sys_grid.addWidget(self.lbl_total_i, 4, 1)
+
+        big_kpi_row = QHBoxLayout()
+        big_kpi_row.setSpacing(8)
+
+        self.lbl_batt_big = QLabel("Battery: -")
+        self.lbl_batt_big.setAlignment(Qt.AlignCenter)
+        self.lbl_batt_big.setStyleSheet(_kpi_label_style("#4FC3F7"))
+        big_kpi_row.addWidget(self.lbl_batt_big, stretch=1)
+
+        self.lbl_itot = QLabel("I<sub>tot</sub>: - A")
+        self.lbl_itot.setTextFormat(Qt.RichText)
+        self.lbl_itot.setAlignment(Qt.AlignCenter)
+        self.lbl_itot.setStyleSheet(_kpi_label_style("#F2C94C"))
+        big_kpi_row.addWidget(self.lbl_itot, stretch=1)
+
+        self.lbl_safety_big = QLabel("Safety Line: -")
+        self.lbl_safety_big.setAlignment(Qt.AlignCenter)
+        self.lbl_safety_big.setStyleSheet(_kpi_label_style("#E0E0E0"))
+        big_kpi_row.addWidget(self.lbl_safety_big, stretch=1)
+
+        self.lbl_error_big = QLabel("Channels in error: None")
+        self.lbl_error_big.setAlignment(Qt.AlignCenter)
+        self.lbl_error_big.setStyleSheet(_kpi_label_style("#09BC8A"))
+        big_kpi_row.addWidget(self.lbl_error_big, stretch=1)
+
+        sys_grid.addLayout(big_kpi_row, 6, 0, 1, 4)
+
         sys_grid.addWidget(QLabel("Invalid logic:"), 5, 0)
         self.lbl_logic_valid_mask = QLabel("-")
         self.lbl_logic_valid_mask.setWordWrap(True)
+        
+        sys_grid.addWidget(QLabel("Acc X:"), 0, 2)
+        self.lbl_acc_x = QLabel("- g")
+        sys_grid.addWidget(self.lbl_acc_x, 0, 3)
+
+        sys_grid.addWidget(QLabel("Acc Y:"), 1, 2)
+        self.lbl_acc_y = QLabel("- g")
+        sys_grid.addWidget(self.lbl_acc_y, 1, 3)
+
+        sys_grid.addWidget(QLabel("Acc Z:"), 2, 2)
+        self.lbl_acc_z = QLabel("- g")
+        sys_grid.addWidget(self.lbl_acc_z, 2, 3)
+
+        sys_grid.addWidget(QLabel("Pitch:"), 3, 2)
+        self.lbl_gyro_x = QLabel("- dps")
+        sys_grid.addWidget(self.lbl_gyro_x, 3, 3)
+
+        sys_grid.addWidget(QLabel("Roll:"), 4, 2)
+        self.lbl_gyro_y = QLabel("- dps")
+        sys_grid.addWidget(self.lbl_gyro_y, 4, 3)
+
+        sys_grid.addWidget(QLabel("Yaw:"), 5, 2)
+        self.lbl_gyro_z = QLabel("- dps")
+        sys_grid.addWidget(self.lbl_gyro_z, 5, 3)
+        
+        
         sys_grid.addWidget(self.lbl_logic_valid_mask, 5, 1)
         top_panel.addWidget(sys_box, stretch=2)
 
@@ -157,29 +631,48 @@ class MainWindow(QMainWindow):
 
         out_table_box = QGroupBox("PDM Output Channel Bus Matrix")
         out_table_vbox = QVBoxLayout(out_table_box)
-        self.table_channels = QTableWidget(CHANNEL_COUNT, 6)
-        self.table_channels.setHorizontalHeaderLabels(["Name", "Status", "State", "V [mV]", "I inst [mA]", "I avg [mA]"])
+        self.table_channels = QTableWidget(CHANNEL_COUNT, 10)
+        self.table_channels.setHorizontalHeaderLabels([
+            "Name",
+            "Status",
+            "State",
+            "V [V]",
+            "I inst [mA]",
+            "I avg [mA]",
+            "Irms [mA]",
+            "PWM duty [%]",
+            "I2T heat [%]",
+            "SOC threshold",
+        ])
         self.table_channels.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_channels.verticalHeader().setDefaultSectionSize(22)
+        self.table_channels.verticalHeader().setMinimumSectionSize(18)
+        self.table_channels.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         for row in range(CHANNEL_COUNT):
-            for col in range(6):
+            for col in range(10):
                 item = QTableWidgetItem("")
                 if col > 2:
                     item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
                 self.table_channels.setItem(row, col, item)
+            self.table_channels.setRowHeight(row, 22)
         out_table_vbox.addWidget(self.table_channels)
         tables_layout.addWidget(out_table_box, stretch=5)
 
         phy_table_box = QGroupBox("Device Physical Inputs")
         phy_table_vbox = QVBoxLayout(phy_table_box)
         self.table_phy = QTableWidget(PHY_INPUT_COUNT, 2)
-        self.table_phy.setHorizontalHeaderLabels(["Input Line", "Input voltage [mV]"])
+        self.table_phy.setHorizontalHeaderLabels(["Input Line", "Input voltage [V]"])
         self.table_phy.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table_phy.horizontalHeader().setStretchLastSection(True)
+        self.table_phy.verticalHeader().setDefaultSectionSize(22)
+        self.table_phy.verticalHeader().setMinimumSectionSize(18)
+        self.table_phy.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         for row in range(PHY_INPUT_COUNT):
             self.table_phy.setItem(row, 0, QTableWidgetItem(f"Physical Input {row + 1}"))
             num_item = QTableWidgetItem("0")
             num_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.table_phy.setItem(row, 1, num_item)
+            self.table_phy.setRowHeight(row, 22)
         phy_table_vbox.addWidget(self.table_phy)
         tables_layout.addWidget(phy_table_box, stretch=2)
 
@@ -188,6 +681,9 @@ class MainWindow(QMainWindow):
         self.table_frames = QTableWidget(0, 2)
         self.table_frames.setHorizontalHeaderLabels(["Frame ID", "Frequency [Hz]"])
         self.table_frames.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_frames.verticalHeader().setDefaultSectionSize(20)
+        self.table_frames.verticalHeader().setMinimumSectionSize(18)
+        self.table_frames.setStyleSheet("QTableWidget::item { padding: 1px 3px; }")
         frames_vbox.addWidget(self.table_frames)
         tables_layout.addWidget(frames_box, stretch=2)
 
@@ -200,8 +696,37 @@ class MainWindow(QMainWindow):
         self.config_tab.send_reset_requested.connect(self.send_reset_device)
         self.config_tab.request_config_requested.connect(self.request_config_from_device)
         self.config_tab.can_frames_changed.connect(self._refresh_tx_frame_options)
+        self.config_tab.config_applied.connect(self._refresh_control_tab)
+        self.config_tab.config_applied.connect(self._refresh_log_config_snapshot)
+        self.config_tab.inputs_page.inputsChanged.connect(self._refresh_control_tab)
+        self.config_tab.inputs_page.inputsChanged.connect(self._refresh_log_config_snapshot)
+        for channel_widget in self.config_tab.channel_widgets:
+            channel_widget.logic_page.logicChanged.connect(self._refresh_control_tab)
+            channel_widget.logic_page.logicChanged.connect(self._refresh_log_config_snapshot)
+            channel_widget.edit_name.textChanged.connect(self._refresh_control_tab)
+            channel_widget.edit_name.textChanged.connect(self._refresh_log_config_snapshot)
         tabs.addTab(self.config_tab, "Configuration")
+        self.control_tab = ControlConfigPage()
+        self.control_tab.can_frame_requested.connect(self.send_can_frame)
+        tabs.addTab(self.control_tab, "Control")
+        self.log_tab = LogViewTab()
+        tabs.addTab(self.log_tab, "Log")
         self._refresh_tx_frame_options(self.config_tab.get_defined_can_frame_options())
+        self._default_config_signature = self._config_signature(
+            self._canonicalize_config(self.config_tab.collect_config())
+        )
+        self._refresh_control_tab()
+        self._refresh_log_config_snapshot()
+
+        self.action_save_project.triggered.connect(self.save_project)
+        self.action_load_project.triggered.connect(self.load_project)
+        self.action_load_binary.triggered.connect(self.config_tab.load_binary)
+        self.action_export_binary.triggered.connect(self.config_tab.export_binary)
+        self.action_load_json.triggered.connect(self.config_tab.load_json)
+        self.action_export_json.triggered.connect(self.config_tab.export_json)
+        self.action_request_config.triggered.connect(self.config_tab.request_device_config)
+        self.action_send_to_device.triggered.connect(self.config_tab.send_binary_to_device)
+        self.action_reset_device.triggered.connect(self.config_tab.reset_device)
 
         hb_corner = QWidget()
         hb_corner_layout = QHBoxLayout(hb_corner)
@@ -254,13 +779,480 @@ class MainWindow(QMainWindow):
         self.combo_tx_id.blockSignals(False)
 
     def send_isotp_config(self, payload):
-        self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload})
+        self._config_check_suppressed_until = time.time() + 5.0
+        self._refresh_control_tab()
+        payload_bytes = bytes(payload)
+        payload_crc = _stm32_crc32_bytes(payload_bytes)
+        payload_with_crc = payload_bytes + struct.pack("<I", payload_crc)
+        self.tx_queue.put({"cmd": "ISOTP_SEND", "id": 0x450, "payload": payload_with_crc})
 
     def send_reset_device(self):
         self.tx_queue.put({"cmd": "RESET_DEVICE"})
 
     def request_config_from_device(self):
+        if self._device_config_request_pending:
+            return
+        self._device_config_request_pending = True
         self.tx_queue.put({"cmd": "REQUEST_CONFIG"})
+
+    def request_config_crc_from_device(self):
+        if self._device_crc_request_pending or self._device_config_request_pending:
+            return
+        self._device_crc_request_pending = True
+        self.tx_queue.put({"cmd": "REQUEST_CONFIG_CRC"})
+
+    def send_can_frame(self, arbitration_id, payload):
+        self.tx_queue.put({"cmd": "TX", "id": int(arbitration_id), "payload": payload})
+
+    def _refresh_control_tab(self):
+        if self.control_tab is None or self.config_tab is None:
+            return
+
+        self.control_tab.set_physical_inputs(self.config_tab.inputs_page.to_dict().get("physical", []))
+        can_inputs = self.config_tab.inputs_page.to_dict().get("can", [])
+        usage_by_input = self.config_tab.build_usage_by_input()
+        self.control_tab.refresh_controls(can_inputs, usage_by_input)
+
+    def _refresh_log_config_snapshot(self):
+        if self.config_tab is None:
+            return
+        try:
+            self._log_config_snapshot = self.config_tab.collect_config()
+            self._last_log_config_snapshot_refresh = time.time()
+            if self.log_tab is not None:
+                self.log_tab.set_config_snapshot(self._log_config_snapshot)
+        except Exception:
+            pass
+
+    def _update_window_title(self):
+        self.setWindowTitle(f"PDMS - {self.project_name}")
+
+    def save_project(self):
+        if self.config_tab is None or self.log_tab is None:
+            return
+
+        current_name = self.project_name if self.project_name and self.project_name != "Untitled" else ""
+        name, accepted = QInputDialog.getText(self, "Save project", "Project name:", text=current_name)
+        if not accepted:
+            return
+
+        project_name = name.strip() if isinstance(name, str) else ""
+        if not project_name:
+            project_name = self.project_name or "Untitled"
+
+        default_dir = pdm_shared.get_runtime_base_dir() / "config"
+        default_name = str((default_dir / f"{project_name}.pdmspro").as_posix())
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save PDMS project",
+            default_name,
+            "PDMS Project (*.pdmspro);;JSON Files (*.json);;All Files (*)",
+        )
+        if not file_path:
+            return
+
+        payload = {
+            "projectName": project_name,
+            "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "config": self.config_tab.collect_config(),
+            "logTab": self.log_tab.to_dict(),
+        }
+
+        try:
+            path_obj = Path(file_path)
+            path_obj.parent.mkdir(parents=True, exist_ok=True)
+            with path_obj.open("w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2)
+            save_last_project_path(str(path_obj))
+        except Exception as exc:
+            QMessageBox.critical(self, "Save failed", f"Could not save project: {exc}")
+            return
+
+        self.project_name = project_name
+        self._update_window_title()
+
+    def load_project(self, file_path_override=None, silent=False):
+        if self.config_tab is None or self.log_tab is None:
+            return False
+
+        file_path = file_path_override
+        if not file_path:
+            default_dir = str((pdm_shared.get_runtime_base_dir() / "config").as_posix())
+            file_path, _ = QFileDialog.getOpenFileName(
+                self,
+                "Load PDMS project",
+                default_dir,
+                "PDMS Project (*.pdmspro);;JSON Files (*.json);;All Files (*)",
+            )
+            if not file_path:
+                return False
+
+        try:
+            with Path(file_path).open("r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except Exception as exc:
+            if not silent:
+                QMessageBox.critical(self, "Load failed", f"Could not load project: {exc}")
+            return False
+
+        if not isinstance(payload, dict):
+            if not silent:
+                QMessageBox.critical(self, "Load failed", "Project file has invalid format.")
+            return False
+
+        config_payload = payload.get("config")
+        if not isinstance(config_payload, dict):
+            if not silent:
+                QMessageBox.critical(self, "Load failed", "Project file does not contain valid configuration.")
+            return False
+
+        try:
+            self.config_tab.apply_config(config_payload)
+            log_payload = payload.get("logTab")
+            if isinstance(log_payload, dict):
+                self.log_tab.apply_dict(log_payload)
+            self._refresh_control_tab()
+            self._refresh_log_config_snapshot()
+            save_last_project_path(str(Path(file_path)))
+        except Exception as exc:
+            if not silent:
+                QMessageBox.critical(self, "Load failed", f"Could not apply project data: {exc}")
+            return False
+
+        project_name = payload.get("projectName")
+        if isinstance(project_name, str) and project_name.strip():
+            self.project_name = project_name.strip()
+        else:
+            self.project_name = Path(file_path).stem
+        self._update_window_title()
+        return True
+
+    def _autoload_last_project(self):
+        last_project_path = get_last_project_path(None)
+        if not last_project_path:
+            return
+        path_obj = Path(last_project_path)
+        if not path_obj.exists() or not path_obj.is_file():
+            return
+        self.load_project(file_path_override=str(path_obj), silent=True)
+
+    def _request_config_if_needed(self):
+        if self.config_tab is None or self._device_config_request_pending or self._device_crc_request_pending:
+            return
+        if time.time() < self._config_check_suppressed_until:
+            return
+        self.request_config_crc_from_device()
+
+    def _local_config_crc32(self):
+        if self.config_tab is None:
+            return None
+        try:
+            payload = bytes(self.config_tab._build_binary_payload())
+        except Exception:
+            return None
+        return _stm32_crc32_bytes(payload)
+
+    def _handle_device_config_crc(self, device_crc):
+        self._device_crc_request_pending = False
+        local_crc = self._local_config_crc32()
+        if local_crc is None:
+            if self.config_tab is not None:
+                self.config_tab.set_isotp_state(0, "Could not compute local configuration CRC", busy=False)
+            return
+        if int(local_crc) == int(device_crc):
+            if self.config_tab is not None:
+                self.config_tab.set_isotp_state(100, "Configuration up to date", busy=False)
+            return
+        if self.config_tab is not None:
+            self.config_tab.set_isotp_state(0, "CRC mismatch, requesting device configuration", busy=True)
+        self.request_config_from_device()
+
+    def _config_signature(self, config):
+        try:
+            return json.dumps(config, sort_keys=True, separators=(",", ":"))
+        except Exception:
+            return None
+
+    def _canonicalize_config(self, config):
+        if not isinstance(config, dict):
+            return config
+
+        result = dict(config)
+
+        def _normalize_i2t_cfg(i2t_cfg):
+            if not isinstance(i2t_cfg, dict):
+                return {
+                    "useI2t": False,
+                    "nominalCurrent": 0,
+                    "nominalCurrentSq": 0,
+                    "timeThreshold": 0,
+                    "i2tThreshold": 0,
+                }
+
+            nominal_current = int(i2t_cfg.get("nominalCurrent", 0))
+            nominal_current = max(0, (nominal_current // 10) * 10)
+            time_threshold = int(i2t_cfg.get("timeThreshold", 0))
+            nominal_current_sq = nominal_current * nominal_current
+            i2t_threshold = nominal_current_sq * time_threshold
+            return {
+                "useI2t": bool(i2t_cfg.get("useI2t", False)),
+                "nominalCurrent": nominal_current,
+                "nominalCurrentSq": nominal_current_sq,
+                "timeThreshold": time_threshold,
+                "i2tThreshold": i2t_threshold,
+            }
+
+        def _normalize_soc_cfg(soc_cfg):
+            if not isinstance(soc_cfg, dict):
+                return {
+                    "useSoc": False,
+                    "nominalThreshold": 0,
+                    "allowInrush": False,
+                    "inrushInput": None,
+                    "inrushWindowFromStart": 0,
+                    "inrushThreshold": 0,
+                    "inrushTimeThreshold": 0,
+                }
+
+            allow_inrush = bool(soc_cfg.get("allowInrush", False))
+            raw_inrush_input = soc_cfg.get("inrushInput")
+            inrush_input = None
+            if allow_inrush and raw_inrush_input is not None:
+                try:
+                    candidate = int(raw_inrush_input)
+                except Exception:
+                    candidate = 0xFFFF
+                if candidate not in (0xFF, 0xFFFF):
+                    inrush_input = candidate
+
+            return {
+                "useSoc": bool(soc_cfg.get("useSoc", False)),
+                "nominalThreshold": int(soc_cfg.get("nominalThreshold", 0)),
+                "allowInrush": allow_inrush,
+                "inrushInput": inrush_input,
+                "inrushWindowFromStart": int(soc_cfg.get("inrushWindowFromStart", 0)),
+                "inrushThreshold": int(soc_cfg.get("inrushThreshold", 0)),
+                "inrushTimeThreshold": int(soc_cfg.get("inrushTimeThreshold", 0)),
+            }
+
+        inputs = result.get("inputs")
+        if isinstance(inputs, dict):
+            canonical_inputs = {}
+
+            physical_inputs = inputs.get("physical") or []
+            canonical_inputs["physical"] = [
+                {
+                    "location": int(item.get("location", index)) if isinstance(item, dict) else index,
+                    "type": int(item.get("type", 0)) if isinstance(item, dict) else 0,
+                    "mode": int(item.get("mode", 0)) if isinstance(item, dict) else 0,
+                }
+                for index, item in enumerate(physical_inputs)
+            ]
+
+            can_inputs = inputs.get("can") or []
+            canonical_inputs["can"] = [
+                {
+                    "isUsed": bool(item.get("isUsed", False)) if isinstance(item, dict) else False,
+                    "canInstance": int(item.get("canInstance", 0)) if isinstance(item, dict) else 0,
+                    "canId": int(item.get("canId", 0)) if isinstance(item, dict) else 0,
+                    "offset": int(item.get("offset", 0)) if isinstance(item, dict) else 0,
+                    "dataType": int(item.get("dataType", 0)) if isinstance(item, dict) else 0,
+                    "location": int(item.get("location", index)) if isinstance(item, dict) else index,
+                    "type": int(item.get("type", 0)) if isinstance(item, dict) else 0,
+                    "mode": int(item.get("mode", 0)) if isinstance(item, dict) else 0,
+                }
+                for index, item in enumerate(can_inputs)
+            ]
+
+            result["inputs"] = canonical_inputs
+
+        channels = result.get("channels")
+        if isinstance(channels, list):
+            canonical_channels = []
+            for item in channels:
+                if not isinstance(item, dict):
+                    canonical_channels.append(item)
+                    continue
+
+                channel_item = dict(item)
+                safety = dict(channel_item.get("safety") or {})
+                safety["socCfg"] = _normalize_soc_cfg(safety.get("socCfg"))
+                safety["i2tCfg"] = _normalize_i2t_cfg(safety.get("i2tCfg"))
+                channel_item["safety"] = safety
+                canonical_channels.append(channel_item)
+
+            result["channels"] = canonical_channels
+
+        logic = result.get("logic")
+        if isinstance(logic, list):
+            def _canonical_logic_item(item):
+                exp = item.get("exp", {}) if isinstance(item, dict) else {}
+                input1_type = int(exp.get("input1Type", 0))
+                input2_type = int(exp.get("input2Type", 0))
+
+                input1_id = int(exp.get("input1ID", 0)) if input1_type == 0x00 else 0
+                input1_const = int(exp.get("input1Const", 0)) if input1_type != 0x00 else 0
+                input2_id = int(exp.get("input2ID", 0)) if input2_type == 0x00 else 0
+                input2_const = int(exp.get("input2Const", 0)) if input2_type != 0x00 else 0
+
+                return {
+                    "isUsed": bool(item.get("isUsed", False)) if isinstance(item, dict) else False,
+                    "exp": {
+                        "input1Type": input1_type,
+                        "input1ID": input1_id,
+                        "input1Const": input1_const,
+                        "input2Type": input2_type,
+                        "input2ID": input2_id,
+                        "input2Const": input2_const,
+                        "opr": int(exp.get("opr", 0)),
+                    },
+                }
+
+            result["logic"] = [
+                _canonical_logic_item(item)
+                for item in logic
+            ]
+
+        return result
+
+    def _config_diff_summary(self, current_config, device_config):
+        differences = []
+
+        current_channels = current_config.get("channels") or []
+        device_channels = device_config.get("channels") or []
+        channel_diff_indices = [i for i, (current_item, device_item) in enumerate(zip(current_channels, device_channels)) if current_item != device_item]
+        if len(current_channels) != len(device_channels):
+            channel_diff_indices.extend(range(min(len(current_channels), len(device_channels)), max(len(current_channels), len(device_channels))))
+        if channel_diff_indices:
+            channel_text = ", ".join(f"CH{index + 1}" for index in sorted(set(channel_diff_indices)))
+            differences.append(f"CHANNELS ({channel_text})")
+
+        current_inputs = current_config.get("inputs")
+        device_inputs = device_config.get("inputs")
+        if current_inputs != device_inputs:
+            input_parts = []
+            if isinstance(current_inputs, dict) and isinstance(device_inputs, dict):
+                physical_current = current_inputs.get("physical") or []
+                physical_device = device_inputs.get("physical") or []
+                physical_diff_indices = [i for i, (current_item, device_item) in enumerate(zip(physical_current, physical_device)) if current_item != device_item]
+                if len(physical_current) != len(physical_device):
+                    physical_diff_indices.extend(range(min(len(physical_current), len(physical_device)), max(len(physical_current), len(physical_device))))
+                if physical_diff_indices:
+                    input_parts.append("physical " + ", ".join(f"IN{i + 1}" for i in sorted(set(physical_diff_indices))))
+
+                can_current = current_inputs.get("can") or []
+                can_device = device_inputs.get("can") or []
+                can_diff_indices = [i for i, (current_item, device_item) in enumerate(zip(can_current, can_device)) if current_item != device_item]
+                if len(can_current) != len(can_device):
+                    can_diff_indices.extend(range(min(len(can_current), len(can_device)), max(len(can_current), len(can_device))))
+                if can_diff_indices:
+                    input_parts.append("CAN " + ", ".join(f"CAN{i + 1}" for i in sorted(set(can_diff_indices))))
+
+            differences.append("INPUTS" + (f" ({'; '.join(input_parts)})" if input_parts else ""))
+
+        current_logic = current_config.get("logic") or []
+        device_logic = device_config.get("logic") or []
+        logic_diff_rows = []
+        for index, (current_item, device_item) in enumerate(zip(current_logic, device_logic)):
+            if current_item == device_item:
+                continue
+
+            current_exp = current_item.get("exp", {}) if isinstance(current_item, dict) else {}
+            device_exp = device_item.get("exp", {}) if isinstance(device_item, dict) else {}
+            field_names = []
+            for field_name in ("isUsed",):
+                if (current_item.get(field_name) if isinstance(current_item, dict) else None) != (device_item.get(field_name) if isinstance(device_item, dict) else None):
+                    field_names.append(field_name)
+            for field_name in ("input1Type", "input1ID", "input1Const", "input2Type", "input2ID", "input2Const", "opr"):
+                if current_exp.get(field_name) != device_exp.get(field_name):
+                    field_names.append(field_name)
+            logic_diff_rows.append(f"L{index + 1}")
+
+        if len(current_logic) != len(device_logic):
+            logic_diff_rows.extend(
+                f"L{index + 1}: row missing"
+                for index in range(min(len(current_logic), len(device_logic)), max(len(current_logic), len(device_logic)))
+            )
+
+        if logic_diff_rows:
+            differences.append("LOGIC (" + "; ".join(logic_diff_rows) + ")")
+
+        return differences
+
+    def _handle_device_config_payload(self, payload):
+        if self.config_tab is None:
+            return
+
+        self._device_crc_request_pending = False
+        self._pending_device_config = bytes(payload)
+        if self._device_config_processing_scheduled:
+            return
+        self._device_config_processing_scheduled = True
+        QTimer.singleShot(0, self._process_pending_device_config)
+
+    def _process_pending_device_config(self):
+        self._device_config_processing_scheduled = False
+        if self.config_tab is None or self._pending_device_config is None:
+            self._pending_device_config = None
+            return
+
+        payload = self._pending_device_config
+        self._pending_device_config = None
+
+        try:
+            device_config = self.config_tab.parse_binary_payload(payload)
+        except Exception as exc:
+            self._device_config_request_pending = False
+            QMessageBox.critical(self, "Load failed", f"Could not parse device configuration: {exc}")
+            return
+
+        current_config = self._canonicalize_config(self.config_tab.collect_config())
+        device_config = self._canonicalize_config(device_config)
+        if self._config_signature(current_config) == self._default_config_signature:
+            self.config_tab.apply_config(device_config)
+            self.config_tab.set_isotp_state(100, "Device configuration loaded", busy=False)
+            self._device_config_request_pending = False
+            return
+
+        if self._config_signature(current_config) == self._config_signature(device_config):
+            self._device_config_request_pending = False
+            return
+
+        differences = self._config_diff_summary(current_config, device_config)
+        diff_text = "\n".join(f"- {item}" for item in differences) if differences else "- configuration content"
+
+        prompt = QMessageBox(self)
+        prompt.setWindowTitle("Device configuration differs")
+        prompt.setIcon(QMessageBox.Question)
+        prompt.setText(
+            "The configuration stored on the device is different from the one currently shown in the GUI."
+        )
+        prompt.setInformativeText(
+            "Differences detected in:\n"
+            f"{diff_text}\n\n"
+            "Do you want to load the device configuration and replace the current GUI settings?"
+        )
+        prompt.setWindowModality(Qt.NonModal)
+        no_button = prompt.addButton("No, keep current", QMessageBox.RejectRole)
+        yes_button = prompt.addButton("Yes, load device", QMessageBox.AcceptRole)
+        prompt.setDefaultButton(no_button)
+
+        self._device_config_prompt = prompt
+        self._pending_device_config = device_config
+
+        def _handle_prompt_click(clicked_button):
+            try:
+                if clicked_button == yes_button and self._pending_device_config is not None and self.config_tab is not None:
+                    self.config_tab.apply_config(self._pending_device_config)
+                    self._refresh_control_tab()
+                    self.config_tab.set_isotp_state(100, "Device configuration loaded", busy=False)
+            finally:
+                self._pending_device_config = None
+                self._device_config_prompt = None
+                self._device_config_request_pending = False
+
+        prompt.buttonClicked.connect(_handle_prompt_click)
+        prompt.show()
 
     def send_selected_frame(self):
         tx_id_text = self.combo_tx_id.currentText()
@@ -281,7 +1273,120 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Payload Hex Parse Error", f"Failed parsing byte context: {exc}")
             return
 
-        self.tx_queue.put({"cmd": "TX", "id": arbitration_id, "payload": payload})
+        self.send_can_frame(arbitration_id, payload)
+
+    def _toggle_emulate_data(self, enabled):
+        self._emulate_data_enabled = bool(enabled)
+        if self._emulate_data_enabled:
+            self._emulation_start_time = time.time()
+            self._emulation_step = 0
+            self._emulated_current_values_ma = [float(max(1, CHANNEL_COUNT - i) * 1000.0) for i in range(CHANNEL_COUNT)]
+            self._emulated_current_targets_ma = list(self._emulated_current_values_ma)
+            self.emulation_timer.start()
+            self._connection_state = "emulating"
+            self._set_heartbeat_status("Emulation mode", "#90CAF9")
+        else:
+            self.emulation_timer.stop()
+            if self.offline_mode:
+                self._connection_state = "offline"
+                self._set_heartbeat_status("Offline mode", "#90CAF9")
+
+    def _build_emulated_packet(self):
+        t_now = time.time()
+        elapsed = max(0.0, t_now - self._emulation_start_time)
+        self._emulation_step += 1
+
+        batt_mv = int(14500 + random.uniform(-220, 220) + 120 * math.sin(elapsed * 0.35))
+        total_current_ma = 0.0
+
+        channels = []
+        for index in range(CHANNEL_COUNT):
+            phase = elapsed * 0.35 + index * 0.12
+            base_amp = float(max(1, CHANNEL_COUNT - index))
+
+            if self._emulation_step % 30 == 0:
+                drift_amp = random.uniform(-0.6, 0.6)
+                self._emulated_current_targets_ma[index] = max(0.0, (base_amp + drift_amp) * 1000.0)
+
+            target_ma = self._emulated_current_targets_ma[index]
+            current_ma = self._emulated_current_values_ma[index]
+            current_ma += (target_ma - current_ma) * 0.08
+            current_ma += 55.0 * math.sin(phase)
+            current_ma += random.uniform(-25.0, 25.0)
+            current_ma = max(0.0, current_ma)
+            self._emulated_current_values_ma[index] = current_ma
+
+            current_avg_ma = max(0.0, current_ma * 0.96 + random.uniform(-12.0, 12.0))
+            current_rms_ma = max(0.0, current_ma * 1.02 + random.uniform(5.0, 15.0))
+            voltage_mv = int(batt_mv - random.uniform(100.0, 700.0))
+            state = 1 if current_ma > 250 else 0
+            status_choices = [0, 0, 0, 0, 1, 8, 9, 10, 11, 20, 21, 22]
+            status = random.choice(status_choices) if random.random() < 0.02 else 0
+
+            channel = {
+                "name": f"OUT{index + 1}",
+                "status": int(status),
+                "state": int(state),
+                "voltage": max(0, voltage_mv),
+                "current": float(current_ma),
+                "current_avg": float(current_avg_ma),
+                "current_rms": float(current_rms_ma),
+                "pwm_duty": int(max(0, min(100, 50 + 35 * math.sin(phase * 0.8)))),
+                "i2t_heat": int(max(0, min(100, 40 + 40 * math.sin(phase * 0.4)))),
+                "soc_threshold": int(max(0, 1500 + 400 * math.sin(phase * 0.3))),
+            }
+            channels.append(channel)
+            total_current_ma += channel["current_avg"]
+
+        imu = {
+            "accX": 0.12 * math.sin(elapsed * 0.45) + random.uniform(-0.01, 0.01),
+            "accY": 0.10 * math.sin(elapsed * 0.52 + 1.2) + random.uniform(-0.01, 0.01),
+            "accZ": 1.0 + 0.06 * math.sin(elapsed * 0.3 + 0.4) + random.uniform(-0.01, 0.01),
+            "pitch": 90.0 * math.sin(elapsed * 0.22) + random.uniform(-2.0, 2.0),
+            "roll": 140.0 * math.sin(elapsed * 0.28 + 0.8) + random.uniform(-2.5, 2.5),
+            "yaw": 200.0 * math.sin(elapsed * 0.18 + 1.4) + random.uniform(-3.0, 3.0),
+        }
+
+        packet = {
+            "time": elapsed,
+            "sys": {
+                "status": 0,
+                "batt": batt_mv,
+                "core_temp": 34.0 + 3.0 * math.sin(elapsed * 0.08) + random.uniform(-0.3, 0.3),
+                "safety": "OK",
+                "total_current": total_current_ma,
+                "logicValidMask": 0xFFFF,
+                "system_load": int(max(0, min(100, 45 + 15 * math.sin(elapsed * 0.18)))),
+            },
+            "ch": channels,
+            "phy": [int(max(0, batt_mv - random.uniform(300, 900))) for _ in range(PHY_INPUT_COUNT)],
+            "imu": imu,
+            "frames": [
+                {"id": IDS["SYS_STATUS"], "count": self._emulation_step, "freq": 20.0},
+                {"id": IDS["STATE_1_16"], "count": self._emulation_step, "freq": 20.0},
+            ],
+        }
+        return packet
+
+    def _emit_emulated_packet(self):
+        if not self._emulate_data_enabled:
+            return
+        packet = self._build_emulated_packet()
+        self.latest_sys = packet["sys"]
+        self.latest_ch = packet["ch"]
+        self.latest_phy = packet["phy"]
+        self.lates_imu = packet["imu"]
+        self.latest_frames = packet.get("frames", [])
+        if self.control_tab is not None:
+            self.control_tab.set_live_channels(self.latest_ch)
+            self.control_tab.set_live_physical_values(self.latest_phy)
+        if self.log_tab is not None and self.config_tab is not None:
+            if time.time() - self._last_log_config_snapshot_refresh >= 0.5:
+                self._refresh_log_config_snapshot()
+            self.log_tab.update_from_packet(packet, self._log_config_snapshot)
+        self.plot_panel.update_from_packet(packet)
+        self.last_frame_rx_time = time.time()
+        self._render_latest_snapshot()
 
     def process_gui_refresh(self):
         updated = False
@@ -300,21 +1405,37 @@ class MainWindow(QMainWindow):
                     continue
                 if "isotp_config_payload" in packet:
                     if self.config_tab is not None:
-                        self.config_tab.load_binary_payload(packet["isotp_config_payload"])
-                        self.config_tab.set_isotp_state(100, "Config received and loaded", busy=False)
+                        self._handle_device_config_payload(packet["isotp_config_payload"])
+                    continue
+                if "device_config_crc" in packet:
+                    self._handle_device_config_crc(packet["device_config_crc"])
                     continue
                 if packet.get("serial_ready"):
                     self.serial_device_ready = True
+                    self._connection_state = "serial_ready"
                     continue
                 if "error" in packet:
+                    self._device_config_request_pending = False
+                    self._device_crc_request_pending = False
                     if self.config_tab is not None:
                         self.config_tab.set_isotp_state(0, f"Error: {packet['error']}", busy=False)
+                    continue
+
+                if self._emulate_data_enabled:
                     continue
 
                 self.latest_sys = packet["sys"]
                 self.latest_ch = packet["ch"]
                 self.latest_phy = packet["phy"]
+                self.lates_imu = packet["imu"]
                 self.latest_frames = packet.get("frames", [])
+                if self.control_tab is not None:
+                    self.control_tab.set_live_channels(self.latest_ch)
+                    self.control_tab.set_live_physical_values(self.latest_phy)
+                if self.log_tab is not None and self.config_tab is not None:
+                    if time.time() - self._last_log_config_snapshot_refresh >= 0.5:
+                        self._refresh_log_config_snapshot()
+                    self.log_tab.update_from_packet(packet, self._log_config_snapshot)
                 self.plot_panel.update_from_packet(packet)
                 self.last_frame_rx_time = time.time()
                 updated = True
@@ -324,11 +1445,40 @@ class MainWindow(QMainWindow):
         if not updated:
             return
 
-        self.lbl_sys_state.setText(str(self.latest_sys["status"]))
-        self.lbl_batt.setText(f"{self.latest_sys['batt']} mV")
+        self._render_latest_snapshot()
+
+    def _render_latest_snapshot(self):
+
+        self.lbl_sys_state.setText(SYS_STATUS_MAP.get(int(self.latest_sys["status"]), str(self.latest_sys["status"])))
+        self.lbl_batt.setText(_format_voltage_mv(self.latest_sys['batt']))
         self.lbl_temp.setText(f"{self.latest_sys['core_temp']:.1f} °C")
-        self.lbl_safety.setText(str(self.latest_sys["safety"]))
+        self.lbl_system_load.setText(f"{self.latest_sys.get('system_load', 0)}%")
         self.lbl_total_i.setText(f"{self.latest_sys['total_current']:.1f} mA")
+        total_current_a = float(self.latest_sys["total_current"]) / 1000.0
+        self.lbl_itot.setText(f"I<sub>tot</sub>: {total_current_a:.1f} A")
+        self.lbl_itot.setStyleSheet(_kpi_label_style(_blend_color("#09BC8A", "#E30026", min(1.0, max(0.0, total_current_a / 100.0)))))
+
+        self.lbl_batt_big.setText(f"Battery: {_format_voltage_mv(self.latest_sys.get('batt', 0))}")
+        self.lbl_batt_big.setStyleSheet(_kpi_label_style(_battery_kpi_color(self.latest_sys.get('batt', 0))))
+
+        safety_text = str(self.latest_sys.get("safety", "-"))
+        safety_color = "#09BC8A" if safety_text.upper() in ("OK", "ON", "1") else "#E30026"
+        self.lbl_safety_big.setText(f"Safety Line: {safety_text}")
+        self.lbl_safety_big.setStyleSheet(_kpi_label_style(safety_color))
+
+        error_text, error_color = _format_channel_error_summary(self.latest_ch)
+        self.lbl_error_big.setText(error_text)
+        self.lbl_error_big.setStyleSheet(_kpi_label_style(error_color))
+
+        # IMU
+        self.lbl_acc_x.setText(f"{self.lates_imu['accX']:.2f} g")
+        self.lbl_acc_y.setText(f"{self.lates_imu['accY']:.2f} g")
+        self.lbl_acc_z.setText(f"{self.lates_imu['accZ']:.2f} g")
+
+        self.lbl_gyro_x.setText(f"{self.lates_imu['pitch']:.2f} dps")
+        self.lbl_gyro_y.setText(f"{self.lates_imu['roll']:.2f} dps")
+        self.lbl_gyro_z.setText(f"{self.lates_imu['yaw']:.2f} dps")
+
         logic_valid_mask = int(self.latest_sys.get("logicValidMask", 0))
         invalid_outputs = [str(index + 1) for index in range(CHANNEL_COUNT) if not (logic_valid_mask & (1 << index))]
         if invalid_outputs:
@@ -342,7 +1492,22 @@ class MainWindow(QMainWindow):
             bg_hex, text_hex = get_row_colors(ch["state"], ch["status"])
             status_str = OUT_STATUS_MAP.get(ch["status"], str(ch["status"]))
             state_str = OUT_STATE_MAP.get(ch["state"], str(ch["state"]))
-            vals = (ch["name"], status_str, state_str, str(ch["voltage"]), str(ch["current"]), f"{ch['current_avg']:.1f}")
+            irms_text = str(ch.get("current_rms", 0)) if i < 8 else "-"
+            pwm_text = f"{int(ch.get('pwm_duty', 0))}%" if i < 8 else "-"
+            heat_text = f"{int(ch.get('i2t_heat', 0))}%" if i < 8 else "-"
+            soc_text = str(int(ch.get('soc_threshold', 0))) if i < 8 else "-"
+            vals = (
+                ch["name"],
+                status_str,
+                state_str,
+                _format_voltage_mv(ch["voltage"]),
+                str(int(round(float(ch.get("current", 0))))),
+                str(int(round(float(ch.get("current_avg", 0))))),
+                str(int(round(float(ch.get("current_rms", 0))))) if i < 8 else "-",
+                pwm_text,
+                heat_text,
+                soc_text,
+            )
 
             for col_idx, text in enumerate(vals):
                 item = self.table_channels.item(i, col_idx)
@@ -355,8 +1520,9 @@ class MainWindow(QMainWindow):
 
         for i, val in enumerate(self.latest_phy):
             item = self.table_phy.item(i, 1)
-            if item.text() != str(val):
-                item.setText(str(val))
+            voltage_text = _format_voltage_mv(val)
+            if item.text() != voltage_text:
+                item.setText(voltage_text)
 
         self.table_frames.setRowCount(len(self.latest_frames))
         for row, frame in enumerate(self.latest_frames):
@@ -376,29 +1542,50 @@ class MainWindow(QMainWindow):
                 self.table_frames.setItem(row, 1, freq_item)
             if freq_item.text() != freq_text:
                 freq_item.setText(freq_text)
+            self.table_frames.setRowHeight(row, 20)
 
         self.update_heartbeat_status()
 
     def update_heartbeat_status(self):
+        if self._emulate_data_enabled:
+            self._connection_state = "emulating"
+            self._set_heartbeat_status("Emulation mode", "#90CAF9")
+            return
+
+        if self.offline_mode:
+            self._connection_state = "offline"
+            self._set_heartbeat_status("Offline mode", "#90CAF9")
+            return
+
         worker_alive = self.worker_process is not None and self.worker_process.is_alive()
 
+        previous_state = self._connection_state
+
         if not worker_alive:
+            self._connection_state = "disconnected"
             self._set_heartbeat_status("Disconnected", "#FF8A80")
             return
 
         if not self.serial_device_ready:
+            self._connection_state = "disconnected"
             self._set_heartbeat_status("Disconnected", "#FF8A80")
             return
 
         if self.last_frame_rx_time <= 0:
-            self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
+            self._connection_state = "serial_ready"
+            self._set_heartbeat_status(f"Serial ready: {pdm_shared.CAN_CHANNEL}", "#FFD54F")
             return
 
         age_s = time.time() - self.last_frame_rx_time
         if age_s > 1.0:
-            self._set_heartbeat_status(f"Serial ready: {CAN_CHANNEL}", "#FFD54F")
+            self._connection_state = "serial_ready"
+            self._set_heartbeat_status(f"Serial ready: {pdm_shared.CAN_CHANNEL}", "#FFD54F")
         else:
+            self._connection_state = "connected"
             self._set_heartbeat_status(f"Connected ({age_s:.1f}s)", "#81C784")
+
+        if self._connection_state == "connected" and previous_state != self._connection_state:
+            self._request_config_if_needed()
 
     def update_plots(self):
         if not self.plotting_enabled:
@@ -412,11 +1599,39 @@ class MainWindow(QMainWindow):
         else:
             self.plot_timer.stop()
 
+    def _handle_ctrl_space_shortcut(self):
+        if self.tabs is not None and self.log_tab is not None and self.tabs.currentWidget() is self.log_tab:
+            is_paused = self.log_tab.toggle_paused()
+            if is_paused:
+                self.statusBar().showMessage("LOG paused", 1500)
+            else:
+                self.statusBar().showMessage("LOG resumed", 1500)
+            return
+        self.toggle_plotting()
+
     def closeEvent(self, event):
         if self.worker_started:
-            self.tx_queue.put({"cmd": "EXIT"})
-            self.worker_process.join(timeout=0.5)
+            self.stop_can_worker()
         super().closeEvent(event)
+
+
+def _build_splash_pixmap(base_pixmap):
+    canvas = QPixmap(base_pixmap)
+    painter = QPainter(canvas)
+    painter.setRenderHint(QPainter.TextAntialiasing, True)
+
+    loading_font = QFont("Segoe UI", 14)
+    painter.setFont(loading_font)
+    painter.setPen(QColor("#FFFFFF"))
+    painter.drawText(canvas.rect().adjusted(0, 0, 0, -12), Qt.AlignHCenter | Qt.AlignBottom, "Loading PDMS...")
+
+    version_font = QFont("Segoe UI", 10)
+    painter.setFont(version_font)
+    painter.setPen(QColor("#E0E0E0"))
+    painter.drawText(canvas.rect().adjusted(0, 0, -12, -8), Qt.AlignRight | Qt.AlignBottom, f"Version {APP_VERSION}")
+
+    painter.end()
+    return canvas
 
 
 if __name__ == "__main__":
@@ -433,12 +1648,16 @@ if __name__ == "__main__":
         pix = QPixmap(480, 300)
         pix.fill(QColor('#2D2D2D'))
 
-    splash = QSplashScreen(pix)
-    splash.showMessage("Loading PDMS...", Qt.AlignBottom | Qt.AlignHCenter, QColor("#FFFFFF"))
+    splash = QSplashScreen(_build_splash_pixmap(pix))
     splash.show()
     app.processEvents()
 
-    window = MainWindow()
+    startup_transport = _resolve_startup_transport()
+    if startup_transport is None:
+        splash.close()
+        sys.exit(0)
+
+    window = MainWindow(offline_mode=startup_transport.get("offline", False))
     window.show()
 
     # Finish the splash after the main window is visible (short delay to let init finish)

@@ -1637,13 +1637,15 @@ void SPOC2_SelectSenseMux(T_SPOC2_ID id, T_SPOC2_CH_ID ch)
 
 void spoc2CurrTaskStart(void *argument)
 {
+    // TASK NOT USED, SUSPEND ITSELF
+    vTaskSuspend(NULL);
     LOG_INFO("SPOC2:: Task start");
     for(;;)
     {
-        for(uint8_t i = 0; i < 4; i++)
-        {
-            SPOC2_SelectSenseMux(SPOC2_ID_1, i);
-        }
+        // for(uint8_t i = 0; i < 4; i++)
+        // {
+        //     SPOC2_SelectSenseMux(SPOC2_ID_1, i);
+        // }
     }
 }
 

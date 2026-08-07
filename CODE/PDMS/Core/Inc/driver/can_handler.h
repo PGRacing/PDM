@@ -27,6 +27,7 @@ typedef struct __packed
 typedef struct
 {
     CAN_HandleTypeDef *hcan;
+    bool isInited;
     QueueHandle_t txQueueHandle;
     QueueHandle_t rxQueueHandle;
     bool readyForTx;
@@ -71,6 +72,33 @@ typedef struct  __packed _T_CANH_PHY_INPUTS_4CH
     uint16_t input[4]; // Physical inputs passed in mV value (0 - 5000 mV)
 }T_CANH_PHY_INPUTS_4CH;
 
+typedef struct __packed _T_CANH_IMU_DATA
+{
+    int16_t d1;
+    int16_t d2;
+    int16_t d3;
+}T_CANH_IMU_DATA;
+
+typedef struct __packed _T_CANH_I2T_HEAT_1_8
+{
+    uint8_t heat[8]; // I2t heat container in [%]
+}T_CANH_I2T_HEAT_8CH;
+
+typedef struct __packed _T_CANH_PWM_DUTY_8CH
+{
+    uint8_t duty[8]; // PWM duty container in [%]
+}T_CANH_PWM_DUTY_8CH;
+
+typedef struct __packed _T_CANH_HASH_RESP
+{
+    uint32_t hash; // Hash container
+}T_CANH_HASH_RESP;
+
+typedef struct __packed _T_CAN_DEV_DIAG
+{
+    uint8_t sysLoad; // System load in [%]
+}T_CANH_DEV_DIAG;
+
 typedef union __packed
 {
     uint8_t raw[8];
@@ -80,6 +108,12 @@ typedef union __packed
     T_CANH_TX_VOLTAGE_4CH voltage_4ch;
     T_CANH_TX_CURRENT_4CH current_4ch;
     T_CANH_PHY_INPUTS_4CH phy_inputs_4ch;
+    T_CANH_IMU_DATA imu_data;
+    T_CANH_I2T_HEAT_8CH i2t_heat_8ch;
+    T_CANH_HASH_RESP hash_resp;
+    T_CANH_PWM_DUTY_8CH pwm_duty_8ch;
+    T_CANH_DEV_DIAG dev_diag;
+
 }T_CANH_DATA;
 
 typedef struct T_CANH_TX_PACKAGE 
@@ -105,6 +139,9 @@ void can2TaskStart(void *argument);
 /// @brief CAN bus module initialization
 void CANH_Init(void);
 
+/// @brief  CAN bus module reconfiguration
+void CANH_ReconfigureAll(void);
+
 void CANH_PushToTxQueue(T_CANH_INSTANCE instance, T_CANH_TX_PACKAGE pkg);
 void CANH_PushToRxQueue(T_CANH_INSTANCE instance, T_CANH_RX_PACKAGE pkg);
 
@@ -118,6 +155,9 @@ void CANH_Send_TxCurrent1_4(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, 
 void CANH_Send_TxCurrent5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
 void CANH_Send_TxCurrent9_12(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
 void CANH_Send_TxCurrent13_16(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+// RMS Variant
+void CANH_Send_TxCurrentRMS1_4(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
+void CANH_Send_TxCurrentRMS5_8(T_CANH_INSTANCE instance, uint16_t c1, uint16_t c2, uint16_t c3, uint16_t c4);
 
 void CANH_Send_TxStatus1_8(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
 void CANH_Send_TxStatus9_16(T_CANH_INSTANCE instance, uint8_t s1, uint8_t s2, uint8_t s3, uint8_t s4, uint8_t s5, uint8_t s6, uint8_t s7, uint8_t s8);
@@ -126,9 +166,21 @@ void CANH_Send_TxState1_16(T_CANH_INSTANCE instance, uint8_t s[16]);
 
 void CANH_Send_SysStatus(T_CANH_INSTANCE instance, uint8_t sysStatus, uint16_t battVoltage, int16_t coreTemp, uint8_t safetyLineStatus, uint16_t logicValidMask);
 
-void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7]);
+void CANH_Send_Names(T_CANH_INSTANCE instance, uint8_t id, uint8_t part, char str[7], uint32_t fragSize);
 
 void CANH_Send_PhyInputs1_4(T_CANH_INSTANCE instance, uint16_t i1, uint16_t i2, uint16_t i3, uint16_t i4);
 void CANH_Send_PhyInputs5_8(T_CANH_INSTANCE instance, uint16_t i5, uint16_t i6, uint16_t i7, uint16_t i8);
+
+void CANH_Send_ImuAcc(T_CANH_INSTANCE instance, int16_t accX, int16_t accY, int16_t accZ);
+void CANH_Send_ImuRates(T_CANH_INSTANCE instance, int16_t pitch, int16_t roll, int16_t yaw);
+
+/* DIAGNOSTICS */
+void CANH_Send_I2tHeat1_8(T_CANH_INSTANCE instance, uint8_t h1, uint8_t h2, uint8_t h3, uint8_t h4, uint8_t h5, uint8_t h6, uint8_t h7, uint8_t h8);
+void CANH_Send_SocTreshold_1_4(T_CANH_INSTANCE instance, uint16_t oc1, uint16_t oc2, uint16_t oc3, uint16_t oc4);
+void CANH_Send_SocTreshold_5_8(T_CANH_INSTANCE instance, uint16_t oc1, uint16_t oc2, uint16_t oc3, uint16_t oc4);
+void CANH_Send_PWMDuty(T_CANH_INSTANCE instance, uint8_t ch1, uint8_t ch2, uint8_t ch3, uint8_t ch4, uint8_t ch5, uint8_t ch6, uint8_t ch7, uint8_t ch8);
+void CANH_Send_DevDiag(T_CANH_INSTANCE instance, uint8_t sysLoad);
+
+void CANH_Send_Hash(T_CANH_INSTANCE instance, uint32_t hash);
 
 #endif

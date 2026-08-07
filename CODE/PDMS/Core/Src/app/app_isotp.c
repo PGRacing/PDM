@@ -166,7 +166,7 @@ void isotpTaskStart(void *argument)
                 }
                 else if(isotpHandle.isoTpLink.send_status == ISOTP_SEND_STATUS_INPROGRESS)
                 {
-                    osDelay(pdMS_TO_TICKS(10));
+                    osDelay(pdMS_TO_TICKS(2));
                 }
                 else
                 {
